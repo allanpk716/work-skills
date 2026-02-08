@@ -1,0 +1,22 @@
+{
+  "name": "work-skills",
+  "owner": {
+    "name": "allanpk716",
+    "email": "allanpk716@gmail.com"
+  },
+  "metadata": {
+    "description": "Personal skills collection for improving daily work efficiency with Claude Code",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "git-skills",
+      "description": "Git workflow automation skills for Windows development",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/windows-git-commit"
+      ]
+    }
+  ]
+}

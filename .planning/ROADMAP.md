@@ -122,7 +122,10 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 4. 用户能够查阅故障排查文档解决常见问题(如超时、路径编码、API 连接失败)
 5. 技能符合 Claude Code 插件市场规范,支持通过 /plugin install 安装
 
-**Plans:** TBD
+**Plans:** 2 plans
+
+- [ ] 03-01-PLAN.md — Complete comprehensive documentation for claude-notify plugin (SKILL.md enhancement, README.md update)
+- [ ] 03-02-PLAN.md — Create comprehensive test suite using Python unittest framework with mocked dependencies
 
 ---
 

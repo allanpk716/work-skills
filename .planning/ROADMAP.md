@@ -52,7 +52,9 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 4. Hook 脚本在 5 秒内完成,不会因为超时被 Claude Code 杀死
 5. 多个 Claude Code 会话同时运行时,各会话的通知互不干扰
 
-**Plans:** TBD
+**Plans:** 1 plan
+
+- [ ] 01-01-PLAN.md — 实现 Claude Code 任务完成时的核心通知功能(Hook 配置、Claude CLI 摘要、Pushover 推送、Windows Toast 通知)
 
 ---
 

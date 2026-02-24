@@ -96,41 +96,44 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Phase 1 | Pending |
-| CORE-02 | Phase 1 | Pending |
-| CORE-03 | Phase 1 | Pending |
-| CORE-04 | Phase 1 | Pending |
-| PUSH-01 | Phase 1 | Pending |
-| PUSH-02 | Phase 1 | Pending |
-| PUSH-03 | Phase 1 | Pending |
-| PUSH-04 | Phase 1 | Pending |
-| PUSH-05 | Phase 1 | Pending |
-| WIND-01 | Phase 1 | Pending |
-| WIND-02 | Phase 1 | Pending |
-| WIND-03 | Phase 1 | Pending |
-| WIND-04 | Phase 1 | Pending |
-| WIND-05 | Phase 1 | Pending |
-| SUMM-01 | Phase 1 | Pending |
-| SUMM-02 | Phase 1 | Pending |
-| SUMM-03 | Phase 1 | Pending |
-| SUMM-04 | Phase 1 | Pending |
-| CONF-01 | Phase 1 | Pending |
-| CONF-02 | Phase 1 | Pending |
-| CONF-03 | Phase 1 | Pending |
-| CONF-04 | Phase 1 | Pending |
-| LOG-01 | Phase 1 | Pending |
-| LOG-02 | Phase 1 | Pending |
-| LOG-03 | Phase 1 | Pending |
-| LOG-04 | Phase 1 | Pending |
-| PARA-01 | Phase 1 | Pending |
-| PARA-02 | Phase 1 | Pending |
-| PARA-03 | Phase 1 | Pending |
+| CORE-01 | Phase 1: Core Infrastructure | Pending |
+| CORE-02 | Phase 1: Core Infrastructure | Pending |
+| CORE-03 | Phase 1: Core Infrastructure | Pending |
+| CORE-04 | Phase 1: Core Infrastructure | Pending |
+| PUSH-01 | Phase 1: Core Infrastructure | Pending |
+| PUSH-02 | Phase 1: Core Infrastructure | Pending |
+| PUSH-03 | Phase 1: Core Infrastructure | Pending |
+| PUSH-04 | Phase 1: Core Infrastructure | Pending |
+| PUSH-05 | Phase 1: Core Infrastructure | Pending |
+| WIND-01 | Phase 1: Core Infrastructure | Pending |
+| WIND-02 | Phase 1: Core Infrastructure | Pending |
+| WIND-03 | Phase 1: Core Infrastructure | Pending |
+| WIND-04 | Phase 1: Core Infrastructure | Pending |
+| WIND-05 | Phase 1: Core Infrastructure | Pending |
+| SUMM-01 | Phase 1: Core Infrastructure | Pending |
+| SUMM-02 | Phase 1: Core Infrastructure | Pending |
+| SUMM-03 | Phase 1: Core Infrastructure | Pending |
+| SUMM-04 | Phase 1: Core Infrastructure | Pending |
+| CONF-01 | Phase 2: Configuration & Diagnostics | Pending |
+| CONF-02 | Phase 2: Configuration & Diagnostics | Pending |
+| CONF-03 | Phase 2: Configuration & Diagnostics | Pending |
+| CONF-04 | Phase 2: Configuration & Diagnostics | Pending |
+| LOG-01 | Phase 2: Configuration & Diagnostics | Pending |
+| LOG-02 | Phase 2: Configuration & Diagnostics | Pending |
+| LOG-03 | Phase 2: Configuration & Diagnostics | Pending |
+| LOG-04 | Phase 2: Configuration & Diagnostics | Pending |
+| PARA-01 | Phase 1: Core Infrastructure | Pending |
+| PARA-02 | Phase 1: Core Infrastructure | Pending |
+| PARA-03 | Phase 1: Core Infrastructure | Pending |
 
 **Coverage:**
 - v1 requirements: 29 total
 - Mapped to phases: 29
 - Unmapped: 0 ✓
+- Phase 1: 21 requirements
+- Phase 2: 8 requirements
+- Phase 3: 0 requirements (documentation-focused)
 
 ---
 *Requirements defined: 2026-02-24*
-*Last updated: 2026-02-24 after initial definition*
+*Last updated: 2026-02-24 after roadmap creation*

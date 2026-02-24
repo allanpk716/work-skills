@@ -12,7 +12,9 @@ import os
 import sys
 import subprocess
 import logging
+import time
 import requests
+import argparse
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -224,15 +226,69 @@ def send_windows_notification(title, message):
         return False
 
 
+def cleanup_old_logs(log_dir, days_to_keep=5):
+    """
+    Clean up log files older than specified days.
+
+    Args:
+        log_dir (Path): Log directory path
+        days_to_keep (int): Number of days to keep logs (default: 5)
+    """
+    if not log_dir.exists():
+        logger.debug(f"Log directory does not exist: {log_dir}")
+        return
+
+    # Calculate cutoff timestamp
+    cutoff_timestamp = time.time() - (days_to_keep * 86400)  # 86400 seconds/day
+
+    logger.info(f"Cleaning up log files older than {days_to_keep} days")
+
+    deleted_count = 0
+    kept_count = 0
+
+    # Delete old log files matching pattern
+    for log_file in log_dir.glob('claude-notify-*.log'):
+        if log_file.is_file():
+            file_mtime = log_file.stat().st_mtime
+
+            if file_mtime < cutoff_timestamp:
+                try:
+                    log_file.unlink()
+                    logger.debug(f"Deleted old log file: {log_file.name}")
+                    deleted_count += 1
+                except Exception as e:
+                    logger.error(f"Failed to delete {log_file.name}: {e}")
+            else:
+                kept_count += 1
+
+    logger.info(f"Log cleanup complete: {deleted_count} deleted, {kept_count} kept")
+
+
 def main():
     """
-    Main function: Send parallel notifications with strict timeout control.
-
-    Total timeout: 4 seconds (within 5s Claude Code limit)
+    Main function: Parse arguments and run in diagnose or notify mode.
     """
+    parser = argparse.ArgumentParser(
+        description='Claude Code Notification Script'
+    )
+    parser.add_argument(
+        '--diagnose', '-d',
+        action='store_true',
+        help='Run configuration diagnostics and exit'
+    )
+    args = parser.parse_args()
+
+    # Diagnostic mode
+    if args.diagnose:
+        diagnose_configuration()
+        return 0
+
+    # Normal notification mode
     logger.info("=== Claude Code Notification Script Started ===")
 
     try:
+        # Clean up old log files
+        cleanup_old_logs(log_dir, days_to_keep=5)
         # Get project name
         project_name = get_project_name()
 

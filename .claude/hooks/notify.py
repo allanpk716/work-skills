@@ -91,6 +91,29 @@ def get_claude_summary(project_name):
         return fallback_message
 
 
+def check_notification_flags():
+    """
+    Check for project-level notification disable flags.
+
+    Returns:
+        dict: {'pushover_disabled': bool, 'windows_disabled': bool}
+    """
+    project_dir = Path.cwd()
+
+    flags = {
+        'pushover_disabled': (project_dir / '.no-pushover').is_file(),
+        'windows_disabled': (project_dir / '.no-windows').is_file()
+    }
+
+    if flags['pushover_disabled']:
+        logger.info("Pushover notifications disabled by .no-pushover file")
+
+    if flags['windows_disabled']:
+        logger.info("Windows notifications disabled by .no-windows file")
+
+    return flags
+
+
 def send_pushover_notification(title, message):
     """
     Send notification via Pushover API.
@@ -218,12 +241,25 @@ def main():
 
         logger.info(f"Final summary: {summary}")
 
+        # Check project-level notification flags
+        flags = check_notification_flags()
+
         # Send notifications in parallel
         with ThreadPoolExecutor(max_workers=2) as executor:
-            futures = {
-                executor.submit(send_pushover_notification, project_name, summary): 'pushover',
-                executor.submit(send_windows_notification, project_name, summary): 'windows'
-            }
+            futures = {}
+
+            # Only submit Pushover if not disabled
+            if not flags['pushover_disabled']:
+                futures[executor.submit(send_pushover_notification, project_name, summary)] = 'pushover'
+
+            # Only submit Windows if not disabled
+            if not flags['windows_disabled']:
+                futures[executor.submit(send_windows_notification, project_name, summary)] = 'windows'
+
+            # If both disabled, log and exit
+            if not futures:
+                logger.info("All notifications disabled by project flags")
+                return 0
 
             # Wait for all notifications with overall timeout
             completed = 0

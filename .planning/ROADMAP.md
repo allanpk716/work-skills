@@ -60,12 +60,22 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 
 ### Phase 01.1: 将 Hook 通知功能打包为可重用的 Claude Code Skill 插件 (INSERTED)
 
-**Goal:** [Urgent work - to be planned]
-**Depends on:** Phase 1
-**Plans:** 0 plans
+**Goal:** 将 Phase 1 实现的 Hook 通知功能转换为标准 Claude Code Skill 插件格式,使其可以通过插件市场分发并被其他项目复用
 
-Plans:
-- [ ] TBD (run /gsd:plan-phase 01.1 to break down)
+**Depends on:** Phase 1
+
+**Requirements:** None (packaging and distribution focused)
+
+**Success Criteria:**
+1. 用户可以通过 `/plugin install <marketplace-url>` 从插件市场安装通知插件
+2. 安装后用户只需配置环境变量 (PUSHOVER_TOKEN, PUSHOVER_USER) 即可使用通知功能
+3. 插件目录结构符合 Claude Code 插件市场规范 (marketplace.json, skills/, hooks/)
+4. Hook 配置使用 ${CLAUDE_PLUGIN_ROOT} 路径变量,确保路径可移植性
+5. 提供安装验证脚本,帮助用户检查 Python 版本、环境变量和 API 连接状态
+
+**Plans:** 1 plan
+
+- [ ] 01.1-01-PLAN.md — 创建 Claude Code 插件的标准目录结构和配置文件,包括 marketplace.json、hooks.json、SKILL.md 文档和安装验证脚本
 
 ### Phase 2: Configuration & Diagnostics
 

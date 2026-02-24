@@ -1,5 +1,9 @@
 # Claude Code plugin files
-.claude/
+# .claude/ directory is tracked for hooks and settings
+# but we exclude specific subdirectories that may contain sensitive data
+.claude/logs/
+.claude/cache/
+.claude/*.log
 
 # OS files
 .DS_Store
@@ -15,3 +19,4 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
+tmp/

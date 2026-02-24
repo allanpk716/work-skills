@@ -100,7 +100,10 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 4. 错误和警告被记录到日志文件中,日志文件按日期自动轮转并保留最近 5 天
 5. 环境变量缺失时,Hook 脚本记录错误但不崩溃,不影响 Claude Code 正常运行
 
-**Plans:** TBD
+**Plans:** 2 plans
+
+- [ ] 02-01-PLAN.md — Add environment variable configuration and project-level notification control (CONF-01, CONF-02, CONF-03, CONF-04)
+- [ ] 02-02-PLAN.md — Add automatic log cleanup and diagnostic tooling (LOG-01, LOG-02, LOG-03, LOG-04)
 
 ---
 

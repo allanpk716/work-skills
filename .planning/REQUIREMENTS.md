@@ -46,10 +46,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Logging & Diagnostics
 
-- [ ] **LOG-01**: 所有错误和警告写入调试日志文件
-- [ ] **LOG-02**: 日志文件按日期和 PID 命名 (debug.YYYY-MM-DD-pid-{pid}.log)
-- [ ] **LOG-03**: 自动清理 5 天前的旧日志文件
-- [ ] **LOG-04**: 提供诊断脚本验证环境配置和 API 连接
+- [x] **LOG-01**: 所有错误和警告写入调试日志文件
+- [x] **LOG-02**: 日志文件按日期和 PID 命名 (debug.YYYY-MM-DD-pid-{pid}.log)
+- [x] **LOG-03**: 自动清理 5 天前的旧日志文件
+- [x] **LOG-04**: 提供诊断脚本验证环境配置和 API 连接
 
 ### Parallel Execution
 
@@ -118,10 +118,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-02 | Phase 2: Configuration & Diagnostics | Complete |
 | CONF-03 | Phase 2: Configuration & Diagnostics | Complete |
 | CONF-04 | Phase 2: Configuration & Diagnostics | Complete |
-| LOG-01 | Phase 2: Configuration & Diagnostics | Pending |
-| LOG-02 | Phase 2: Configuration & Diagnostics | Pending |
-| LOG-03 | Phase 2: Configuration & Diagnostics | Pending |
-| LOG-04 | Phase 2: Configuration & Diagnostics | Pending |
+| LOG-01 | Phase 2: Configuration & Diagnostics | Complete |
+| LOG-02 | Phase 2: Configuration & Diagnostics | Complete |
+| LOG-03 | Phase 2: Configuration & Diagnostics | Complete |
+| LOG-04 | Phase 2: Configuration & Diagnostics | Complete |
 | PARA-01 | Phase 1: Core Infrastructure | Complete |
 | PARA-02 | Phase 1: Core Infrastructure | Complete |
 | PARA-03 | Phase 1: Core Infrastructure | Complete |

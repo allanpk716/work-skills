@@ -66,6 +66,10 @@ None yet.
 
 None yet.
 
+### Roadmap Evolution
+
+- Phase 01.1 inserted after Phase 1: 将 Hook 通知功能打包为可重用的 Claude Code Skill 插件 (URGENT)
+
 ## Session Continuity
 
 Last session: 2026-02-24

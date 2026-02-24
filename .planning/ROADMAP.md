@@ -58,6 +58,15 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 
 ---
 
+### Phase 01.1: 将 Hook 通知功能打包为可重用的 Claude Code Skill 插件 (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Depends on:** Phase 1
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 01.1 to break down)
+
 ### Phase 2: Configuration & Diagnostics
 
 **Goal:** 用户能够通过环境变量配置通知服务,使用诊断工具验证配置,并能够针对特定项目禁用通知

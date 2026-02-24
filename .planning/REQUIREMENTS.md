@@ -9,33 +9,33 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Core Notification
 
-- [ ] **CORE-01**: Hook 脚本在 Claude Code Stop 事件时自动执行
-- [ ] **CORE-02**: Hook 脚本在 5 秒内完成执行(Claude Code 超时要求)
-- [ ] **CORE-03**: 通知标题显示项目名称(从 CLAUDE_PROJECT_DIR 环境变量提取)
-- [ ] **CORE-04**: 支持多实例并发运行(PID 隔离,避免缓存冲突)
+- [x] **CORE-01**: Hook 脚本在 Claude Code Stop 事件时自动执行
+- [x] **CORE-02**: Hook 脚本在 5 秒内完成执行(Claude Code 超时要求)
+- [x] **CORE-03**: 通知标题显示项目名称(从 CLAUDE_PROJECT_DIR 环境变量提取)
+- [x] **CORE-04**: 支持多实例并发运行(PID 隔离,避免缓存冲突)
 
 ### Pushover Integration
 
-- [ ] **PUSH-01**: 用户可通过环境变量配置 PUSHOVER_TOKEN 和 PUSHOVER_USER
-- [ ] **PUSH-02**: 任务完成时发送 Pushover 通知到用户设备
-- [ ] **PUSH-03**: Pushover 通知优先级为 0 (正常优先级)
-- [ ] **PUSH-04**: Pushover 通知内容包含项目名称和任务摘要
-- [ ] **PUSH-05**: Pushover API 调用失败时记录错误但不中断 Hook 执行
+- [x] **PUSH-01**: 用户可通过环境变量配置 PUSHOVER_TOKEN 和 PUSHOVER_USER
+- [x] **PUSH-02**: 任务完成时发送 Pushover 通知到用户设备
+- [x] **PUSH-03**: Pushover 通知优先级为 0 (正常优先级)
+- [x] **PUSH-04**: Pushover 通知内容包含项目名称和任务摘要
+- [x] **PUSH-05**: Pushover API 调用失败时记录错误但不中断 Hook 执行
 
 ### Windows Desktop Notification
 
-- [ ] **WIND-01**: 任务完成时发送 Windows Toast 通知
-- [ ] **WIND-02**: 使用 PowerShell 调用 Windows.UI.Notifications 或 BurntToast
-- [ ] **WIND-03**: Windows 通知标题显示项目名称
-- [ ] **WIND-04**: Windows 通知内容包含任务摘要
-- [ ] **WIND-05**: PowerShell 调用失败时降级到固定消息模板
+- [x] **WIND-01**: 任务完成时发送 Windows Toast 通知
+- [x] **WIND-02**: 使用 PowerShell 调用 Windows.UI.Notifications 或 BurntToast
+- [x] **WIND-03**: Windows 通知标题显示项目名称
+- [x] **WIND-04**: Windows 通知内容包含任务摘要
+- [x] **WIND-05**: PowerShell 调用失败时降级到固定消息模板
 
 ### AI Summary
 
-- [ ] **SUMM-01**: 使用 Claude CLI 生成任务摘要(调用 claude --print)
-- [ ] **SUMM-02**: Claude CLI 调用失败时降级到固定消息 "Claude task completed"
-- [ ] **SUMM-03**: 摘要内容限制在 200 字符以内(Pushover 限制)
-- [ ] **SUMM-04**: 摘要生成在 2 秒内完成(为其他操作留出时间)
+- [x] **SUMM-01**: 使用 Claude CLI 生成任务摘要(调用 claude --print)
+- [x] **SUMM-02**: Claude CLI 调用失败时降级到固定消息 "Claude task completed"
+- [x] **SUMM-03**: 摘要内容限制在 200 字符以内(Pushover 限制)
+- [x] **SUMM-04**: 摘要生成在 2 秒内完成(为其他操作留出时间)
 
 ### Configuration
 
@@ -53,9 +53,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Parallel Execution
 
-- [ ] **PARA-01**: Pushover 和 Windows 通知并行发送(ThreadPoolExecutor)
-- [ ] **PARA-02**: 一个通知通道失败不影响另一个通道
-- [ ] **PARA-03**: 所有通知操作在 5 秒内完成
+- [x] **PARA-01**: Pushover 和 Windows 通知并行发送(ThreadPoolExecutor)
+- [x] **PARA-02**: 一个通知通道失败不影响另一个通道
+- [x] **PARA-03**: 所有通知操作在 5 秒内完成
 
 ## v2 Requirements
 
@@ -96,24 +96,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CORE-01 | Phase 1: Core Infrastructure | Pending |
-| CORE-02 | Phase 1: Core Infrastructure | Pending |
-| CORE-03 | Phase 1: Core Infrastructure | Pending |
-| CORE-04 | Phase 1: Core Infrastructure | Pending |
-| PUSH-01 | Phase 1: Core Infrastructure | Pending |
-| PUSH-02 | Phase 1: Core Infrastructure | Pending |
-| PUSH-03 | Phase 1: Core Infrastructure | Pending |
-| PUSH-04 | Phase 1: Core Infrastructure | Pending |
-| PUSH-05 | Phase 1: Core Infrastructure | Pending |
-| WIND-01 | Phase 1: Core Infrastructure | Pending |
-| WIND-02 | Phase 1: Core Infrastructure | Pending |
-| WIND-03 | Phase 1: Core Infrastructure | Pending |
-| WIND-04 | Phase 1: Core Infrastructure | Pending |
-| WIND-05 | Phase 1: Core Infrastructure | Pending |
-| SUMM-01 | Phase 1: Core Infrastructure | Pending |
-| SUMM-02 | Phase 1: Core Infrastructure | Pending |
-| SUMM-03 | Phase 1: Core Infrastructure | Pending |
-| SUMM-04 | Phase 1: Core Infrastructure | Pending |
+| CORE-01 | Phase 1: Core Infrastructure | Complete |
+| CORE-02 | Phase 1: Core Infrastructure | Complete |
+| CORE-03 | Phase 1: Core Infrastructure | Complete |
+| CORE-04 | Phase 1: Core Infrastructure | Complete |
+| PUSH-01 | Phase 1: Core Infrastructure | Complete |
+| PUSH-02 | Phase 1: Core Infrastructure | Complete |
+| PUSH-03 | Phase 1: Core Infrastructure | Complete |
+| PUSH-04 | Phase 1: Core Infrastructure | Complete |
+| PUSH-05 | Phase 1: Core Infrastructure | Complete |
+| WIND-01 | Phase 1: Core Infrastructure | Complete |
+| WIND-02 | Phase 1: Core Infrastructure | Complete |
+| WIND-03 | Phase 1: Core Infrastructure | Complete |
+| WIND-04 | Phase 1: Core Infrastructure | Complete |
+| WIND-05 | Phase 1: Core Infrastructure | Complete |
+| SUMM-01 | Phase 1: Core Infrastructure | Complete |
+| SUMM-02 | Phase 1: Core Infrastructure | Complete |
+| SUMM-03 | Phase 1: Core Infrastructure | Complete |
+| SUMM-04 | Phase 1: Core Infrastructure | Complete |
 | CONF-01 | Phase 2: Configuration & Diagnostics | Pending |
 | CONF-02 | Phase 2: Configuration & Diagnostics | Pending |
 | CONF-03 | Phase 2: Configuration & Diagnostics | Pending |
@@ -122,9 +122,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LOG-02 | Phase 2: Configuration & Diagnostics | Pending |
 | LOG-03 | Phase 2: Configuration & Diagnostics | Pending |
 | LOG-04 | Phase 2: Configuration & Diagnostics | Pending |
-| PARA-01 | Phase 1: Core Infrastructure | Pending |
-| PARA-02 | Phase 1: Core Infrastructure | Pending |
-| PARA-03 | Phase 1: Core Infrastructure | Pending |
+| PARA-01 | Phase 1: Core Infrastructure | Complete |
+| PARA-02 | Phase 1: Core Infrastructure | Complete |
+| PARA-03 | Phase 1: Core Infrastructure | Complete |
 
 **Coverage:**
 - v1 requirements: 29 total

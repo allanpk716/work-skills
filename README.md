@@ -53,6 +53,7 @@ Simply tell Claude Code:
 | Plugin | Description | Skills |
 | --- | --- | --- |
 | __git-skills__ | Git workflow automation for Windows | windows-git-commit |
+| __claude-notify__ | Task completion notifications via Pushover and Windows Toast | claude-notify |
 
 ## Update Skills
 
@@ -111,6 +112,56 @@ git config --global core.sshcommand "\"C:\\Program Files (x86)\\TortoiseGit\\bin
 ```
 
 For detailed troubleshooting, see the skill documentation.
+
+### Claude Notify
+
+Task completion notifications via Pushover and Windows Toast.
+
+#### claude-notify
+
+Automatically sends notifications when Claude Code completes tasks. Receive mobile push notifications via Pushover and desktop toast notifications on Windows.
+
+**Features:**
+- Mobile push notifications via Pushover
+- Windows Toast desktop notifications
+- AI-powered task summaries using Claude CLI
+- Parallel execution for instant delivery
+- Graceful degradation when Pushover not configured
+- Completes within 5 seconds
+
+**Usage:**
+
+No manual invocation needed - notifications are sent automatically when Claude Code tasks complete.
+
+**Prerequisites:**
+- Python 3.8 or higher
+- Pushover account (optional, for mobile notifications)
+
+**Setup:**
+
+1. **Configure Pushover (optional):**
+
+```cmd
+# Windows Command Prompt
+setx PUSHOVER_TOKEN "your-pushover-app-token"
+setx PUSHOVER_USER "your-pushover-user-key"
+```
+
+2. **Verify installation:**
+
+```bash
+python scripts/verify-installation.py
+```
+
+3. **Test:**
+
+Complete any task in Claude Code. You should receive notifications automatically.
+
+**Without Pushover:**
+
+Windows Toast notifications work without any configuration. Just install the plugin and you're ready to go.
+
+For detailed documentation, see the skill documentation.
 
 ## Project Structure
 

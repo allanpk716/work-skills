@@ -264,6 +264,100 @@ def cleanup_old_logs(log_dir, days_to_keep=5):
     logger.info(f"Log cleanup complete: {deleted_count} deleted, {kept_count} kept")
 
 
+def diagnose_configuration():
+    """
+    Run configuration diagnostics to verify setup.
+    """
+    print("=" * 60)
+    print("Claude Notify - Configuration Diagnostics")
+    print("=" * 60)
+
+    # 1. Environment Variables
+    print("\n[1] Environment Variables")
+    token = os.environ.get('PUSHOVER_TOKEN')
+    user = os.environ.get('PUSHOVER_USER')
+
+    if token:
+        # Show first 4 and last 4 chars for confirmation
+        if len(token) >= 10:
+            masked = f"{token[:4]}...{token[-4:]}"
+        else:
+            masked = f"{token[:2]}...{token[-2:]}" if len(token) >= 4 else "****"
+        print(f"  PUSHOVER_TOKEN: {masked} (length: {len(token)})")
+    else:
+        print("  PUSHOVER_TOKEN: NOT SET")
+
+    if user:
+        if len(user) >= 10:
+            masked = f"{user[:4]}...{user[-4:]}"
+        else:
+            masked = f"{user[:2]}...{user[-2:]}" if len(user) >= 4 else "****"
+        print(f"  PUSHOVER_USER: {masked} (length: {len(user)})")
+    else:
+        print("  PUSHOVER_USER: NOT SET")
+
+    # 2. Project Configuration Files
+    print("\n[2] Project Configuration Files")
+    project_dir = Path.cwd()
+    no_pushover = project_dir / '.no-pushover'
+    no_windows = project_dir / '.no-windows'
+
+    if no_pushover.is_file():
+        print("  .no-pushover: FOUND (Pushover notifications disabled)")
+    else:
+        print("  .no-pushover: Not found (Pushover enabled)")
+
+    if no_windows.is_file():
+        print("  .no-windows: FOUND (Windows notifications disabled)")
+    else:
+        print("  .no-windows: Not found (Windows enabled)")
+
+    # 3. Log Files
+    print("\n[3] Log Files")
+    if log_dir.exists():
+        log_files = list(log_dir.glob('claude-notify-*.log'))
+        print(f"  Log directory: {log_dir}")
+        print(f"  Total log files: {len(log_files)}")
+        if log_files:
+            latest = max(log_files, key=lambda f: f.stat().st_mtime)
+            print(f"  Latest log: {latest.name}")
+    else:
+        print(f"  Log directory does not exist: {log_dir}")
+
+    # 4. Pushover API Connection Test
+    print("\n[4] Pushover API Connection Test")
+    if token and user:
+        try:
+            print("  Sending test notification...")
+            response = requests.post(
+                'https://api.pushover.net/1/messages.json',
+                data={
+                    'token': token,
+                    'user': user,
+                    'title': 'Claude Notify Diagnostics',
+                    'message': 'Test notification from Claude Code',
+                    'priority': 0
+                },
+                timeout=5
+            )
+            if response.status_code == 200:
+                print("  Status: SUCCESS - Test notification sent")
+                print("  Check your device for the test notification")
+            else:
+                print(f"  Status: FAILED - HTTP {response.status_code}")
+                print(f"  Error: {response.text}")
+        except requests.Timeout:
+            print("  Status: FAILED - Connection timeout")
+        except Exception as e:
+            print(f"  Status: FAILED - {e}")
+    else:
+        print("  Status: SKIPPED - Credentials not configured")
+
+    print("\n" + "=" * 60)
+    print("Diagnostics complete.")
+    print("=" * 60)
+
+
 def main():
     """
     Main function: Parse arguments and run in diagnose or notify mode.

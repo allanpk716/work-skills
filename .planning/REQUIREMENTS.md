@@ -39,10 +39,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Configuration
 
-- [ ] **CONF-01**: 通过系统环境变量配置 API 密钥(PUSHOVER_TOKEN, PUSHOVER_USER)
-- [ ] **CONF-02**: 环境变量未设置时记录错误日志但不崩溃
-- [ ] **CONF-03**: 支持通过 .no-pushover 文件禁用 Pushover 通知(项目级)
-- [ ] **CONF-04**: 支持通过 .no-windows 文件禁用 Windows 通知(项目级)
+- [x] **CONF-01**: 通过系统环境变量配置 API 密钥(PUSHOVER_TOKEN, PUSHOVER_USER)
+- [x] **CONF-02**: 环境变量未设置时记录错误日志但不崩溃
+- [x] **CONF-03**: 支持通过 .no-pushover 文件禁用 Pushover 通知(项目级)
+- [x] **CONF-04**: 支持通过 .no-windows 文件禁用 Windows 通知(项目级)
 
 ### Logging & Diagnostics
 
@@ -114,10 +114,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SUMM-02 | Phase 1: Core Infrastructure | Complete |
 | SUMM-03 | Phase 1: Core Infrastructure | Complete |
 | SUMM-04 | Phase 1: Core Infrastructure | Complete |
-| CONF-01 | Phase 2: Configuration & Diagnostics | Pending |
-| CONF-02 | Phase 2: Configuration & Diagnostics | Pending |
-| CONF-03 | Phase 2: Configuration & Diagnostics | Pending |
-| CONF-04 | Phase 2: Configuration & Diagnostics | Pending |
+| CONF-01 | Phase 2: Configuration & Diagnostics | Complete |
+| CONF-02 | Phase 2: Configuration & Diagnostics | Complete |
+| CONF-03 | Phase 2: Configuration & Diagnostics | Complete |
+| CONF-04 | Phase 2: Configuration & Diagnostics | Complete |
 | LOG-01 | Phase 2: Configuration & Diagnostics | Pending |
 | LOG-02 | Phase 2: Configuration & Diagnostics | Pending |
 | LOG-03 | Phase 2: Configuration & Diagnostics | Pending |

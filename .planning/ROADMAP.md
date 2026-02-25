@@ -55,7 +55,9 @@
 **Requirements:**
 - EXEC-01, EXEC-02, EXEC-03, EXEC-04 (扫描执行)
 - RPT-01, RPT-02, RPT-03, RPT-04, RPT-05 (问题报告)
-- CUST-01, CUST-02, CUST-03, CUST-04 (自定义规则)
+- CUST-01, CUST-02, CUST-04 (自定义规则)
+
+> **Note:** CUST-03 (扫描白名单功能) 延后至 Phase 8 实现,遵循 RESEARCH.md 建议
 
 **Success Criteria** (what must be TRUE):
 1. 用户执行 git commit 时自动扫描暂存区内容
@@ -67,7 +69,7 @@
 **Plans:**
 - [ ] 07-01-PLAN.md — 实现扫描执行流程和.gitignore规则解析 (EXEC-01, EXEC-02, EXEC-03, EXEC-04, CUST-01, CUST-02, CUST-04)
 - [ ] 07-02-PLAN.md — 实现报告生成器,提供彩色表格格式输出 (RPT-01, RPT-02, RPT-03, RPT-04, RPT-05)
-- [ ] 07-03-PLAN.md — 集成Phase 6检测规则,创建pre-commit hook (EXEC-01, RPT-01, CUST-03)
+- [ ] 07-03-PLAN.md — 集成Phase 6检测规则,创建pre-commit hook (EXEC-01, RPT-01)
 
 ---
 
@@ -79,6 +81,7 @@
 
 **Requirements:**
 - INTL-01, INTL-02, INTL-03 (内部信息检测)
+- CUST-03 (扫描白名单功能,从 Phase 7 延后)
 
 **Success Criteria** (what must be TRUE):
 1. 用户运行扫描器可以检测到内网 IP 地址(10.x.x.x, 172.16-31.x.x, 192.168.x.x)
@@ -155,7 +158,8 @@
 | 配置文件检测 | CONF-01, CONF-02, CONF-03 | Phase 6 |
 | 扫描执行 | EXEC-01, EXEC-02, EXEC-03, EXEC-04 | Phase 7 |
 | 问题报告 | RPT-01, RPT-02, RPT-03, RPT-04, RPT-05 | Phase 7 |
-| 自定义规则 | CUST-01, CUST-02, CUST-03, CUST-04 | Phase 7 |
+| 自定义规则 | CUST-01, CUST-02, CUST-04 | Phase 7 |
+| 自定义规则(白名单) | CUST-03 | Phase 8 |
 | 内部信息检测 | INTL-01, INTL-02, INTL-03 | Phase 8 |
 | 用户体验 | UX-02 | Phase 9 |
 | 用户体验 | UX-01, UX-03, UX-04 | Phase 10 |
@@ -170,6 +174,7 @@
 | 使用 Python 标准库 | 无外部依赖,Windows 预装,与现有架构一致 | Phase 6 |
 | 复用 .gitignore 规则 | 用户熟悉的语法,无需学习新配置 | Phase 7 |
 | 阻止提交而非警告 | 强制用户处理安全问题,更安全 | Phase 7 |
+| CUST-03 白名单延后 | 遵循 RESEARCH.md 建议,优先完成核心功能 | Phase 8 |
 | Windows 专项测试 | 确保 Windows 兼容性和性能 | Phase 9 |
 | 双语支持 | 提升用户体验,支持中英文 | Phase 10 |
 

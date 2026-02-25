@@ -11,11 +11,8 @@ Performance target: Complete within 3 seconds
 import os
 import sys
 import logging
-import re
-import subprocess
 from pathlib import Path
 from datetime import datetime, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Debounce configuration
 DEBOUNCE_SECONDS = 10
@@ -36,7 +33,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def should_send_notification():
+def should_send_notification() -> bool:
     """
     Check if enough time has passed since last wait notification.
 
@@ -69,7 +66,7 @@ def should_send_notification():
         return True
 
 
-def update_timestamp():
+def update_timestamp() -> None:
     """Update the last notification timestamp."""
     try:
         TIMESTAMP_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -80,11 +77,11 @@ def update_timestamp():
         logger.error(f"Failed to update timestamp: {e}")
 
 
-def main():
+def main() -> int:
     """Main function for wait notification script."""
     logger.info("=== Claude Code Wait Notification Script Started ===")
 
-    # Test debounce function
+    # Temporary test code - will be replaced with actual notification logic in Task 3
     if should_send_notification():
         logger.info("TEST: Debounce check would allow notification")
         update_timestamp()

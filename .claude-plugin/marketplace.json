@@ -10,17 +10,6 @@
   },
   "plugins": [
     {
-      "name": "windows-git-commit",
-      "description": "Windows Git workflow automation with smart commit message generation and push using command-line git with plink SSH",
-      "source": "./plugins/windows-git-commit",
-      "category": "productivity",
-      "version": "1.0.0",
-      "author": {
-        "name": "allanpk716",
-        "email": "allanpk716@gmail.com"
-      }
-    },
-    {
       "name": "claude-notify",
       "description": "Task completion notifications via Pushover push notifications and Windows Toast desktop alerts",
       "source": "./plugins/claude-notify",

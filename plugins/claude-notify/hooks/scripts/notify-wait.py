@@ -14,6 +14,7 @@ import logging
 import subprocess
 import re
 import requests
+import xml.sax.saxutils
 from pathlib import Path
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -218,6 +219,10 @@ def send_windows_notification(title, message):
     try:
         logger.info("Sending Windows Toast notification...")
 
+        # Escape XML special characters to prevent injection
+        title_escaped = xml.sax.saxutils.escape(title)
+        message_escaped = xml.sax.saxutils.escape(message)
+
         # PowerShell script to send Toast notification
         ps_script = f'''
         [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
@@ -227,8 +232,8 @@ def send_windows_notification(title, message):
         <toast>
             <visual>
                 <binding template="ToastText02">
-                    <text id="1">{title}</text>
-                    <text id="2">{message}</text>
+                    <text id="1">{title_escaped}</text>
+                    <text id="2">{message_escaped}</text>
                 </binding>
             </visual>
         </toast>
@@ -291,12 +296,27 @@ def get_project_name():
     Get the current project name from the working directory.
 
     Returns:
-        str: Project name (directory name)
+        str: Project name (directory name), sanitized and truncated
     """
     try:
         project_name = os.path.basename(os.getcwd())
+
+        # Fallback if empty
+        if not project_name or project_name.strip() == "":
+            logger.warning("Empty project name, using default")
+            return "Claude Code"
+
+        # Truncate to reasonable length (50 chars)
+        if len(project_name) > 50:
+            project_name = project_name[:47] + "..."
+            logger.info(f"Project name truncated to: {project_name}")
+
+        # Remove characters that could break PowerShell XML
+        project_name = re.sub(r'[<>&"\']', '', project_name)
+
         logger.info(f"Project name: {project_name}")
         return project_name
+
     except Exception as e:
         logger.error(f"Failed to get project name: {e}")
         return "Claude Code"

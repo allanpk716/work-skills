@@ -10,20 +10,12 @@
   },
   "plugins": [
     {
-      "name": "git-skills",
-      "description": "Git workflow automation skills for Windows development",
+      "name": "work-skills",
+      "description": "Personal skills collection: Git workflow automation and task notifications",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/windows-git-commit"
-      ]
-    },
-    {
-      "name": "claude-notify",
-      "description": "Task completion notifications via Pushover and Windows Toast",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/windows-git-commit",
         "./skills/claude-notify"
       ]
     }

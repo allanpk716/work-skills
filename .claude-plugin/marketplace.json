@@ -10,20 +10,12 @@
   },
   "plugins": [
     {
-      "name": "windows-git-commit",
-      "description": "Windows Git workflow automation with smart commit message generation and push using command-line git with plink SSH",
+      "name": "work-skills",
+      "description": "Personal skills collection: Git workflow automation and task completion notifications",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/windows-git-commit"
-      ]
-    },
-    {
-      "name": "claude-notify",
-      "description": "Task completion notifications via Pushover push notifications and Windows Toast desktop alerts",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/windows-git-commit",
         "./skills/claude-notify"
       ]
     }

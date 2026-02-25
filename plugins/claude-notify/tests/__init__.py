@@ -1,1 +1,1 @@
-# Tests for claude-notify skill
+# tests package for claude-notify

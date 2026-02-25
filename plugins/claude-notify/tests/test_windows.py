@@ -3,9 +3,8 @@ import sys
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-# Add project root to path for imports
-project_root = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(project_root / '.claude' / 'hooks'))
+# Add hooks/scripts directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent / 'hooks' / 'scripts'))
 
 class TestWindowsNotification(unittest.TestCase):
     """Test Windows Toast notification."""

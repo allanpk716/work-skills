@@ -129,14 +129,43 @@ Claude Notify 是一个 Claude Code 全局技能,通过 Pushover 和 Windows 系
 
 ---
 
+### Phase 3.1: Fix Missing Features (INSERTED)
+
+**Goal:** 修复 Phase 1.1 重构时序错误导致的 5 个缺失需求,将 Phase 2 功能正确迁移到插件版本
+
+**Depends on:** Phase 2, Phase 1.1
+
+**Requirements:**
+- CONF-02: 改进的环境变量警告消息
+- CONF-03: 项目级 .no-pushover 文件控制
+- CONF-04: 项目级 .no-windows 文件控制
+- LOG-03: 自动日志清理 (5 天保留)
+- LOG-04: 诊断工具 (--diagnose 标志)
+
+**Success Criteria:**
+1. cleanup_old_logs() 函数存在并可调用
+2. .no-pushover 文件检测正常工作
+3. .no-windows 文件检测正常工作
+4. notify.py --diagnose 命令输出诊断信息
+5. 环境变量缺失时显示改进的警告消息
+6. 所有 SKILL.md 示例可以执行
+7. verify-installation.py 可以完成验证流程
+
+**Plans:** 1 plan
+
+- [x] 03.1-01-PLAN.md — 从 git 提交 495477d 提取 Phase 2 完整实现,合并到插件版本,修复 5 个缺失需求 (✓ 2026-02-25)
+
+---
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 01.1. Plugin Packaging | 1/1 | ✓ Complete | 2026-02-24 |
-| 1. Core Infrastructure | 0/3 | Not started | - |
-| 2. Configuration & Diagnostics | 0/3 | Not started | - |
-| 3. Documentation & Testing | 0/3 | Not started | - |
+| 1. Core Infrastructure | 1/1 | ✓ Complete | 2026-02-24 |
+| 2. Configuration & Diagnostics | 2/2 | ✓ Complete | 2026-02-24 |
+| 3. Documentation & Testing | 1/2 | In Progress | - |
+| 3.1. Fix Missing Features | 1/1 | ✓ Complete | 2026-02-25 |
 
 ## Notes
 

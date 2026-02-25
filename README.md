@@ -161,7 +161,7 @@ Complete any task in Claude Code. You should receive notifications automatically
 
 Windows Toast notifications work without any configuration. Just install the plugin and you're ready to go.
 
-For detailed documentation, see the [skill documentation](skills/claude-notify/SKILL.md).
+For detailed documentation, see the [skill documentation](plugins/claude-notify/SKILL.md).
 
 ## Project Structure
 
@@ -169,9 +169,14 @@ For detailed documentation, see the [skill documentation](skills/claude-notify/S
 work-skills/
 ├── .claude-plugin/
 │   └── marketplace.json      # Plugin marketplace configuration
-├── skills/
-│   └── windows-git-commit/
-│       └── SKILL.md          # Skill implementation
+├── plugins/
+│   ├── windows-git-commit/   # Git workflow automation plugin
+│   │   ├── commands/         # Slash commands
+│   │   └── skills/           # Skill definitions
+│   └── claude-notify/        # Notification plugin
+│       ├── hooks/            # Hook definitions
+│       ├── SKILL.md          # Skill documentation
+│       └── tests/            # Test suite
 ├── README.md                 # This file
 ├── README.zh.md              # Chinese version
 └── CHANGELOG.md              # Version history

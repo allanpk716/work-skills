@@ -161,7 +161,7 @@ python scripts/verify-installation.py
 
 Windows Toast 通知无需任何配置即可工作。只需安装插件即可开始使用。
 
-详细文档请参阅[技能文档](skills/claude-notify/SKILL.md)。
+详细文档请参阅[技能文档](plugins/claude-notify/SKILL.md)。
 
 ## 项目结构
 
@@ -169,9 +169,14 @@ Windows Toast 通知无需任何配置即可工作。只需安装插件即可开
 work-skills/
 ├── .claude-plugin/
 │   └── marketplace.json      # 插件市场配置
-├── skills/
-│   └── windows-git-commit/
-│       └── SKILL.md          # 技能实现
+├── plugins/
+│   ├── windows-git-commit/   # Git 工作流自动化插件
+│   │   ├── commands/         # 斜杠命令
+│   │   └── skills/           # 技能定义
+│   └── claude-notify/        # 通知插件
+│       ├── hooks/            # Hook 定义
+│       ├── SKILL.md          # 技能文档
+│       └── tests/            # 测试套件
 ├── README.md                 # 英文说明
 ├── README.zh.md              # 中文说明 (本文件)
 └── CHANGELOG.md              # 版本历史

@@ -169,7 +169,10 @@ def send_pushover_notification(title, message):
         user = os.environ.get('PUSHOVER_USER')
 
         if not token or not user:
-            logger.warning("Pushover credentials not configured")
+            logger.warning(
+                "Pushover credentials not configured. "
+                "Set PUSHOVER_TOKEN and PUSHOVER_USER environment variables."
+            )
             return False
 
         logger.info("Sending Pushover notification...")

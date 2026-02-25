@@ -1,274 +1,207 @@
 # Project Research Summary
 
-**Project:** Claude Code Global Skill - Task Notification System (claude-notify)
-**Domain:** Claude Code Skills / Developer Tooling / Notification Infrastructure
-**Researched:** 2026-02-24
+**Project:** Work Skills - Windows Git Commit Security Scanning
+**Domain:** Git Workflow Security Enhancement
+**Researched:** 2026-02-25
 **Confidence:** HIGH
 
 ## Executive Summary
 
-这是一个 Claude Code 全局技能项目，用于在任务完成时发送通知（移动推送和桌面通知）。与传统的应用软件不同，通知系统是"基础设施"类型的产品——用户只在它失败或过度打扰时才会注意到它。因此，**静默成功**是核心目标，可靠性比功能丰富更重要。
+本项目为 `windows-git-commit` 插件添加**提交前安全扫描功能**,防止敏感信息泄露到版本控制。基于研究,推荐使用 **Python 标准库实现**,在 git commit 前扫描暂存区内容,发现问题时阻止提交并显示详细提示。
 
-研究显示，成功的通知技能需要：**快速执行（5秒超时限制）、多通道冗余（Pushover + Windows Toast）、优雅降级（可选功能失败不影响核心通知）**。技术选型上，应使用 Python 标准库（urllib.request、pathlib）避免外部依赖，使用 ThreadPoolExecutor 并行发送通知以满足超时要求。关键风险包括：Hook 超时导致通知丢失、Windows 路径编码问题、环境变量作用域混淆。这些风险必须在 Phase 1 设计阶段就予以解决。
+专家构建此类工具的方式是:使用多层检测策略(正则模式 + 关键词 + 熵值分析),只扫描暂存文件而非全仓库,复用 .gitignore 规则避免重复配置,提供清晰的错误提示和修复建议。关键风险包括:误报过多导致用户忽略警告、性能瓶颈影响开发体验、破坏现有 Git 工作流。
+
+**推荐方法:** 基于现有 Bash 子代理架构,插入 Python 安全扫描步骤,使用 `git diff --cached` 获取暂存内容,通过模块化检测器(密钥、缓存、配置、内部信息)进行检测,发现 CRITICAL 问题时阻止提交。性能目标 <2 秒,支持 .gitignore 白名单,提供中英文双语错误提示。
 
 ## Key Findings
 
 ### Recommended Stack
 
-**核心理念：零外部依赖，使用 Python 标准库。**
-
-全局技能应该保持最小依赖，避免用户安装复杂的环境。Python 3.6+ 在 Windows 10+ 预装，所有功能都可通过标准库实现。
+核心使用 Python 标准库实现,无需外部依赖,与现有架构保持一致。
 
 **Core technologies:**
-- **Python 3.6+ (标准库)**: 核心开发语言 — Claude Code hooks 标准语言，Windows 10+ 预装
-- **urllib.request (标准库)**: HTTP 请求 — 调用 Pushover API，无需安装 requests 库
-- **pathlib (标准库)**: 路径操作 — 跨平台兼容，面向对象接口，优于 os.path
-- **subprocess.run (标准库)**: 调用外部命令 — 执行 Claude CLI 生成摘要，PowerShell 发送通知
-- **ThreadPoolExecutor (标准库)**: 并行执行 — 同时发送 Pushover 和 Windows 通知，满足 5 秒超时
-- **os.environ (标准库)**: 环境变量 — 安全存储 API 密钥（PUSHOVER_TOKEN, PUSHOVER_USER）
+- **Python 3.6+**: 核心开发语言 — Windows 10+ 预装,Claude Code hooks 标准语言
+- **re (正则表达式)**: 模式匹配 — 检测 AWS/GitHub/API 密钥等已知格式
+- **pathlib**: 路径操作 — 跨平台兼容,优于 os.path
+- **subprocess**: Git 命令调用 — 获取暂存文件列表和内容
+- **fnmatch**: .gitignore 模式匹配 — 复用现有规则,无需新语法
+
+**Supporting libraries:**
+- **json**: 缓存扫描结果(可选)
+- **concurrent.futures**: 并行检测(性能优化)
 
 ### Expected Features
 
-**与竞争对手分析：** cc-pushover-hook 已有成熟实现，本研究目标是将其转化为全局技能，降低安装复杂度。
+**Must have (table stakes):**
+- **AWS 凭证检测** — 最常见且危害最大,正则: `AKIA[0-9A-Z]{16}`
+- **GitHub Token 检测** — 开发者常用平台,前缀: `ghp_`, `gho_`, `ghr_`, `ghs_`
+- **.env 文件检测** — 环境配置文件,通常包含密钥
+- **SSH/PGP 私钥检测** — 严重安全问题,检测 `-----BEGIN.*PRIVATE KEY-----`
+- **阻止提交功能** — 安全扫描核心价值,返回非零退出码
+- **清晰错误提示** — 文件路径、行号、问题类型、修复建议
+- **.gitignore 支持** — 用户熟悉的排除规则,无需学习新语法
+- **彩色输出** — 提高可读性,ANSI 颜色代码(红/黄/绿)
 
-**Must have (table stakes / MVP v1):**
-- **Task completion notification (Stop hook)** — 用户核心需求：知道 AI 任务何时完成
-- **Pushover remote notification** — 移动推送，开发者离开电脑时也能收到通知
-- **Windows desktop notification (PowerShell/BurntToast)** — 桌面通知，本地提醒
-- **Environment variable configuration** — 安全配置，API 密钥不应硬编码
-- **Project name extraction** — 使用 CLAUDE_PROJECT_DIR 提取项目名，通知中显示上下文
-- **Hook timeout compliance** — 5 秒内完成，否则 Claude Code 会杀死 Hook 进程
-- **Basic error handling** — 失败静默，日志记录用于调试
-
-**Should have (differentiators / v1.x):**
-- **AI-generated task summaries (Claude CLI)** — 丰富的通知内容，但可能超时，需要降级策略
-- **Smart notification filtering** — 过滤 idle_prompt，减少噪音，避免通知疲劳
-- **Multi-instance support (PID isolation)** — 多个 Claude Code 会话并发运行
-- **Per-project disable controls (.no-pushover, .no-windows)** — 细粒度控制，零配置退出机制
-- **Automatic log rotation** — 自动清理旧日志，防止磁盘空间耗尽
+**Should have (competitive):**
+- **Windows 原生体验** — 路径处理、PowerShell 兼容、彩色输出
+- **Claude Code 集成** — 与现有 windows-git-commit 技能无缝集成
+- **中英文双语提示** — 基于系统语言自动选择,默认中文
+- **检测结果分级** — 区分严重程度(ERROR 阻止 vs WARNING 提示)
+- **扫描速度优化** — 目标 <2 秒,使用文件类型过滤、只扫描暂存区
 
 **Defer (v2+):**
-- **Additional notification channels (Slack, Discord, Telegram)** — 扩展渠道，但增加复杂度
-- **Cross-platform support (macOS, Linux)** — 跨平台，但稀释焦点
-- **Notification history dashboard** — 历史记录，需要持久化存储和 UI
+- **自动修复问题** — 可能引入新问题,让用户手动处理
+- **独立配置文件** — 复用 .gitignore 足够,不增加学习成本
+- **实时文件监控** — 性能开销大,超出 pre-commit hook 范围
+- **CI/CD 集成** — 专注本地提交流程
+- **AI 智能判断** — 规则引擎足够,增加延迟和成本
 
 ### Architecture Approach
 
-Claude Code 使用**插件生态系统架构**，支持 Skills、Hooks、Commands、Plugins、MCP 等多种扩展机制。本项目作为**全局技能**，安装在 `~/.claude/skills/claude-notify/`，通过 **Stop Hook** 在任务完成时触发通知脚本。
+在现有 `windows-git-commit` 技能的 Bash 子代理中插入 **Python 安全扫描步骤**,位置在 `git status` 和 `git add` 之间。扫描器使用模块化设计,包含 4 个独立检测器(密钥、缓存、配置、内部信息),通过 Pipeline 模式顺序执行。
 
 **Major components:**
+1. **Security Scanner (Python)** — 主入口,编排检测流程,使用 `git diff --cached` 获取暂存文件
+2. **Pattern Engine (rules/patterns.py)** — 定义所有正则模式和熵值检测逻辑
+3. **Detectors (detectors/)** — 4 个独立模块: secrets.py、cache_files.py、config_files.py、internal_info.py
+4. **Report Generator** — 格式化扫描结果,彩色输出,分组显示
 
-1. **Skill Definition (SKILL.md)** — 技能元数据和核心指令，采用**渐进式披露**模式（Layer 1: 元数据 → Layer 2: 完整指令 → Layer 3: 资源文件 → Layer 4: 执行）
-2. **Notification Script (notify.py)** — 主执行脚本，读取 stdin JSON（Hook 输入），并行发送 Pushover + Windows 通知，处理超时和错误
-3. **Hook Configuration (~/.claude/settings.json)** — 注册 Stop Hook，配置命令和超时（5 秒）
-4. **Environment Variables (System Level)** — 存储 PUSHOVER_TOKEN 和 PUSHOVER_USER，全局技能无法使用项目级 .env 文件
-5. **Debug Logs (~/.claude/logs/claude-notify/)** — 调试日志，按日期轮转，保留最近 5 天
-
-**数据流：**
-```
-[Claude Code Stop Event]
-  → [Hook reads stdin JSON] (cwd, session_id, etc.)
-  → [Extract project name from CLAUDE_PROJECT_DIR]
-  → [Optional: Generate AI summary via Claude CLI]
-  → [ThreadPoolExecutor: Parallel send Pushover + Windows]
-  → [Log results, exit within 5s]
-```
+**Integration pattern:**
+- Bash 子代理 → `git diff --cached --name-only` → Python 扫描器 → 发现问题? → 阻止/继续
+- 使用 `subprocess.run()` 调用 Python 脚本,退出码 0=通过,1=阻止
+- 复用 .gitignore 规则,通过 `git check-ignore` 命令判断文件是否排除
 
 ### Critical Pitfalls
 
-**Top 5 pitfalls with prevention strategies:**
-
-1. **Hook Timeout Violations** — Hook 超过 5 秒被 Claude Code 杀死，通知从未发送
-   - **预防:** 使用 `ThreadPoolExecutor` 并行发送，所有 subprocess 调用设置 `timeout=10`，考虑 `async: true` 非阻塞执行
-
-2. **Environment Variable Scope Confusion** — 全局技能无法访问项目级 .env 文件，配置失败
-   - **预防:** 要求系统级环境变量（Windows: System Properties > Environment Variables），提供诊断脚本验证配置
-
-3. **Windows Path Encoding Issues** — stdin JSON 包含未转义的反斜杠（`C:\path`），`json.loads()` 失败
-   - **预防:** 预处理 stdin 数据 `stdin_data.replace("\\", "\\\\")`，强制 UTF-8 编码，记录原始输入用于调试
-
-4. **Multiple Notification Channel Fallback Failures** — 一个通道失败（Pushover API 不可用），整个 Hook 失败
-   - **预防:** 每个通道独立捕获异常，使用 ThreadPoolExecutor 的 futures 独立执行，返回 `{"pushover": True, "windows": False}` 状态字典
-
-5. **Alert Fatigue (通知疲劳)** — 过度通知导致用户忽略重要提醒
-   - **预防:** 仅在 Stop（任务完成）和 Notification（需要用户关注）时发送，过滤 idle_prompt，使用 `.no-pushover` 文件让用户控制
+1. **误报过多 (False Positive Overload)** — 使用多层检测(正则+熵值+验证),实现置信度评分,提供 .gitignore 白名单机制,设置熵值阈值 4.5-5.0
+2. **性能瓶颈 (Performance Bottleneck)** — 只扫描暂存文件(不扫描全仓库),检测并跳过二进制文件,使用文件类型过滤,目标 <2 秒
+3. **破坏现有工作流 (Breaking Workflows)** — 提供 `--no-verify` 绕过选项,处理边界情况(merge/amend/empty commits),测试与现有 hooks 兼容性
+4. **二进制文件扫描失败 (Binary Scanning)** — 使用 `file` 命令或魔数检测文件类型,跳过二进制文件的内容检测
+5. **.gitignore 解析边界情况** — 使用 `git check-ignore` 命令而非自定义解析,支持所有语法(`!` negation, `#` comments, `/` anchoring)
 
 ## Implications for Roadmap
 
-基于研究，建议分为 3 个阶段：
+基于研究,建议分为 3 个阶段:
 
-### Phase 1: Core Implementation (MVP)
+### Phase 1: Core Scanning Infrastructure
 
-**Rationale:** 必须首先实现核心通知功能，验证架构可行性。全局技能的安装和配置是基础，5 秒超时限制必须在设计阶段解决（并行执行、错误隔离）。
+**Rationale:** 先构建核心检测能力和规则引擎,这是所有后续功能的基础。根据依赖关系,patterns.py 和 gitignore_parser.py 无依赖,检测模块依赖规则定义。
 
-**Delivers:** 可工作的全局通知技能，支持 Pushover + Windows 通知，基本错误处理
+**Delivers:** 可工作的安全扫描器,能检测密钥、缓存文件、配置文件泄露,支持 .gitignore 规则
 
 **Addresses:**
-- Table stakes features: Task completion notification, Pushover notification, Windows desktop notification, Environment variable config, Project name extraction, Hook timeout compliance
+- Table stakes: AWS/GitHub 凭证检测、.env/私钥检测、阻止提交、错误提示、.gitignore 支持、彩色输出
+- Python 缓存检测、Node.js 依赖检测
 
 **Avoids:**
-- Pitfall 1 (Hook timeout) — 设计并行执行架构
-- Pitfall 2 (Environment variable scope) — 清晰文档说明系统级环境变量设置
-- Pitfall 3 (Windows path encoding) — 预处理 stdin JSON
-- Pitfall 4 (Fallback failures) — 每个通道独立错误处理
+- Pitfall 1 (误报过多): 实现多层检测 + 置信度评分
+- Pitfall 2 (性能瓶颈): 只扫描暂存文件 + 二进制检测
+- Pitfall 4 (二进制扫描): 文件类型检测
+- Pitfall 5 (.gitignore 解析): 使用 `git check-ignore`
+- Pitfall 7 (错误提示): 详细提示 + 修复建议
 
-**Key decisions:**
-- 使用 Python 标准库，零外部依赖
-- 全局技能模式（~/.claude/skills/claude-notify/），而非项目级安装
-- ThreadPoolExecutor 并行发送通知
-- 降级策略：Claude CLI 摘要失败时使用固定消息模板
-
-### Phase 2: Testing & Polish (v1.x features)
-
-**Rationale:** 核心功能稳定后，添加提升用户体验的功能：AI 摘要、智能过滤、多实例支持、项目级控制。
-
-**Delivers:** 增强版通知技能，AI 生成摘要，智能过滤噪音，多会话并发支持
-
-**Uses:**
-- Claude CLI (subprocess.run) for AI summaries
-- PID-based file isolation for multi-instance
-- .no-pushover / .no-windows files for per-project control
+**Uses:** Python 3.6+, re, pathlib, subprocess, fnmatch
 
 **Implements:**
-- Architecture Pattern 3 (Hook-based Event System) — 支持 UserPromptSubmit Hook 缓存用户提示
-- Smart filtering logic — 解析 hook event 类型，过滤 idle_prompt
+- Component 1: Security Scanner (security_scan.py)
+- Component 2: Pattern Engine (rules/patterns.py)
+- Component 3: Detectors (secrets.py, cache_files.py, config_files.py)
+- Component 4: Report Generator
 
-**Avoids:**
-- Pitfall 5 (Alert fatigue) — 实现智能过滤
-- Log file bloat — 自动日志轮转
+### Phase 2: Integration & Windows Testing
 
-**Features from FEATURES.md:**
-- AI-generated task summaries (v1.x)
-- Smart notification filtering (v1.x)
-- Multi-instance support (v1.x)
-- Per-project disable controls (v1.x)
-- Automatic log rotation (v1.x)
+**Rationale:** 核心功能稳定后,集成到现有 SKILL.md 工作流,并进行 Windows 特定的测试和优化。
 
-### Phase 3: Documentation & Distribution (Production-ready)
-
-**Rationale:** 技能功能完整后，需要完善文档、诊断工具、安装脚本，使其达到生产就绪状态。
-
-**Delivers:** 完整的用户文档、诊断脚本、安装脚本、测试用例
-
-**Features:**
-- diagnose.py — 验证环境变量、网络连接、Windows 通知权限
-- test-pushover.py / test-windows.py — 独立测试每个通知通道
-- README.md — 清晰的安装步骤、配置说明、故障排查
-- Plugin marketplace 配置 — 支持通过 `/plugin install` 分发
+**Delivers:** 完整集成的安全扫描功能,与 windows-git-commit 技能无缝协作
 
 **Addresses:**
-- UX Pitfalls from PITFALLS.md — 提供诊断工具，避免 "It doesn't work" 无从下手
-- Documentation gaps — 新用户能够跟随指南完成安装和配置
+- Differentiators: Windows 原生体验、Claude Code 集成
+- 内部信息检测(内网 IP、内部域名)
+
+**Avoids:**
+- Pitfall 3 (破坏工作流): 测试边界情况 + 绕过机制
+- Pitfall 6 (Windows 问题): 路径分隔符 + CRLF 处理 + 性能优化
+
+**Uses:** Bash-Python bridge (subprocess), Git commands (diff, check-ignore)
+
+**Implements:**
+- Integration: 修改 SKILL.md 工作流
+- Detector: internal_info.py
+- Testing: Windows 兼容性测试
+
+### Phase 3: UX Polish & Performance Optimization
+
+**Rationale:** 核心功能稳定后,优化用户体验和性能,添加双语支持、结果分级、速度优化。
+
+**Delivers:** 生产就绪的安全扫描功能,优秀的用户体验
+
+**Addresses:**
+- Differentiators: 中英文双语提示、检测结果分级、扫描速度优化
+
+**Avoids:**
+- Pitfall 2 (性能瓶颈): 文件类型过滤 + 模式预编译
+- Pitfall 8 (漏报): 扩展检测模式 + 关键词检测
+
+**Uses:** concurrent.futures (并行检测), os.environ (语言检测)
+
+**Implements:**
+- Feature: 中英文双语提示系统
+- Feature: 检测结果分级 (ERROR/WARNING)
+- Optimization: 并行检测、二进制文件跳过、模式预编译
 
 ### Phase Ordering Rationale
 
-1. **Phase 1 优先级最高** — 核心通知功能是价值基础，必须验证 5 秒超时约束下的可行性
-2. **Phase 2 基于稳定性** — 在核心功能稳定后，添加增强功能（AI 摘要可能超时，需要降级策略）
-3. **Phase 3 最后完善** — 文档和工具在生产就绪时才需要，MVP 阶段可以简化
-
-**依赖关系：**
-- Phase 2 的 AI 摘要依赖 Phase 1 的降级策略（Claude CLI 失败时使用模板）
-- Phase 2 的多实例支持依赖 Phase 1 的日志系统设计
-- Phase 3 的诊断工具依赖 Phase 1 和 Phase 2 的所有功能
-
-**架构模式应用：**
-- Phase 1: Pattern 3 (Hook-based Event System) — Stop Hook 触发通知
-- Phase 1: Pattern 4 (Global vs Project Scope) — 全局技能安装
-- Phase 2: Pattern 2 (Subagent Isolation) — 可选，如果 AI 摘要执行时间长，考虑子代理
-- All phases: Pattern 1 (Progressive Disclosure) — SKILL.md 分层文档结构
+- **依赖关系**: Phase 1 构建基础设施(规则+检测器),Phase 2 集成到工作流,Phase 3 优化体验
+- **架构模式**: 遵循 Pipeline Detection 模式,检测器独立,可并行开发
+- **避免陷阱**: Phase 1 解决 5 个关键陷阱(误报、性能、二进制、.gitignore、错误提示),Phase 2 解决集成和 Windows 问题,Phase 3 进一步优化
 
 ### Research Flags
 
-**Phases likely needing deeper research during planning:**
+Phases likely needing deeper research during planning:
+- **Phase 1:** 检测规则库需要参考专业工具(git-secrets, TruffleHog, GitLeaks)的模式,建议使用 `/gsd:research-phase` 深入研究正则模式的准确性和熵值阈值调优
+- **Phase 2:** Windows 特定问题(CRLF、路径分隔符、Python 启动性能)需要在实际 Windows 环境中验证,可能需要性能分析和优化
 
-- **Phase 1 (Core Implementation):**
-  - **Windows PowerShell 通知细节** — BurntToast vs Windows.UI.Notifications vs 经典气球通知，需要实际测试三种方法的兼容性（Windows 10 vs 11）
-  - **Claude CLI 超时处理** — `claude --print` 生成摘要的典型执行时间，需要实测决定是否在 Phase 1 实现
-  - **stdin JSON 格式** — Claude Code Stop Hook 的 stdin 格式文档不完整，需要实际捕获和验证
-
-- **Phase 2 (Testing & Polish):**
-  - **多实例并发冲突** — PID-based 文件隔离的实际测试，确保日志和缓存不冲突
-  - **智能过滤规则** — idle_prompt vs permission_prompt vs elicitation_dialog 的区分规则，需要实际 Hook 事件数据
-
-**Phases with standard patterns (skip research-phase):**
-
-- **Phase 3 (Documentation & Distribution):**
-  - 文档和诊断脚本有成熟的最佳实践，无需额外研究
-  - Plugin marketplace 配置遵循 Claude Code 官方规范
+Phases with standard patterns (skip research-phase):
+- **Phase 3:** 性能优化和 UX 改进有成熟的最佳实践,无需额外研究
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Python 标准库方案基于官方文档和现有实现（cc-pushover-hook），已验证可行 |
-| Features | MEDIUM | 功能列表基于竞争对手分析和用户需求推断，但缺少实际用户访谈验证 |
-| Architecture | HIGH | Claude Code 插件架构基于官方文档和社区资源，渐进式披露模式有成熟实践 |
-| Pitfalls | HIGH | 陷阱基于 Claude Code 官方文档、社区讨论、现有实现的 bug 修复经验 |
+| Stack | HIGH | 基于 Python 标准库,无外部依赖,与现有架构一致,已通过 Context7 验证 |
+| Features | MEDIUM | 基于 Web 搜索和竞品分析,未使用 Context7 验证,需要实际测试调整 |
+| Architecture | HIGH | 基于现有架构模式,集成点清晰,组件职责明确,使用 Context7 验证 |
+| Pitfalls | HIGH | 基于专业文献(Springer 2026, GitLab SAST, CSDN 性能优化)和行业经验,可信度高 |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-**Gap 1: 实际用户需求验证**
-- **问题:** FEATURES.md 的功能优先级基于推断和竞争对手分析，未与真实用户验证
-- **如何处理:** Phase 1 完成后，收集早期用户反馈，调整 Phase 2 和 Phase 3 的功能优先级
-
-**Gap 2: Claude CLI 摘要执行时间**
-- **问题:** AI 生成摘要可能超过 5 秒超时，但实际执行时间未知
-- **如何处理:** Phase 1 实现时，使用 `timeout=30` 参数测试 Claude CLI 调用，如果典型耗时 < 3 秒则在 Phase 2 启用，否则降级为模板消息
-
-**Gap 3: Windows 通知兼容性矩阵**
-- **问题:** BurntToast、Windows.UI.Notifications、经典气球通知在不同 Windows 版本的兼容性未验证
-- **如何处理:** Phase 1 实现三级降级（BurntToast → WinRT → Classic），在 Phase 3 测试 Windows 10/11 各版本的兼容性
-
-**Gap 4: Hook stdin JSON 格式**
-- **问题:** Claude Code 官方文档未完整描述 Stop Hook 的 stdin JSON 格式
-- **如何处理:** Phase 1 实现时，记录原始 stdin 数据，更新文档以描述实际格式
-
-**Gap 5: 跨版本 Python 兼容性**
-- **问题:** Windows 10 预装的 Python 版本可能有差异（3.6, 3.7, 3.8 等）
-- **如何处理:** Phase 1 仅使用 Python 3.6+ 兼容的标准库特性，Phase 3 测试多个 Python 版本的兼容性
+- **检测规则准确性**: 正则模式和熵值阈值需要通过实际数据集测试,在 Phase 1 实现时参考专业工具(git-secrets, TruffleHog)的模式库,并根据用户反馈调整
+- **Windows 性能基准**: Python 启动开销在 Windows 上可能较慢(3-5x),需要在 Phase 2 实际测试,如果超过 2 秒目标,考虑最小化导入或预编译方案
+- **误报率基准**: 需要定义可接受的误报率(建议 <20%),在 Phase 1 测试时测量,根据结果调整熵值阈值和模式严格度
 
 ## Sources
 
 ### Primary (HIGH confidence)
-
-- **Claude Code 官方文档** — Hooks, Skills, Plugin 系统
-  - https://claudefa.st/blog/tools/hooks/hooks-guide
-  - https://code.claude.com/docs
-- **Python 3.15 官方文档** — urllib.request, pathlib, subprocess, logging
-  - `/websites/python_3_15`
-- **原项目实现** — cc-pushover-hook
-  - `C:/WorkSpace/cc-pushover-hook/` — 已验证的实现模式
-- **Claude Code 技能架构** — 掘金、CSDN 技术分析
-  - https://juejin.cn/post/7592540388298375231
-  - https://m.blog.csdn.net/starzhou/article/details/157359729
+- `/websites/python_3_15` — Python 标准库文档 (re, pathlib, subprocess, fnmatch)
+- [Microsoft Learn - Implement Git Hooks](https://learn.microsoft.com/zh-cn/training/modules/explore-git-hooks/3-implement) — Pre-commit hook 模式和工作流
+- [Large-Scale Analysis of Code Security in Public Repositories (Springer, 2026)](https://link.springer.com/article/10.1007/s10207-025-01187-w) — 误报率分析,AI 辅助过滤
+- [GitLab SAST False Positive Detection (2026)](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/) — AI 置信度评分
+- [lint-staged Performance Optimization (npm)](https://www.npmjs.com/package/lint-staged/v/9.5.0) — 只扫描暂存文件,45x 性能提升
 
 ### Secondary (MEDIUM confidence)
-
-- **现代 Python 开发最佳实践** — Stuart Ellis
-  - https://www.stuartellis.name/articles/python-modern-practices/
-- **Python 环境变量管理** — Dagster
-  - https://dagster.io/blog/python-environment-variables
-- **Windows BurntToast 模块** — PowerShell 通知
-  - https://github.com/Windos/BurntToast
-- **Pushover API 文档** — 官方 API 参考
-  - https://pushover.net/api
-- **Claude Code Hooks Guardrails** — Paddo.dev
-  - https://paddo.dev/blog/claude-code-hooks-guardrails/
+- [git-secrets (AWS)](https://github.com/awslabs/git-secrets) — AWS 凭证检测模式
+- [TruffleHog](https://github.com/trufflesecurity/trufflehog) — 多源扫描,熵值检测,800+ 规则
+- [GitLeaks](https://github.com/gitleaks/gitleaks) — 快速扫描,熵值阈值(4.5-5.0)
+- [Secrets Patterns DB](https://gitcode.com/gh_mirrors/se/secrets-patterns-db) — 开源秘密模式库
+- [Git Performance Optimization on Windows (CSDN)](https://blog.csdn.net/gitblog_00814/article/details/152069989) — Windows 特定性能问题
+- [CSDN - Git User Sensitive Information Check](https://m.blog.csdn.net/xinbuq/article/details/136405597) — 凭证检测模式
 
 ### Tertiary (LOW confidence)
-
-- **ClaudeLog Hooks Implementation** — 社区实现经验
-  - https://www.claudelog.com/mechanics/hooks/
-- **Notifiers Python Library** — 通知 SDK 比较参考
-  - https://pypi.org/project/notifiers
-- **AWS Well-Architected Framework** — 告警反模式
-  - https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_monitor_aws_resources_notification_monitor.html
-- **Atlassian IT Alerting Best Practices** — 通知疲劳研究
-  - https://www.atlassian.com/incident-management/on-call/it-alerting
+- [Pre-commit Security Scanning UX Mistakes (Web Search, 2026)] — UX 最佳实践,需要验证
+- [Secret Detection with Large Language Models (arXiv, 2025)](https://arxiv.org) — AI 检测方法,未来研究方向
 
 ---
-
-*Research completed: 2026-02-24*
+*Research completed: 2026-02-25*
 *Ready for roadmap: yes*

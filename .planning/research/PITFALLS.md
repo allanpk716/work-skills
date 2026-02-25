@@ -1,114 +1,262 @@
 # Pitfalls Research
 
-**Domain:** Claude Code Skills and Notification Systems
-**Researched:** 2026-02-24
+**Domain:** Git Security Scanning Integration
+**Researched:** 2026-02-25
 **Confidence:** HIGH
+
+> **Note:** This document focuses on pitfalls specific to adding security scanning to Git workflow tools (v1.1 milestone). For notification system pitfalls from v1.0, see the archived section at the end.
 
 ## Critical Pitfalls
 
-### Pitfall 1: Hook Timeout Violations
+### Pitfall 1: False Positive Overload
 
 **What goes wrong:**
-Hook scripts that exceed Claude Code's 5-second timeout are silently killed, causing notifications to never be sent. Developers often don't realize their hook failed because error handling is limited within the timeout window.
+Security scanner generates excessive false positives (>50% of alerts), causing developers to ignore all warnings or disable the tool entirely. Common with aggressive regex patterns that match strings like "AKIAXXXEXAMPLEKEYXXX" that aren't real credentials.
 
 **Why it happens:**
-- Calling external APIs (Pushover) synchronously without timeout handling
-- Using subprocess calls without explicit timeout parameters
-- Attempting AI summarization via Claude CLI within the hook
-- Multiple notification channels sending sequentially instead of in parallel
+- Regex patterns are too broad (e.g., `password.*=.*"`)
+- No context awareness (can't distinguish test data from real secrets)
+- Entropy thresholds set too low
+- No verification of detected patterns
+- Missing allowlist/whitelist mechanisms
 
 **How to avoid:**
-- Use `ThreadPoolExecutor` for parallel notification sending
-- Set explicit timeouts on all subprocess calls (e.g., `timeout=10` for curl)
-- Consider using `async: true` in hook configuration for non-blocking execution
-- Cache expensive operations and reuse results across hook invocations
+- Use multi-stage detection: regex → entropy → verification
+- Implement confidence scoring for findings
+- Provide allowlist mechanism via .gitignore comments (e.g., `# gitcheck: allow`)
+- Set appropriate entropy thresholds (recommended: 4.5-5.0 for Shannon entropy)
+- Show context around detected issues for user judgment
+- Distinguish between ERROR (high confidence) and WARNING (low confidence)
 
 **Warning signs:**
-- Notifications work intermittently
-- Debug logs show hook started but never completed
-- Users report missing notifications for long-running tasks
+- Developers frequently use `--no-verify` to bypass hooks
+- Complaints about "too many false alarms"
+- Scanning takes excessive time due to overly broad patterns
+- Users suggest removing the security check entirely
 
 **Phase to address:**
-Phase 1 (Core Implementation) - Design for async from the start
+Phase 1 (Core Scanning) - Establish detection rules and validation logic
 
 ---
 
-### Pitfall 2: Environment Variable Scope Confusion
+### Pitfall 2: Performance Bottleneck on Large Staged Areas
 
 **What goes wrong:**
-Global skills cannot access project-level configuration files. Developers try to use `.env` files or project config, but global hooks run in a different context where these files don't exist or aren't loaded.
+Scanning takes >2 seconds on medium-sized repositories, or scales linearly with repository size, making commits feel sluggish. Developers avoid committing frequently due to wait times.
 
 **Why it happens:**
-- Global skills are installed in `~/.claude/skills/`, not in project directories
-- Claude Code doesn't automatically load `.env` files for hook scripts
-- PATH differences between interactive shells and hook execution context
+- Scanning entire repository instead of staged files only
+- Not filtering binary files before content scanning
+- Running expensive regex patterns on all file types
+- Missing early-exit conditions
+- Python startup overhead on Windows (3-5x slower than Unix)
 
 **How to avoid:**
-- Require environment variables (`PUSHOVER_TOKEN`, `PUSHOVER_USER`) to be set at system level
-- Document clear setup instructions for Windows (System Properties > Environment Variables)
-- Provide diagnostic scripts to verify configuration before use
-- Use `os.environ.get()` with clear error messages when vars are missing
+- Use `git diff --cached --name-only --diff-filter=ACM` to get only staged files
+- Detect and skip binary files using `file` command or magic bytes
+- Filter by file extension before applying regex (e.g., skip `.png`, `.exe`)
+- Cache .gitignore parsing results
+- Use efficient regex patterns (avoid catastrophic backtracking)
+- Consider Rust-based scanner for critical performance scenarios
+- Set performance budget: <2 seconds for typical commits
 
 **Warning signs:**
-- Hook works when tested manually but fails during Claude Code sessions
-- "Missing env vars" errors in debug logs
-- Different behavior across machines or users
+- Commit times exceeding 2 seconds consistently
+- Developers batching commits to "get it over with"
+- complaints about "slow git"
+- Performance degrades as repository grows
 
 **Phase to address:**
-Phase 1 (Core Implementation) - Document environment setup clearly
+Phase 1 (Core Scanning) - Build performance into architecture from start
 
 ---
 
-### Pitfall 3: Windows Path Encoding Issues
+### Pitfall 3: Breaking Existing Git Workflows
 
 **What goes wrong:**
-Hook input JSON contains Windows paths with backslashes that break JSON parsing. The hook silently fails because `json.loads()` raises an exception.
+Security scanner introduces friction that breaks established workflows. Examples: blocking all commits during emergencies, not handling merge commits properly, incompatible with existing hooks.
 
 **Why it happens:**
-- Windows paths like `C:\WorkSpace\project` contain unescaped backslashes
-- Claude Code passes `cwd` field with native path separators
-- JSON spec requires backslashes to be escaped as `\\`
+- Overly strict blocking (no bypass option)
+- Not considering special commit types (merges, squashes, amends)
+- Conflicting with other pre-commit hooks
+- No way to skip for specific files or situations
+- Poor error messages that don't explain how to fix
 
 **How to avoid:**
-- Pre-process stdin data: `stdin_data.replace("\\", "\\\\")`
-- Force UTF-8 encoding on stdin: `sys.stdin.reconfigure(encoding='utf-8')`
-- Log raw input for debugging before JSON parsing
-- Handle `JSONDecodeError` gracefully with informative error messages
+- Provide `--no-verify` bypass with clear warning message
+- Support `.gitignore` patterns for excluding files from scanning
+- Handle edge cases: merge commits, amend commits, empty commits
+- Test with existing hook frameworks (pre-commit, Husky)
+- Show actionable error messages with fix suggestions
+- Implement severity levels: ERROR (block) vs WARNING (allow with warning)
 
 **Warning signs:**
-- "JSON decode failed" errors in logs
-- Hook processes correctly on Linux/Mac but fails on Windows
-- Logs show hook started but no further progress
+- Developers frustrated with "rigid" tool
+- Workarounds being invented (like temporarily disabling hooks)
+- Requests to remove the scanner
+- Conflicts reported with other Git tools
 
 **Phase to address:**
-Phase 1 (Core Implementation) - Critical for Windows compatibility
+Phase 1 (Core Scanning) - Design for integration and flexibility
 
 ---
 
-### Pitfall 4: Multiple Notification Channel Fallback Failures
+### Pitfall 4: Binary File Content Scanning Failures
 
 **What goes wrong:**
-When one notification channel fails (e.g., Pushover API down), the entire hook fails without attempting other channels. Users receive no notification despite having multiple options configured.
+Scanner attempts to read binary files (images, executables, PDFs) as text, causing crashes, garbled output, or false positives from random byte sequences that happen to match patterns.
 
 **Why it happens:**
-- Sequential execution with early return on failure
-- Not catching exceptions per-channel
-- Treating notification as atomic operation instead of best-effort
+- Not checking file type before reading content
+- Using `grep` or `cat` on binary files without `-I` flag
+- Python `open()` in text mode on binary files
+- Relying solely on file extension (some binaries lack proper extensions)
 
 **How to avoid:**
-- Use `ThreadPoolExecutor` with independent futures per channel
-- Catch exceptions per channel, not globally
-- Return results dict showing status of each channel: `{"pushover": True, "windows": False}`
-- Log each channel's result independently
-- Continue to next channel even if one fails
+- Detect binary files before content scanning:
+  - Use `file` command: `file "$file" | grep -q "text"`
+  - Check magic bytes (first few bytes of file)
+  - Use `git diff --numstat` (shows `-` for binary files)
+- Skip binary files from content-based secret detection
+- Still check binary file paths against filename patterns (e.g., `.env.backup`)
+- Document which file types are skipped
 
 **Warning signs:**
-- No notifications when API is temporarily unavailable
-- Users report inconsistent delivery
-- Windows notifications stop working when network is down
+- Scanning crashes on certain files
+- Garbled terminal output during scan
+- False positives from binary files
+- Performance issues when scanning large binaries
 
 **Phase to address:**
-Phase 1 (Core Implementation) - Design for resilience
+Phase 1 (Core Scanning) - Implement file type detection early
+
+---
+
+### Pitfall 5: .gitignore Parsing Edge Cases
+
+**What goes wrong:**
+Scanner doesn't properly handle .gitignore syntax, leading to incorrect exclusions. Examples: not handling `!` negation, ignoring comments, mishandling directory patterns.
+
+**Why it happens:**
+- Implementing custom .gitignore parser instead of using Git's built-in
+- Not handling all .gitignore syntax: `#` comments, `!` negation, `/` anchoring, `**` glob
+- Parsing order issues (negation must come after ignore pattern)
+- Not respecting multiple .gitignore files at different levels
+
+**How to avoid:**
+- Use `git check-ignore` command instead of custom parsing: `git check-ignore -q "$file"`
+- If custom parsing needed, handle all syntax:
+  - Lines starting with `#` are comments
+  - `!` prefix negates previous ignore
+  - `/` prefix anchors to root
+  - `/` suffix means directory only
+  - `**` for recursive matching
+- Test parser against Git's behavior for consistency
+- Support both project and global .gitignore
+
+**Warning signs:**
+- Files incorrectly included/excluded from scanning
+- Discrepancy between Git's behavior and scanner's behavior
+- Complex .gitignore patterns not working
+
+**Phase to address:**
+Phase 1 (Core Scanning) - Use Git's native ignore checking
+
+---
+
+### Pitfall 6: Windows-Specific Path and Execution Issues
+
+**What goes wrong:**
+Scanner works in development but fails in production due to Windows-specific issues: path separator confusion, Python version conflicts, line ending issues, slow startup times.
+
+**Why it happens:**
+- Path separators: `\` vs `/` inconsistency
+- Git Bash vs WSL vs CMD environment differences
+- CRLF vs LF line ending issues in scripts
+- Windows Python vs WSL Python path conflicts
+- Windows file system operations 3-5x slower than Unix
+
+**How to avoid:**
+- Always use forward slashes `/` in paths (Git handles conversion)
+- Use `#!/usr/bin/env python3` shebang for portability
+- Convert scripts to LF line endings before deployment
+- Test on actual Windows systems, not just WSL
+- Use absolute paths for Python interpreter if needed
+- Minimize Python startup overhead (consider single script vs multiple modules)
+- Use `os.path.join()` for path construction
+
+**Warning signs:**
+- "Works on my machine" (Linux/Mac) but fails on Windows
+- Path not found errors with backslash/forward slash issues
+- Hook scripts fail to execute (syntax errors from CRLF)
+- Performance significantly worse on Windows
+
+**Phase to address:**
+Phase 2 (Integration & Testing) - Windows-specific testing and optimization
+
+---
+
+### Pitfall 7: Poor Error Messages and User Guidance
+
+**What goes wrong:**
+Scanner detects issues but provides unhelpful messages like "Security issue found" without context, leaving users confused about what's wrong and how to fix it.
+
+**Why it happens:**
+- Focusing on detection without considering user experience
+- Not including file paths, line numbers, or code snippets
+- Missing fix suggestions or remediation steps
+- Generic error messages that don't explain severity
+
+**How to avoid:**
+- Always include in error messages:
+  - File path and line number
+  - Type of issue (credential, cache file, config, etc.)
+  - Specific content that triggered detection (with partial masking for secrets)
+  - Severity level (ERROR vs WARNING)
+  - Fix suggestion (e.g., "Add to .gitignore", "Use environment variables")
+- Use color coding for readability (red for errors, yellow for warnings)
+- Provide examples of good vs bad patterns
+
+**Warning signs:**
+- Users asking "what does this error mean?"
+- Users pasting entire error logs in issues/chats
+- Repeated questions about the same error type
+
+**Phase to address:**
+Phase 1 (Core Scanning) - UX design for error reporting
+
+---
+
+### Pitfall 8: Regex Pattern False Negatives
+
+**What goes wrong:**
+Scanner fails to detect real secrets because regex patterns are too narrow or don't account for variations in secret formats. Examples: missing environment variable assignments, non-standard key formats, obfuscated secrets.
+
+**Why it happens:**
+- Relying solely on exact pattern matching
+- Not covering all secret format variations
+- Missing context-based detection (variable names like `api_key`, `secret`)
+- No entropy-based detection for non-standard formats
+- Easy to evade with simple formatting changes
+
+**How to avoid:**
+- Use multi-layer detection strategy:
+  1. **Regex patterns** for known formats (AWS keys, GitHub tokens)
+  2. **Keyword detection** for variable names (`password`, `secret`, `api_key`)
+  3. **Entropy analysis** for high-randomness strings (threshold: 4.5-5.0)
+- Combine multiple signals for confidence scoring
+- Test against known secret datasets
+- Keep pattern library updated with new secret formats
+- Consider LLM-based verification for edge cases (future enhancement)
+
+**Warning signs:**
+- Real secrets slip through to repository
+- Pattern library requires frequent manual updates
+- Detection misses obvious secrets during testing
+
+**Phase to address:**
+Phase 1 (Core Scanning) - Implement comprehensive detection strategy
 
 ---
 
@@ -118,23 +266,26 @@ Shortcuts that seem reasonable but create long-term problems.
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Skip debug logging | Faster development | Impossible to diagnose production issues | Never |
-| Hardcode project name extraction | Simpler code | Breaks with non-standard directory structures | MVP only, replace before v1 |
-| Single notification method | Less code to maintain | Single point of failure | Never for production use |
-| Ignore Windows notification failures | Avoids PowerShell complexity | 50% of users get no notification | Never |
-| Skip cache cleanup | Faster hook execution | Disk space grows unbounded | Never |
+| Single regex for all secrets | Quick implementation | High false positives, misses edge cases | Never - always use multi-layer detection |
+| Skip .gitignore integration | Simpler code | Users can't customize, rigid behavior | Never - always respect .gitignore |
+| No severity levels | Simpler logic | Users overwhelmed by warnings, ignore all alerts | Never - always distinguish ERROR vs WARNING |
+| Scan all file types equally | Easier implementation | Performance issues, false positives from binaries | Never - always detect and skip binaries |
+| Global hardcoded patterns only | Fast to implement | Can't adapt to project needs | MVP only, add customization immediately after |
+| No performance monitoring | Faster initial dev | Performance degrades unnoticed | Never - always measure and log scan times |
 
 ## Integration Gotchas
 
-Common mistakes when connecting to external services.
+Common mistakes when connecting Git hooks and external tools.
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| Pushover API | Using curl without TLS version specification | Add `--tlsv1.2 --ssl-reqd` for Windows schannel compatibility |
-| Pushover API | Not URL-encoding message content | Use `--data-urlencode` for all text fields |
-| Windows Notifications | Relying only on BurntToast module | Implement fallback chain: BurntToast -> WinRT -> Classic balloon |
-| Windows PowerShell | Unquoted strings in notification body | Double-escape quotes: `replace("'", "''")` |
-| Claude CLI | Calling for summarization in Stop hook | Use cache fallback, timeout at 30s, accept failure gracefully |
+| Git pre-commit hook | Forgetting to remove `.sample` extension | Ensure hook file is named `pre-commit` not `pre-commit.sample` |
+| Git pre-commit hook | Using wrong shebang for Windows | Use `#!/usr/bin/env python3` for portability across Git Bash/WSL |
+| Python execution | Assuming Python in PATH on Windows | Use full path or `py -3` launcher for reliability |
+| .gitignore reading | Custom parsing instead of Git's | Use `git check-ignore` command for accuracy |
+| File type detection | Relying only on extension | Use `file` command or magic bytes for accuracy |
+| Staged file retrieval | Using `git diff` instead of `git diff --cached` | Use `--cached` flag to get staged changes only |
+| Binary file handling | Using `cat` or `grep` without `-I` | Use `grep -I` or check file type first |
 
 ## Performance Traps
 
@@ -142,10 +293,12 @@ Patterns that work at small scale but fail as usage grows.
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Synchronous API calls | Hook timeout, notifications lost | Parallel execution with ThreadPoolExecutor | 1+ second API latency |
-| Growing log files | Disk space exhaustion | Implement log rotation by date, keep max 5 days | Weeks of usage |
-| Session cache accumulation | `.claude/cache/` grows unbounded | Delete cache files after notification sent | Multiple sessions per day |
-| No request timeout | Hook hangs indefinitely | Set `timeout=10` on all subprocess calls | Network issues |
+| Scanning entire repo | Commit times grow with repo size | Only scan staged files: `git diff --cached` | >100 files in repo |
+| Complex regex patterns | CPU spikes, long scan times | Use simple patterns + entropy, test regex performance | >10 files per commit |
+| No binary detection | Crashes, false positives on images | Detect and skip binary files early | Any binary in repo |
+| Recompiling patterns every run | Slow startup | Compile regex patterns once, cache in memory | Any Python startup |
+| Not filtering by extension | Scans PNGs, PDFs, binaries | Whitelist text file extensions | Mixed file types in repo |
+| Windows Python startup | 1-2 second overhead per commit | Minimize imports, use efficient structure | Every commit on Windows |
 
 ## Security Mistakes
 
@@ -153,33 +306,42 @@ Domain-specific security issues beyond general web security.
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Logging API tokens | Credential exposure in debug logs | Mask tokens: `token[:10]...` in log output |
-| Storing credentials in skill files | Credentials committed to git | Require environment variables, document in README |
-| Unvalidated notification content | Injection into PowerShell commands | Escape all user-provided content before shell execution |
-| World-readable config files | Token exposure on shared systems | Document file permissions: `chmod 400` on config files |
+| Logging detected secrets | Secrets in log files | Mask secrets in output, never log full values |
+| Storing scan results | Secrets persisted to disk | Only scan, never store results |
+| Overly permissive allowlist | Real secrets whitelisted | Require explicit comments for allowlist entries |
+| Not updating patterns | New secret formats missed | Regular pattern library updates, subscribe to secret format feeds |
+| Entropy threshold too low | Too many false positives | Set entropy to 4.5-5.0, validate against real data |
+| Only pattern matching | Misses non-standard secrets | Combine regex + keyword + entropy detection |
+| No verification step | High false positive rate | Verify detected secrets when possible (e.g., test AWS key format) |
 
 ## UX Pitfalls
 
-Common user experience mistakes in this domain.
+Common user experience mistakes in security scanning tools.
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No disable mechanism | Notifications for unimportant projects | Support `.no-pushover` and `.no-windows` marker files |
-| No diagnostic tools | "It doesn't work" with no recourse | Provide `diagnose.py` script that checks all configuration |
-| Silent failures | Users don't know notifications are broken | Write debug logs, document how to check them |
-| Cryptic error messages | Users can't self-fix configuration issues | Provide actionable error messages with solution steps |
-| No test command | Users must wait for real task to verify | Provide standalone test scripts for each notification channel |
+| Blocking without bypass | Developers frustrated, can't commit during emergencies | Provide `--no-verify` with clear warning |
+| Generic error messages | Users don't know how to fix issues | Show file, line, content, and fix suggestion |
+| No severity distinction | Users treat all alerts as noise | Use ERROR (block) vs WARNING (allow with warning) |
+| No color coding | Hard to scan output quickly | Use red for errors, yellow for warnings, green for success |
+| Overwhelming output | Users ignore long reports | Group by severity, show summary first, details on request |
+| No i18n support | Non-English users struggle | Support multiple languages, detect system locale |
+| No skip documentation | Users don't know how to exclude files | Document .gitignore integration clearly |
 
 ## "Looks Done But Isn't" Checklist
 
 Things that appear complete but are missing critical pieces.
 
-- [ ] **Hook registration:** Often missing from `settings.json` - verify hook appears in user/project/local settings
-- [ ] **Environment variables:** Often set in current shell but not persistent - verify with new terminal session
-- [ ] **Windows notifications:** Often works in testing but fails in production - test all three fallback methods
-- [ ] **Project name extraction:** Often works for simple paths but fails with special characters - test with paths containing spaces, unicode
-- [ ] **Error handling:** Often catches exceptions but doesn't log them - verify all exception handlers write to log
-- [ ] **Log rotation:** Often implemented but never tested - verify old logs are actually deleted
+- [ ] **Binary file handling:** Often missing proper detection — verify with images, PDFs, executables
+- [ ] **.gitignore integration:** Often missing negation patterns — verify `!` patterns work
+- [ ] **Performance:** Often slow on large repos — verify with >100 staged files
+- [ ] **Windows compatibility:** Often broken paths or execution — verify on actual Windows (not WSL)
+- [ ] **Error messages:** Often missing line numbers — verify errors show file:line format
+- [ ] **Bypass mechanism:** Often missing `--no-verify` — verify emergency bypass works
+- [ ] **False positive handling:** Often no allowlist — verify users can exclude patterns
+- [ ] **Merge commits:** Often fails on merges — verify with merge commit scenarios
+- [ ] **Empty commits:** Often crashes on empty — verify with `git commit --allow-empty`
+- [ ] **Deleted files:** Often tries to scan deleted files — verify with `git rm` scenarios
 
 ## Recovery Strategies
 
@@ -187,12 +349,14 @@ When pitfalls occur despite prevention, how to recover.
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Hook timeout | LOW | Add `async: true` to hook config, or optimize script performance |
-| Missing env vars | LOW | Set system environment variables, restart Claude Code session |
-| Path encoding | LOW | Add JSON escape preprocessing, redeploy hook |
-| Notification failures | MEDIUM | Check debug logs, verify API credentials, test each channel independently |
-| Log file bloat | LOW | Manually delete old logs, add log rotation code |
-| PowerShell failures | MEDIUM | Install BurntToast module, or check Windows notification settings |
+| False positive overload | MEDIUM | Tune patterns, add allowlist entries, adjust entropy threshold |
+| Performance bottleneck | MEDIUM | Optimize regex, add binary detection, implement caching |
+| Workflow breakage | LOW | Add bypass option, improve error messages, adjust severity levels |
+| Binary scanning crash | LOW | Add file type detection before content scanning |
+| .gitignore parsing bug | LOW | Switch to `git check-ignore` command |
+| Windows path issues | LOW | Normalize path separators, test on actual Windows |
+| Poor error messages | LOW | Add context, line numbers, fix suggestions |
+| False negatives | HIGH | Audit pattern library, add keyword detection, implement entropy analysis |
 
 ## Pitfall-to-Phase Mapping
 
@@ -200,28 +364,55 @@ How roadmap phases should address these pitfalls.
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Hook timeout violations | Phase 1 (Core Implementation) | Test with simulated slow API response |
-| Environment variable scope | Phase 1 (Core Implementation) | Run diagnostic script on fresh machine |
-| Windows path encoding | Phase 1 (Core Implementation) | Test on Windows with various path patterns |
-| Multiple channel fallbacks | Phase 1 (Core Implementation) | Disconnect network, verify Windows notification still works |
-| Debug logging | Phase 1 (Core Implementation) | Trigger error, verify log contains actionable message |
-| Log rotation | Phase 2 (Testing & Polish) | Run for 7 days, verify old logs deleted |
-| Disable mechanism | Phase 1 (Core Implementation) | Create `.no-pushover`, verify notifications stop |
-| Diagnostic tools | Phase 2 (Testing & Polish) | Run diagnose.py with missing env vars, verify clear error message |
-| Documentation | Phase 2 (Testing & Polish) | Have new user follow setup guide, verify success |
+| False positive overload | Phase 1: Core Scanning | Test with real codebases, measure false positive rate |
+| Performance bottleneck | Phase 1: Core Scanning | Benchmark with large staged areas, measure time |
+| Breaking workflows | Phase 1: Core Scanning | Test with existing hooks, verify bypass works |
+| Binary file scanning | Phase 1: Core Scanning | Test with various binary file types |
+| .gitignore parsing | Phase 1: Core Scanning | Test against Git's behavior, verify edge cases |
+| Windows issues | Phase 2: Integration & Testing | Test on actual Windows systems (not just WSL) |
+| Poor error messages | Phase 1: Core Scanning | User testing of error clarity |
+| Regex false negatives | Phase 1: Core Scanning | Test against known secret datasets |
 
 ## Sources
 
-- Claude Code Hooks Documentation: https://claudefa.st/blog/tools/hooks/hooks-guide
-- SFEIR Institute - Context Management Common Mistakes: https://institute.sfeir.com/en/claude-code/claude-code-context-management/errors/
-- SFEIR Institute - Advanced Best Practices Common Mistakes: https://institute.sfeir.com/en/claude-code/claude-code-advanced-best-practices/errors/
-- Claude Code Hooks Guardrails: https://paddo.dev/blog/claude-code-hooks-guardrails/
-- ClaudeLog Hooks Implementation: https://www.claudelog.com/mechanics/hooks/
-- python-pushover GitHub: https://github.com/Thibauth/python-pushover
-- Pushover API Documentation: https://pushover.net/api
-- Windows BurntToast Module: https://github.com/Windos/BurntToast
-- Original cc-pushover-hook implementation: C:/WorkSpace/cc-pushover-hook/
+- [Large-Scale Analysis of Code Security in Public Repositories (Springer, 2026)](https://link.springer.com/article/10.1007/s10207-025-01187-w) - False positive rates >50%, AI-assisted filtering
+- [GitLab SAST False Positive Detection (2026)](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/) - AI-based confidence scoring
+- [Rusty Hog - Rust Secret Scanner (2026)](https://blog.csdn.net/gitblog_00091/article/details/139163370) - Performance optimization with Rust
+- [Pre-commit Security Scanning UX Mistakes (Web Search, 2026)] - Common UX pitfalls in pre-commit hooks
+- [lint-staged Performance Optimization (npm)](https://www.npmjs.com/package/lint-staged/v/9.5.0) - 45x performance improvement by scanning staged files only
+- [Git Hooks Complete Guide (DataCamp)](https://www.datacamp.com/tutorial/git-hooks-complete-guide) - Windows Git hook execution
+- [Git Performance Optimization on Windows (CSDN)](https://blog.csdn.net/gitblog_00814/article/details/152069989) - Windows-specific performance issues
+- [Secret Detection with Large Language Models (arXiv, 2025)](https://arxiv.org) - False negatives in regex-based detection
+- [Gitleaks Documentation](https://github.com/gitleaks/gitleaks) - Entropy thresholds and allowlist mechanisms
+- [Yelp's detect-secrets](https://github.com/Yelp/detect-secrets) - Multi-layer detection strategy
+- [Git .gitignore Syntax (geek-docs.com)](https://geek-docs.com/git/git-questions/606_git_git_ignore_exception.html) - .gitignore parsing edge cases
 
 ---
-*Pitfalls research for: Claude Code Skills and Notification Systems*
-*Researched: 2026-02-24*
+
+## Archived: v1.0 Notification System Pitfalls
+
+*The following pitfalls were documented for the claude-notify plugin (v1.0) and are retained for reference.*
+
+### Critical Pitfalls (v1.0)
+
+#### Pitfall 1: Hook Timeout Violations
+- **Issue:** Hook scripts exceed 5-second timeout, silently killed
+- **Prevention:** Use ThreadPoolExecutor, explicit timeouts, async execution
+
+#### Pitfall 2: Environment Variable Scope Confusion
+- **Issue:** Global skills can't access project-level .env files
+- **Prevention:** Require system-level environment variables, clear documentation
+
+#### Pitfall 3: Windows Path Encoding Issues
+- **Issue:** Backslashes in paths break JSON parsing
+- **Prevention:** Pre-process stdin data, force UTF-8 encoding
+
+#### Pitfall 4: Multiple Notification Channel Fallback Failures
+- **Issue:** One channel failure blocks all notifications
+- **Prevention:** Independent exception handling per channel, best-effort delivery
+
+*For full v1.0 pitfalls documentation, see project history.*
+
+---
+*Pitfalls research for: Git Security Scanning Integration*
+*Researched: 2026-02-25*

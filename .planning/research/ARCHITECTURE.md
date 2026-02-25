@@ -1,486 +1,455 @@
-# Architecture Research
+# Architecture Research: Git Security Scanning Integration
 
-**Domain:** Claude Code Global Skills System
-**Researched:** 2026-02-24
-**Confidence:** HIGH (基于官方文档、现有实现和社区资源)
+**Domain:** Git Workflow Security Enhancement
+**Project:** work-skills (windows-git-commit plugin)
+**Researched:** 2026-02-25
+**Confidence:** HIGH
 
-## Standard Architecture
+## Executive Summary
 
-### System Overview
+本研究专注于如何将**安全扫描功能**集成到现有的 `windows-git-commit` 技能中。核心设计原则是**在 git commit 前扫描暂存区内容**,发现安全问题则阻止提交并显示详细提示。
 
-Claude Code 使用**插件生态系统架构**,支持多种扩展机制:
+## Current Architecture (windows-git-commit)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      Claude Code Runtime                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   CLAUDE.md  │  │   Commands   │  │    Skills    │          │
-│  │  (项目配置)   │  │  (快捷命令)   │  │   (技能)     │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │     MCP      │  │    Hooks     │  │  Subagents   │          │
-│  │ (模型上下文)  │  │  (事件钩子)   │  │  (子代理)    │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-│  ┌──────────────┐                                               │
-│  │   Plugins    │ ← Plugin Marketplace                          │
-│  │    (插件)     │                                               │
-│  └──────────────┘                                               │
-├─────────────────────────────────────────────────────────────────┤
-│                    Storage & Configuration                       │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │              ~/.claude/ (Global Config)                   │   │
-│  │  ├── settings.json         (全局设置)                      │   │
-│  │  ├── hooks/                (全局 Hooks)                    │   │
-│  │  ├── skills/               (全局 Skills)                   │   │
-│  │  ├── agents/               (自定义 Agents)                 │   │
-│  │  ├── commands/             (全局 Commands)                 │   │
-│  │  ├── plugins/              (已安装插件)                     │   │
-│  │  └── cache/                (缓存目录)                       │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+|                    Claude Code Main Agent                      |
++---------------------------------------------------------------+
+                              |
+                              | Task tool (subagent launch)
+                              v
++---------------------------------------------------------------+
+|                  Bash Subagent (Background)                    |
++---------------------------------------------------------------+
+|  +-------------+  +-------------+  +-------------+            |
+|  | SSH Config  |->| Git Status  |->| Git Diff    |            |
+|  +-------------+  +-------------+  +-------------+            |
+|                                         |                      |
+|                                         v                      |
+|  +-------------+  +-------------+  +-------------+            |
+|  | Git Add     |->| Git Commit  |->| Git Push    |            |
+|  +-------------+  +-------------+  +-------------+            |
++---------------------------------------------------------------+
+                              |
+                              | Summary Result
+                              v
++---------------------------------------------------------------+
+|                      User Response                             |
++---------------------------------------------------------------+
 ```
 
-### Component Responsibilities
+**现有特点:**
+- Bash 子代理执行所有 Git 操作
+- 通过 `run_in_background: true` 保护主上下文
+- 使用 plink + Pageant 进行 SSH 认证
+- 自动生成提交信息
 
-| 组件 | 职责 | 典型实现 |
-|------|------|---------|
-| **CLAUDE.md** | 项目级配置和指令,提供项目上下文 | Markdown 文件,包含项目规范、约定和指南 |
-| **Commands** | 提供快速访问的斜杠命令 (`/cmd`) | `.claude/commands/*.md` 文件,定义参数和工具限制 |
-| **Skills** | 封装领域知识和工作流程 | `skills/*/SKILL.md` + 支持文件 (脚本、模板、资源) |
-| **Hooks** | 响应 Claude Code 生命周期事件 | Python/Node.js 脚本,在特定事件触发时执行 |
-| **Plugins** | 将 Skills 打包为可分发的插件包 | `marketplace.json` + `skills/` 目录结构 |
-| **Subagents** | 在后台执行独立任务,保护主上下文 | Task 工具 + Bash/Write 子代理 |
-| **MCP** | 提供外部数据源和工具集成 | Model Context Protocol 服务器配置 |
+## Enhanced Architecture (with Security Scanning)
+
+```
++---------------------------------------------------------------+
+|                    Claude Code Main Agent                      |
++---------------------------------------------------------------+
+                              |
+                              | Task tool (subagent launch)
+                              v
++---------------------------------------------------------------+
+|                  Bash Subagent (Background)                    |
++---------------------------------------------------------------+
+|  +-------------+  +-------------+  +-------------+            |
+|  | SSH Config  |->| Git Status  |->| Git Diff    |            |
+|  +-------------+  +-------------+  +-------------+            |
+|                                         |                      |
+|                                         v                      |
+|  +--------------------------------------------------------+   |
+|  |              Security Scanner (Python)                  |   |
+|  |  +------------------+  +--------------------------+    |   |
+|  |  | Staged Files     |->| Detection Engine         |    |   |
+|  |  | Collector        |  | - Secret Patterns        |    |   |
+|  |  +------------------+  | - Cache File Detection   |    |   |
+|  |                        | - Config File Detection  |    |   |
+|  |                        | - Internal Info Check    |    |   |
+|  |                        +--------------------------+    |   |
+|  |                               |                        |   |
+|  |                               v                        |   |
+|  |                        +-------------+                 |   |
+|  |                        | Report Gen  |                 |   |
+|  |                        +-------------+                 |   |
+|  +--------------------------------------------------------+   |
+|                    |                                          |
+|          [Issues Found?]                                      |
+|           /          \                                        |
+|         YES           NO                                      |
+|          |            |                                       |
+|          v            v                                       |
+|  +-------------+  +-------------+  +-------------+            |
+|  | Block &     |  | Git Add     |->| Git Commit  |            |
+|  | Report      |  +-------------+  +-------------+            |
+|  +-------------+                           |                  |
+|                                            v                  |
+|                                    +-------------+            |
+|                                    | Git Push    |            |
+|                                    +-------------+            |
++---------------------------------------------------------------+
+```
+
+## Component Responsibilities
+
+| Component | Responsibility | Implementation |
+|-----------|----------------|----------------|
+| **Bash Subagent** | 编排 Git 工作流 | Bash script in SKILL.md (现有) |
+| **Security Scanner** | 执行安全扫描 | Python script (新增) |
+| **Pattern Engine** | 匹配敏感信息模式 | Regex + entropy analysis |
+| **Rule Loader** | 加载 .gitignore 规则 | Python fnmatch |
+| **Report Generator** | 格式化扫描结果 | Python formatted output |
 
 ## Recommended Project Structure
 
 ```
-work-skills/
-├── .claude-plugin/              # 插件市场配置
-│   └── marketplace.json         # 插件注册和分类
-├── .claude/                     # Claude Code 配置
-│   └── commands/                # 全局斜杠命令
-│       └── wgc.md              # 快捷命令定义
-├── skills/                      # 技能实现目录
-│   └── skill-name/             # 技能目录
-│       ├── SKILL.md            # [必需] 技能定义
-│       ├── README.md           # [可选] 详细文档
-│       ├── scripts/            # [推荐] 可执行脚本
-│       ├── templates/          # [推荐] 输出模板
-│       └── resources/          # [可选] 静态资源
-├── docs/                        # 项目文档
-│   ├── HOW_TO_ADD_NEW_SKILL.md
-│   └── PROJECT_STRUCTURE.md
-├── README.md                    # 主要文档
-└── CHANGELOG.md                # 版本历史
+plugins/windows-git-commit/
++-- skills/
+|   +-- windows-git-commit/
+|       +-- SKILL.md                    # 主技能定义 (修改)
+|       +-- TROUBLESHOOTING.md          # 故障排除指南 (现有)
++-- scripts/                            # 新增: Python 脚本
+|   +-- security_scan.py               # 主扫描入口
+|   +-- detectors/                      # 检测模块
+|       +-- __init__.py
+|       +-- secrets.py                  # 密钥检测
+|       +-- cache_files.py              # 缓存文件检测
+|       +-- config_files.py             # 配置文件泄露检测
+|       +-- internal_info.py            # 内部信息检测
+|   +-- rules/                          # 规则定义
+|       +-- __init__.py
+|       +-- patterns.py                 # 正则模式库
+|       +-- gitignore_parser.py         # .gitignore 解析器
++-- tests/                              # 新增: 测试套件
+|   +-- __init__.py
+|   +-- test_secrets.py
+|   +-- test_cache_files.py
+|   +-- test_config_files.py
++-- .claude-plugin/
+    +-- plugin.json                     # 插件元数据 (现有)
 ```
 
 ### Structure Rationale
 
-- **`.claude-plugin/`**: 插件市场配置,让 Claude Code 识别和加载技能库
-- **`skills/`**: 每个技能独立目录,支持渐进式加载
-- **`.claude/commands/`**: 简短命令别名,便于快速访问
+- **scripts/detectors/**: 模块化检测组件,便于扩展
+- **scripts/rules/**: 集中管理检测模式,便于更新
+- **tests/**: 每个检测类别的单元测试
+- SKILL.md 保持编排层,复杂逻辑委托给 Python
 
 ## Architectural Patterns
 
-### Pattern 1: Progressive Disclosure (渐进式披露)
+### Pattern 1: Pipeline Detection
 
-**What:** Skills 采用分层加载架构,按需加载内容以节省上下文
-
-**When to use:** 所有 Skills 默认使用此模式
-
-**Trade-offs:**
-- 优点: 节省 70%+ Token 消耗,快速启动
-- 缺点: 需要多次读取文件,略有延迟
-
-**加载层级:**
-
-| Layer | 类型 | 加载时机 | 内容大小 |
-|-------|------|---------|---------|
-| **Layer 1** | Metadata Layer | Claude Code 启动时 | ~100 tokens/Skill (name + description) |
-| **Layer 2** | Instruction Layer | 任务相关时 | SKILL.md 完整内容 |
-| **Layer 3** | Resource Layer | 需要引用时 | 脚本、模板、参考文档 |
-| **Layer 4** | Execution Layer | 直接执行时 | 可执行文件 (无需加载到上下文) |
+**What:** 顺序检测管道,每个检测器独立运行
+**When to use:** 当检测类别相互独立、顺序无关时
+**Trade-offs:** 简单实现,但无法在严重问题时提前退出
 
 **Example:**
-```markdown
----
-name: windows-git-commit
-description: Automate Git commit and push with PPK authentication
----
-
-<objective>
-Automate Git operations on Windows using plink + Pageant...
-</objective>
-
-<quick_start>
-**Automatic commit (recommended):**
-Use windows-git-commit to commit and push changes
-</quick_start>
-
-<!-- 详细工作流程按需加载 -->
-<workflow>
-...
-</workflow>
-```
-
-### Pattern 2: Subagent Isolation (子代理隔离)
-
-**What:** 长时间或复杂操作在独立子代理中执行,保护主对话上下文
-
-**When to use:**
-- 执行长时间运行的命令 (Git 操作、测试)
-- 产生大量输出的操作
-- 需要错误隔离的场景
-
-**Trade-offs:**
-- 优点: 主上下文保持简洁,易于追踪
-- 缺点: 子代理无法直接访问主对话历史
-
-**Example (来自 windows-git-commit):**
-```xml
-<subagent_type>Bash</subagent_type>
-<description>Execute Git commit and push operations</description>
-<prompt>
-Execute Git workflow with PPK authentication:
-1. Configure SSH client
-2. Analyze changes
-3. Generate commit message
-4. Stage, commit, push
-</prompt>
-<run_in_background>true</run_in_background>
-```
-
-### Pattern 3: Hook-based Event System (Hook 事件系统)
-
-**What:** 通过 Hooks 在 Claude Code 生命周期事件中注入自定义逻辑
-
-**When to use:**
-- 任务完成通知
-- 自动格式化代码
-- 权限请求处理
-- 日志记录和监控
-
-**支持的事件类型:**
-
-| 事件 | 触发时机 | 可阻止? | 典型用途 |
-|------|---------|---------|---------|
-| **SessionStart** | 会话开始/恢复 | No | 初始化检查 |
-| **UserPromptSubmit** | 用户提交消息前 | Yes | 消息预处理 |
-| **PreToolUse** | 工具执行前 | Yes | 验证、日志 |
-| **PermissionRequest** | 权限对话框出现 | Yes | 自动审批 |
-| **PostToolUse** | 工具成功执行后 | No | 格式化、日志 |
-| **Stop** | Claude 完成响应时 | Yes | 任务通知 |
-| **Notification** | 发送通知时 | No | 自定义通知 |
-
-**Example (来自 cc-pushover-hook):**
-```json
-{
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "py \"%CLAUDE_PROJECT_DIR%\\.claude\\hooks\\pushover-hook\\pushover-notify.py\"",
-            "timeout": 5
-          }
+```python
+class SecurityScanner:
+    def __init__(self):
+        self.detectors = [
+            SecretsDetector(),
+            CacheFileDetector(),
+            ConfigFileDetector(),
+            InternalInfoDetector()
         ]
-      }
-    ]
-  }
-}
+
+    def scan(self, staged_files: List[str]) -> List[Finding]:
+        all_findings = []
+        for detector in self.detectors:
+            findings = detector.detect(staged_files)
+            all_findings.extend(findings)
+        return all_findings
 ```
 
-### Pattern 4: Global vs Project Scope (全局 vs 项目作用域)
+### Pattern 2: Git Diff Streaming
 
-**What:** 配置和 Skills 可在全局或项目级别安装
-
-**When to use:**
-- **Global**: 通用工具、个人偏好、所有项目共享
-- **Project**: 项目特定工作流、团队共享配置
-
-**安装方式:**
-
-| 方式 | 命令 | 位置 | 作用域 |
-|------|------|------|--------|
-| Global Skills | `npx openskills install --global` | `~/.claude/skills/` | 所有项目 |
-| Project Skills | `npx openskills install` | `.claude/skills/` | 当前项目 |
-| Plugin | `/plugin install name@marketplace` | `~/.claude/plugins/` | 全局启用 |
+**What:** 直接从 git diff 流式读取暂存内容,不写临时文件
+**When to use:** 最小化磁盘 I/O,避免创建临时文件
+**Trade-offs:** 更快,无需清理,但需要仔细处理编码
 
 **Example:**
-```bash
-# 全局安装 (所有项目可用)
-npx openskills install anthropics/skills --global
+```python
+def get_staged_file_content(file_path: str) -> str:
+    """使用 git diff 获取暂存文件内容"""
+    result = subprocess.run(
+        ['git', 'diff', '--cached', '--', file_path],
+        capture_output=True,
+        text=True,
+        encoding='utf-8',
+        errors='replace'
+    )
+    return result.stdout
+```
 
-# 项目级安装 (仅当前项目)
-npx openskills install your-org/your-skills
+### Pattern 3: Fail-Fast with Severity
 
-# 从本地路径安装
-npx openskills install .
+**What:** 发现 CRITICAL 问题时立即停止,较低严重度继续扫描
+**When to use:** 平衡彻底性和性能
+**Trade-offs:** 更快发现阻塞问题,但可能遗漏其他问题
+
+**Example:**
+```python
+def scan_with_early_exit(staged_files: List[str]) -> ScanResult:
+    critical_findings = []
+
+    for detector in self.detectors:
+        findings = detector.detect(staged_files)
+        critical = [f for f in findings if f.severity == Severity.CRITICAL]
+        if critical:
+            critical_findings.extend(critical)
+            break  # 发现严重问题立即停止
+
+    return ScanResult(
+        blocked=len(critical_findings) > 0,
+        findings=critical_findings
+    )
 ```
 
 ## Data Flow
 
-### Skill Invocation Flow
+### Request Flow
 
 ```
-[User Input] "/wgc or Use windows-git-commit"
-    ↓
-[Command Resolution] Claude Code 查找命令映射
-    ↓
-[Metadata Extraction] 解析 SKILL.md frontmatter
-    ↓
-[Skill Loading] 加载完整 SKILL.md 内容 (Layer 2)
-    ↓
-[Agent Configuration] 配置子代理参数
-    ↓
-[Subagent Execution] Task tool 启动 Bash 子代理
-    ↓
-[Git Operations] 在子代理中执行 Git 命令
-    ↓
-[Result Processing] 处理输出并生成摘要
-    ↓
-[User Response] 返回简洁结果
+[用户: "git commit"]
+        |
+        v
+[Bash 子代理启动]
+        |
+        v
+[git diff --cached --name-only] --> [暂存文件列表]
+        |
+        v
+[Python security_scan.py] --> [检测结果]
+        |
+        v
+[发现问题?]
+    /          \
+  YES           NO
+   |            |
+   v            v
+[阻止]      [继续]
+[报告]     [git commit]
 ```
 
-### Hook Event Flow
+### Security Scan Flow
 
 ```
-[Claude Code Event] (Stop, UserPromptSubmit, etc.)
-    ↓
-[Hook Configuration] 读取 settings.json hooks 配置
-    ↓
-[Matcher Check] 检查事件是否匹配 (如 "permission_prompt|idle_prompt")
-    ↓
-[Command Execution] 执行配置的脚本/命令
-    ↓
-[Timeout Handling] 默认 5 秒超时
-    ↓
-[Result Processing] 处理脚本输出 (可选)
-    ↓
-[Continue/Block] 根据 hook 类型决定是否阻止原操作
-```
-
-### Plugin Installation Flow
-
-```
-[User Command] /plugin marketplace add owner/repo
-    ↓
-[Marketplace Fetch] 从 GitHub 获取 marketplace.json
-    ↓
-[Plugin Discovery] 列出可用插件和技能
-    ↓
-[User Selection] /plugin install plugin-name@marketplace
-    ↓
-[Download & Install] 复制 skills 到 ~/.claude/plugins/
-    ↓
-[Settings Update] 在 settings.json 中启用插件
-    ↓
-[Skill Registration] 注册插件的 Skills 到 Claude Code
+[暂存文件列表]
+        |
+        v
++---------------------------+
+| 按 .gitignore 过滤        |
+| (尊重现有规则)            |
++---------------------------+
+        |
+        v
++---------------------------+
+| 对每个文件:               |
+| 1. 获取内容 (git diff)    |
+| 2. 运行所有检测器         |
+| 3. 收集发现               |
++---------------------------+
+        |
+        v
++---------------------------+
+| 聚合 & 排序结果           |
+| - 按严重度                |
+| - 按文件路径              |
++---------------------------+
+        |
+        v
++---------------------------+
+| 生成报告                  |
+| - 颜色编码输出            |
+| - 修复建议                |
++---------------------------+
 ```
 
 ### Key Data Flows
 
-1. **Skill Data Flow**: SKILL.md → Metadata → Instructions → Scripts/Resources
-2. **Hook Data Flow**: Event → stdin JSON → Hook Script → stdout/exit code
-3. **Config Data Flow**: settings.json → Hooks/Plugins → Runtime Behavior
-
-## Scaling Considerations
-
-| 规模 | 架构调整 |
-|------|---------|
-| **个人使用 (1-10 项目)** | 全局 Skills + 项目级 CLAUDE.md,简单直接 |
-| **小团队 (10-50 项目)** | 创建共享 Skills 仓库,使用 Plugin Marketplace 分发 |
-| **大型组织 (50+ 项目)** | 企业级 Plugin Marketplace,版本管理,权限控制 |
-
-### Scaling Priorities
-
-1. **First bottleneck**: Skills 数量过多导致启动变慢
-   - 解决: 使用 Plugin 分类,按需安装
-2. **Second bottleneck**: Hooks 执行超时影响响应速度
-   - 解决: 优化 Hook 脚本,使用异步执行,增加 timeout
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Overly Complex SKILL.md
-
-**What people do:** 在单个 SKILL.md 中包含所有细节,导致文件过大
-
-**Why it's wrong:**
-- 违反渐进式披露原则
-- 浪费上下文 Token
-- 难以维护和更新
-
-**Do this instead:**
-- 使用分层文档结构
-- 引用外部资源文件
-- 只在 SKILL.md 保留核心指令
-
-**Bad Example:**
-```markdown
-<!-- 不要这样做: 包含完整实现细节 -->
-<workflow>
-Step 1: Run this 500-line Python script...
-```python
-# 完整的 Python 代码
-...
-```
-Step 2: Parse output...
-</workflow>
-```
-
-**Good Example:**
-```markdown
-<!-- 这样做: 引用外部脚本 -->
-<workflow>
-Step 1: Execute data processing script
-```bash
-python scripts/process_data.py --input $INPUT_FILE
-```
-See `scripts/process_data.py` for implementation details.
-</workflow>
-```
-
-### Anti-Pattern 2: Hook Script Blocking Operations
-
-**What people do:** Hook 脚本执行长时间操作 (网络请求、大量计算)
-
-**Why it's wrong:**
-- 默认 timeout=5 秒会超时
-- 阻塞 Claude Code 主流程
-- 用户体验差
-
-**Do this instead:**
-- 使用异步执行 (后台任务)
-- 增加 timeout 配置
-- 快速失败,返回错误信息
-
-**Bad Example:**
-```json
-{
-  "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "python slow_notification.py"  // 可能超时
-      }]
-    }]
-  }
-}
-```
-
-**Good Example:**
-```json
-{
-  "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "python fast_notify.py",
-        "timeout": 10  // 明确设置超时
-      }]
-    }]
-  }
-}
-```
-
-### Anti-Pattern 3: Mixing Global and Project Hooks
-
-**What people do:** 在全局 settings.json 中配置项目特定的 Hooks
-
-**Why it's wrong:**
-- 全局配置影响所有项目
-- 难以调试和维护
-- 可能导致意外行为
-
-**Do this instead:**
-- 全局 Hooks: 通用功能 (通知、日志)
-- 项目 Hooks: 放在项目的 `.claude/settings.json`
-- 使用环境变量控制行为
-
-**Bad Example:**
-```json
-// ~/.claude/settings.json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit|Write",
-      "hooks": [{
-        "type": "command",
-        "command": "python /specific/project/format.py"  // 仅适用于某项目
-      }]
-    }]
-  }
-}
-```
-
-**Good Example:**
-```json
-// ~/.claude/settings.json (全局)
-{
-  "hooks": {
-    "Stop": [{
-      "hooks": [{
-        "type": "command",
-        "command": "python ~/.claude/hooks/notify.py"  // 通用通知
-      }]
-    }]
-  }
-}
-
-// /path/to/project/.claude/settings.json (项目级)
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit|Write",
-      "hooks": [{
-        "type": "command",
-        "command": "npx prettier --write \"$FILE_PATH\""  // 项目特定
-      }]
-    }]
-  }
-}
-```
+1. **暂存文件提取**: `git diff --cached --name-only` 提供文件列表
+2. **内容流式读取**: `git diff --cached -- <file>` 提供暂存内容
+3. **模式匹配**: 逐行应用正则模式,带上下文
+4. **结果聚合**: 收集所有发现,按严重度排序,格式化输出
 
 ## Integration Points
 
-### External Services
+### Integration with Existing SKILL.md
 
-| 服务 | 集成方式 | 注意事项 |
-|------|---------|---------|
-| **Pushover API** | Hook 脚本调用 REST API | 需配置 PUSHOVER_TOKEN/USER 环境变量 |
-| **Git** | Bash 子代理执行命令 | Windows 需配置 plink SSH 客户端 |
-| **Claude CLI** | Hook 调用 `claude -p` 生成摘要 | 可选功能,失败时降级 |
-| **Windows Notifications** | PowerShell 调用 BurntToast | 优先级: BurntToast > WinRT > .NET |
+安全扫描应插入在 **git status 和 git add 之间**:
 
-### Internal Boundaries
+```bash
+# 当前工作流 (在 SKILL.md agent_configuration):
+git status -> git diff --stat -> git add -A -> git commit -> git push
 
-| 边界 | 通信方式 | 注意事项 |
-|------|---------|---------|
-| **Skill ↔ Subagent** | Task tool + prompt | 子代理无法访问主上下文 |
-| **Hook ↔ Claude Code** | stdin JSON → stdout | 5 秒默认超时,需快速执行 |
-| **Plugin ↔ Skills** | 文件系统引用 | 相对路径解析基于 marketplace.json |
-| **Global ↔ Project Config** | 合并策略 | 项目配置覆盖全局配置 |
+# 增强工作流:
+git status -> git diff --stat -> [安全扫描] -> git add -A -> git commit -> git push
+                                    |
+                                    v
+                            [发现问题?] -> 阻止 & 报告
+```
+
+### Git Command Integration
+
+| 命令 | 目的 | 使用的输出 |
+|------|------|-----------|
+| `git diff --cached --name-only` | 获取暂存文件列表 | 文件路径 |
+| `git diff --cached -- <file>` | 获取暂存内容 | 文件内容 |
+| `git check-ignore <file>` | 检查 .gitignore 规则 | 跳过决策 |
+
+### Bash-Python Bridge
+
+```bash
+# 在 Bash 子代理中:
+STAGED_FILES=$(git diff --cached --name-only)
+SCAN_RESULT=$(python3 "$SCRIPT_DIR/scripts/security_scan.py" --files "$STAGED_FILES")
+
+if [ $? -ne 0 ]; then
+    echo "$SCAN_RESULT"
+    exit 1  # 阻止提交
+fi
+```
+
+## Detection Categories
+
+### Category 1: Secret Keys (密钥检测)
+
+| 类型 | 模式 | 严重度 |
+|------|------|--------|
+| AWS Access Key | `AKIA[0-9A-Z]{16}` | CRITICAL |
+| AWS Secret Key | `[A-Za-z0-9/+=]{40}` (带上下文) | CRITICAL |
+| Google API Key | `AIza[0-9A-Za-z-_]{35}` | CRITICAL |
+| OpenAI API Key | `sk-[a-zA-Z0-9_-]{32,}` | CRITICAL |
+| Anthropic API Key | `sk-ant-[a-zA-Z0-9_-]{32,}` | CRITICAL |
+| Generic Private Key | `-----BEGIN.*PRIVATE KEY-----` | CRITICAL |
+| JWT Token | `eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*` | HIGH |
+
+### Category 2: Cache/Compiled Files (缓存/编译文件)
+
+| 模式 | 描述 | 严重度 |
+|------|------|--------|
+| `__pycache__/` | Python 字节码缓存 | MEDIUM |
+| `*.pyc`, `*.pyo` | Python 编译文件 | MEDIUM |
+| `node_modules/` | Node.js 依赖 | MEDIUM |
+| `.venv/`, `venv/` | Python 虚拟环境 | MEDIUM |
+| `*.exe`, `*.dll` | Windows 可执行文件 | HIGH |
+| `dist/`, `build/` | 构建输出 | MEDIUM |
+
+### Category 3: Config Files (配置文件)
+
+| 文件模式 | 风险 | 严重度 |
+|----------|------|--------|
+| `.env` | 环境变量秘密 | CRITICAL |
+| `credentials.*` | 凭证文件 | CRITICAL |
+| `*.pem`, `*.key` | 私钥文件 | CRITICAL |
+| `.htpasswd` | Apache 密码文件 | CRITICAL |
+| `*.ppk` | PuTTY 私钥 | CRITICAL |
+
+### Category 4: Internal Information (内部信息)
+
+| 模式 | 描述 | 严重度 |
+|------|------|--------|
+| `10\.\d{1,3}\.\d{1,3}\.\d{1,3}` | 私有 IP (A类) | LOW |
+| `172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}` | 私有 IP (B类) | LOW |
+| `192\.168\.\d{1,3}\.\d{1,3}` | 私有 IP (C类) | LOW |
+| `@internal\..*` | 内部邮件域名 | MEDIUM |
+| `@corp\..*` | 企业邮件域名 | MEDIUM |
+
+## Build Order (Considering Dependencies)
+
+### Phase 1: Core Infrastructure (无依赖)
+1. `scripts/rules/patterns.py` - 定义所有正则模式
+2. `scripts/rules/gitignore_parser.py` - 解析 .gitignore 规则
+
+### Phase 2: Detection Modules (依赖 Phase 1)
+3. `scripts/detectors/secrets.py` - 密钥检测 (使用 patterns)
+4. `scripts/detectors/cache_files.py` - 缓存文件检测
+5. `scripts/detectors/config_files.py` - 配置文件检测
+6. `scripts/detectors/internal_info.py` - 内部信息检测
+
+### Phase 3: Main Scanner (依赖 Phase 2)
+7. `scripts/security_scan.py` - 主入口,编排检测器
+
+### Phase 4: Integration (依赖 Phase 3)
+8. 修改 `SKILL.md` - 添加安全扫描步骤到工作流
+9. 添加 `TROUBLESHOOTING.md` 章节 - 安全扫描错误处理
+
+### Phase 5: Testing (与 Phase 2-4 并行)
+10. `tests/test_secrets.py`
+11. `tests/test_cache_files.py`
+12. `tests/test_config_files.py`
+
+## Anti-Patterns to Avoid
+
+### Anti-Pattern 1: Writing Temporary Files
+
+**错误做法:** 将暂存内容写入临时文件进行扫描
+**为什么错:** 安全风险(秘密在临时文件)、清理负担、更慢
+**正确做法:** 直接从 `git diff --cached` 流式读取内容
+
+### Anti-Pattern 2: Scanning Entire Repository
+
+**错误做法:** 每次提交扫描整个仓库
+**为什么错:** 大仓库慢、与当前更改无关
+**正确做法:** 只扫描暂存文件 (`git diff --cached`)
+
+### Anti-Pattern 3: Ignoring .gitignore
+
+**错误做法:** 在扫描器配置中重复定义忽略规则
+**为什么错:** git 和扫描器规则可能分歧、用户困惑
+**正确做法:** 复用 .gitignore 模式,添加 `.security-ignore` 扩展
+
+### Anti-Pattern 4: No Escape from False Positives
+
+**错误做法:** 硬性阻止所有发现,无覆盖机制
+**为什么错:** 阻止合法工作,用户会禁用扫描器
+**正确做法:** 支持 `--skip-security` 标志带警告,或 `.security-baseline` 白名单
+
+## Performance Considerations
+
+| 指标 | 目标 | 方法 |
+|------|------|------|
+| 扫描时间 | < 2 秒 | 只扫描暂存文件,非仓库 |
+| 内存 | < 50MB | 流式读取,不加载所有文件 |
+| 输出 | 简洁 | 按严重度分组,每文件限制数量 |
+
+### Optimization Strategies
+
+1. **Early Exit**: 发现 CRITICAL 问题后停止
+2. **File Type Filter**: 跳过二进制文件、图片
+3. **Content Sampling**: 大文件采样前/后 N 行
+4. **Pattern Compilation**: 启动时预编译正则模式
+
+## Comparison: Tool Options
+
+| 工具 | 优点 | 缺点 | 适用性 |
+|------|------|------|--------|
+| **Gitleaks** | 最快,高召回率(86-88%) | Go 编写,外部依赖 | CI/CD 集成 |
+| **TruffleHog** | 800+ 类型,验证机制 | 较慢 | 全面审计 |
+| **detect-secrets** | 基线管理 | 需要维护基线文件 | 持续监控 |
+| **Custom Python** | 零外部依赖,完全控制 | 需要维护模式 | 本项目 |
+
+**推荐:** 使用 Custom Python 实现,因为:
+1. 无外部依赖,与现有架构一致
+2. 可针对项目需求定制
+3. 易于集成到 Bash 子代理
 
 ## Sources
 
-### 官方文档
-- [Milvus Blog - Claude Code Local Storage](https://milvus.io/blog/why-claude-code-feels-so-stable-a-developers-deep-dive-into-its-local-storage-design.md) - 本地存储设计
-- [掘金 - Claude Code Skills全面解读](https://juejin.cn/post/7592540388298375231) - Skills 组件详解
-- [CSDN - Claude Skills技术原理和技术架构](https://m.blog.csdn.net/starzhou/article/details/157359729) - 架构分析
-
-### 现有实现
-- `C:\WorkSpace\work-skills\.planning\codebase\ARCHITECTURE.md` - 现有项目架构
-- `C:\WorkSpace\work-skills\skills\windows-git-commit\SKILL.md` - Skill 实现示例
-- `C:\WorkSpace\cc-pushover-hook\hooks\pushover-notify.py` - Hook 实现示例
-- `C:\WorkSpace\cc-pushover-hook\.claude\settings.json` - Hook 配置示例
-
-### 社区资源
-- [baoyu-skills](https://github.com/JimLiu/baoyu-skills) - 优秀 Skills 库参考
-- [Claude Code 官方文档](https://code.claude.com/docs) - 官方指南
+- [Microsoft Learn - Implement Git Hooks](https://learn.microsoft.com/zh-cn/training/modules/explore-git-hooks/3-implement) - Pre-commit hook 模式
+- [CSDN - Git User Sensitive Information Check](https://m.blog.csdn.net/xinbuq/article/details/136405597) - 凭证检测模式
+- [Gitleaks Rule Development Guide](https://blog.csdn.net/gitblog_01007/article/details/151464186) - 自定义检测规则
+- [Secrets Patterns DB](https://gitcode.com/gh_mirrors/se/secrets-patterns-db) - 开源秘密模式库
+- [TruffleHog Customization](https://blog.csdn.net/gitblog_01113/article/details/151530578) - 检测工具对比
+- [GitPython Documentation](https://deepinout.com/git/git-questions/209_git_how_to_get_staged_files_using_gitpython.html) - 暂存文件访问
+- [OSV-Scanner Git Hooks](https://m.blog.csdn.net/gitblog_00270/article/details/151305927) - 漏洞扫描集成
 
 ---
 
-*Architecture research for: Claude Code Global Skills System*
-*Researched: 2026-02-24*
+*Architecture research for: Git Security Scanning Integration*
+*Researched: 2026-02-25*

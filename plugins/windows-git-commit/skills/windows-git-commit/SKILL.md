@@ -546,3 +546,55 @@ When you receive a request to use this skill:
 
 **Important:** Do NOT return full git command output to the user. Only return a concise summary.
 </implementation_notes>
+
+<hook_installation>
+## Hook Installation
+
+To enable automatic security scanning before each commit, install the pre-commit hook:
+
+### Manual Installation
+
+1. **Copy hook to Git directory:**
+   ```bash
+   # From project root
+   cp plugins/windows-git-commit/skills/windows-git-commit/hooks/pre-commit .git/hooks/pre-commit
+   ```
+
+2. **Make hook executable (Windows):**
+   ```bash
+   # Ensure Python association is correct
+   python .git/hooks/pre-commit
+   ```
+
+3. **Verify installation:**
+   ```bash
+   # Test hook
+   python .git/hooks/pre-commit
+
+   # Should see: "✓ Security scan passed. Proceeding with commit."
+   ```
+
+### Automated Installation (Future)
+
+Future versions will include automated installation via:
+```bash
+python -m scanner install-hook
+```
+
+For now, manual installation is required.
+
+### How It Works
+
+- Git executes `.git/hooks/pre-commit` automatically before every `git commit`
+- Hook runs security scanner on all staged files
+- If issues found: commit is blocked (exit code 1)
+- If no issues: commit proceeds (exit code 0)
+- Respects `.gitignore` rules automatically
+
+### Uninstall
+
+To disable automatic scanning:
+```bash
+rm .git/hooks/pre-commit
+```
+</hook_installation>

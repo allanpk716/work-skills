@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""
+Git pre-commit hook for security scanning
+
+This hook runs automatically before every 'git commit' to scan
+staged files for sensitive information, cache files, and config files.
+
+Exit codes:
+  0 - Scan passed, allow commit
+  1 - Issues found, block commit
+
+Usage:
+  Git executes this hook automatically. To test manually:
+  $ python hooks/pre-commit
+"""
+import sys
+import os
+from pathlib import Path
+
+# Add scanner module to Python path
+# Hook runs from .git/hooks/ directory, need to find scanner module
+hook_dir = Path(__file__).parent
+skill_root = hook_dir.parent  # windows-git-commit skill root
+sys.path.insert(0, str(skill_root))
+
+from scanner.executor import run_pre_commit_scan
+
+
+def main():
+    """
+    Main hook entry point
+
+    Workflow:
+    1. Run pre-commit scan
+    2. If issues found, print error and exit(1) - blocks commit
+    3. If no issues, print success and exit(0) - allows commit
+    """
+    try:
+        # Run the scanner
+        success, issues = run_pre_commit_scan()
+
+        if success:
+            # No issues found - allow commit
+            print("\n✓ Security scan passed. Proceeding with commit.\n")
+            sys.exit(0)
+        else:
+            # Issues found - block commit (RPT-01)
+            print(f"\n✗ Security scan failed. Found {len(issues)} issue(s).")
+            print("Commit blocked. Please fix issues before committing.\n")
+            sys.exit(1)
+
+    except Exception as e:
+        # Unexpected error - log but don't block commit (fail-open)
+        print(f"\n⚠ Scanner error: {e}")
+        print("Warning: Scan failed, but allowing commit to proceed.\n")
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

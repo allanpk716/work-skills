@@ -584,6 +584,7 @@ def run_pre_commit_scan(repo_root: Path = None) -> bool:
 3. **详细模式 (--verbose) 实现**
    - What we know: CONTEXT.md 提到支持 --verbose flag
    - What's unclear: pre-commit hook 如何接收参数?
+   - **Phase 7 implementation status:** 当前实现提供默认简洁输出,满足基本需求。--verbose flag 功能延后到未来阶段(可通过 `git config --get scan.verbose` 或环境变量实现)。Plan 07-01 Task 2 action 部分已记录实现方案,当前默认输出已符合用户要求。
    - Recommendation: Git hooks 通过环境变量或 .gitconfig 传递配置,可以在 hook 中读取 `git config --get scan.verbose`
 
 ## Sources

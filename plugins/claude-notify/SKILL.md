@@ -1,7 +1,7 @@
 ---
 name: claude-notify
-description: 当 Claude Code 任务完成时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。
-version: 1.0.0
+description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。
+version: 1.1.0
 ---
 
 # Claude Notify 技能
@@ -19,13 +19,31 @@ version: 1.0.0
 
 ## 工作原理
 
-此技能是 **Hook 触发型** - 当 Claude Code 完成任务后自动运行。无需手动调用。
+此技能是 **Hook 触发型** - 当 Claude Code 完成任务或等待输入时自动运行。无需手动调用.
+
+### 任务完成通知 (Stop Hook)
 
 1. Claude Code 在任务完成时触发 `Stop` hook
 2. 通知脚本在后台运行(异步模式)
 3. 脚本使用 Claude CLI 生成任务摘要
 4. Pushover 和 Windows Toast 通知并行发送
 5. 您在设备上即时接收通知
+
+### 等待输入通知 (UserPromptSubmit Hook)
+
+当 Claude 在多轮交互中等待您输入时(例如使用 `/gsd:discuss` 或计划模式):
+
+1. 您提交 prompt 后触发 `UserPromptSubmit` hook
+2. 脚本检查 Claude 的最后一条消息是否包含等待标记
+3. 如果检测到等待状态,发送"等待输入"通知
+4. **防抖机制**: 10秒内的重复通知会被自动抑制
+5. 通知不会阻塞您的操作
+
+**通知消息示例:**
+```
+标题: work-skills
+消息: Claude 正在等待您的输入
+```
 
 ## 快速开始
 
@@ -324,6 +342,35 @@ type nul > .no-windows
    del .no-pushover
    del .no-windows
    ```
+
+### Q: 为什么会收到"等待输入"通知?
+
+**这是正常功能。** 当 Claude 在多轮交互中等待您输入时会发送此通知。
+
+**触发场景:**
+- 使用交互式命令(如计划模式、讨论功能)
+- Claude 提供选项让您选择
+- Claude 需要您的确认或补充信息
+
+**防抖机制:**
+- 同一交互过程中,10秒内只通知一次
+- 避免通知轰炸
+- 确保您不会错过需要操作的时机
+
+**如何禁用:**
+与任务完成通知相同,使用项目级控制文件:
+- `.no-pushover` - 禁用 Pushover 等待通知
+- `.no-windows` - 禁用 Windows 等待通知
+
+### Q: 等待通知和任务完成通知有什么区别?
+
+| 特性 | 任务完成通知 | 等待输入通知 |
+|------|------------|------------|
+| 触发时机 | Claude 完成任务 | Claude 等待输入 |
+| 消息内容 | AI 生成的任务摘要 | "Claude 正在等待您的输入" |
+| Hook 事件 | Stop | UserPromptSubmit |
+| 防抖 | 无 | 10秒防抖 |
+| 典型场景 | 代码编写完成<br>测试通过<br>文档更新完成 | 计划确认<br>方案选择<br>信息补充 |
 
 ### Q: Pushover 通知不工作,但 Windows Toast 正常?
 

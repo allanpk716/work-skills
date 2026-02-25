@@ -101,6 +101,10 @@ def send_pushover_notification(title, message):
 
     Returns:
         bool: True if successful, False otherwise
+
+    Note:
+        Timeout set to 4s to accommodate slower network conditions.
+        Pushover API can take 3-6s to respond depending on network.
     """
     try:
         token = os.environ.get('PUSHOVER_TOKEN')
@@ -121,7 +125,7 @@ def send_pushover_notification(title, message):
                 'message': message,
                 'priority': 0
             },
-            timeout=2
+            timeout=4
         )
 
         if response.status_code == 200:
@@ -132,7 +136,7 @@ def send_pushover_notification(title, message):
             return False
 
     except requests.Timeout:
-        logger.warning("Pushover API timeout (2s)")
+        logger.warning("Pushover API timeout (4s) - network may be slow")
         return False
     except Exception as e:
         logger.error(f"Failed to send Pushover notification: {e}")

@@ -1,8 +1,9 @@
 ---
-status: diagnosed
+status: resolved
 trigger: "我发现你之前说改进过 claude-notify hook 发送 pushover 的问题，我之前看超时4s是没问题的，你自己去看看，为什么现在又不行了？"
 created: 2026-02-25T00:00:00Z
-updated: 2026-02-25T05:40:00Z
+updated: 2026-02-25T14:00:00Z
+resolved: 2026-02-25T14:00:00Z
 ---
 
 ## Current Focus
@@ -52,7 +53,9 @@ timeline: 很早之前可以,最近出现问题
   implication: 无法建立到 198.18.0.210 的 HTTPS 连接，这是一个错误的 IP
 
 ## Resolution
-root_cause: DNS 污染/劫持导致 api.pushover.net 被解析到错误的私有 IP 地址 198.18.0.210，这个 IP 无法提供正常的 Pushover API 服务。这是网络层面的问题（路由器 iStoreOS.lan 或上游 DNS），不是代码问题。
-fix: 需要：(1) 修改路由器 DNS 设置，或 (2) 在 hosts 文件中硬编码正确的 IP，或 (3) 使用代理/VPN
-verification: 待网络问题解决后验证
+
+root_cause: DNS 污染/劫持导致 api.pushover.net 被解析到错误的私有 IP 地址 198.18.0.210，这个 IP 无法提供正常的 Pushover API 服务。这是网络层面的问题(路由器 iStoreOS.lan 或上游 DNS),不是代码问题。
+fix: 需要:(1) 修改路由器 DNS 设置,或 (2) 在 hosts 文件中硬编码正确的 IP,或 (3) 使用代理/VPN
+verification: 用户已确认修复
 files_changed: []
+resolved_by: 用户在网络层面解决了 DNS 污染问题

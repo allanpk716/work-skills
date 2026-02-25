@@ -98,17 +98,49 @@
 
 ## Traceability
 
-需求到阶段的映射将在路线图创建时填充。
+需求到阶段的映射(2026-02-25 创建路线图):
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (To be filled during roadmap creation) | - | Pending |
+| SENS-01 | Phase 6 | Pending |
+| SENS-02 | Phase 6 | Pending |
+| SENS-03 | Phase 6 | Pending |
+| SENS-04 | Phase 6 | Pending |
+| SENS-05 | Phase 6 | Pending |
+| SENS-06 | Phase 6 | Pending |
+| CACHE-01 | Phase 6 | Pending |
+| CACHE-02 | Phase 6 | Pending |
+| CACHE-03 | Phase 6 | Pending |
+| CACHE-04 | Phase 6 | Pending |
+| CONF-01 | Phase 6 | Pending |
+| CONF-02 | Phase 6 | Pending |
+| CONF-03 | Phase 6 | Pending |
+| EXEC-01 | Phase 7 | Pending |
+| EXEC-02 | Phase 7 | Pending |
+| EXEC-03 | Phase 7 | Pending |
+| EXEC-04 | Phase 7 | Pending |
+| RPT-01 | Phase 7 | Pending |
+| RPT-02 | Phase 7 | Pending |
+| RPT-03 | Phase 7 | Pending |
+| RPT-04 | Phase 7 | Pending |
+| RPT-05 | Phase 7 | Pending |
+| CUST-01 | Phase 7 | Pending |
+| CUST-02 | Phase 7 | Pending |
+| CUST-03 | Phase 7 | Pending |
+| CUST-04 | Phase 7 | Pending |
+| INTL-01 | Phase 8 | Pending |
+| INTL-02 | Phase 8 | Pending |
+| INTL-03 | Phase 8 | Pending |
+| UX-02 | Phase 9 | Pending |
+| UX-01 | Phase 10 | Pending |
+| UX-03 | Phase 10 | Pending |
+| UX-04 | Phase 10 | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after v1.1 requirements gathering*
+*Last updated: 2026-02-25 after v1.1 roadmap creation*

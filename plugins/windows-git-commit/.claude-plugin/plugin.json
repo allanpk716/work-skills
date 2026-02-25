@@ -1,0 +1,8 @@
+{
+  "name": "windows-git-commit",
+  "description": "Windows Git workflow automation with smart commit message generation and push using command-line git with plink SSH",
+  "author": {
+    "name": "allanpk716",
+    "email": "allanpk716@gmail.com"
+  }
+}

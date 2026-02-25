@@ -451,9 +451,9 @@ type nul > .no-windows
 
 4. **应用的超时保护:**
    - Claude CLI 超时: 2 秒 → 降级到固定消息
-   - Pushover API 超时: 2 秒 → 跳过 Pushover,仅发送 Windows Toast
+   - Pushover API 超时: 4 秒 → 跳过 Pushover,仅发送 Windows Toast
    - Windows Toast 超时: 1 秒 → 跳过 Windows,仅发送 Pushover
-   - 总体超时: 4 秒 → 确保不超过 Claude Code 的 5 秒限制
+   - 总体超时: 5 秒 → 确保不超过 Claude Code 的 5 秒限制
 
 ### Q: 如何为特定项目禁用通知?
 
@@ -611,6 +611,41 @@ notify-20260224-67890.log  ← 会话 2 (PID 67890)
 2. 分别在不同项目中执行任务
 3. 两个项目都应该收到独立的通知
 
+### Q: 为什么 Pushover 通知有时会失败,但 Windows 通知正常?
+
+**原因:** Pushover API 响应时间受网络条件影响,可能在 2-6 秒之间波动。
+
+**诊断步骤:**
+
+1. **查看日志文件:**
+   ```cmd
+   type %APPDATA%\claude-notify\logs\claude-notify-*.log | find "Pushover"
+   ```
+
+   如果看到 "Pushover API timeout",说明网络延迟导致超时。
+
+2. **测试网络连接:**
+   ```bash
+   python -c "import requests, time, os
+   start = time.time()
+   r = requests.post('https://api.pushover.net/1/messages.json',
+       data={'token': os.environ['PUSHOVER_TOKEN'],
+             'user': os.environ['PUSHOVER_USER'],
+             'message': 'Test', 'title': 'Test'},
+       timeout=6)
+   print(f'Status: {r.status_code}, Time: {time.time()-start:.2f}s')"
+   ```
+
+**解决方案:**
+- **当前超时设置:** 4 秒 (已针对慢网络优化)
+- **降级策略:** 如果 Pushover 超时,Windows Toast 通知仍然会正常工作
+- **网络优化:** 如果持续超时,考虑检查网络代理设置或切换到更稳定的网络
+
+**设计权衡:**
+- 超时设为 4 秒而非更长,是为了确保整体脚本在 5 秒内完成
+- Windows Toast 是本地通知,几乎总是能成功
+- 至少保证一个通知渠道可用,比两个都因超时而失败更好
+
 ## 技术参考
 
 ### 超时策略
@@ -618,9 +653,9 @@ notify-20260224-67890.log  ← 会话 2 (PID 67890)
 | 操作 | 超时时间 | 说明 |
 |------|---------|------|
 | Claude CLI 摘要 | 2 秒 | 生成任务摘要,失败后降级到固定消息 |
-| Pushover API | 2 秒 | HTTP POST 请求到 api.pushover.net:443 |
+| Pushover API | 4 秒 | HTTP POST 请求到 api.pushover.net:443 (适应网络延迟) |
 | Windows Toast | 1 秒 | PowerShell 调用 Windows.UI.Notifications |
-| **总体执行** | **4 秒** | **小于 Claude Code 的 5 秒限制** |
+| **总体执行** | **5 秒** | **小于 Claude Code 的 5 秒限制** |
 
 ### 并行执行架构
 

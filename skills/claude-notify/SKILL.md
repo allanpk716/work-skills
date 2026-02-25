@@ -77,7 +77,7 @@ setx PUSHOVER_USER "your-pushover-user-key"
 运行验证脚本检查您的设置:
 
 ```bash
-python scripts/verify-installation.py
+python skills/claude-notify/scripts/verify-installation.py
 ```
 
 此脚本将检查:
@@ -166,7 +166,7 @@ set PUSHOVER_USER=u1b2c3d4e5f6g7h8i9j0k1l2m
 运行诊断脚本确认配置正确:
 
 ```bash
-python hooks/scripts/notify.py --diagnose
+python skills/claude-notify/hooks/scripts/notify.py --diagnose
 ```
 
 **诊断输出示例:**
@@ -713,7 +713,7 @@ with ThreadPoolExecutor(max_workers=2) as executor:
 
 **完整诊断:**
 ```bash
-python hooks/scripts/notify.py --diagnose
+python skills/claude-notify/hooks/scripts/notify.py --diagnose
 ```
 
 **输出内容:**
@@ -725,7 +725,7 @@ python hooks/scripts/notify.py --diagnose
 
 **仅检查环境:**
 ```bash
-python scripts/verify-installation.py
+python skills/claude-notify/scripts/verify-installation.py
 ```
 
 **手动测试 Pushover:**
@@ -748,8 +748,8 @@ python -c "import requests; requests.post('https://api.pushover.net/1/messages.j
 | 文件/目录 | 位置 | 用途 |
 |----------|------|------|
 | Hook 配置 | `hooks/hooks.json` | 定义 Stop 事件触发的脚本 |
-| 通知脚本 | `hooks/scripts/notify.py` | 主通知逻辑 |
-| 验证脚本 | `scripts/verify-installation.py` | 安装验证工具 |
+| 通知脚本 | `skills/claude-notify/hooks/scripts/notify.py` | 主通知逻辑 |
+| 验证脚本 | `skills/claude-notify/scripts/verify-installation.py` | 安装验证工具 |
 | 日志目录 | `%APPDATA%\claude-notify\logs\` | 调试日志 |
 | Pushover 控制文件 | 项目根目录 `.no-pushover` | 禁用 Pushover |
 | Windows 控制文件 | 项目根目录 `.no-windows` | 禁用 Windows Toast |

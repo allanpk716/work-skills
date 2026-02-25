@@ -13,8 +13,10 @@ import sys
 import logging
 import subprocess
 import re
+import requests
 from pathlib import Path
 from datetime import datetime, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Debounce configuration
 DEBOUNCE_SECONDS = 10
@@ -151,6 +153,152 @@ def contains_wait_markers(text):
     return False
 
 
+def send_pushover_notification(title, message):
+    """
+    Send notification via Pushover API.
+
+    Args:
+        title (str): Notification title
+        message (str): Notification message
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        token = os.environ.get('PUSHOVER_TOKEN')
+        user = os.environ.get('PUSHOVER_USER')
+
+        if not token or not user:
+            logger.warning("Pushover credentials not configured")
+            return False
+
+        logger.info("Sending Pushover notification...")
+
+        response = requests.post(
+            'https://api.pushover.net/1/messages.json',
+            data={
+                'token': token,
+                'user': user,
+                'title': title,
+                'message': message,
+                'priority': 0
+            },
+            timeout=2
+        )
+
+        if response.status_code == 200:
+            logger.info("Pushover notification sent successfully")
+            return True
+        else:
+            logger.error(f"Pushover API error: {response.status_code} - {response.text}")
+            return False
+
+    except requests.Timeout:
+        logger.warning("Pushover API timeout (2s)")
+        return False
+    except Exception as e:
+        logger.error(f"Failed to send Pushover notification: {e}")
+        return False
+
+
+def send_windows_notification(title, message):
+    """
+    Send Windows Toast notification via PowerShell.
+
+    Args:
+        title (str): Notification title
+        message (str): Notification message
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
+        logger.info("Sending Windows Toast notification...")
+
+        # PowerShell script to send Toast notification
+        ps_script = f'''
+        [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
+        [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] | Out-Null
+
+        $template = @"
+        <toast>
+            <visual>
+                <binding template="ToastText02">
+                    <text id="1">{title}</text>
+                    <text id="2">{message}</text>
+                </binding>
+            </visual>
+        </toast>
+"@
+
+        $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
+        $xml.LoadXml($template)
+        $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
+        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Claude Code").Show($toast)
+        '''
+
+        result = subprocess.run(
+            ['powershell', '-Command', ps_script],
+            capture_output=True,
+            text=True,
+            timeout=1,
+            encoding='utf-8'
+        )
+
+        if result.returncode == 0:
+            logger.info("Windows Toast notification sent successfully")
+            return True
+        else:
+            logger.error(f"PowerShell error: {result.stderr}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        logger.warning("Windows Toast timeout (1s)")
+        return False
+    except Exception as e:
+        logger.error(f"Failed to send Windows notification: {e}")
+        return False
+
+
+def check_notification_flags():
+    """
+    Check for project-level notification disable flags.
+
+    Returns:
+        dict: {'pushover_disabled': bool, 'windows_disabled': bool}
+    """
+    project_dir = Path.cwd()
+
+    flags = {
+        'pushover_disabled': (project_dir / '.no-pushover').is_file(),
+        'windows_disabled': (project_dir / '.no-windows').is_file()
+    }
+
+    if flags['pushover_disabled']:
+        logger.info("Pushover notifications disabled by .no-pushover file")
+
+    if flags['windows_disabled']:
+        logger.info("Windows notifications disabled by .no-windows file")
+
+    return flags
+
+
+def get_project_name():
+    """
+    Get the current project name from the working directory.
+
+    Returns:
+        str: Project name (directory name)
+    """
+    try:
+        project_name = os.path.basename(os.getcwd())
+        logger.info(f"Project name: {project_name}")
+        return project_name
+    except Exception as e:
+        logger.error(f"Failed to get project name: {e}")
+        return "Claude Code"
+
+
 def main() -> int:
     """Main function for wait notification script."""
     logger.info("=== Claude Code Wait Notification Script Started ===")
@@ -158,26 +306,63 @@ def main() -> int:
     try:
         # 1. Check debounce
         if not should_send_notification():
-            logger.info("Debounce check failed, exiting")
             return 0
 
         # 2. Get recent conversation
         recent_msg = get_recent_conversation()
         if not recent_msg:
-            logger.info("No conversation history, exiting")
             return 0
 
         # 3. Check for wait markers
         if not contains_wait_markers(recent_msg):
-            logger.info("No wait markers detected, exiting")
             return 0
 
-        logger.info("TEST: Would send notification here")
+        # 4. Get project name
+        project_name = get_project_name()
 
-        # 4. Update timestamp
+        # 5. Check notification flags
+        flags = check_notification_flags()
+
+        # 6. Send notifications in parallel
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            futures = {}
+
+            wait_message = "Claude 正在等待您的输入"
+
+            if not flags['pushover_disabled']:
+                futures[executor.submit(send_pushover_notification, project_name, wait_message)] = 'pushover'
+
+            if not flags['windows_disabled']:
+                futures[executor.submit(send_windows_notification, project_name, wait_message)] = 'windows'
+
+            if not futures:
+                logger.info("All notifications disabled by project flags")
+                return 0
+
+            # Wait for all notifications
+            completed = 0
+            failed = 0
+
+            for future in as_completed(futures, timeout=4):
+                channel = futures[future]
+                try:
+                    result = future.result()
+                    if result:
+                        logger.info(f"{channel} notification succeeded")
+                        completed += 1
+                    else:
+                        logger.warning(f"{channel} notification failed")
+                        failed += 1
+                except Exception as e:
+                    logger.error(f"{channel} notification exception: {e}")
+                    failed += 1
+
+        # 7. Update timestamp
         update_timestamp()
 
+        logger.info(f"Notifications completed: {completed}, failed: {failed}")
         logger.info("=== Claude Code Wait Notification Script Finished ===")
+
         return 0
 
     except Exception as e:

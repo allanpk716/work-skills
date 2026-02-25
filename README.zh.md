@@ -53,6 +53,7 @@ npx skills add allanpk716/work-skills
 | 插件 | 描述 | 技能 |
 | --- | --- | --- |
 | __git-skills__ | Windows Git 工作流自动化 | windows-git-commit |
+| __claude-notify__ | 通过 Pushover 和 Windows Toast 发送任务完成通知 | claude-notify |
 
 ## 更新技能
 
@@ -111,6 +112,56 @@ git config --global core.sshcommand "\"C:\\Program Files (x86)\\TortoiseGit\\bin
 ```
 
 详细故障排除请参阅技能文档。
+
+### Claude Notify
+
+通过 Pushover 和 Windows Toast 发送任务完成通知。
+
+#### claude-notify
+
+当 Claude Code 完成任务时自动发送通知。通过 Pushover 接收移动推送通知,在 Windows 系统上接收桌面 Toast 通知。
+
+**特性:**
+- 通过 Pushover 发送移动推送通知
+- Windows Toast 桌面通知
+- 使用 Claude CLI 生成 AI 驱动的任务摘要
+- 并行执行实现即时投递
+- 未配置 Pushover 时优雅降级
+- 在 5 秒内完成
+
+**用法:**
+
+无需手动调用 - 通知在 Claude Code 任务完成时自动发送。
+
+**前提条件:**
+- Python 3.8 或更高版本
+- Pushover 账号(可选,用于移动通知)
+
+**安装配置:**
+
+1. **配置 Pushover(可选):**
+
+```cmd
+# Windows 命令提示符
+setx PUSHOVER_TOKEN "your-pushover-app-token"
+setx PUSHOVER_USER "your-pushover-user-key"
+```
+
+2. **验证安装:**
+
+```bash
+python scripts/verify-installation.py
+```
+
+3. **测试:**
+
+在 Claude Code 中完成任何任务,你应该会自动收到通知。
+
+**不使用 Pushover:**
+
+Windows Toast 通知无需任何配置即可工作。只需安装插件即可开始使用。
+
+详细文档请参阅[技能文档](skills/claude-notify/SKILL.md)。
 
 ## 项目结构
 

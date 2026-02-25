@@ -161,7 +161,7 @@ Complete any task in Claude Code. You should receive notifications automatically
 
 Windows Toast notifications work without any configuration. Just install the plugin and you're ready to go.
 
-For detailed documentation, see the skill documentation.
+For detailed documentation, see the [skill documentation](skills/claude-notify/SKILL.md).
 
 ## Project Structure
 

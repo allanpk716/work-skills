@@ -51,11 +51,22 @@
 
 ### Active Todos
 
+**v1.1 里程碑任务:**
 - [ ] Phase 6: 构建规则引擎和核心检测器(密钥、缓存、配置文件)
 - [ ] Phase 7: 实现扫描流程、问题报告和自定义规则
 - [ ] Phase 8: 添加内部信息检测、集成到 SKILL.md
 - [ ] Phase 9: Windows 兼容性测试和性能优化
 - [ ] Phase 10: 双语支持、结果分级、最终打磨
+
+### Pending Todos (非里程碑)
+
+1. **Add slash commands to toggle notification channels** (tooling)
+   - File: .planning/todos/pending/2026-02-25-add-slash-commands-to-toggle-notification-channels.md
+   - 为 claude-notify 技能添加 `/notify-enable` 和 `/notify-disable` 斜杠命令
+
+2. **Fix notification hook not triggering during multi-turn interactions** (tooling)
+   - File: .planning/todos/pending/2026-02-25-fix-notification-hook-not-triggering-during-multi-turn-interactions.md
+   - 解决多轮交互(如 `/gsd:discuss`、plan)时通知不触发的问题
 
 ### Blockers
 

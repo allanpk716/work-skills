@@ -82,7 +82,10 @@ All v1.0 decisions documented in PROJECT.md Key Decisions table (17 decisions, a
 
 ### Pending Todos
 
-None - ready to create roadmap
+1. **Add slash commands to toggle notification channels** (tooling)
+   - File: .planning/todos/pending/2026-02-25-add-slash-commands-to-toggle-notification-channels.md
+   - 为 claude-notify 技能添加 `/notify-enable` 和 `/notify-disable` 斜杠命令
+   - 通过参数控制 pushover/windows 通知渠道的启用/禁用
 
 ### Blockers/Concerns
 

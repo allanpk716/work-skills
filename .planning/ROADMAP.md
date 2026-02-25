@@ -64,7 +64,10 @@
 4. 用户可以看到问题内容片段(敏感信息已脱敏)和修复建议
 5. 用户可以通过 .gitignore 文件自定义扫描排除规则
 
-**Plans:** TBD
+**Plans:**
+- [ ] 07-01-PLAN.md — 实现扫描执行流程和.gitignore规则解析 (EXEC-01, EXEC-02, EXEC-03, EXEC-04, CUST-01, CUST-02, CUST-04)
+- [ ] 07-02-PLAN.md — 实现报告生成器,提供彩色表格格式输出 (RPT-01, RPT-02, RPT-03, RPT-04, RPT-05)
+- [ ] 07-03-PLAN.md — 集成Phase 6检测规则,创建pre-commit hook (EXEC-01, RPT-01, CUST-03)
 
 ---
 

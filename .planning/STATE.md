@@ -4,20 +4,22 @@
 
 See: .planning/PROJECT.md (updated 2026-02-25)
 
-**Core value:** 让开发者在 Claude Code 执行任务时能够离开电脑,在任务完成或需要关注时及时收到通知
-**Current focus:** Planning next milestone (v1.1)
+**Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
+**Current focus:** v1.1 Git 安全扫描功能
 
 ## Current Position
 
-Milestone: v1.0 MVP - COMPLETE ✅
-Status: Shipped and archived (2026-02-25)
-Next: Planning v1.1 milestone
+Milestone: v1.1 - Git 安全扫描
+Phase: Not started (defining requirements)
+Plan: —
+Status: Requirements defined, ready for roadmap
+Last activity: 2026-02-25 — Milestone v1.1 started
 
-Progress: [██████████] 100% (v1.0 shipped)
+Progress: [░░░░░░░░░░] 0% (requirements defined)
 
 ## Performance Metrics
 
-**v1.0 Milestone:**
+**v1.0 Milestone (Archived):**
 - Total phases: 5 (including 2 decimal phases)
 - Total plans: 7
 - Total tasks: ~20
@@ -25,6 +27,11 @@ Progress: [██████████] 100% (v1.0 shipped)
 - Tests: 23/23 (100% passed)
 - Lines of code: 1,973
 - Development time: 2 days (2026-02-24 → 2026-02-25)
+
+**v1.1 Milestone (Current):**
+- Requirements: 28 total
+- Phases: TBD (pending roadmap)
+- Status: Planning phase
 
 **Archived to:** .planning/milestones/v1.0-*
 
@@ -63,38 +70,37 @@ Progress: [██████████] 100% (v1.0 shipped)
 
 ### Decisions
 
+**v1.0 Milestone (Archived):**
 All v1.0 decisions documented in PROJECT.md Key Decisions table (17 decisions, all ✓ Good).
 
-Recent milestone decisions:
-1. Async Hook Execution (Phase 1) - timeout guarantee
-2. Parallel Notifications (Phase 1) - ThreadPoolExecutor
-3. Graceful Degradation (Phase 1) - fallback messages
-4. Marketplace Integration (Phase 1.1) - plugin packaging
-5. Environment Variables (Phase 2) - global configuration
-6. Project-Level Control (Phase 2) - .no-* files
-7. Automatic Cleanup (Phase 2) - log management
-8. Diagnostic Mode (Phase 2) - --diagnose flag
-9. Chinese-First Docs (Phase 3) - per CLAUDE.md
-10. Mock-Based Testing (Phase 3) - isolation from external APIs
+**v1.1 Milestone:**
+1. 扫描时机: git commit 之前 (捕获暂存区问题)
+2. 检测范围: 敏感信息 + 缓存文件 + 配置文件 + 内部信息
+3. 处理策略: 阻止提交 + 详细提示
+4. 配置方式: 复用 .gitignore 格式
+5. 提示格式: 详细信息 (文件、行号、内容、建议)
 
 ### Pending Todos
 
-None - v1.0 complete, ready to plan v1.1
+None - ready to create roadmap
 
 ### Blockers/Concerns
 
-None - all issues resolved in Phase 3.1
+None - requirements clearly defined
 
 ### Roadmap Evolution
 
-- Phase 1.1 inserted after Phase 1: Plugin Packaging (URGENT)
-- Phase 3.1 inserted after Phase 3: Fix Missing Features (CRITICAL)
+v1.0 已完成 5 个阶段,归档到 .planning/milestones/v1.0-*
+v1.1 将从阶段 6 开始编号
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Milestone: v1.0 shipped
-Status: ✅ COMPLETE
-Archive: .planning/milestones/v1.0-*
-Tag: v1.0
-Next: Plan v1.1 milestone
+Current session: 2026-02-25
+Milestone: v1.1 Git 安全扫描
+Status: Requirements defined
+Next: Create roadmap and start Phase 6
+
+**v1.0 Archive:**
+- Location: .planning/milestones/v1.0-*
+- Tag: v1.0
+- Completed: 2026-02-25

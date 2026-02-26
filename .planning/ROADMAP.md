@@ -18,7 +18,7 @@
 - [ ] **Phase 8: Internal Info Detection & Integration** - 添加内部信息检测、集成到 SKILL.md
 - [x] **Phase 9: Windows Testing & Optimization** - Windows 兼容性测试和性能优化 ✓
 - [x] **Phase 10: UX Polish & Production Ready** - 双语支持、结果分级、最终打磨 (completed 2026-02-26)
-- [ ] **Phase 11: Fix Orphaned Security Rules** - 修复 PGP/PEM 检测规则的集成差距
+- [x] **Phase 11: Fix Orphaned Security Rules** - 修复 PGP/PEM 检测规则的集成差距 (completed 2026-02-26)
 - [ ] **Phase 12: Verify Phase 9 Completion** - 创建 Phase 9 VERIFICATION.md 并验证功能
 
 ## Phase Details
@@ -154,7 +154,7 @@
 3. PGP_KEY_RULE 和 PEM_CERT_RULE 被正确导入到 executor.py
 4. 所有敏感信息规则在扫描流程中生效
 
-**Plans:** TBD
+**Plans:** 1/1 plans complete
 
 ---
 
@@ -188,7 +188,7 @@
 | 8. Internal Info Detection & Integration | 0/2 | Not started | - |
 | 9. Windows Testing & Optimization | 3/3 | ✅ Complete | 2026-02-26 |
 | 10. UX Polish & Production Ready | 2/2 | Complete    | 2026-02-26 |
-| 11. Fix Orphaned Security Rules | 0/1 | Pending | - |
+| 11. Fix Orphaned Security Rules | 0/1 | Complete    | 2026-02-26 |
 | 12. Verify Phase 9 Completion | 0/1 | Pending | - |
 
 ---

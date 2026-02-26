@@ -13,8 +13,8 @@
 - [x] **SENS-02**: 检测 Git 服务 token (GitHub, GitLab, Bitbucket Personal Access Token)
 - [x] **SENS-03**: 检测通用 API 密钥模式 (api_key, secret, password, token 等字段)
 - [x] **SENS-04**: 检测 SSH 私钥文件 (-----BEGIN RSA PRIVATE KEY-----)
-- [ ] **SENS-05**: 检测 PGP 私钥文件 (-----BEGIN PGP PRIVATE KEY BLOCK-----)
-- [ ] **SENS-06**: 检测 PEM 格式证书文件 (-----BEGIN CERTIFICATE-----)
+- [x] **SENS-05**: 检测 PGP 私钥文件 (-----BEGIN PGP PRIVATE KEY BLOCK-----)
+- [x] **SENS-06**: 检测 PEM 格式证书文件 (-----BEGIN CERTIFICATE-----)
 
 ### 缓存文件检测
 
@@ -106,8 +106,8 @@
 | SENS-02 | Phase 6 | Complete |
 | SENS-03 | Phase 6 | Complete |
 | SENS-04 | Phase 6 | Complete |
-| SENS-05 | Phase 11 | Pending |
-| SENS-06 | Phase 11 | Pending |
+| SENS-05 | Phase 11 | Complete |
+| SENS-06 | Phase 11 | Complete |
 | CACHE-01 | Phase 6 | Pending |
 | CACHE-02 | Phase 6 | Pending |
 | CACHE-03 | Phase 6 | Pending |

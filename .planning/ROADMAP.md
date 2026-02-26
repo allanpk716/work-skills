@@ -16,7 +16,7 @@
 - [ ] **Phase 6: Core Scanning Infrastructure** - 构建规则引擎和核心检测器(密钥、缓存、配置文件)
 - [ ] **Phase 7: Scanning Execution & Reporting** - 实现扫描流程、问题报告和自定义规则
 - [ ] **Phase 8: Internal Info Detection & Integration** - 添加内部信息检测、集成到 SKILL.md
-- [ ] **Phase 9: Windows Testing & Optimization** - Windows 兼容性测试和性能优化
+- [x] **Phase 9: Windows Testing & Optimization** - Windows 兼容性测试和性能优化 ✓
 - [ ] **Phase 10: UX Polish & Production Ready** - 双语支持、结果分级、最终打磨
 
 ## Phase Details
@@ -109,9 +109,9 @@
 4. 二进制文件被正确跳过,不触发错误
 
 **Plans:** 3 plans
-- [ ] 09-01-PLAN.md — 创建测试框架和性能基准(Wave 0)
-- [ ] 09-02-PLAN.md — 实现性能优化和 Windows 兼容性(Wave 1)
-- [ ] 09-03-PLAN.md — 实现跳过扫描选项和最终验证(Wave 2)
+- [x] 09-01-PLAN.md — 创建测试框架和性能基准(Wave 0) ✓
+- [x] 09-02-PLAN.md — 实现性能优化和 Windows 兼容性(Wave 1) ✓
+- [x] 09-03-PLAN.md — 实现跳过扫描选项和最终验证(Wave 2) ✓
 
 ---
 
@@ -141,7 +141,7 @@
 | 6. Core Scanning Infrastructure | 0/4 | Not started | - |
 | 7. Scanning Execution & Reporting | 0/3 | Not started | - |
 | 8. Internal Info Detection & Integration | 0/2 | Not started | - |
-| 9. Windows Testing & Optimization | 0/3 | Not started | - |
+| 9. Windows Testing & Optimization | 3/3 | ✅ Complete | 2026-02-26 |
 | 10. UX Polish & Production Ready | 0/3 | Not started | - |
 
 ---

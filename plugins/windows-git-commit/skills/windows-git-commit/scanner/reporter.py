@@ -122,10 +122,11 @@ def format_issues_table(issues: List[ScanIssue], use_colors: bool = True, lang: 
     - Suggestion: Fix suggestion
     """
     if not issues:
+        msg = get_message('report_no_issues', lang)
         if use_colors:
-            return Fore.GREEN + get_message('report_no_issues', lang) + Style.RESET_ALL
+            return Fore.GREEN + "[OK] " + msg + Style.RESET_ALL
         else:
-            return get_message('report_no_issues', lang)
+            return "[OK] " + msg
 
     # Sort by severity (most severe first) - CONTEXT.md decision
     issues.sort(key=lambda x: SEVERITY_ORDER.get(x.severity, 4))
@@ -219,10 +220,11 @@ def print_scan_report(issues: List[ScanIssue], use_colors: bool = None, lang: st
         print("  " + get_message('report_action_4', lang))
     else:
         # No issues found
+        msg = get_message('report_no_issues', lang)
         if use_colors:
-            print(Fore.GREEN + "✓ " + get_message('report_no_issues', lang) + Style.RESET_ALL)
+            print(Fore.GREEN + "[OK] " + msg + Style.RESET_ALL)
         else:
-            print("✓ " + get_message('report_no_issues', lang))
+            print("[OK] " + msg)
 
 
 # Convenience function for creating issues

@@ -44,11 +44,11 @@
 
 ### 问题报告
 
-- [ ] **RPT-01**: 发现问题时阻止 git commit 执行
-- [ ] **RPT-02**: 显示问题类型(敏感信息/缓存文件/配置文件/内部信息)
-- [ ] **RPT-03**: 显示文件路径和行号
-- [ ] **RPT-04**: 显示问题内容片段(敏感信息部分脱敏)
-- [ ] **RPT-05**: 提供修复建议(如"添加到 .gitignore")
+- [x] **RPT-01**: 发现问题时阻止 git commit 执行
+- [x] **RPT-02**: 显示问题类型(敏感信息/缓存文件/配置文件/内部信息)
+- [x] **RPT-03**: 显示文件路径和行号
+- [x] **RPT-04**: 显示问题内容片段(敏感信息部分脱敏)
+- [x] **RPT-05**: 提供修复建议(如"添加到 .gitignore")
 
 ### 自定义规则
 
@@ -119,11 +119,11 @@
 | EXEC-02 | Phase 7 | Pending |
 | EXEC-03 | Phase 7 | Pending |
 | EXEC-04 | Phase 7 | Pending |
-| RPT-01 | Phase 7 | Pending |
-| RPT-02 | Phase 7 | Pending |
-| RPT-03 | Phase 7 | Pending |
-| RPT-04 | Phase 7 | Pending |
-| RPT-05 | Phase 7 | Pending |
+| RPT-01 | Phase 7 | Complete |
+| RPT-02 | Phase 7 | Complete |
+| RPT-03 | Phase 7 | Complete |
+| RPT-04 | Phase 7 | Complete |
+| RPT-05 | Phase 7 | Complete |
 | CUST-01 | Phase 7 | Pending |
 | CUST-02 | Phase 7 | Pending |
 | CUST-03 | Phase 7 | Complete |

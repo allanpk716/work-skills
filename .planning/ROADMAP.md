@@ -18,6 +18,8 @@
 - [ ] **Phase 8: Internal Info Detection & Integration** - 添加内部信息检测、集成到 SKILL.md
 - [x] **Phase 9: Windows Testing & Optimization** - Windows 兼容性测试和性能优化 ✓
 - [x] **Phase 10: UX Polish & Production Ready** - 双语支持、结果分级、最终打磨 (completed 2026-02-26)
+- [ ] **Phase 11: Fix Orphaned Security Rules** - 修复 PGP/PEM 检测规则的集成差距
+- [ ] **Phase 12: Verify Phase 9 Completion** - 创建 Phase 9 VERIFICATION.md 并验证功能
 
 ## Phase Details
 
@@ -134,6 +136,49 @@
 
 ---
 
+### Phase 11: Fix Orphaned Security Rules
+
+**Goal:** 确保 PGP 私钥和 PEM 证书检测规则被正确集成到扫描流程中
+
+**Depends on:** Phase 10
+
+**Requirements:**
+- SENS-05 (PGP 私钥检测)
+- SENS-06 (PEM 证书检测)
+
+**Gap Closure:** 修复审计发现的集成差距 - 规则已实现但未激活
+
+**Success Criteria** (what must be TRUE):
+1. 用户运行扫描器可以检测到 PGP 私钥文件
+2. 用户运行扫描器可以检测到 PEM 格式证书文件
+3. PGP_KEY_RULE 和 PEM_CERT_RULE 被正确导入到 executor.py
+4. 所有敏感信息规则在扫描流程中生效
+
+**Plans:** TBD
+
+---
+
+### Phase 12: Verify Phase 9 Completion
+
+**Goal:** 验证 Windows 测试和优化阶段的完成情况,确保所有功能正常工作
+
+**Depends on:** Phase 11
+
+**Requirements:**
+- UX-02 (紧急情况跳过扫描)
+
+**Gap Closure:** 创建 Phase 9 缺失的 VERIFICATION.md 文档
+
+**Success Criteria** (what must be TRUE):
+1. Phase 9 的 VERIFICATION.md 文档已创建
+2. UX-02 需求(跳过扫描选项)功能已验证
+3. Windows 兼容性已文档化
+4. 性能优化结果已文档化(16.77ms 达成)
+
+**Plans:** TBD
+
+---
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -143,6 +188,8 @@
 | 8. Internal Info Detection & Integration | 0/2 | Not started | - |
 | 9. Windows Testing & Optimization | 3/3 | ✅ Complete | 2026-02-26 |
 | 10. UX Polish & Production Ready | 2/2 | Complete    | 2026-02-26 |
+| 11. Fix Orphaned Security Rules | 0/1 | Pending | - |
+| 12. Verify Phase 9 Completion | 0/1 | Pending | - |
 
 ---
 
@@ -156,7 +203,8 @@
 
 | Category | Requirements | Phase |
 |----------|--------------|-------|
-| 敏感信息检测 | SENS-01, SENS-02, SENS-03, SENS-04, SENS-05, SENS-06 | Phase 6 |
+| 敏感信息检测 | SENS-01, SENS-02, SENS-03, SENS-04 | Phase 6 |
+| 敏感信息检测 (修复) | SENS-05, SENS-06 | Phase 11 |
 | 缓存文件检测 | CACHE-01, CACHE-02, CACHE-03, CACHE-04 | Phase 6 |
 | 配置文件检测 | CONF-01, CONF-02, CONF-03 | Phase 6 |
 | 扫描执行 | EXEC-01, EXEC-02, EXEC-03, EXEC-04 | Phase 7 |
@@ -164,7 +212,7 @@
 | 自定义规则 | CUST-01, CUST-02, CUST-04 | Phase 7 |
 | 自定义规则(白名单) | CUST-03 | Phase 8 |
 | 内部信息检测 | INTL-01, INTL-02, INTL-03 | Phase 8 |
-| 用户体验 | UX-02 | Phase 9 |
+| 用户体验(验证) | UX-02 | Phase 12 |
 | 用户体验 | UX-01, UX-03, UX-04 | Phase 10 |
 
 ---

@@ -15,15 +15,20 @@ def get_staged_files(repo_root: Path) -> List[Tuple[Path, str]]:
 
     Raises:
         subprocess.CalledProcessError: Git 命令执行失败
+        subprocess.TimeoutExpired: Git 命令超时
     """
     # 获取暂存区文件列表
-    result = subprocess.run(
-        ['git', 'diff', '--cached', '--name-only'],
-        cwd=repo_root,
-        capture_output=True,
-        text=True,
-        check=True
-    )
+    try:
+        result = subprocess.run(
+            ['git', 'diff', '--cached', '--name-only'],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=10  # Windows subprocess timeout protection
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("Git command timed out after 10 seconds")
 
     file_paths = [repo_root / p for p in result.stdout.strip().split('\n') if p]
 

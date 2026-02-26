@@ -190,6 +190,66 @@ Security scanning is enabled by default. To disable:
 
 </security_scanning>
 
+<emergency_skip>
+## Emergency Skip (USE WITH CAUTION)
+
+**If you absolutely must commit without scanning in an emergency:**
+
+```bash
+git commit --no-verify -m "emergency fix"
+```
+
+**WARNING: This bypasses ALL security checks!**
+
+**Risks:**
+- Sensitive information (AWS keys, API tokens) may be committed
+- Cache files (node_modules, __pycache__) may be included
+- Configuration files (.env, credentials.json) may leak
+- Internal information (private IPs, internal domains) may be exposed
+
+**Best practices when using --no-verify:**
+1. **Only use in genuine emergencies** (production down, critical bug fix)
+2. **Review the commit manually** before pushing: `git show HEAD`
+3. **Check for sensitive content**: `git diff HEAD~1`
+4. **Consider using whitelist comments** instead (see Security Scanning section)
+5. **Document why skip was necessary** in commit message
+
+**Alternative: Whitelist specific lines**
+
+Instead of bypassing all checks, use whitelist comments:
+
+```python
+# Skip specific line
+server_ip = "10.0.0.1"  # gitcheck:ignore-line
+
+# Skip entire file
+# gitcheck:ignore-file
+
+# Skip specific rule
+admin_email = "admin@company.com"  # gitcheck:ignore-rule:INTL-03
+```
+
+**How --no-verify works:**
+
+The `--no-verify` flag is a standard Git option that skips all pre-commit hooks, including the security scanner. This is a Git built-in feature, not specific to this skill.
+
+**Security implications:**
+
+When you use `--no-verify`:
+- The commit proceeds immediately without scanning
+- All security checks are bypassed
+- Sensitive data may be committed to your repository
+- Once pushed, sensitive data is in remote history (very hard to remove)
+
+**If you accidentally commit sensitive data:**
+
+1. **Do NOT push** if you haven't pushed yet
+2. **Amend the commit**: `git commit --amend` (remove sensitive content first)
+3. **If already pushed**: Contact repository admin immediately
+4. **Rotate compromised credentials**: Change passwords, regenerate API keys
+
+</emergency_skip>
+
 <one_time_setup>
 **推荐的一键配置(完全自动化):**
 

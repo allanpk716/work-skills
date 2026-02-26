@@ -1,9 +1,11 @@
 """
 Scan result reporter with colored table output
 Phase 7: Scanning Execution & Reporting
+Phase 10: UX Polish - smart color detection
 """
 from dataclasses import dataclass
 from typing import List
+import sys
 from colorama import Fore, Style, just_fix_windows_console
 from tabulate import tabulate
 
@@ -80,15 +82,35 @@ def mask_sensitive(text: str, show_chars: int = 4) -> str:
     return f"{text[:show_chars]}***{text[-show_chars:]}"
 
 
-def format_issues_table(issues: List[ScanIssue]) -> str:
+def should_use_colors() -> bool:
+    """
+    Determine if colors should be used based on output destination
+
+    Colors are enabled when:
+    - Output is to a TTY (terminal)
+    - Not redirected to a file or pipe
+
+    Colors are disabled when:
+    - Output is redirected to a file
+    - Output is piped to another command
+    - Running in non-interactive environments
+
+    Returns:
+        True if colors should be used, False otherwise
+    """
+    return sys.stdout.isatty()
+
+
+def format_issues_table(issues: List[ScanIssue], use_colors: bool = True) -> str:
     """
     Format issues as colored table
 
     Args:
         issues: List of detected issues
+        use_colors: Whether to use ANSI color codes
 
     Returns:
-        Formatted table string with ANSI color codes
+        Formatted table string with ANSI color codes (if enabled)
 
     Table columns (from CONTEXT.md):
     - Rule ID: Colored by severity
@@ -98,7 +120,10 @@ def format_issues_table(issues: List[ScanIssue]) -> str:
     - Suggestion: Fix suggestion
     """
     if not issues:
-        return Fore.GREEN + "✓ No issues found." + Style.RESET_ALL
+        if use_colors:
+            return Fore.GREEN + "✓ No issues found." + Style.RESET_ALL
+        else:
+            return "✓ No issues found."
 
     # Sort by severity (most severe first) - CONTEXT.md decision
     issues.sort(key=lambda x: SEVERITY_ORDER.get(x.severity, 4))
@@ -106,31 +131,38 @@ def format_issues_table(issues: List[ScanIssue]) -> str:
     table_data = []
     for issue in issues:
         # Select color based on severity
-        color = SEVERITY_COLORS.get(issue.severity, Fore.WHITE)
+        color = SEVERITY_COLORS.get(issue.severity, Fore.WHITE) if use_colors else ''
 
-        # Build table row with colored severity
+        # Build table row with colored severity (if enabled)
+        rule_id = issue.rule_id
+        if use_colors:
+            rule_id = color + issue.rule_id + Style.RESET_ALL
+
         table_data.append([
-            color + issue.rule_id + Style.RESET_ALL,
+            rule_id,
             issue.file_path,
             str(issue.line_number),
             mask_sensitive(issue.content_snippet),
             issue.suggestion
         ])
 
-    # Create colored headers
-    headers = [
-        Fore.CYAN + 'Rule ID' + Style.RESET_ALL,
-        Fore.CYAN + 'File' + Style.RESET_ALL,
-        Fore.CYAN + 'Line' + Style.RESET_ALL,
-        Fore.CYAN + 'Content' + Style.RESET_ALL,
-        Fore.CYAN + 'Suggestion' + Style.RESET_ALL
-    ]
+    # Create headers
+    if use_colors:
+        headers = [
+            Fore.CYAN + 'Rule ID' + Style.RESET_ALL,
+            Fore.CYAN + 'File' + Style.RESET_ALL,
+            Fore.CYAN + 'Line' + Style.RESET_ALL,
+            Fore.CYAN + 'Content' + Style.RESET_ALL,
+            Fore.CYAN + 'Suggestion' + Style.RESET_ALL
+        ]
+    else:
+        headers = ['Rule ID', 'File', 'Line', 'Content', 'Suggestion']
 
     # Generate table using tabulate
     return tabulate(table_data, headers=headers, tablefmt='simple')
 
 
-def print_scan_report(issues: List[ScanIssue]) -> None:
+def print_scan_report(issues: List[ScanIssue], use_colors: bool = None) -> None:
     """
     Print complete scan report to console
 
@@ -143,28 +175,45 @@ def print_scan_report(issues: List[ScanIssue]) -> None:
 
     Args:
         issues: List of detected issues
+        use_colors: Whether to use ANSI colors (None = auto-detect from TTY)
     """
+    # Auto-detect color usage if not specified
+    if use_colors is None:
+        use_colors = should_use_colors()
+
     # Print header
     print("\n" + "="*60)
-    print(Fore.CYAN + "Git Security Scan Report" + Style.RESET_ALL)
+    if use_colors:
+        print(Fore.CYAN + "Git Security Scan Report" + Style.RESET_ALL)
+    else:
+        print("Git Security Scan Report")
     print("="*60 + "\n")
 
     if issues:
         # Issue summary
-        print(Fore.RED + f"Found {len(issues)} issue(s):\n" + Style.RESET_ALL)
+        if use_colors:
+            print(Fore.RED + f"Found {len(issues)} issue(s):\n" + Style.RESET_ALL)
+        else:
+            print(f"Found {len(issues)} issue(s):\n")
 
         # Print table
-        print(format_issues_table(issues))
+        print(format_issues_table(issues, use_colors))
 
         # Print suggested actions
-        print("\n" + Fore.YELLOW + "Suggested actions:" + Style.RESET_ALL)
+        if use_colors:
+            print("\n" + Fore.YELLOW + "Suggested actions:" + Style.RESET_ALL)
+        else:
+            print("\nSuggested actions:")
         print("  1. Remove sensitive data from staged files")
         print("  2. Add files to .gitignore if needed: git reset HEAD <file>")
         print("  3. Re-stage changes: git add <file>")
         print("  4. Retry commit")
     else:
         # No issues found
-        print(Fore.GREEN + "✓ No issues detected." + Style.RESET_ALL)
+        if use_colors:
+            print(Fore.GREEN + "✓ No issues detected." + Style.RESET_ALL)
+        else:
+            print("✓ No issues detected.")
 
 
 # Convenience function for creating issues

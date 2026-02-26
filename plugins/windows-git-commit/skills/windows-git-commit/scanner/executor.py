@@ -15,6 +15,8 @@ from scanner.rules import (
     GITHUB_TOKEN_RULE,
     GENERIC_API_KEY_RULE,
     SSH_KEY_RULE,
+    PGP_KEY_RULE,
+    PEM_CERT_RULE,
 
     # Cache/config rules
     is_cache_file,
@@ -136,6 +138,8 @@ def run_pre_commit_scan(repo_root: Path = None, use_colors: bool = None, lang: s
                 GITHUB_TOKEN_RULE,
                 GENERIC_API_KEY_RULE,
                 SSH_KEY_RULE,
+                PGP_KEY_RULE,      # SENS-05
+                PEM_CERT_RULE,     # SENS-06
             ]
 
             for rule in sensitive_rules:

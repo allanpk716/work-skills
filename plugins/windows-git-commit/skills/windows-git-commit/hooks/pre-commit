@@ -41,17 +41,17 @@ def main():
 
         if success:
             # No issues found - allow commit
-            print("\n✓ Security scan passed. Proceeding with commit.\n")
+            print("\n[OK] Security scan passed. Proceeding with commit.\n")
             sys.exit(0)
         else:
             # Issues found - block commit (RPT-01)
-            print(f"\n✗ Security scan failed. Found {len(issues)} issue(s).")
+            print(f"\n[ERROR] Security scan failed. Found {len(issues)} issue(s).")
             print("Commit blocked. Please fix issues before committing.\n")
             sys.exit(1)
 
     except Exception as e:
         # Unexpected error - log but don't block commit (fail-open)
-        print(f"\n⚠ Scanner error: {e}")
+        print(f"\n[WARNING] Scanner error: {e}")
         print("Warning: Scan failed, but allowing commit to proceed.\n")
         sys.exit(0)
 

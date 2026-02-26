@@ -35,6 +35,22 @@ from .config_files import (
     scan_config_content,
 )
 
+# Phase 8: 内部信息检测规则
+from .internal_info import (
+    PRIVATE_IP_RULE,
+    INTERNAL_DOMAIN_RULE,
+    EMAIL_RULE,
+    should_report_email,
+    PUBLIC_EMAIL_DOMAINS,
+)
+
+# Phase 8: 白名单规则
+from .whitelist import (
+    WhitelistDirective,
+    parse_whitelist_comments,
+    should_skip_detection,
+)
+
 __all__ = [
     # 基类
     'DetectionRule',
@@ -68,4 +84,16 @@ __all__ = [
     'CONFIG_FILE_RULES',
     'is_config_file',
     'scan_config_content',
+
+    # Phase 8: 内部信息检测
+    'PRIVATE_IP_RULE',
+    'INTERNAL_DOMAIN_RULE',
+    'EMAIL_RULE',
+    'should_report_email',
+    'PUBLIC_EMAIL_DOMAINS',
+
+    # Phase 8: 白名单
+    'WhitelistDirective',
+    'parse_whitelist_comments',
+    'should_skip_detection',
 ]

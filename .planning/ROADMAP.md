@@ -95,7 +95,7 @@
 
 ### Phase 9: Windows Testing & Optimization
 
-**Goal:** 开发者在 Windows 系统上获得快速、稳定的扫描体验
+**Goal:** 开发者在 Windows 系统上获得快速、稳定的扫描体验,并能在紧急情况下跳过扫描
 
 **Depends on:** Phase 8
 
@@ -108,7 +108,10 @@
 3. 中等规模仓库的扫描时间小于 2 秒
 4. 二进制文件被正确跳过,不触发错误
 
-**Plans:** TBD
+**Plans:** 3 plans
+- [ ] 09-01-PLAN.md — 创建测试框架和性能基准(Wave 0)
+- [ ] 09-02-PLAN.md — 实现性能优化和 Windows 兼容性(Wave 1)
+- [ ] 09-03-PLAN.md — 实现跳过扫描选项和最终验证(Wave 2)
 
 ---
 

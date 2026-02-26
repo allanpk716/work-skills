@@ -31,9 +31,9 @@
 
 ### 内部信息检测
 
-- [ ] **INTL-01**: 检测内网 IP 地址 (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
-- [ ] **INTL-02**: 检测内部域名 (*.internal, *.local, *.corp, *.intranet)
-- [ ] **INTL-03**: 检测邮箱地址 (用于识别可能的内部邮箱泄露)
+- [x] **INTL-01**: 检测内网 IP 地址 (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+- [x] **INTL-02**: 检测内部域名 (*.internal, *.local, *.corp, *.intranet)
+- [x] **INTL-03**: 检测邮箱地址 (用于识别可能的内部邮箱泄露)
 
 ### 扫描执行
 
@@ -54,7 +54,7 @@
 
 - [ ] **CUST-01**: 读取项目 .gitignore 文件作为排除规则
 - [ ] **CUST-02**: 支持全局 .gitignore (~/.gitignore)
-- [ ] **CUST-03**: 支持在 .gitignore 中添加扫描白名单(使用注释标记)
+- [x] **CUST-03**: 支持在 .gitignore 中添加扫描白名单(使用注释标记)
 - [ ] **CUST-04**: 内置默认规则 + 用户自定义规则组合
 
 ### 用户体验
@@ -126,11 +126,11 @@
 | RPT-05 | Phase 7 | Pending |
 | CUST-01 | Phase 7 | Pending |
 | CUST-02 | Phase 7 | Pending |
-| CUST-03 | Phase 7 | Pending |
+| CUST-03 | Phase 7 | Complete |
 | CUST-04 | Phase 7 | Pending |
-| INTL-01 | Phase 8 | Pending |
-| INTL-02 | Phase 8 | Pending |
-| INTL-03 | Phase 8 | Pending |
+| INTL-01 | Phase 8 | Complete |
+| INTL-02 | Phase 8 | Complete |
+| INTL-03 | Phase 8 | Complete |
 | UX-02 | Phase 9 | Pending |
 | UX-01 | Phase 10 | Pending |
 | UX-03 | Phase 10 | Pending |

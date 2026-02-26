@@ -13,15 +13,16 @@
 
 ## Current Position
 
-**Phase:** 6 - Core Scanning Infrastructure
-**Plan:** None started
-**Status:** Milestone complete
+**Phase:** 8 - Internal Info Detection & Integration
+**Plan:** 01 - Internal Info Detection Rules (completed)
+**Status:** In progress
 
 **Progress:**
 ```
-[ ] Phase 6: Core Scanning Infrastructure
-[ ] Phase 7: Scanning Execution & Reporting
-[ ] Phase 8: Internal Info Detection & Integration
+[████████░░] 77%
+[x] Phase 6: Core Scanning Infrastructure
+[x] Phase 7: Scanning Execution & Reporting
+[►] Phase 8: Internal Info Detection & Integration (1/2 plans complete)
 [ ] Phase 9: Windows Testing & Optimization
 [ ] Phase 10: UX Polish & Production Ready
 ```
@@ -48,6 +49,11 @@
 | 阻止提交而非警告 | 强制用户处理安全问题,更安全 | 2026-02-25 |
 | Windows 专项测试 | 确保 Windows 兼容性和性能 | 2026-02-25 |
 | 双语支持 | 提升用户体验,支持中英文 | 2026-02-25 |
+| 邮箱检测用简化 RFC 5322 | 平衡准确性和可靠性,避免复杂正则 | 2026-02-26 |
+| 白名单注释宽松解析 | 大小写不敏感且允许空格,提升用户体验 | 2026-02-26 |
+| 行号从 1 开始 | 符合用户习惯和错误信息惯例 | 2026-02-26 |
+| 公开邮箱排除列表 | 包含开发平台邮箱,减少误报 | 2026-02-26 |
+| Phase 08 P01 | 2 | 4 tasks | 2 files |
 
 ### Active Todos
 
@@ -87,7 +93,7 @@ None currently.
 
 ## Session Continuity
 
-**Last session:** 2026-02-25T15:10:11.210Z
+**Last session:** 2026-02-26T00:16:07.006Z
 **Last action:** 创建 v1.1 里程碑路线图
 
 **Next actions:**

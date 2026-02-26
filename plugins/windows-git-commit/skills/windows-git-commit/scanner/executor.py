@@ -34,7 +34,7 @@ from scanner.rules.whitelist import (
 from scanner.reporter import ScanIssue, create_issue, print_scan_report, should_use_colors
 
 
-def run_pre_commit_scan(repo_root: Path = None, use_colors: bool = None) -> Tuple[bool, List[ScanIssue]]:
+def run_pre_commit_scan(repo_root: Path = None, use_colors: bool = None, lang: str = 'zh') -> Tuple[bool, List[ScanIssue]]:
     """
     Execute pre-commit scanning workflow
 
@@ -53,6 +53,7 @@ def run_pre_commit_scan(repo_root: Path = None, use_colors: bool = None) -> Tupl
     Args:
         repo_root: Git repository root directory (auto-detect if None)
         use_colors: Whether to use colored output (None = auto-detect from TTY)
+        lang: Language code for messages ('zh' or 'en'), defaults to 'zh'
 
     Returns:
         Tuple of (success: bool, issues: List[ScanIssue])
@@ -218,7 +219,7 @@ def run_pre_commit_scan(repo_root: Path = None, use_colors: bool = None) -> Tupl
                     ))
 
         # 6. Print report and return results
-        print_scan_report(issues, use_colors=use_colors)
+        print_scan_report(issues, use_colors=use_colors, lang=lang)
 
         success = len(issues) == 0
         return success, issues

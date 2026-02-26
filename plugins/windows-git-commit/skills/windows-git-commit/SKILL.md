@@ -24,6 +24,26 @@ The skill will:
 6. Push to remote repository using command-line git (no GUI)
 7. Return only the summary result
 
+**Security Scanning (Automatic):**
+
+This skill automatically scans your staged files for security issues before commit:
+- ✓ Sensitive information (AWS keys, API tokens, SSH keys)
+- ✓ Cache and build files (node_modules, __pycache__, etc.)
+- ✓ Configuration files (.env, credentials.json, etc.)
+- ✓ Internal information (private IPs, internal domains, emails)
+
+If issues are found, the commit is blocked with a detailed report.
+
+**Whitelist comments:**
+```python
+server_ip = "10.0.0.1"  # gitcheck:ignore-line
+# gitcheck:ignore-file  (ignore entire file)
+# gitcheck:ignore-rule:INTL-01  (ignore specific rule)
+```
+
+**Disable scanning:**
+If needed, you can disable scanning in SKILL.md configuration.
+
 **前提条件:**
 - Pageant 必须正在运行并加载了 PPK 密钥
 - TortoiseGit 必须已安装 (包含 TortoisePlink.exe)
@@ -76,6 +96,7 @@ This skill solves these problems by:
 This skill uses the Task tool to launch a Bash agent that executes all Git operations. The workflow is:
 
 1. **Launch Subagent**: Start a bash agent with run_in_background=true
+1.5. **Security Scan**: Run pre-commit security scanner (automatic)
 2. **Configure SSH**: Set `git config --global core.sshcommand "plink"` (one-time)
 3. **Analyze Changes**: Run git status and git diff to understand what changed
 4. **Generate Message**: Create a commit message based on the changes
@@ -107,6 +128,67 @@ The skill automatically detects and configures:
 - **Git configuration**: Automatically configures `core.sshcommand` with the detected path
 - **Path format conversion**: Converts Git Bash paths to Windows format with proper escaping
 </workflow>
+
+<security_scanning>
+## Automatic Security Scanning
+
+**What gets scanned:**
+- **Sensitive Information:**
+  - AWS credentials (Access Key, Secret Key, Session Token)
+  - Git service tokens (GitHub, GitLab, Bitbucket)
+  - Generic API keys and secrets
+  - SSH private keys
+  - PGP private keys
+  - PEM certificates
+
+- **Cache & Build Files:**
+  - Python cache (__pycache__, *.pyc)
+  - Node.js dependencies (node_modules/, package-lock.json)
+  - Build artifacts (dist/, build/, *.class)
+  - System files (*.log, *.tmp, .DS_Store)
+
+- **Configuration Files:**
+  - Environment files (.env, .env.local)
+  - Credentials files (credentials.json, secrets.yaml)
+  - Config files with sensitive fields
+
+- **Internal Information:**
+  - Private IP addresses (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+  - Internal domains (*.internal, *.local, *.corp, *.intranet)
+  - Email addresses (with exclusion list for public emails)
+
+**Whitelist Comments:**
+Control false positives with special comments:
+
+```python
+# Skip specific line
+server_ip = "10.0.0.1"  # gitcheck:ignore-line
+
+# Skip entire file
+# gitcheck:ignore-file
+
+# Skip specific rule
+admin_email = "admin@company.com"  # gitcheck:ignore-rule:INTL-03
+
+# Skip all IP detections
+internal_host = "192.168.1.1"  # gitcheck:ignore-all-ips
+```
+
+**Configuration:**
+Security scanning is enabled by default. To disable:
+
+1. Open `plugins/windows-git-commit/skills/windows-git-commit/SKILL.md`
+2. Add configuration:
+   ```yaml
+   security_scanner:
+     enabled: false
+   ```
+
+**Error Handling:**
+- Scanner errors do NOT block commits (shows warning only)
+- Detected issues MUST be resolved or whitelisted (blocks commit)
+
+</security_scanning>
 
 <one_time_setup>
 **推荐的一键配置(完全自动化):**

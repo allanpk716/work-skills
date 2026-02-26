@@ -62,7 +62,7 @@
 - [x] **UX-01**: 清晰区分警告和错误级别的问题
 - [ ] **UX-02**: 提供跳过扫描的选项(紧急情况使用,需明确提示风险)
 - [x] **UX-03**: 扫描结果使用彩色输出提高可读性
-- [ ] **UX-04**: 支持中文和英文提示信息
+- [x] **UX-04**: 支持中文和英文提示信息
 
 ## v2 Requirements
 
@@ -134,7 +134,7 @@
 | UX-02 | Phase 9 | Pending |
 | UX-01 | Phase 10 | Complete |
 | UX-03 | Phase 10 | Complete |
-| UX-04 | Phase 10 | Pending |
+| UX-04 | Phase 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 28 total

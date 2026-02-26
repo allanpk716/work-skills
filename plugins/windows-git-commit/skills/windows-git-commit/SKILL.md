@@ -44,6 +44,28 @@ server_ip = "10.0.0.1"  # gitcheck:ignore-line
 **Disable scanning:**
 If needed, you can disable scanning in SKILL.md configuration.
 
+**Language and Color Options:**
+
+The scanner supports bilingual output (Chinese/English) and colored output:
+- **Default language:** Chinese (zh)
+- **Colors:** Auto-detected based on terminal support
+- Colors work in CMD, PowerShell, and Git Bash
+- Colors automatically disabled for file/pipe output
+
+For programmatic usage:
+```python
+from scanner.executor import run_pre_commit_scan
+
+# English output
+run_pre_commit_scan(lang='en')
+
+# Chinese output (default)
+run_pre_commit_scan(lang='zh')
+
+# Disable colors
+run_pre_commit_scan(use_colors=False)
+```
+
 **前提条件:**
 - Pageant 必须正在运行并加载了 PPK 密钥
 - TortoiseGit 必须已安装 (包含 TortoisePlink.exe)
@@ -189,6 +211,146 @@ Security scanning is enabled by default. To disable:
 - Detected issues MUST be resolved or whitelisted (blocks commit)
 
 </security_scanning>
+
+<language_support>
+## Language Support
+
+The scanner supports bilingual output in Chinese and English.
+
+**Default Language:** Chinese (zh)
+
+**Switch Language:**
+
+The scanner currently uses Chinese (zh) as the default language. To switch to English output, you can modify the scanner call in the pre-commit hook or use environment variables (future enhancement).
+
+**Example Output:**
+
+Chinese:
+```
+============================================================
+Git 安全扫描报告
+============================================================
+
+发现问题: 2 个:
+
+规则 ID     文件          行号  内容              建议
+---------  -----------  ------  ----------------  -----------------------
+SENS-01    config.py        10  AKIA***EXAMPLE    移除 AWS Access Key...
+CACHE-01   __pycache__       0  <cache file>      添加到 .gitignore
+
+建议操作:
+  1. 从暂存文件中移除敏感数据
+  2. 如需要,将文件添加到 .gitignore: git reset HEAD <file>
+  3. 重新暂存更改: git add <file>
+  4. 重试提交
+```
+
+English:
+```
+============================================================
+Git Security Scan Report
+============================================================
+
+Found 2 issue(s):
+
+Rule ID    File          Line  Content           Suggestion
+---------  -----------  -----  ----------------  -----------------------
+SENS-01    config.py       10  AKIA***EXAMPLE    Remove AWS Access Key...
+CACHE-01   __pycache__      0  <cache file>      Add to .gitignore
+
+Suggested actions:
+  1. Remove sensitive data from staged files
+  2. Add files to .gitignore if needed: git reset HEAD <file>
+  3. Re-stage changes: git add <file>
+  4. Retry commit
+```
+
+</language_support>
+
+<color_output>
+## Color Output
+
+The scanner uses colored output to improve readability.
+
+**Default:** Colors enabled (auto-detected)
+
+**Color Scheme:**
+
+- **CRITICAL** (red): Blocks commit, must be resolved
+- **HIGH** (light red): Blocks commit, important security issue
+- **MEDIUM** (yellow): Blocks commit, configuration issue
+- **WARNING** (light yellow): Shows warning (informational)
+
+**Terminal Support:**
+
+Colors work automatically on:
+- Windows CMD
+- Windows PowerShell
+- Git Bash
+- Other terminals with ANSI support
+
+**Graceful Degradation:**
+
+When output is redirected to a file or terminal doesn't support colors:
+- Colors are automatically disabled
+- Plain text output (no ANSI codes)
+
+**Manual Override:**
+
+Colors can be controlled via the `use_colors` parameter in programmatic usage:
+```python
+from scanner.executor import run_pre_commit_scan
+
+# Auto-detect (default)
+run_pre_commit_scan(use_colors=None)
+
+# Force enable
+run_pre_commit_scan(use_colors=True)
+
+# Disable colors
+run_pre_commit_scan(use_colors=False)
+```
+
+</color_output>
+
+<severity_levels>
+## Severity Levels
+
+Issues are classified by severity level:
+
+**CRITICAL (blocks commit):**
+- AWS credentials, API keys, tokens
+- SSH/PGP private keys
+- High-risk secrets
+
+**HIGH (blocks commit):**
+- Sensitive configuration fields
+- Internal information (private IPs, internal domains)
+- Email addresses
+
+**MEDIUM (blocks commit):**
+- Configuration files (.env, credentials.json)
+- Potentially sensitive files
+
+**WARNING (informational):**
+- Cache files (future: will not block commit)
+- Currently treated as medium severity
+
+**Behavior:**
+
+- All severity levels currently block commits
+- Future enhancement: WARNING level will allow commits with warning only
+- All issues must be resolved or whitelisted before commit
+
+**Output Format:**
+
+Colors indicate severity:
+- Red: CRITICAL issues
+- Light Red: HIGH issues
+- Yellow: MEDIUM issues
+- Light Yellow: WARNING issues
+
+</severity_levels>
 
 <emergency_skip>
 ## Emergency Skip (USE WITH CAUTION)

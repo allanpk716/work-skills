@@ -37,7 +37,7 @@
 
 ### 扫描执行
 
-- [ ] **EXEC-01**: 在 git commit 之前自动扫描暂存区内容
+- [x] **EXEC-01**: 在 git commit 之前自动扫描暂存区内容
 - [ ] **EXEC-02**: 扫描速度优化,目标 <2 秒完成(中等规模仓库)
 - [ ] **EXEC-03**: 支持扫描新文件、修改文件、删除文件的内容
 - [ ] **EXEC-04**: 正确处理二进制文件(跳过二进制文件的内容扫描)
@@ -115,7 +115,7 @@
 | CONF-01 | Phase 6 | Pending |
 | CONF-02 | Phase 6 | Pending |
 | CONF-03 | Phase 6 | Pending |
-| EXEC-01 | Phase 7 | Pending |
+| EXEC-01 | Phase 7 | Complete |
 | EXEC-02 | Phase 7 | Pending |
 | EXEC-03 | Phase 7 | Pending |
 | EXEC-04 | Phase 7 | Pending |

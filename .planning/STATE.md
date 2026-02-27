@@ -131,6 +131,10 @@ None currently.
 - Phase 6: 检测规则库需要参考专业工具(git-secrets, TruffleHog, GitLeaks)的模式
 - Phase 9: Windows 性能基准已建立并验证 (RESOLVED 2026-02-26)
 
+### Roadmap Evolution
+
+- Phase 13 added: Add slash commands /notify-enable and /notify-disable to claude-notify plugin for toggling notification channels (pushover/windows)
+
 ## Session Continuity
 
 **Last session:** 2026-02-26T09:51:28.538Z

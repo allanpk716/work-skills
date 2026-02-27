@@ -100,6 +100,16 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | v1.1 Git Security | 7 | 14 | ✅ Complete | 2026-02-27 |
 | v1.2 待规划 | - | - | 📋 Planned | - |
 
+### Phase 13: Add slash commands /notify-enable and /notify-disable to claude-notify plugin for toggling notification channels (pushover/windows)
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 0
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 13 to break down)
+
 ---
 
 *Roadmap created: 2026-02-25*

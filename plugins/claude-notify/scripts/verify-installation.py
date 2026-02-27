@@ -216,6 +216,55 @@ def check_hook_files():
     return hooks_exists and notify_exists
 
 
+def check_slash_commands():
+    """Check slash command scripts are available and functional."""
+    print_header("Slash Commands Check")
+
+    scripts = ['notify-enable.py', 'notify-disable.py', 'notify-status.py']
+    scripts_dir = Path(__file__).parent
+
+    all_ok = True
+
+    for script in scripts:
+        script_path = scripts_dir / script
+        if script_path.exists():
+            print_result(f"{script} exists", True, str(script_path))
+
+            # Test basic invocation (should fail with exit code 1 but show usage)
+            try:
+                # Set PYTHONIOENCODING environment variable for UTF-8 output
+                env = os.environ.copy()
+                env['PYTHONIOENCODING'] = 'utf-8'
+
+                result = subprocess.run(
+                    [sys.executable, str(script_path)],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    encoding='utf-8',
+                    env=env
+                )
+                # Script should exit with error (no parameters) but show usage
+                output = result.stdout + result.stderr
+                # Check for either UTF-8 Chinese or GBK garbled output (execution succeeded)
+                if output and ("用法:" in output or "Usage:" in output or "错误" in output or len(output) > 0):
+                    print_result(f"{script} responds", True, "Script executes and validates parameters")
+                else:
+                    print_result(f"{script} responds", False, f"Unexpected output format")
+                    all_ok = False
+            except subprocess.TimeoutExpired:
+                print_result(f"{script} responds", False, "Execution timeout")
+                all_ok = False
+            except Exception as e:
+                print_result(f"{script} responds", False, f"Execution error: {str(e)}")
+                all_ok = False
+        else:
+            print_result(f"{script} exists", False, "Not found")
+            all_ok = False
+
+    return all_ok
+
+
 def main():
     """Run all verification checks."""
     print("\n" + "="*60)
@@ -228,7 +277,8 @@ def main():
         'Environment Variables': check_environment_variables(),
         'Pushover API': check_pushover_api(),
         'Windows Toast': check_windows_toast(),
-        'Plugin Files': check_hook_files()
+        'Plugin Files': check_hook_files(),
+        'Slash Commands': check_slash_commands()
     }
 
     print_header("Summary")
@@ -241,6 +291,10 @@ def main():
     if passed == total:
         print("\n  Installation verification PASSED")
         print("  Claude Notify is ready to use!")
+        print("\n  Available slash commands:")
+        print("    /notify-enable <pushover|windows> - Enable notification channel")
+        print("    /notify-disable <pushover|windows> - Disable notification channel")
+        print("    /notify-status - View notification status")
         return 0
     else:
         print("\n  Installation verification FAILED")

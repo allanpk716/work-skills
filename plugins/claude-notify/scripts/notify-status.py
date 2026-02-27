@@ -2,12 +2,7 @@
 # -*- coding: utf-8 -*-
 """Query notification channel status."""
 
-import sys
-import io
 from pathlib import Path
-
-# Set UTF-8 encoding for stdout
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
 def get_channel_status(channel: str) -> str:

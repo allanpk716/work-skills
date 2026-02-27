@@ -3,11 +3,7 @@
 """Enable notification channel by removing flag file."""
 
 import sys
-import io
 from pathlib import Path
-
-# Set UTF-8 encoding for stdout
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 VALID_CHANNELS = {'pushover', 'windows'}
 

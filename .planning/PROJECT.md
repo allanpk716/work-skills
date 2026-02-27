@@ -22,21 +22,19 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ 多实例并发运行(PID 隔离)
 - ✓ 完整的安装和配置文档
 
-**v1.1 - Phase 7 扫描执行与报告:**
-- ✓ 在 git commit 之前自动扫描暂存区内容
-- ✓ 发现敏感信息时阻止提交并显示详细提示
-- ✓ 支持基于 .gitignore 的自定义排除规则
-- ✓ 彩色表格格式的问题报告(按严重性分级)
-- ✓ 敏感信息脱敏显示和可操作的修复建议
-
-### Active
-
-**v1.1 - Windows Git Commit 安全扫描(继续):**
-- [ ] 检测 AWS、Git 服务、通用 API 密钥等凭证 (Phase 6)
-- [ ] 检测缓存文件、编译产物、临时文件 (Phase 6)
-- [ ] 检测配置文件泄露(.env、credentials 等) (Phase 6)
-- [ ] 检测内部信息(内网 IP、内部域名、邮箱) (Phase 8)
-- [ ] 完整集成到 windows-git-commit 技能 (Phase 8)
+**v1.1 - Windows Git Commit Security Scanning (2026-02-27):**
+- ✓ 敏感信息检测(密钥、密码、私钥、PGP、PEM) - Phase 6, 11
+- ✓ 缓存文件检测(Python、Node.js、编译产物、临时文件) - Phase 6
+- ✓ 配置文件泄露检测(.env、credentials 等) - Phase 6
+- ✓ 内部信息检测(IP、域名、邮箱) - Phase 8
+- ✓ 在 git commit 前自动扫描暂存区 - Phase 7
+- ✓ 发现敏感信息时阻止提交并显示详细提示 - Phase 7
+- ✓ 彩色表格格式的问题报告(按严重性分级) - Phase 7, 10
+- ✓ 双语支持(中英文提示) - Phase 10
+- ✓ 基于 .gitignore 的自定义规则和白名单 - Phase 7, 8
+- ✓ Windows 性能优化(16.77ms 扫描时间,比要求快 116 倍) - Phase 9
+- ✓ 紧急跳过扫描选项(带明确风险警告) - Phase 9, 12
+- ✓ 完整的测试覆盖(12/12 测试通过) - Phase 9
 
 ### Out of Scope
 
@@ -51,7 +49,7 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 **项目背景:**
 - 多技能集合仓库,为个人开发工作提供 Claude Code 技能
 - v1.0 完成了 claude-notify 通知插件,已发布并投入使用
-- v1.1 将为 windows-git-commit 添加安全扫描功能
+- v1.1 完成了 windows-git-commit 安全扫描功能,生产就绪
 
 **技术环境:**
 - 目标系统: Windows 10/11
@@ -59,21 +57,22 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: Claude Code 插件市场
 
-**当前状态:**
+**当前状态(v1.1 完成后):**
 - claude-notify: v1.0 已完成并归档
-- windows-git-commit: 基础功能稳定,准备添加安全扫描
+- windows-git-commit: v1.1 安全扫描功能完成,生产就绪
+- 代码量: ~2,000 行 Python 代码
+- 测试覆盖: 12/12 测试通过
+- 性能: 16.77ms 扫描时间(比目标快 116 倍)
 
-## Current Milestone: v1.1 Git 安全扫描
+## Next Milestone
 
-**Goal:** 为 windows-git-commit 添加提交前安全扫描,防止敏感信息泄露
+**v1.2 待规划**
 
-**Target features:**
-- 敏感信息检测(密钥、密码、私钥)
-- 缓存文件检测(Python、Node.js、编译产物)
-- 配置文件泄露检测
-- 内部信息检测(IP、域名、邮箱)
-- 基于 .gitignore 的自定义规则
-- 详细的问题提示和修复建议
+可能的增强方向:
+- 性能监控和分析工具
+- 代码质量检查集成
+- 团队协作功能
+- 更多检测规则(数据库连接串、加密货币钱包等)
 
 ## Constraints
 
@@ -94,6 +93,11 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 | 内置规则 + 自定义 | 覆盖常见场景,同时支持项目定制 | ✓ Validated (Phase 7) |
 | ASCII 字符替代 Unicode | Windows GBK 编码兼容性 | ✓ Applied (Phase 7) |
 | Fail-open 错误处理 | 允许扫描错误时继续提交 | ✓ Applied (Phase 7) |
+| 分阶段交付检测器 | 降低复杂度,先核心再高级 | ✓ Validated (Phase 6-8) |
+| 使用 Python 标准库 | 无外部依赖,Windows 预装 | ✓ Validated (Phase 6) |
+| 双语支持 | 提升用户体验 | ✓ Validated (Phase 10) |
+| 8KB 二进制文件采样 | 平衡性能和准确性 | ✓ Validated (Phase 9) |
+| 紧急跳过机制 | 生产环境应急通道 | ✓ Validated (Phase 9, 12) |
 
 ---
-*Last updated: 2026-02-26 after Phase 7 completion*
+*Last updated: 2026-02-27 after v1.1 milestone completion*

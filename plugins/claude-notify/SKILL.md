@@ -29,20 +29,21 @@ version: 1.2.0
 4. Pushover 和 Windows Toast 通知并行发送
 5. 您在设备上即时接收通知
 
-### 等待输入通知 (UserPromptSubmit Hook)
+### 等待输入通知 (Notification Hook)
 
-当 Claude 在多轮交互中等待您输入时(例如使用 `/gsd:discuss` 或计划模式):
+当 Claude 在多轮交互中等待您输入时(例如使用 `/gsd:discuss` 或 AskUserQuestion):
 
-1. 您提交 prompt 后触发 `UserPromptSubmit` hook
-2. 脚本检查 Claude 的最后一条消息是否包含等待标记
-3. 如果检测到等待状态,发送"等待输入"通知
-4. **防抖机制**: 10秒内的重复通知会被自动抑制
-5. 通知不会阻塞您的操作
+1. Claude Code 触发 `Notification` hook (notification_type: permission_prompt, attention_needed)
+2. 脚本发送"Attention Needed"通知(高优先级)
+3. `idle_prompt` 类型会被自动过滤(CLI 空闲提醒)
+4. 通知不会阻塞您的操作
 
 **通知消息示例:**
 ```
-标题: work-skills
-消息: Claude 正在等待您的输入
+标题: [work-skills] Attention Needed
+消息: Session: xxx
+Type: permission_prompt
+[详细信息]
 ```
 
 ## 快速开始

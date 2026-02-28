@@ -29,21 +29,23 @@ version: 1.2.0
 4. Pushover 和 Windows Toast 通知并行发送
 5. 您在设备上即时接收通知
 
-### 等待输入通知 (Notification Hook)
+### 等待输入通知 (PostToolUse Hook - 实验性功能)
 
 当 Claude 在多轮交互中等待您输入时(例如使用 `/gsd:discuss` 或 AskUserQuestion):
 
-1. Claude Code 触发 `Notification` hook (notification_type: permission_prompt, attention_needed)
-2. 脚本发送"Attention Needed"通知(高优先级)
-3. `idle_prompt` 类型会被自动过滤(CLI 空闲提醒)
-4. 通知不会阻塞您的操作
+1. Claude Code 触发 `PostToolUse` hook (tool_name: AskUserQuestion)
+2. 脚本提取问题内容并发送"Question for You"通知(高优先级)
+3. 通知不会阻塞您的操作
+
+**⚠️ 实验性功能说明:**
+- 此功能使用 `PostToolUse` hook 检测 `AskUserQuestion` 工具调用
+- 这是 Claude Code 的未文档化行为,未来版本可能变更
+- 如果此功能失效,请关注 GitHub Issue #15872 的官方支持进展
 
 **通知消息示例:**
 ```
-标题: [work-skills] Attention Needed
-消息: Session: xxx
-Type: permission_prompt
-[详细信息]
+标题: [work-skills] Question for You
+消息: Which phase would you like to discuss next?
 ```
 
 ## 快速开始

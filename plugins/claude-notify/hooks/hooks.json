@@ -16,7 +16,7 @@
     ],
     "Notification": [
       {
-        "matcher": "*",
+        "matcher": "permission_prompt|idle_prompt|attention_needed",
         "hooks": [
           {
             "type": "command",

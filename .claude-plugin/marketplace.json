@@ -25,7 +25,7 @@
       "description": "Windows Git workflow automation with smart commit message generation, security scanning, and push using command-line git with plink SSH",
       "source": "./plugins/windows-git-commit",
       "category": "productivity",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "allanpk716",
         "email": "allanpk716@gmail.com"

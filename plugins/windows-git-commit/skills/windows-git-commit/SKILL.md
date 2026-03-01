@@ -1,10 +1,10 @@
 ---
 name: windows-git-commit
-description: Windows Git commit and push using command-line git with plink + PPK authentication. Automatically analyzes changes, generates commit messages, and executes operations in a subagent to preserve context. No GUI dialogs.
+description: Windows Git commit and push using command-line git with plink + PPK authentication. Automatically analyzes changes, generates commit messages, and executes operations in background to preserve context. No GUI dialogs.
 ---
 
 <objective>
-Automate Git commit and push operations on Windows using command-line git with plink SSH client. This skill analyzes code changes, generates descriptive commit messages, and executes all Git operations in a subagent context to preserve the main conversation's context window. It solves SSH key authentication problems by configuring git to use plink and reading PPK keys from Pageant. All operations are performed via command-line git without any GUI dialogs.
+Automate Git commit and push operations on Windows using command-line git with plink SSH client. This skill analyzes code changes, generates descriptive commit messages, and executes all Git operations in the background to preserve the main conversation's context window. It solves SSH key authentication problems by configuring git to use plink and reading PPK keys from Pageant. All operations are performed via command-line git without any GUI dialogs.
 </objective>
 
 <quick_start>
@@ -103,9 +103,9 @@ This skill solves these problems by:
 - Configuring git with full path: `git config --global core.sshcommand "C:\Program Files\TortoiseGit\bin\TortoisePlink.exe"`
 - Reading PPK keys from Pageant
 - Using command-line git instead of TortoiseGitProc GUI (faster, no dialogs)
-- Running in a subagent to preserve main conversation context
+- Running in the background to preserve main conversation context
 
-**Subagent Benefits:**
+**Background Execution Benefits:**
 - Main conversation context stays clean and focused
 - Long git operations don't consume your context window
 - Git output is processed and summarized
@@ -115,9 +115,9 @@ This skill solves these problems by:
 <workflow>
 ## How This Skill Works
 
-This skill uses the Task tool to launch a Bash agent that executes all Git operations. The workflow is:
+This skill uses the Bash tool directly to execute all Git operations in the background. The workflow is:
 
-1. **Launch Subagent**: Start a bash agent with run_in_background=true
+1. **Execute Git Workflow**: Run bash commands with run_in_background=true
 1.5. **Security Scan**: Run pre-commit security scanner (automatic)
 2. **Configure SSH**: Set `git config --global core.sshcommand "plink"` (one-time)
 3. **Analyze Changes**: Run git status and git diff to understand what changed
@@ -127,7 +127,7 @@ This skill uses the Task tool to launch a Bash agent that executes all Git opera
 7. **Push**: Use `git push` command (uses plink + PPK from Pageant, no GUI)
 8. **Report**: Return a concise summary of what was done
 
-**Why subagent?**
+**Why background execution?**
 - Keeps main conversation context small
 - Git command output doesn't clutter the conversation
 - Long-running operations don't block the conversation
@@ -482,14 +482,8 @@ REM start "Pageant" "C:\Program Files\PuTTY\pageant.exe" "%USERPROFILE%\.ssh\you
 详见 `TROUBLESHOOTING.md` 文件。
 </one_time_setup>
 
-<agent_configuration>
-**Launch the agent with these parameters:**
-
-```xml
-<subagent_type>Bash</subagent_type>
-<description>Execute Git commit and push operations</description>
-<prompt>
-Execute the following Git workflow using command-line git with PPK authentication:
+<bash_workflow>
+**Execute the following Git workflow using the Bash tool with run_in_background=true:**
 
 **CRITICAL: Environment Detection and Configuration**
 
@@ -587,12 +581,7 @@ Return ONLY a concise summary in this format:
 
 If any errors occur during environment setup, include them in the summary.
 DO NOT return full git command output. Just summarize the results in Chinese.
-</prompt>
-<run_in_background>true</run_in_background>
-</agent_configuration>
-```
-
-**Access results using TaskOutput tool.**
+</bash_workflow>
 </agent_configuration>
 
 <instructions>
@@ -600,25 +589,23 @@ When this skill is invoked:
 
 1. **Check if user provided commit message** - If yes, use it. If no, generate one based on changes.
 
-2. **Launch the subagent** using Task tool with:
-   - subagent_type: "Bash"
-   - description: "Execute Git commit and push operations"
-   - prompt: The full workflow instructions
+2. **Execute the Git workflow** using Bash tool with:
+   - command: The full bash script from the <bash_workflow> section
+   - description: "Configure SSH and execute Git commit/push"
    - run_in_background: true
-
-3. **Get the task_id** from the Task result
-
-4. **Wait for completion** using TaskOutput with:
-   - task_id: from step 3
-   - block: true
    - timeout: 120000 (2 minutes)
+
+3. **Get the output_file path** from the Bash tool result
+
+4. **Wait for completion** by reading the output file or using tail command
 
 5. **Return summary** to user with what was done
 
 **Error handling:**
-- If TaskOutput returns error, summarize the error for user
+- If bash command returns error, summarize the error for user
 - If timeout, inform user operation may still be running
 - If git operations fail, show error and suggest fixes
+- Read the output file to get detailed error messages
 </instructions>
 
 <commit_message_generation>
@@ -809,7 +796,7 @@ Solution:
 
 <success_criteria>
 Operation is successful when:
-- Subagent returns without errors
+- Bash command returns without errors
 - `core.sshcommand` is set to "plink" (one-time configuration)
 - Pageant is running with PPK key loaded
 - Commit message generated or used correctly
@@ -831,15 +818,15 @@ When you receive a request to use this skill:
    - Did they provide a commit message? (if not, generate one)
    - Are there specific files/patterns? (if not, use "git add -A")
 
-2. Construct the prompt for the Bash subagent with:
+2. Construct the bash command with:
    - Clear step-by-step instructions
    - The commit message (or instruction to generate one)
    - Whether to push or skip push
    - Request for concise summary output
 
-3. Launch Task tool with run_in_background=true
+3. Execute Bash tool with run_in_background=true
 
-4. Use TaskOutput to get results
+4. Read the output file to get results
 
 5. Present user with a clean summary like:
    ```

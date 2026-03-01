@@ -1,7 +1,7 @@
 ---
 name: claude-notify
 description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。支持斜杠命令控制通知通道。
-version: 1.2.0
+version: 1.2.1
 ---
 
 # Claude Notify 技能
@@ -305,6 +305,7 @@ type nul > .no-windows
 2. Pushover API 凭据无效
 3. Hook 未正确安装
 4. 项目根目录存在 `.no-pushover` 和 `.no-windows` 文件
+5. **插件缓存未更新（修改 hooks.json 后未清理缓存）**
 
 **解决步骤:**
 
@@ -345,6 +346,34 @@ type nul > .no-windows
    del .no-pushover
    del .no-windows
    ```
+
+5. **清理插件缓存（重要）:**
+
+   如果您最近修改了 `hooks/hooks.json` 文件，必须清理缓存才能生效：
+
+   **方法 1: 使用清理脚本（推荐）**
+   ```cmd
+   scripts\clear-cache.bat
+   ```
+
+   **方法 2: 手动清理**
+   ```cmd
+   rmdir /s /q "%USERPROFILE%\.claude\plugins\cache\work-skills\claude-notify"
+   ```
+
+   **清理后必须重启 Claude Code**
+
+   **如何判断是否需要清理缓存:**
+   - 修改了 `plugins/claude-notify/hooks/hooks.json` 文件
+   - 添加了新的 Hook 类型（如 Notification hook）
+   - 重启 Claude Code 后 Hook 仍未生效
+
+   **验证缓存已更新:**
+   ```cmd
+   type "%USERPROFILE%\.claude\plugins\cache\work-skills\claude-notify\1.0.0\hooks\hooks.json"
+   ```
+
+   应该看到与源文件 `plugins/claude-notify/hooks/hooks.json` 相同的内容。
 
 ### Q: 为什么会收到"等待输入"通知?
 
@@ -853,6 +882,27 @@ pip install requests
 - 严格的超时保护,防止资源耗尽
 
 ## 版本历史
+
+### Version 1.2.1 (2026-02-28)
+
+**Bug 修复**
+
+**问题:**
+- 修改 `hooks/hooks.json` 后，Notification hook 未生效
+- 插件缓存机制导致配置更新未加载
+
+**解决方案:**
+- 添加缓存清理脚本 `scripts/clear-cache.bat`
+- 在文档中添加故障排查指南（插件缓存相关）
+- 说明修改 hooks.json 后需要清理缓存并重启
+
+**新增功能:**
+- `scripts/clear-cache.bat` - 一键清理插件缓存
+
+**文档改进:**
+- FAQ 新增"插件缓存未更新"问题说明
+- 添加缓存验证步骤
+- 添加清理缓存的方法说明
 
 ### Version 1.0.0 (2026-02-24)
 

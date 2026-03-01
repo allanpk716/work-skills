@@ -14,7 +14,7 @@
       "description": "Task completion notifications via Pushover push notifications and Windows Toast desktop alerts",
       "source": "./plugins/claude-notify",
       "category": "productivity",
-      "version": "1.0.0",
+      "version": "1.0.2",
       "author": {
         "name": "allanpk716",
         "email": "allanpk716@gmail.com"

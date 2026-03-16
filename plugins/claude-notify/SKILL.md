@@ -1,7 +1,7 @@
 ---
 name: claude-notify
-description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。支持斜杠命令控制通知通道。
-version: 1.2.1
+description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。支持斜杠命令控制通知通道。包含环境检查命令 `/check-notify-env` 用于快速诊断配置问题。
+version: 1.3.0
 ---
 
 # Claude Notify 技能
@@ -53,9 +53,20 @@ version: 1.2.1
 ### 前提条件
 
 - **Python**: 3.8 或更高版本
-- **操作系统**: Windows(用于 Toast 通知)
-- **Pushover 账号**: 可选(仅移动通知需要)
-- **Claude CLI**: 可选(用于 AI 驱动的摘要)
+- **Python 依赖**: `requests` 库 (用于 Pushover API)
+- **操作系统**: Windows (用于 Toast 通知)
+- **Pushover 账号**: 可选 (仅移动通知需要)
+- **Claude CLI**: 可选 (用于 AI 驱动的摘要)
+
+**安装 Python 依赖:**
+```bash
+python -m pip install requests
+```
+
+或使用环境检查命令自动检测并提示安装:
+```bash
+/check-notify-env
+```
 
 ### 步骤 1: 安装插件
 
@@ -95,7 +106,41 @@ setx PUSHOVER_USER "your-pushover-user-key"
 
 ### 步骤 3: 验证安装
 
-运行验证脚本检查您的设置:
+**推荐方法 - 使用环境检查命令:**
+
+运行环境检查斜杠命令来验证所有配置:
+
+```bash
+/check-notify-env
+```
+
+此命令会自动检查:
+- ✓ Python 版本兼容性
+- ✓ 必需的 Python 库 (requests, win10toast)
+- ✓ 环境变量配置 (PUSHOVER_TOKEN, PUSHOVER_USER)
+- ✓ Hooks 配置是否正确安装
+
+**示例输出:**
+```
+=== Claude Notify 环境检查 ===
+
+✓ Python 版本: 3.11.9 (满足要求 >= 3.8)
+✓ requests 库: 2.32.5 (已安装)
+✓ 环境变量 PUSHOVER_TOKEN: 已设置
+✓ 环境变量 PUSHOVER_USER: 已设置
+✓ Stop hook: 已配置
+✓ Notification hook: 已配置
+
+所有检查通过! 通知功能已准备就绪。
+```
+
+**如果有检查失败,命令会提供具体的修复步骤。**
+
+---
+
+**手动验证脚本 (可选):**
+
+运行验证脚本进行更详细的检查:
 
 ```bash
 python skills/claude-notify/scripts/verify-installation.py
@@ -300,16 +345,46 @@ type nul > .no-windows
 
 ### Q: 为什么没有收到任何通知?
 
+**快速诊断 - 使用环境检查命令:**
+
+**推荐第一步:** 运行环境检查命令来自动诊断问题:
+
+```bash
+/check-notify-env
+```
+
+此命令会自动检查所有可能导致通知失败的配置问题,并给出具体的修复步骤。
+
+---
+
 **可能原因:**
 1. 环境变量未正确设置或未生效
-2. Pushover API 凭据无效
-3. Hook 未正确安装
-4. 项目根目录存在 `.no-pushover` 和 `.no-windows` 文件
-5. **插件缓存未更新（修改 hooks.json 后未清理缓存）**
+2. Python 依赖包缺失 (requests 库未安装)
+3. Pushover API 凭据无效
+4. Hook 未正确安装到 settings.json
+5. 项目根目录存在 `.no-pushover` 和 `.no-windows` 文件
+6. **插件缓存未更新（修改 hooks.json 后未清理缓存）**
 
 **解决步骤:**
 
-1. **验证环境变量:**
+1. **运行环境检查命令 (推荐):**
+   ```bash
+   /check-notify-env
+   ```
+
+   命令会自动检查所有配置并给出修复建议。
+
+2. **检查 Python 依赖包:**
+   ```bash
+   python -m pip list | grep requests
+   ```
+
+   如果没有看到 `requests`,需要安装:
+   ```bash
+   python -m pip install requests
+   ```
+
+3. **验证环境变量:**
    ```cmd
    REM 命令提示符
    echo %PUSHOVER_TOKEN%
@@ -321,14 +396,14 @@ type nul > .no-windows
 
    如果显示为空,需要重新设置并重启终端。
 
-2. **运行验证脚本:**
+4. **运行验证脚本:**
    ```bash
    python scripts/verify-installation.py
    ```
 
    脚本会检查所有依赖项并给出明确的错误提示。
 
-3. **检查 Hook 安装:**
+5. **检查 Hook 安装:**
    ```bash
    REM 查看 Claude Code 调试日志
    claude --debug
@@ -336,7 +411,7 @@ type nul > .no-windows
 
    在日志中查找 Hook 执行记录。
 
-4. **检查项目控制文件:**
+6. **检查项目控制文件:**
    ```cmd
    dir .no-*
    ```
@@ -844,12 +919,22 @@ python -c "import requests; requests.post('https://api.pushover.net/1/messages.j
 - `time`: 计时
 
 **第三方依赖:**
-- `requests`: HTTP 请求到 Pushover API(唯一的外部依赖)
+- `requests`: HTTP 请求到 Pushover API (必需)
+- `win10toast`: Windows Toast 通知 (可选,已内置)
 
 **安装依赖:**
+
+**推荐方法 - 使用 pip:**
 ```bash
-pip install requests
+python -m pip install requests
 ```
+
+**或使用 requirements.txt:**
+```bash
+pip install -r requirements.txt
+```
+
+**注意:** 在新机器上安装插件后,建议运行 `/check-notify-env` 命令来自动检查依赖是否已安装。
 
 ### 性能指标
 
@@ -882,6 +967,37 @@ pip install requests
 - 严格的超时保护,防止资源耗尽
 
 ## 版本历史
+
+### Version 1.3.0 (2026-03-16)
+
+**新功能: 环境检查命令**
+
+**问题:**
+- 在新机器上安装插件后,用户不知道如何验证环境配置
+- 通知功能不工作时,用户难以定位问题原因
+- 缺少自动化的环境诊断工具
+
+**解决方案:**
+- 新增 `/check-notify-env` 斜杠命令
+- 自动检查 Python 环境、依赖包、环境变量和 hooks 配置
+- 提供具体的修复步骤和建议
+
+**新增功能:**
+- `/check-notify-env` - 一键环境检查和诊断
+- 自动检测 Python 依赖包是否安装
+- 自动检测 hooks 是否正确配置到 settings.json
+- 智能诊断报告,包含修复建议
+
+**文档改进:**
+- 在"前提条件"中明确说明 Python 依赖要求
+- 在"步骤 3: 验证安装"中推荐使用 `/check-notify-env`
+- 在"常见问题"中添加快速诊断指引
+- 在"斜杠命令"部分添加详细使用说明
+
+**影响:**
+- 新用户可以快速验证环境配置
+- 遇到问题时可以自动诊断并获取修复建议
+- 减少因环境配置导致的通知失败问题
 
 ### Version 1.2.1 (2026-02-28)
 
@@ -933,7 +1049,66 @@ pip install requests
 
 ## 斜杠命令
 
-提供便捷的斜杠命令来控制通知通道。
+提供便捷的斜杠命令来控制通知通道和检查环境配置。
+
+### /check-notify-env
+
+检查 claude-notify 插件的运行环境是否满足要求。
+
+**用法:**
+```
+/check-notify-env
+```
+
+**示例:**
+```bash
+/check-notify-env
+```
+
+**检查项目:**
+- ✓ Python 版本 (3.8+)
+- ✓ Python 依赖包 (requests 库)
+- ✓ 环境变量 (PUSHOVER_TOKEN, PUSHOVER_USER)
+- ✓ Hooks 配置 (Stop hook, Notification hook)
+
+**输出示例 (所有检查通过):**
+```
+=== Claude Notify 环境检查 ===
+
+✓ Python 版本: 3.11.9 (满足要求 >= 3.8)
+✓ requests 库: 2.32.5 (已安装)
+✓ 环境变量 PUSHOVER_TOKEN: 已设置
+✓ 环境变量 PUSHOVER_USER: 已设置
+✓ Stop hook: 已配置
+✓ Notification hook: 已配置
+
+所有检查通过! 通知功能已准备就绪。
+```
+
+**输出示例 (发现问题):**
+```
+=== Claude Notify 环境检查 ===
+
+✓ Python 版本: 3.11.9 (满足要求 >= 3.8)
+✗ requests 库: 未安装
+  修复方法: python -m pip install requests
+✓ 环境变量 PUSHOVER_TOKEN: 已设置
+✓ 环境变量 PUSHOVER_USER: 已设置
+✗ Stop hook: 未配置
+  修复方法: Hooks 需要手动添加到 settings.json
+
+发现问题: 请按照上述修复方法解决配置问题。
+```
+
+**使用场景:**
+- 在新机器上安装插件后验证环境
+- 通知功能不工作时快速诊断问题
+- 定期检查配置是否正确
+
+**工作原理:**
+此命令检查系统环境、Python 依赖、环境变量和 Claude Code hooks 配置,自动诊断可能导致通知失败的问题,并提供具体的修复步骤。
+
+---
 
 ### /notify-enable
 

@@ -1,68 +1,57 @@
-# Requirements: Work Skills v1.1
+# Requirements: Work Skills v1.2
 
-**Defined:** 2026-02-25
+**Defined:** 2026-03-19
 **Core Value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
 
-## v1 Requirements
+## v1 Requirements (Milestone v1.2: 修复首次安装问题)
 
-本里程碑为 windows-git-commit 技能添加代码安全扫描功能。
+本里程碑创建独立的 npx 安装器,实现一步到位的安装体验,包括环境检测、交互式配置引导和安装后验证。
 
-### 敏感信息检测
+### 安装器核心
 
-- [x] **SENS-01**: 检测 AWS 凭证 (Access Key ID, Secret Access Key, Session Token)
-- [x] **SENS-02**: 检测 Git 服务 token (GitHub, GitLab, Bitbucket Personal Access Token)
-- [x] **SENS-03**: 检测通用 API 密钥模式 (api_key, secret, password, token 等字段)
-- [x] **SENS-04**: 检测 SSH 私钥文件 (-----BEGIN RSA PRIVATE KEY-----)
-- [x] **SENS-05**: 检测 PGP 私钥文件 (-----BEGIN PGP PRIVATE KEY BLOCK-----)
-- [x] **SENS-06**: 检测 PEM 格式证书文件 (-----BEGIN CERTIFICATE-----)
+- [ ] **INST-01**: 用户可以通过 `npx @allanpk716/work-skills-setup` 运行独立安装器
+- [ ] **INST-02**: 安装器检测运行环境是否为 Windows 系统
+- [ ] **INST-03**: 安装器提供中英文双语支持
+- [ ] **INST-04**: 安装器显示欢迎信息和功能介绍
+- [ ] **INST-05**: 安装器提供 --help 和 --version 命令行选项
 
-### 缓存文件检测
+### 环境依赖检测
 
-- [ ] **CACHE-01**: 检测 Python 缓存文件 (__pycache__/, *.pyc, *.pyo, *.pyd, .Python)
-- [ ] **CACHE-02**: 检测 Node.js 依赖 (node_modules/, .npm/, .yarn/, yarn.lock, package-lock.json)
-- [ ] **CACHE-03**: 检测编译产物 (*.class, target/, build/, dist/, out/, *.o, *.so, *.exe)
-- [ ] **CACHE-04**: 检测系统和临时文件 (*.log, *.tmp, .DS_Store, Thumbs.db, desktop.ini)
+- [ ] **ENV-01**: 安装器检测 Python 3.8+ 是否已安装
+- [ ] **ENV-02**: 安装器检测 Git 是否已安装
+- [ ] **ENV-03**: 安装器检测 TortoiseGit 或 PuTTY 是否已安装 (用于 SSH 认证)
+- [ ] **ENV-04**: 安装器检测 requests Python 库是否已安装
+- [ ] **ENV-05**: 检测结果显示清晰的通过/失败状态和版本信息
+- [ ] **ENV-06**: 缺少依赖时显示安装指导信息
 
-### 配置文件检测
+### 交互式配置引导
 
-- [ ] **CONF-01**: 检测 .env 文件和类似的环境配置文件 (.env.local, .env.*.local)
-- [ ] **CONF-02**: 检测凭证文件 (credentials.json, secrets.yaml, secrets.yml, secrets.xml)
-- [ ] **CONF-03**: 检测包含敏感字段的配置文件 (包含 password, api_key, secret, token 的配置)
+- [ ] **CONF-01**: 安装器检测 PUSHOVER_TOKEN 环境变量是否已设置
+- [ ] **CONF-02**: 安装器检测 PUSHOVER_USER 环境变量是否已设置
+- [ ] **CONF-03**: Pushover 未配置时提供交互式引导输入 (可选跳过)
+- [ ] **CONF-04**: 引导用户将 Pushover 配置写入系统环境变量 (setx)
+- [ ] **CONF-05**: 安装器检测 Git SSH 配置 (core.sshCommand)
+- [ ] **CONF-06**: Git SSH 未配置时提供配置引导
+- [ ] **CONF-07**: 安装器检测 Git 用户信息 (user.name, user.email)
 
-### 内部信息检测
+### Python 依赖安装
 
-- [x] **INTL-01**: 检测内网 IP 地址 (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
-- [x] **INTL-02**: 检测内部域名 (*.internal, *.local, *.corp, *.intranet)
-- [x] **INTL-03**: 检测邮箱地址 (用于识别可能的内部邮箱泄露)
+- [ ] **DEPS-01**: 安装器提供自动安装缺失 Python 库的选项
+- [ ] **DEPS-02**: 使用 pip 安装 requests 库 (如缺失)
+- [ ] **DEPS-03**: 安装失败时显示错误信息和解决建议
 
-### 扫描执行
+### 技能市场集成
 
-- [x] **EXEC-01**: 在 git commit 之前自动扫描暂存区内容
-- [ ] **EXEC-02**: 扫描速度优化,目标 <2 秒完成(中等规模仓库)
-- [ ] **EXEC-03**: 支持扫描新文件、修改文件、删除文件的内容
-- [ ] **EXEC-04**: 正确处理二进制文件(跳过二进制文件的内容扫描)
+- [ ] **MKT-01**: 安装器将 work-skills 添加为 Claude Code 技能市场
+- [ ] **MKT-02**: 安装器显示可用插件列表 (claude-notify, windows-git-commit)
+- [ ] **MKT-03**: 安装器提供安装插件的选项
 
-### 问题报告
+### 安装验证
 
-- [x] **RPT-01**: 发现问题时阻止 git commit 执行
-- [x] **RPT-02**: 显示问题类型(敏感信息/缓存文件/配置文件/内部信息)
-- [x] **RPT-03**: 显示文件路径和行号
-- [x] **RPT-04**: 显示问题内容片段(敏感信息部分脱敏)
-- [x] **RPT-05**: 提供修复建议(如"添加到 .gitignore")
-
-### 自定义规则
-
-- [ ] **CUST-01**: 读取项目 .gitignore 文件作为排除规则
-- [ ] **CUST-02**: 支持全局 .gitignore (~/.gitignore)
-- [x] **CUST-03**: 支持在 .gitignore 中添加扫描白名单(使用注释标记)
-- [ ] **CUST-04**: 内置默认规则 + 用户自定义规则组合
-
-### 用户体验
-
-- [x] **UX-01**: 清晰区分警告和错误级别的问题
-- [ ] **UX-02**: 提供跳过扫描的选项(紧急情况使用,需明确提示风险)
-- [x] **UX-03**: 扫描结果使用彩色输出提高可读性
-- [x] **UX-04**: 支持中文和英文提示信息
+- [ ] **VER-01**: 安装完成后自动运行 verify-installation.py 验证
+- [ ] **VER-02**: 验证结果显示通过/失败状态摘要
+- [ ] **VER-03**: 验证失败时显示具体问题和解决建议
+- [ ] **VER-04**: 提供手动重新验证的命令提示
 
 ## v2 Requirements
 
@@ -70,17 +59,10 @@
 
 ### 高级功能
 
-- **ADV-01**: 自动修复简单问题(如从暂存区移除缓存文件)
-- **ADV-02**: 支持项目级配置文件(.gitcheck.yaml)
-- **ADV-03**: 扫描历史记录和趋势分析
-- **ADV-04**: 集成 pre-commit hook 框架
-
-### 扩展检测
-
-- **EXT-01**: 数据库连接字符串检测
-- **EXT-02**: 加密货币钱包私钥检测
-- **EXT-03**: 社交媒体 API token 检测
-- **EXT-04**: 自定义正则表达式规则
+- **INST-ADV-01**: 支持静默安装模式 (--quiet)
+- **INST-ADV-02**: 支持配置文件导出/导入
+- **INST-ADV-03**: 支持卸载/重置功能
+- **INST-ADV-04**: 支持自动更新检测
 
 ## Out of Scope
 
@@ -88,59 +70,25 @@
 
 | Feature | Reason |
 |---------|--------|
-| 自动修复所有问题 | 可能引入新问题,先专注检测和提示 |
-| 独立配置文件格式 | 复用 .gitignore 更简单,用户无需学习新语法 |
-| 实时文件监控 | 性能开销大,提交时扫描足够 |
-| Linux/macOS 支持 | 项目专注 Windows 开发环境 |
-| 集成 CI/CD | 属于团队级工具,超出个人技能范围 |
-| 加密存储检测到的密钥 | 不需要持久化存储,只做临时检测 |
-| AI 智能判断 | 规则引擎足够,引入 AI 增加复杂度和延迟 |
+| Linux/macOS 支持 | 项目专注于 Windows 开发环境 |
+| 自动下载安装 Python/Git | 超出安装器职责范围,只提供检测和指导 |
+| GUI 安装界面 | CLI 交互已足够,GUI 增加复杂度 |
+| 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
+| 检测所有 Python 库 | 只检测必要依赖,避免过度检查 |
 
 ## Traceability
 
-需求到阶段的映射(2026-02-25 创建路线图):
+Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SENS-01 | Phase 6 | Complete |
-| SENS-02 | Phase 6 | Complete |
-| SENS-03 | Phase 6 | Complete |
-| SENS-04 | Phase 6 | Complete |
-| SENS-05 | Phase 11 | Complete |
-| SENS-06 | Phase 11 | Complete |
-| CACHE-01 | Phase 6 | Pending |
-| CACHE-02 | Phase 6 | Pending |
-| CACHE-03 | Phase 6 | Pending |
-| CACHE-04 | Phase 6 | Pending |
-| CONF-01 | Phase 6 | Pending |
-| CONF-02 | Phase 6 | Pending |
-| CONF-03 | Phase 6 | Pending |
-| EXEC-01 | Phase 7 | Complete |
-| EXEC-02 | Phase 7 | Pending |
-| EXEC-03 | Phase 7 | Pending |
-| EXEC-04 | Phase 7 | Pending |
-| RPT-01 | Phase 7 | Complete |
-| RPT-02 | Phase 7 | Complete |
-| RPT-03 | Phase 7 | Complete |
-| RPT-04 | Phase 7 | Complete |
-| RPT-05 | Phase 7 | Complete |
-| CUST-01 | Phase 7 | Pending |
-| CUST-02 | Phase 7 | Pending |
-| CUST-03 | Phase 7 | Complete |
-| CUST-04 | Phase 7 | Pending |
-| INTL-01 | Phase 8 | Complete |
-| INTL-02 | Phase 8 | Complete |
-| INTL-03 | Phase 8 | Complete |
-| UX-02 | Phase 12 | Pending |
-| UX-01 | Phase 10 | Complete |
-| UX-03 | Phase 10 | Complete |
-| UX-04 | Phase 10 | Complete |
+| (to be filled during roadmap creation) | - | - |
 
 **Coverage:**
-- v1 requirements: 28 total
-- Mapped to phases: 28
-- Unmapped: 0 ✓
+- v1 requirements: 24 total
+- Mapped to phases: 0
+- Unmapped: 24 ⚠️
 
 ---
-*Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after v1.1 roadmap creation*
+*Requirements defined: 2026-03-19*
+*Last updated: 2026-03-19 after initial definition*

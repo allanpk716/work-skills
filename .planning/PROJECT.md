@@ -64,15 +64,17 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - 测试覆盖: 12/12 测试通过
 - 性能: 16.77ms 扫描时间(比目标快 116 倍)
 
-## Next Milestone
+## Current Milestone: v1.2 修复首次安装问题
 
-**v1.2 待规划**
+**Goal:** 创建独立的 npx 安装器，实现一步到位的安装体验，包括环境检测、交互式配置引导和安装后验证。
 
-可能的增强方向:
-- 性能监控和分析工具
-- 代码质量检查集成
-- 团队协作功能
-- 更多检测规则(数据库连接串、加密货币钱包等)
+**Target features:**
+- 独立 npx 安装器 (npx work-skills-setup 或 npx @allanpk716/work-skills-setup)
+- 环境依赖自动检测 (Python 3.8+、Git、TortoiseGit/PuTTY)
+- 交互式配置引导 (Pushover 环境变量、Git SSH 配置)
+- Python 依赖自动安装 (requests 库)
+- 安装后自动验证 (运行 verify-installation)
+- 集成 Claude Code 技能市场安装
 
 ## Constraints
 

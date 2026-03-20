@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-03-19
+**Last Updated:** 2026-03-20
 
 ## Milestones
 
@@ -78,12 +78,12 @@ Plans:
   3. User sees clear pass/fail status for TortoiseGit or PuTTY installation
   4. User sees clear pass/fail status for requests Python library
   5. User sees installation guidance when dependencies are missing
-**Plans:** 2 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] 15-01: Implement Python and Git detection
-- [ ] 15-02: Implement TortoiseGit/PuTTY detection
-- [ ] 15-03: Implement Python library detection and reporting
+- [ ] 15-01-PLAN.md - Implement Python and Git detection (ENV-01, ENV-02)
+- [ ] 15-02-PLAN.md - Implement TortoiseGit/PuTTY detection (ENV-03)
+- [ ] 15-03-PLAN.md - Implement Python library detection and reporting (ENV-04, ENV-05, ENV-06)
 
 ### Phase 16: Python Dependencies
 
@@ -94,7 +94,7 @@ Plans:
   1. User is prompted to install missing Python libraries automatically
   2. Installer successfully installs requests library using pip if missing
   3. User sees helpful error message and suggestions if installation fails
-**Plans:** 2 plans
+**Plans:** 1 plan
 
 Plans:
 - [ ] 16-01: Implement Python dependency installation with pip
@@ -126,7 +126,7 @@ Plans:
   1. Installer adds work-skills as a Claude Code skills marketplace source
   2. User sees list of available plugins (claude-notify, windows-git-commit)
   3. User can choose to install plugins through the installer
-**Plans:** 2 plans
+**Plans:** 1 plan
 
 Plans:
 - [ ] 18-01: Implement Claude Code marketplace integration
@@ -141,7 +141,7 @@ Plans:
   2. User sees a summary of pass/fail status for all verification checks
   3. User sees specific problems and resolution suggestions if verification fails
   4. User is shown the command to manually re-run verification
-**Plans:** 2 plans
+**Plans:** 1 plan
 
 Plans:
 - [ ] 19-01: Implement installation verification and reporting
@@ -207,7 +207,8 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
 | v1.0 Claude Notify | 1-5 | 7 | Complete | 2026-02-24 |
-| v1.1 Git Security | 6-12 | 14 | 1/2 | In Progress|  | v1.2 Installer | 13-19 | - | In Progress | - |
+| v1.1 Git Security | 6-12 | 14 | Complete | 2026-02-27 |
+| v1.2 Installer | 13-19 | - | In Progress | - |
 
 ### v1.2 Progress
 
@@ -224,4 +225,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-20 after 14-01 plan completion*
+*Last updated: 2026-03-20 after Phase 15 planning*

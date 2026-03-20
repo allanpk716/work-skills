@@ -1,7 +1,7 @@
 'use strict';
 
 const { detectPipPackage } = require('../../src/detectors/pip-package.js');
-const { execa } = require('execa');
+const execa = require('execa');
 
 jest.mock('execa');
 

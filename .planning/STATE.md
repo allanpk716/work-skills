@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: "Milestone: 修复首次安装问题"
 status: unknown
 stopped_at: Completed 15-environment-detection-15-04-PLAN.md
-last_updated: "2026-03-20T12:05:40.380Z"
+last_updated: "2026-03-20T12:09:57.758Z"
 progress:
   total_phases: 7
   completed_phases: 3

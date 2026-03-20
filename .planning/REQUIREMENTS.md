@@ -9,8 +9,8 @@
 
 ### 安装器核心
 
-- [ ] **INST-01**: 用户可以通过 `npx @allanpk716/work-skills-setup` 运行独立安装器
-- [ ] **INST-02**: 安装器检测运行环境是否为 Windows 系统
+- [x] **INST-01**: 用户可以通过 `npx @allanpk716/work-skills-setup` 运行独立安装器
+- [x] **INST-02**: 安装器检测运行环境是否为 Windows 系统
 - [ ] **INST-03**: 安装器提供中英文双语支持
 - [ ] **INST-04**: 安装器显示欢迎信息和功能介绍
 - [ ] **INST-05**: 安装器提供 --help 和 --version 命令行选项
@@ -82,8 +82,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INST-01 | Phase 14 | Pending |
-| INST-02 | Phase 14 | Pending |
+| INST-01 | Phase 14 | Complete |
+| INST-02 | Phase 14 | Complete |
 | INST-03 | Phase 14 | Pending |
 | INST-04 | Phase 14 | Pending |
 | INST-05 | Phase 14 | Pending |

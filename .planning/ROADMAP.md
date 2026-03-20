@@ -61,10 +61,10 @@ Plans:
   3. User can run `npx @allanpk716/work-skills-setup --help` to see available options
   4. User can run `npx @allanpk716/work-skills-setup --version` to see the version
   5. Installer shows appropriate error if not running on Windows
-**Plans:** 2 plans
+**Plans:** 1/2 plans complete
 
 Plans:
-- [ ] 14-01-PLAN.md - Create npm package structure and entry point (INST-01, INST-02)
+- [x] 14-01-PLAN.md - Create npm package structure and entry point (INST-01, INST-02) - completed 2026-03-20
 - [ ] 14-02-PLAN.md - Implement welcome screen and CLI options (INST-03, INST-04, INST-05)
 
 ### Phase 15: Environment Detection
@@ -207,15 +207,14 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
 | v1.0 Claude Notify | 1-5 | 7 | Complete | 2026-02-24 |
-| v1.1 Git Security | 6-12 | 14 | Complete | 2026-02-27 |
-| v1.2 Installer | 13-19 | - | In Progress | - |
+| v1.1 Git Security | 6-12 | 14 | 1/2 | In Progress|  | v1.2 Installer | 13-19 | - | In Progress | - |
 
 ### v1.2 Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 13. Notify Toggle Commands | 2/2 | Complete | 2026-02-27 |
-| 14. Installer Foundation | 0/2 | Not started | - |
+| 14. Installer Foundation | 1/2 | In Progress | - |
 | 15. Environment Detection | 0/3 | Not started | - |
 | 16. Python Dependencies | 0/1 | Not started | - |
 | 17. Interactive Configuration | 0/2 | Not started | - |
@@ -225,4 +224,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-19 after v1.2 roadmap creation*
+*Last updated: 2026-03-20 after 14-01 plan completion*

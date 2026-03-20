@@ -1,0 +1,30 @@
+{
+  "name": "@allanpk716/work-skills-setup",
+  "version": "0.1.0",
+  "description": "Work Skills installer for Windows developers",
+  "main": "src/index.js",
+  "bin": {
+    "work-skills-setup": "./bin/setup.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "claude-code",
+    "work-skills",
+    "installer",
+    "windows"
+  ],
+  "author": "allanpk716",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}

@@ -36,9 +36,9 @@
 
 ### Python 依赖安装
 
-- [ ] **DEPS-01**: 安装器提供自动安装缺失 Python 库的选项
-- [ ] **DEPS-02**: 使用 pip 安装 requests 库 (如缺失)
-- [ ] **DEPS-03**: 安装失败时显示错误信息和解决建议
+- [x] **DEPS-01**: 安装器提供自动安装缺失 Python 库的选项
+- [x] **DEPS-02**: 使用 pip 安装 requests 库 (如缺失)
+- [x] **DEPS-03**: 安装失败时显示错误信息和解决建议
 
 ### 技能市场集成
 
@@ -93,9 +93,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENV-04 | Phase 15 | Complete |
 | ENV-05 | Phase 15 | Complete |
 | ENV-06 | Phase 15 | Complete |
-| DEPS-01 | Phase 16 | Pending |
-| DEPS-02 | Phase 16 | Pending |
-| DEPS-03 | Phase 16 | Pending |
+| DEPS-01 | Phase 16 | Complete |
+| DEPS-02 | Phase 16 | Complete |
+| DEPS-03 | Phase 16 | Complete |
 | CONF-01 | Phase 17 | Pending |
 | CONF-02 | Phase 17 | Pending |
 | CONF-03 | Phase 17 | Pending |

@@ -218,7 +218,7 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | 13. Notify Toggle Commands | 2/2 | Complete | 2026-02-27 |
 | 14. Installer Foundation | 1/2 | In Progress | - |
 | 15. Environment Detection | 4/4 | Complete    | 2026-03-20 |
-| 16. Python Dependencies | 1/2 | In Progress|  |
+| 16. Python Dependencies | 2/2 | Complete   | 2026-03-20 |
 | 17. Interactive Configuration | 0/2 | Not started | - |
 | 18. Marketplace Integration | 0/1 | Not started | - |
 | 19. Installation Verification | 0/1 | Not started | - |

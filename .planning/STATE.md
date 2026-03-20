@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: "Milestone: 修复首次安装问题"
 status: unknown
-stopped_at: Completed 16-python-dependencies-16-00-PLAN.md
-last_updated: "2026-03-20T16:26:54.601Z"
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-20T16:29:08.192Z"
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # STATE: Work Skills v1.2 首次安装体验优化
@@ -60,6 +60,7 @@ Plan: 1 of 2
 | Phase 15 P03 | 11 min | 1 tasks | 4 files |
 | Phase 15 P04 | 15 min | 3 tasks | 5 files |
 | Phase 16-python-dependencies P00 | 2 min | 2 tasks | 2 files |
+| Phase 16 P01 | 4 min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,9 @@ Plan: 1 of 2
 | SSH 工具检测接受任一工具 | TortoiseGit 或 PuTTY 都可以,提高灵活性 | 2026-03-20 |
 | 并行运行所有检测器 | 使用 Promise.all 提高检测速度 | 2026-03-20 |
 | i18n 支持参数替换 | 翻译字符串支持 {param} 动态值 | 2026-03-20 |
+| 使用 enquirer 交互提示 | 简单 API,维护良好,比 readline 更好的 UX | 2026-03-20 |
+| pip install 使用 --user 标志 | 避免 Windows 权限问题,用户无需管理员权限 | 2026-03-20 |
+| 过滤系统工具,仅安装 Python 包 | Python/Git/TortoiseGit 等通过独立安装器安装 | 2026-03-20 |
 
 ### Key Decisions (Previous Milestones)
 
@@ -90,8 +94,8 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-20T16:26:54.596Z
-Stopped at: Completed 16-python-dependencies-16-00-PLAN.md
+Last session: 2026-03-20T16:29:08.187Z
+Stopped at: Completed 16-01-PLAN.md
 Resume file: None
 
 ---

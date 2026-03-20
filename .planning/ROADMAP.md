@@ -61,11 +61,11 @@ Plans:
   3. User can run `npx @allanpk716/work-skills-setup --help` to see available options
   4. User can run `npx @allanpk716/work-skills-setup --version` to see the version
   5. Installer shows appropriate error if not running on Windows
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 14-01: Create npm package structure and entry point
-- [ ] 14-02: Implement welcome screen and CLI options
+- [ ] 14-01-PLAN.md - Create npm package structure and entry point (INST-01, INST-02)
+- [ ] 14-02-PLAN.md - Implement welcome screen and CLI options (INST-03, INST-04, INST-05)
 
 ### Phase 15: Environment Detection
 
@@ -78,7 +78,7 @@ Plans:
   3. User sees clear pass/fail status for TortoiseGit or PuTTY installation
   4. User sees clear pass/fail status for requests Python library
   5. User sees installation guidance when dependencies are missing
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 15-01: Implement Python and Git detection
@@ -94,7 +94,7 @@ Plans:
   1. User is prompted to install missing Python libraries automatically
   2. Installer successfully installs requests library using pip if missing
   3. User sees helpful error message and suggestions if installation fails
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 16-01: Implement Python dependency installation with pip
@@ -111,7 +111,7 @@ Plans:
   4. Installer detects and reports Git SSH configuration (core.sshCommand)
   5. User receives guidance for Git SSH configuration if not set
   6. Installer detects and reports Git user.name and user.email settings
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 17-01: Implement Pushover configuration detection and guidance
@@ -126,7 +126,7 @@ Plans:
   1. Installer adds work-skills as a Claude Code skills marketplace source
   2. User sees list of available plugins (claude-notify, windows-git-commit)
   3. User can choose to install plugins through the installer
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 18-01: Implement Claude Code marketplace integration
@@ -141,7 +141,7 @@ Plans:
   2. User sees a summary of pass/fail status for all verification checks
   3. User sees specific problems and resolution suggestions if verification fails
   4. User is shown the command to manually re-run verification
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 19-01: Implement installation verification and reporting

@@ -47,12 +47,19 @@ function setLanguage(lang) {
 /**
  * Translate a key
  * @param {string} key - Translation key
- * @returns {string} - Translated string
+ * @param {Object} params - Parameters to replace in translation string
+ * @returns {string} - Translated string with parameters replaced
  */
-function t(key) {
+function t(key, params = {}) {
   const lang = getLanguage();
-  const translation = translations[lang]?.[key];
-  return translation || translations['en'][key] || key;
+  let translation = translations[lang]?.[key] || translations['en'][key] || key;
+
+  // Replace {param} with actual values
+  Object.keys(params).forEach(param => {
+    translation = translation.replace(new RegExp(`\\{${param}\\}`, 'g'), params[param]);
+  });
+
+  return translation;
 }
 
 module.exports = {

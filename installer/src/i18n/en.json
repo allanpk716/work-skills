@@ -18,6 +18,7 @@
   "guidance.installTortoiseGit": "Install TortoiseGit from https://tortoisegit.org/download/",
   "guidance.installPuTTY": "Install PuTTY from https://www.putty.org/",
   "guidance.installSSHTools": "Install TortoiseGit or PuTTY for SSH authentication",
+  "guidance.installRequests": "Run: pip install requests",
   "ssh.tortoiseGitFound": "TortoiseGit installed",
   "ssh.puttyFound": "PuTTY installed",
   "ssh.noneFound": "Neither TortoiseGit nor PuTTY found"

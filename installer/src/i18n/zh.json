@@ -18,6 +18,7 @@
   "guidance.installTortoiseGit": "从 https://tortoisegit.org/download/ 安装 TortoiseGit",
   "guidance.installPuTTY": "从 https://www.putty.org/ 安装 PuTTY",
   "guidance.installSSHTools": "安装 TortoiseGit 或 PuTTY 用于 SSH 认证",
+  "guidance.installRequests": "运行: pip install requests",
   "ssh.tortoiseGitFound": "已安装 TortoiseGit",
   "ssh.puttyFound": "已安装 PuTTY",
   "ssh.noneFound": "未找到 TortoiseGit 或 PuTTY"

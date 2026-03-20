@@ -78,12 +78,13 @@ Plans:
   3. User sees clear pass/fail status for TortoiseGit or PuTTY installation
   4. User sees clear pass/fail status for requests Python library
   5. User sees installation guidance when dependencies are missing
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
 - [ ] 15-01-PLAN.md - Implement Python and Git detection (ENV-01, ENV-02)
 - [ ] 15-02-PLAN.md - Implement TortoiseGit/PuTTY detection (ENV-03)
-- [ ] 15-03-PLAN.md - Implement Python library detection and reporting (ENV-04, ENV-05, ENV-06)
+- [ ] 15-03-PLAN.md - Implement pip package detector (ENV-04)
+- [ ] 15-04-PLAN.md - Integrate all detectors with status reporting (ENV-05, ENV-06)
 
 ### Phase 16: Python Dependencies
 
@@ -216,7 +217,7 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 |-------|----------------|--------|-----------|
 | 13. Notify Toggle Commands | 2/2 | Complete | 2026-02-27 |
 | 14. Installer Foundation | 1/2 | In Progress | - |
-| 15. Environment Detection | 0/3 | Not started | - |
+| 15. Environment Detection | 0/4 | Not started | - |
 | 16. Python Dependencies | 0/1 | Not started | - |
 | 17. Interactive Configuration | 0/2 | Not started | - |
 | 18. Marketplace Integration | 0/1 | Not started | - |
@@ -225,4 +226,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-20 after Phase 15 planning*
+*Last updated: 2026-03-20 after Phase 15 plan revision (split 15-03 into 15-03 and 15-04)*

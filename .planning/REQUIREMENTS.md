@@ -19,7 +19,7 @@
 
 - [ ] **ENV-01**: 安装器检测 Python 3.8+ 是否已安装
 - [ ] **ENV-02**: 安装器检测 Git 是否已安装
-- [ ] **ENV-03**: 安装器检测 TortoiseGit 或 PuTTY 是否已安装 (用于 SSH 认证)
+- [x] **ENV-03**: 安装器检测 TortoiseGit 或 PuTTY 是否已安装 (用于 SSH 认证)
 - [ ] **ENV-04**: 安装器检测 requests Python 库是否已安装
 - [ ] **ENV-05**: 检测结果显示清晰的通过/失败状态和版本信息
 - [ ] **ENV-06**: 缺少依赖时显示安装指导信息
@@ -89,7 +89,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INST-05 | Phase 14 | Pending |
 | ENV-01 | Phase 15 | Pending |
 | ENV-02 | Phase 15 | Pending |
-| ENV-03 | Phase 15 | Pending |
+| ENV-03 | Phase 15 | Complete |
 | ENV-04 | Phase 15 | Pending |
 | ENV-05 | Phase 15 | Pending |
 | ENV-06 | Phase 15 | Pending |

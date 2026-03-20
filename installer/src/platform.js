@@ -1,5 +1,7 @@
 'use strict';
 
+const { t } = require('./i18n/index.js');
+
 /**
  * Check if current platform is Windows
  * @returns {boolean}
@@ -18,8 +20,8 @@ function isWindows() {
 function checkPlatform() {
   if (!isWindows()) {
     console.error('');
-    console.error('Error: This installer is designed for Windows only.');
-    console.error('Current platform: ' + process.platform);
+    console.error(t('error.windowsOnly'));
+    console.error(t('error.currentPlatform') + ': ' + process.platform);
     console.error('');
     process.exit(1);
   }

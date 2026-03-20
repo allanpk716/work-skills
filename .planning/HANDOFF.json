@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-03-20T08:15:26.647Z",
+  "phase": "14",
+  "phase_name": "installer-foundation",
+  "phase_dir": ".planning/phases/14-installer-foundation",
+  "plan": 2,
+  "task": 7,
+  "total_tasks": 7,
+  "status": "completed",
+  "completed_tasks": [
+    {"id": 1, "name": "Install CLI and styling dependencies", "status": "done", "commit": "7c965d3"},
+    {"id": 2, "name": "Create i18n module with translations", "status": "done", "commit": "0e4916c"},
+    {"id": 3, "name": "Create welcome screen module", "status": "done", "commit": "d13aac5"},
+    {"id": 4, "name": "Create CLI module with Commander.js", "status": "done", "commit": "a194d35"},
+    {"id": 5, "name": "Update main entry point to integrate all modules", "status": "done", "commit": "9e39e70"},
+    {"id": 6, "name": "Create tests for welcome, i18n, and CLI", "status": "done", "commit": "included"},
+    {"id": 7, "name": "Run all tests and verify", "status": "done", "tests": "29/29 passed"}
+  ],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [
+    {
+      "decision": "Downgrade chalk (5.x→4.x) and boxen (8.x→5.x) to CJS-compatible versions",
+      "rationale": "chalk 5.x and boxen 8.x are ESM-only modules, our installer uses CommonJS",
+      "phase": "14-02"
+    },
+    {
+      "decision": "Use simple JSON-based i18n instead of i18next",
+      "rationale": "Lighter weight, sufficient for 2 languages (en/zh)",
+      "phase": "14-02"
+    }
+  ],
+  "uncommitted_files": [
+    "installer/src/cli.js",
+    "installer/tests/cli.test.js"
+  ],
+  "next_action": "Run /gsd:plan-phase 15 to plan environment detection phase",
+  "context_notes": "Phase 14 installer-foundation completed successfully. All 29 tests passing. Installer has npm package structure, Windows platform detection, welcome banner with chalk/boxen, CLI options (--help, --version, --lang, --no-color), and bilingual support (en/zh). Ready for Phase 15 environment detection."
+}

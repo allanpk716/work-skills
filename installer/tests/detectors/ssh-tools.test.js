@@ -108,13 +108,19 @@ describe('SSH Tools Detector', () => {
     });
 
     it('should return correct structure when neither tool is installed', async () => {
+      // Reset and configure mock to return false for all checks
+      jest.resetModules();
       const Registry = require('winreg');
-      Registry.mockImplementationOnce((config) => ({
+
+      Registry.mockImplementation((config) => ({
         valueExists: jest.fn((valueName, callback) => callback(null, false)),
         keyExists: jest.fn((callback) => callback(null, false))
       }));
 
-      const result = await detectSSHTools();
+      // Re-require the module to use the new mock
+      const { detectSSHTools: detectSSHToolsFresh } = require('../../src/detectors/ssh-tools');
+      const result = await detectSSHToolsFresh();
+
       expect(result.installed).toBe(false);
       expect(result.details.tortoiseGit).toBe(false);
       expect(result.details.putty).toBe(false);

@@ -1,0 +1,13 @@
+{
+  "welcome.title": "Work Skills Setup",
+  "welcome.subtitle": "Claude Code skills installer for Windows developers",
+  "welcome.version": "Version",
+  "welcome.features": "Features",
+  "welcome.feature1": "Auto-configure environment",
+  "welcome.feature2": "Install required dependencies",
+  "welcome.feature3": "Setup Claude Code integration",
+  "error.windowsOnly": "This installer is designed for Windows only.",
+  "error.currentPlatform": "Current platform",
+  "cli.help.language": "Language (en/zh)",
+  "cli.help.noColor": "Disable colored output"
+}

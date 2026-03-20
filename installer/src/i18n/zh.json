@@ -1,0 +1,13 @@
+{
+  "welcome.title": "Work Skills 安装器",
+  "welcome.subtitle": "为 Windows 开发者准备的 Claude Code 技能安装工具",
+  "welcome.version": "版本",
+  "welcome.features": "功能特性",
+  "welcome.feature1": "自动配置环境",
+  "welcome.feature2": "安装必需依赖",
+  "welcome.feature3": "配置 Claude Code 集成",
+  "error.windowsOnly": "此安装器仅支持 Windows 系统。",
+  "error.currentPlatform": "当前系统",
+  "cli.help.language": "语言 (en/zh)",
+  "cli.help.noColor": "禁用彩色输出"
+}

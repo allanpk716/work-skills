@@ -21,5 +21,17 @@
   "guidance.installRequests": "运行: pip install requests",
   "ssh.tortoiseGitFound": "已安装 TortoiseGit",
   "ssh.puttyFound": "已安装 PuTTY",
-  "ssh.noneFound": "未找到 TortoiseGit 或 PuTTY"
+  "ssh.noneFound": "未找到 TortoiseGit 或 PuTTY",
+  "install.missingFound": "发现 {count} 个缺失的 Python 包:",
+  "install.promptInstall": "是否安装 {package}?",
+  "install.installing": "正在安装 {package}...",
+  "install.success": "{package} 安装成功",
+  "install.failed": "{package} 安装失败",
+  "install.summary": "安装摘要:",
+  "install.installed": "已安装",
+  "install.skipped": "已跳过",
+  "guidance.installPermission": "以管理员身份运行命令提示符,或使用: pip install {package} --user",
+  "guidance.installNetwork": "请检查网络连接后重试",
+  "guidance.installPipNotFound": "pip 未找到。请重新安装包含 pip 的 Python",
+  "guidance.installUnknown": "手动安装: pip install {package}"
 }

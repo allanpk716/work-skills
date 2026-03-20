@@ -21,5 +21,17 @@
   "guidance.installRequests": "Run: pip install requests",
   "ssh.tortoiseGitFound": "TortoiseGit installed",
   "ssh.puttyFound": "PuTTY installed",
-  "ssh.noneFound": "Neither TortoiseGit nor PuTTY found"
+  "ssh.noneFound": "Neither TortoiseGit nor PuTTY found",
+  "install.missingFound": "Found {count} missing Python package(s):",
+  "install.promptInstall": "Install {package}?",
+  "install.installing": "Installing {package}...",
+  "install.success": "{package} installed successfully",
+  "install.failed": "Failed to install {package}",
+  "install.summary": "Installation Summary:",
+  "install.installed": "Installed",
+  "install.skipped": "Skipped",
+  "guidance.installPermission": "Run Command Prompt as Administrator, or use: pip install {package} --user",
+  "guidance.installNetwork": "Check your internet connection and try again",
+  "guidance.installPipNotFound": "pip not found. Reinstall Python with pip included",
+  "guidance.installUnknown": "Manual install: pip install {package}"
 }

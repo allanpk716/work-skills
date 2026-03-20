@@ -1,41 +1,40 @@
 {
   "version": "1.0",
-  "timestamp": "2026-03-20T08:15:26.647Z",
-  "phase": "14",
-  "phase_name": "installer-foundation",
-  "phase_dir": ".planning/phases/14-installer-foundation",
-  "plan": 2,
-  "task": 7,
-  "total_tasks": 7,
-  "status": "completed",
-  "completed_tasks": [
-    {"id": 1, "name": "Install CLI and styling dependencies", "status": "done", "commit": "7c965d3"},
-    {"id": 2, "name": "Create i18n module with translations", "status": "done", "commit": "0e4916c"},
-    {"id": 3, "name": "Create welcome screen module", "status": "done", "commit": "d13aac5"},
-    {"id": 4, "name": "Create CLI module with Commander.js", "status": "done", "commit": "a194d35"},
-    {"id": 5, "name": "Update main entry point to integrate all modules", "status": "done", "commit": "9e39e70"},
-    {"id": 6, "name": "Create tests for welcome, i18n, and CLI", "status": "done", "commit": "included"},
-    {"id": 7, "name": "Run all tests and verify", "status": "done", "tests": "29/29 passed"}
+  "timestamp": "2026-03-20T09:15:20.007Z",
+  "phase": "15",
+  "phase_name": "environment-detection",
+  "phase_dir": ".planning/phases/15-environment-detection",
+  "plan": 0,
+  "task": 0,
+  "total_tasks": 6,
+  "status": "paused",
+  "completed_tasks": [],
+  "remaining_tasks": [
+    {"id": 1, "name": "15-01: Python & Git Detection", "status": "not_started", "wave": 1},
+    {"id": 2, "name": "15-02: SSH Tools Detection", "status": "not_started", "wave": 1},
+    {"id": 3, "name": "15-03: pip-package Utility", "status": "not_started", "wave": 1},
+    {"id": 4, "name": "15-04: Detection Orchestrator", "status": "not_started", "wave": 1}
   ],
-  "remaining_tasks": [],
   "blockers": [],
   "human_actions_pending": [],
   "decisions": [
     {
-      "decision": "Downgrade chalk (5.x→4.x) and boxen (8.x→5.x) to CJS-compatible versions",
-      "rationale": "chalk 5.x and boxen 8.x are ESM-only modules, our installer uses CommonJS",
-      "phase": "14-02"
+      "decision": "Split plan 15-03 into two plans for scope sanity",
+      "rationale": "Original 15-03 had too many responsibilities",
+      "phase": "15"
     },
     {
-      "decision": "Use simple JSON-based i18n instead of i18next",
-      "rationale": "Lighter weight, sufficient for 2 languages (en/zh)",
-      "phase": "14-02"
+      "decision": "Use Jest 30.3.0 for test infrastructure",
+      "rationale": "Fast feedback, existing project setup",
+      "phase": "15"
+    },
+    {
+      "decision": "All detectors use execa for command execution",
+      "rationale": "Consistent async API, good error handling",
+      "phase": "15"
     }
   ],
-  "uncommitted_files": [
-    "installer/src/cli.js",
-    "installer/tests/cli.test.js"
-  ],
-  "next_action": "Run /gsd:plan-phase 15 to plan environment detection phase",
-  "context_notes": "Phase 14 installer-foundation completed successfully. All 29 tests passing. Installer has npm package structure, Windows platform detection, welcome banner with chalk/boxen, CLI options (--help, --version, --lang, --no-color), and bilingual support (en/zh). Ready for Phase 15 environment detection."
+  "uncommitted_files": [],
+  "next_action": "Run /gsd:execute-phase 15 to begin executing the 4 plans in wave 1",
+  "context_notes": "Phase 14 (installer-foundation) completed successfully. Phase 15 planning complete with 4 plans ready for execution. User interrupted execute-phase 15 before any plans started. All plans are in wave 1 with no dependencies between them, suitable for parallel execution. Validation strategy defines Jest test infrastructure with ~5s feedback latency."
 }

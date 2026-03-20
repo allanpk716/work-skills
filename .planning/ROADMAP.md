@@ -81,10 +81,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 15-01-PLAN.md - Implement Python and Git detection (ENV-01, ENV-02)
-- [ ] 15-02-PLAN.md - Implement TortoiseGit/PuTTY detection (ENV-03)
-- [ ] 15-03-PLAN.md - Implement pip package detector (ENV-04)
-- [ ] 15-04-PLAN.md - Integrate all detectors with status reporting (ENV-05, ENV-06)
+- [x] 15-01-PLAN.md - Implement Python and Git detection (ENV-01, ENV-02)
+- [x] 15-02-PLAN.md - Implement TortoiseGit/PuTTY detection (ENV-03)
+- [x] 15-03-PLAN.md - Implement pip package detector (ENV-04)
+- [x] 15-04-PLAN.md - Integrate all detectors with status reporting (ENV-05, ENV-06)
 
 ### Phase 16: Python Dependencies
 
@@ -98,7 +98,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 16-01: Implement Python dependency installation with pip
+- [ ] 16-01-PLAN.md - Implement Python dependency installation with enquirer prompts and pip (DEPS-01, DEPS-02, DEPS-03)
 
 ### Phase 17: Interactive Configuration
 
@@ -226,4 +226,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-20 after Phase 15 plan revision (split 15-03 into 15-03 and 15-04)*
+*Last updated: 2026-03-20 after Phase 16 plan creation*

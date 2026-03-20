@@ -27,9 +27,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### v1.2 Milestone: 修复首次安装问题 (Phases 13-19)
 
 - [x] **Phase 13: Notify Toggle Commands** - 添加 /notify-enable 和 /notify-disable 命令
-- [ ] **Phase 14: Installer Foundation** - 创建独立 npx 安装器基础框架
-- [ ] **Phase 15: Environment Detection** - 实现环境依赖检测功能
-- [ ] **Phase 16: Python Dependencies** - 实现 Python 依赖自动安装
+- [x] **Phase 14: Installer Foundation** - 创建独立 npx 安装器基础框架
+- [x] **Phase 15: Environment Detection** - 实现环境依赖检测功能
+- [x] **Phase 16: Python Dependencies** - 实现 Python 依赖自动安装
 - [ ] **Phase 17: Interactive Configuration** - 实现交互式配置引导
 - [ ] **Phase 18: Marketplace Integration** - 集成 Claude Code 技能市场
 - [ ] **Phase 19: Installation Verification** - 实现安装后验证
@@ -95,10 +95,11 @@ Plans:
   1. User is prompted to install missing Python libraries automatically
   2. Installer successfully installs requests library using pip if missing
   3. User sees helpful error message and suggestions if installation fails
-**Plans:** 1 plan
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 16-01-PLAN.md - Implement Python dependency installation with enquirer prompts and pip (DEPS-01, DEPS-02, DEPS-03)
+- [x] 16-00-PLAN.md - Create TDD test skeletons for installer modules - completed 2026-03-20
+- [x] 16-01-PLAN.md - Implement Python dependency installation with enquirer prompts and pip (DEPS-01, DEPS-02, DEPS-03) - completed 2026-03-20
 
 ### Phase 17: Interactive Configuration
 
@@ -226,4 +227,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-20 after Phase 16 plan creation*
+*Last updated: 2026-03-21 after Phase 16 completion*

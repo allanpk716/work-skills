@@ -22,7 +22,14 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ 多实例并发运行(PID 隔离)
 - ✓ 完整的安装和配置文档
 
-**v1.1 - Windows Git Commit Security Scanning (2026-02-27):**
+**v1.2 - Installer v1.2 milestone (2026-03-21):**
+- ✓ 环境依赖检测框架 (Python, Git, TortoiseGit/PuTTY) - Phase 15
+- ✓ pip 包检测器 (requests) - Phase 15
+- ✓ 交互式 Python 依赖安装 - Phase 16
+- ✓ 错误检测和解决指导 (permission, network, pipNotFound) - Phase 16
+- ✓ 安装摘要报告 (installed, failed, skipped) - Phase 16
+- ✓ TDD 开发流程 (Wave 0 测试骨架 + Wave 1 实现) - Phase 16
+- ✓ 16/16 测试通过 (pip-installer + orchestrator) - Phase 16**
 - ✓ 敏感信息检测(密钥、密码、私钥、PGP、PEM) - Phase 6, 11
 - ✓ 缓存文件检测(Python、Node.js、编译产物、临时文件) - Phase 6
 - ✓ 配置文件泄露检测(.env、credentials 等) - Phase 6
@@ -57,24 +64,22 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: Claude Code 插件市场
 
-**当前状态(v1.1 完成后):**
+**当前状态(v1.2 Phase 16 完成后):**
 - claude-notify: v1.0 已完成并归档
 - windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- 代码量: ~2,000 行 Python 代码
-- 测试覆盖: 12/12 测试通过
-- 性能: 16.77ms 扫描时间(比目标快 116 倍)
+- installer: v1.2 Phase 16 完成,Python 依赖安装功能就绪
+- 代码量: ~2,500 行代码 (Python + JavaScript)
+- 测试覆盖: 79/79 测试通过 (63 installer + 16 installers)
+- 下一步: Phase 17 - 交互式配置引导
 
 ## Current Milestone: v1.2 修复首次安装问题
 
 **Goal:** 创建独立的 npx 安装器，实现一步到位的安装体验，包括环境检测、交互式配置引导和安装后验证。
 
-**Target features:**
-- 独立 npx 安装器 (npx work-skills-setup 或 npx @allanpk716/work-skills-setup)
-- 环境依赖自动检测 (Python 3.8+、Git、TortoiseGit/PuTTY)
-- 交互式配置引导 (Pushover 环境变量、Git SSH 配置)
-- Python 依赖自动安装 (requests 库)
-- 安装后自动验证 (运行 verify-installation)
-- 集成 Claude Code 技能市场安装
+**Current status (after Phase 16 completion):**
+- ✓ Environment detection framework (Phase 15)
+- ✓ Python dependency auto-installation (Phase 16)
+- Pending: Interactive configuration, marketplace integration, installation verification (Phase 17-19)
 
 ## Constraints
 
@@ -102,4 +107,4 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 | 紧急跳过机制 | 生产环境应急通道 | ✓ Validated (Phase 9, 12) |
 
 ---
-*Last updated: 2026-02-27 after v1.1 milestone completion*
+*Last updated: 2026-03-21 after Phase 16 completion*

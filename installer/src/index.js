@@ -4,6 +4,7 @@ const { checkPlatform } = require('./platform.js');
 const { parseArgs } = require('./cli.js');
 const { showWelcome } = require('./welcome.js');
 const { runAllDetectors } = require('./detectors/index.js');
+const { runInstaller } = require('./installers/index.js');
 
 /**
  * Main entry point for the installer
@@ -19,10 +20,21 @@ async function main() {
   showWelcome({ useColors: options.useColors });
 
   // Step 4: Run environment detection
-  const allPassed = await runAllDetectors();
+  const { results, allPassed } = await runAllDetectors();
 
-  // Step 5: More features will be added in later phases
-  // - Python dependency installation (Phase 16)
+  // Step 5: Offer to install missing dependencies
+  if (!allPassed) {
+    const pipResults = results.filter(r =>
+      r.name && r.name !== 'Python' && r.name !== 'Git' &&
+      !r.name.includes('TortoiseGit') && !r.name.includes('PuTTY') && !r.name.includes('SSH')
+    );
+
+    if (pipResults.some(r => !r.installed)) {
+      await runInstaller(results);
+    }
+  }
+
+  // Step 6: More features will be added in later phases
   // - Interactive configuration (Phase 17)
   // - Marketplace integration (Phase 18)
   // - Installation verification (Phase 19)

@@ -25,9 +25,11 @@
   "author": "allanpk716",
   "license": "MIT",
   "dependencies": {
-    "commander": "^14.0.3",
+    "boxen": "^5.1.2",
     "chalk": "^4.1.2",
-    "boxen": "^5.1.2"
+    "commander": "^14.0.3",
+    "execa": "^9.6.1",
+    "winreg": "^1.2.5"
   },
   "devDependencies": {
     "jest": "^30.3.0"

@@ -3,11 +3,12 @@
 const { checkPlatform } = require('./platform.js');
 const { parseArgs } = require('./cli.js');
 const { showWelcome } = require('./welcome.js');
+const { runAllDetectors } = require('./detectors/index.js');
 
 /**
  * Main entry point for the installer
  */
-function main() {
+async function main() {
   // Step 1: Check platform (exits if not Windows)
   checkPlatform();
 
@@ -17,8 +18,10 @@ function main() {
   // Step 3: Show welcome banner
   showWelcome({ useColors: options.useColors });
 
-  // Step 4: More features will be added in later phases
-  // - Environment detection (Phase 15)
+  // Step 4: Run environment detection
+  const allPassed = await runAllDetectors();
+
+  // Step 5: More features will be added in later phases
   // - Python dependency installation (Phase 16)
   // - Interactive configuration (Phase 17)
   // - Marketplace integration (Phase 18)

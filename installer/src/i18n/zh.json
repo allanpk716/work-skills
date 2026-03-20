@@ -9,5 +9,11 @@
   "error.windowsOnly": "此安装器仅支持 Windows 系统。",
   "error.currentPlatform": "当前系统",
   "cli.help.language": "语言 (en/zh)",
-  "cli.help.noColor": "禁用彩色输出"
+  "cli.help.noColor": "禁用彩色输出",
+  "guidance.installTortoiseGit": "从 https://tortoisegit.org/download/ 安装 TortoiseGit",
+  "guidance.installPuTTY": "从 https://www.putty.org/ 安装 PuTTY",
+  "guidance.installSSHTools": "安装 TortoiseGit 或 PuTTY 用于 SSH 认证",
+  "ssh.tortoiseGitFound": "已安装 TortoiseGit",
+  "ssh.puttyFound": "已安装 PuTTY",
+  "ssh.noneFound": "未找到 TortoiseGit 或 PuTTY"
 }

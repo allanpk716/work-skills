@@ -3,6 +3,8 @@
 const chalk = require('chalk');
 const { t } = require('../i18n/index.js');
 const { configurePushover } = require('./pushover.js');
+const { configureGitSSH } = require('./git-ssh.js');
+const { configureGitUser } = require('./git-user.js');
 
 /**
  * Display configuration summary table
@@ -10,35 +12,35 @@ const { configurePushover } = require('./pushover.js');
  */
 function displayConfigSummary(results) {
   console.log('\n' + chalk.bold(t('config.summary')));
-  console.log(chalk.gray('-'.repeat(60)));
+  console.log(chalk.gray('─'.repeat(60)));
 
   results.forEach(result => {
     let statusIcon, statusColor;
 
     switch (result.status) {
       case 'configured':
-        statusIcon = '[OK]';
+        statusIcon = '✓';
         statusColor = chalk.green;
         break;
       case 'skipped':
-        statusIcon = '[SKIP]';
+        statusIcon = '⊘';
         statusColor = chalk.yellow;
         break;
       case 'failed':
-        statusIcon = '[FAIL]';
+        statusIcon = '✗';
         statusColor = chalk.red;
         break;
       default:
-        statusIcon = '[?]';
+        statusIcon = '?';
         statusColor = chalk.gray;
     }
 
     const statusText = t(`config.status.${result.status}`);
     const details = result.details ? ` (${result.details})` : '';
-    console.log(`${statusColor(statusIcon)} ${result.name.padEnd(20)} ${statusColor(statusText)}${chalk.gray(details)}`);
+    console.log(`${statusColor(statusIcon)} ${result.name.padEnd(20)} ${statusColor(statusText)} ${chalk.gray(details)}`);
   });
 
-  console.log(chalk.gray('-'.repeat(60)));
+  console.log(chalk.gray('─'.repeat(60)));
 }
 
 /**
@@ -53,8 +55,20 @@ async function runAllConfigurators() {
   const pushoverResult = await configurePushover();
   results.push({ name: 'Pushover', status: pushoverResult.status, details: pushoverResult.details });
 
-  // 2. Git SSH and Git User will be added in Plan 02
-  // For now, just display summary
+  // 2. Git SSH (optional)
+  console.log(chalk.bold('\n' + t('config.section.gitSSH')));
+  const sshResult = await configureGitSSH();
+  results.push({ name: 'Git SSH', status: sshResult.status, details: sshResult.details });
+
+  // 3. Git user.info (required)
+  console.log(chalk.bold('\n' + t('config.section.gitUser')));
+  const userResult = await configureGitUser();
+  results.push(
+    { name: 'Git user.name', status: userResult.status, details: userResult.name },
+    { name: 'Git user.email', status: userResult.status, details: userResult.email }
+  );
+
+  // Display summary
   displayConfigSummary(results);
 }
 

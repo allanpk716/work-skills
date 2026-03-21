@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 14: Installer Foundation** - 创建独立 npx 安装器基础框架
 - [x] **Phase 15: Environment Detection** - 实现环境依赖检测功能
 - [x] **Phase 16: Python Dependencies** - 实现 Python 依赖自动安装
-- [ ] **Phase 17: Interactive Configuration** - 实现交互式配置引导
+- [x] **Phase 17: Interactive Configuration** - 实现交互式配置引导
 - [ ] **Phase 18: Marketplace Integration** - 集成 Claude Code 技能市场
 - [ ] **Phase 19: Installation Verification** - 实现安装后验证
 
@@ -114,11 +114,12 @@ Plans:
   5. Installer detects and reports Git SSH configuration (core.sshCommand)
   6. User receives guidance for Git SSH configuration if not set (optional to configure)
   7. Installer detects and configures Git user.name and user.email (required)
-**Plans:** 2 plans
+**Plans:** 3 plans
 
 Plans:
-- [x] 17-01-PLAN.md - Implement Pushover configuration detection and guidance (CONF-01, CONF-02, CONF-03, CONF-04)
-- [x] 17-02-PLAN.md - Implement Git SSH and user configuration detection (CONF-05, CONF-06, CONF-07)
+- [x] 17-00-PLAN.md - Create TDD test scaffolds for configurator modules - completed 2026-03-21
+- [x] 17-01-PLAN.md - Implement Pushover configuration detection and guidance (CONF-01, CONF-02, CONF-03, CONF-04) - completed 2026-03-21
+- [x] 17-02-PLAN.md - Implement Git SSH and user configuration detection (CONF-05, CONF-06, CONF-07) - completed 2026-03-21
 
 ### Phase 18: Marketplace Integration
 
@@ -132,7 +133,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 18-01: Implement Claude Code marketplace integration
+- [ ] 18-01-PLAN.md - Implement Claude Code marketplace integration (MKT-01, MKT-02, MKT-03)
 
 ### Phase 19: Installation Verification
 
@@ -219,13 +220,13 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 |-------|----------------|--------|-----------|
 | 13. Notify Toggle Commands | 2/2 | Complete | 2026-02-27 |
 | 14. Installer Foundation | 1/2 | In Progress | - |
-| 15. Environment Detection | 4/4 | Complete    | 2026-03-20 |
-| 16. Python Dependencies | 2/2 | Complete   | 2026-03-20 |
-| 17. Interactive Configuration | 3/3 | Complete   | 2026-03-21 |
-| 18. Marketplace Integration | 0/1 | Not started | - |
+| 15. Environment Detection | 4/4 | Complete | 2026-03-20 |
+| 16. Python Dependencies | 2/2 | Complete | 2026-03-20 |
+| 17. Interactive Configuration | 3/3 | Complete | 2026-03-21 |
+| 18. Marketplace Integration | 0/1 | Planned | - |
 | 19. Installation Verification | 0/1 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-21 after Phase 17 planning*
+*Last updated: 2026-03-21 after Phase 18 planning*

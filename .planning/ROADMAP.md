@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-03-20
+**Last Updated:** 2026-03-21
 
 ## Milestones
 
@@ -103,21 +103,22 @@ Plans:
 
 ### Phase 17: Interactive Configuration
 
-**Goal:** 用户可以通过交互式引导配置 Pushover 和 Git SSH 设置
+**Goal:** 用户可以通过交互式引导配置 Pushover 凭证、Git SSH 和 Git 用户信息
 **Depends on:** Phase 16
 **Requirements:** CONF-01, CONF-02, CONF-03, CONF-04, CONF-05, CONF-06, CONF-07
 **Success Criteria** (what must be TRUE):
   1. Installer detects and reports existing PUSHOVER_TOKEN and PUSHOVER_USER settings
   2. User can input Pushover credentials through interactive prompts (or skip)
-  3. Pushover credentials are saved to system environment variables via setx
-  4. Installer detects and reports Git SSH configuration (core.sshCommand)
-  5. User receives guidance for Git SSH configuration if not set
-  6. Installer detects and reports Git user.name and user.email settings
+  3. Pushover credentials are validated against Pushover API before saving
+  4. Pushover credentials are saved to system environment variables via setx
+  5. Installer detects and reports Git SSH configuration (core.sshCommand)
+  6. User receives guidance for Git SSH configuration if not set (optional to configure)
+  7. Installer detects and configures Git user.name and user.email (required)
 **Plans:** 2 plans
 
 Plans:
-- [ ] 17-01: Implement Pushover configuration detection and guidance
-- [ ] 17-02: Implement Git SSH and user configuration detection
+- [ ] 17-01-PLAN.md - Implement Pushover configuration detection and guidance (CONF-01, CONF-02, CONF-03, CONF-04)
+- [ ] 17-02-PLAN.md - Implement Git SSH and user configuration detection (CONF-05, CONF-06, CONF-07)
 
 ### Phase 18: Marketplace Integration
 
@@ -227,4 +228,4 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-21 after Phase 16 completion*
+*Last updated: 2026-03-21 after Phase 17 planning*

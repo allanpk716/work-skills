@@ -26,13 +26,13 @@
 
 ### 交互式配置引导
 
-- [ ] **CONF-01**: 安装器检测 PUSHOVER_TOKEN 环境变量是否已设置
-- [ ] **CONF-02**: 安装器检测 PUSHOVER_USER 环境变量是否已设置
-- [ ] **CONF-03**: Pushover 未配置时提供交互式引导输入 (可选跳过)
-- [ ] **CONF-04**: 引导用户将 Pushover 配置写入系统环境变量 (setx)
-- [ ] **CONF-05**: 安装器检测 Git SSH 配置 (core.sshCommand)
-- [ ] **CONF-06**: Git SSH 未配置时提供配置引导
-- [ ] **CONF-07**: 安装器检测 Git 用户信息 (user.name, user.email)
+- [x] **CONF-01**: 安装器检测 PUSHOVER_TOKEN 环境变量是否已设置
+- [x] **CONF-02**: 安装器检测 PUSHOVER_USER 环境变量是否已设置
+- [x] **CONF-03**: Pushover 未配置时提供交互式引导输入 (可选跳过)
+- [x] **CONF-04**: 引导用户将 Pushover 配置写入系统环境变量 (setx)
+- [x] **CONF-05**: 安装器检测 Git SSH 配置 (core.sshCommand)
+- [x] **CONF-06**: Git SSH 未配置时提供配置引导
+- [x] **CONF-07**: 安装器检测 Git 用户信息 (user.name, user.email)
 
 ### Python 依赖安装
 
@@ -96,13 +96,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPS-01 | Phase 16 | Complete |
 | DEPS-02 | Phase 16 | Complete |
 | DEPS-03 | Phase 16 | Complete |
-| CONF-01 | Phase 17 | Pending |
-| CONF-02 | Phase 17 | Pending |
-| CONF-03 | Phase 17 | Pending |
-| CONF-04 | Phase 17 | Pending |
-| CONF-05 | Phase 17 | Pending |
-| CONF-06 | Phase 17 | Pending |
-| CONF-07 | Phase 17 | Pending |
+| CONF-01 | Phase 17 | Complete |
+| CONF-02 | Phase 17 | Complete |
+| CONF-03 | Phase 17 | Complete |
+| CONF-04 | Phase 17 | Complete |
+| CONF-05 | Phase 17 | Complete |
+| CONF-06 | Phase 17 | Complete |
+| CONF-07 | Phase 17 | Complete |
 | MKT-01 | Phase 18 | Pending |
 | MKT-02 | Phase 18 | Pending |
 | MKT-03 | Phase 18 | Pending |

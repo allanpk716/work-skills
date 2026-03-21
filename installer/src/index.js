@@ -6,6 +6,7 @@ const { showWelcome } = require('./welcome.js');
 const { runAllDetectors } = require('./detectors/index.js');
 const { runInstaller } = require('./installers/index.js');
 const { runAllConfigurators } = require('./configurators/index.js');
+const { runMarketplaceIntegration } = require('./marketplace/index.js');
 
 /**
  * Main entry point for the installer
@@ -38,9 +39,11 @@ async function main() {
   // Step 6: Interactive configuration (Phase 17)
   await runAllConfigurators();
 
-  // Step 7: More features will be added in later phases
-  // - Marketplace integration (Phase 18)
-  // - Installation verification (Phase 19)
+  // Step 7: Marketplace integration (Phase 18)
+  await runMarketplaceIntegration();
+
+  // Step 8: Installation verification (Phase 19)
+  // - To be implemented in Phase 19
 }
 
 module.exports = {

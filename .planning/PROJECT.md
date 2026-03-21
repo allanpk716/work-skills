@@ -35,6 +35,11 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ Git 用户配置检测与引导 (user.name/user.email、交互式输入) - Phase 17
 - ✓ 配置摘要显示 (状态图标、配置详情) - Phase 17
 - ✓ 双语配置引导 (中英文) - Phase 17
+- ✓ Marketplace source 注册 (work-skills 添加到 config.json) - Phase 18
+- ✓ 插件发现和列表显示 (GitHub API fetch + 表格展示) - Phase 18
+- ✓ 交互式插件安装 (enquirer Checkbox + git clone + fs.cp) - Phase 18
+- ✓ 已安装插件检测和跳过 - Phase 18
+- ✓ 安装摘要报告 (installed, skipped, failed counts) - Phase 18
 - ✓ 敏感信息检测(密钥、密码、私钥、PGP、PEM) - Phase 6, 11
 - ✓ 缓存文件检测(Python、Node.js、编译产物、临时文件) - Phase 6
 - ✓ 配置文件泄露检测(.env、credentials 等) - Phase 6
@@ -69,23 +74,24 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: Claude Code 插件市场
 
-**当前状态(v1.2 Phase 17 完成后):**
+**当前状态(v1.2 Phase 18 完成后):**
 - claude-notify: v1.0 已完成并归档
 - windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- installer: v1.2 Phase 17 完成,交互式配置引导功能就绪
+- installer: v1.2 Phase 18 完成,marketplace 集成功能就绪
 - 代码量: ~2,800 行代码 (Python + JavaScript)
-- 测试覆盖: 96/96 测试通过 (63 installer + 16 installers + 17 configurators)
-- 下一步: Phase 18 - Marketplace 集成
+- 测试覆盖: 109/109 测试通过 (63 installer + 16 installers + 17 configurators + 13 marketplace)
+- 下一步: Phase 19 - 安装验证
 
 ## Current Milestone: v1.2 修复首次安装问题
 
 **Goal:** 创建独立的 npx 安装器，实现一步到位的安装体验，包括环境检测、交互式配置引导和安装后验证。
 
-**Current status (after Phase 17 completion):**
+**Current status (after Phase 18 completion):**
 - ✓ Environment detection framework (Phase 15)
 - ✓ Python dependency auto-installation (Phase 16)
 - ✓ Interactive configuration guidance (Phase 17)
-- Pending: Marketplace integration, installation verification (Phase 18-19)
+- ✓ Marketplace integration (Phase 18)
+- Pending: Installation verification (Phase 19)
 
 ## Constraints
 
@@ -113,4 +119,4 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 | 紧急跳过机制 | 生产环境应急通道 | ✓ Validated (Phase 9, 12) |
 
 ---
-*Last updated: 2026-03-21 after Phase 17 completion*
+*Last updated: 2026-03-21 after Phase 18 completion*

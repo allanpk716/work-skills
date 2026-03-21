@@ -42,9 +42,9 @@
 
 ### 技能市场集成
 
-- [ ] **MKT-01**: 安装器将 work-skills 添加为 Claude Code 技能市场
-- [ ] **MKT-02**: 安装器显示可用插件列表 (claude-notify, windows-git-commit)
-- [ ] **MKT-03**: 安装器提供安装插件的选项
+- [x] **MKT-01**: 安装器将 work-skills 添加为 Claude Code 技能市场
+- [x] **MKT-02**: 安装器显示可用插件列表 (claude-notify, windows-git-commit)
+- [x] **MKT-03**: 安装器提供安装插件的选项
 
 ### 安装验证
 
@@ -103,9 +103,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-05 | Phase 17 | Complete |
 | CONF-06 | Phase 17 | Complete |
 | CONF-07 | Phase 17 | Complete |
-| MKT-01 | Phase 18 | Pending |
-| MKT-02 | Phase 18 | Pending |
-| MKT-03 | Phase 18 | Pending |
+| MKT-01 | Phase 18 | Complete |
+| MKT-02 | Phase 18 | Complete |
+| MKT-03 | Phase 18 | Complete |
 | VER-01 | Phase 19 | Pending |
 | VER-02 | Phase 19 | Pending |
 | VER-03 | Phase 19 | Pending |

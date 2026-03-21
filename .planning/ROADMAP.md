@@ -133,7 +133,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 18-01-PLAN.md - Implement Claude Code marketplace integration (MKT-01, MKT-02, MKT-03)
+- [x] 18-01-PLAN.md - Implement Claude Code marketplace integration (MKT-01, MKT-02, MKT-03)
 
 ### Phase 19: Installation Verification
 
@@ -223,7 +223,7 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | 15. Environment Detection | 4/4 | Complete | 2026-03-20 |
 | 16. Python Dependencies | 2/2 | Complete | 2026-03-20 |
 | 17. Interactive Configuration | 3/3 | Complete | 2026-03-21 |
-| 18. Marketplace Integration | 0/1 | Planned | - |
+| 18. Marketplace Integration | 1/1 | Complete   | 2026-03-21 |
 | 19. Installation Verification | 0/1 | Not started | - |
 
 ---

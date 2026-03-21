@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: "Milestone: 修复首次安装问题"
 status: unknown
-stopped_at: Completed 17-00-PLAN.md
-last_updated: "2026-03-21T02:16:09.493Z"
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-21T02:17:35.800Z"
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # STATE: Work Skills v1.2 首次安装体验优化
@@ -28,7 +28,7 @@ progress:
 ## Current Position
 
 Phase: 17 (interactive-configuration) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Milestone Progress
 
@@ -62,6 +62,7 @@ Plan: 2 of 3
 | Phase 16-python-dependencies P00 | 2 min | 2 tasks | 2 files |
 | Phase 16 P01 | 4 min | 3 tasks | 10 files |
 | Phase 17-interactive-configuration P00 | 3 minutes | 3 tasks | 7 files |
+| Phase 17 P01 | 4 | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Plan: 2 of 3
 | 使用 enquirer 交互提示 | 简单 API,维护良好,比 readline 更好的 UX | 2026-03-20 |
 | pip install 使用 --user 标志 | 避免 Windows 权限问题,用户无需管理员权限 | 2026-03-20 |
 | 过滤系统工具,仅安装 Python 包 | Python/Git/TortoiseGit 等通过独立安装器安装 | 2026-03-20 |
+| API 验证后再保存 Pushover 凭证 | 确保凭证有效,避免无效配置 | 2026-03-21 |
+| 凭证验证最多重试 3 次 | 平衡用户体验和安全性 | 2026-03-21 |
 
 ### Key Decisions (Previous Milestones)
 
@@ -95,8 +98,8 @@ None currently.
 
 ## Session Continuity
 
-Last session: 2026-03-21T02:16:09.489Z
-Stopped at: Completed 17-00-PLAN.md
+Last session: 2026-03-21T02:17:35.795Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None
 
 ---

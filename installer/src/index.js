@@ -5,6 +5,7 @@ const { parseArgs } = require('./cli.js');
 const { showWelcome } = require('./welcome.js');
 const { runAllDetectors } = require('./detectors/index.js');
 const { runInstaller } = require('./installers/index.js');
+const { runAllConfigurators } = require('./configurators/index.js');
 
 /**
  * Main entry point for the installer
@@ -34,8 +35,10 @@ async function main() {
     }
   }
 
-  // Step 6: More features will be added in later phases
-  // - Interactive configuration (Phase 17)
+  // Step 6: Interactive configuration (Phase 17)
+  await runAllConfigurators();
+
+  // Step 7: More features will be added in later phases
   // - Marketplace integration (Phase 18)
   // - Installation verification (Phase 19)
 }

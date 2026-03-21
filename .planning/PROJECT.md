@@ -23,6 +23,11 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ 完整的安装和配置文档
 
 **v1.2 - Installer v1.2 milestone (2026-03-21):**
+- ✓ NPX 安装器基础框架 (package.json, bin 入口) - Phase 14
+- ✓ Windows 系统检测与错误提示 - Phase 14
+- ✓ 双语支持 (中英文, 自动检测系统语言) - Phase 14
+- ✓ 欢迎横幅和功能介绍 (boxen 美化) - Phase 14
+- ✓ CLI 选项 (--help, --version, --lang, --no-color) - Phase 14
 - ✓ 环境依赖检测框架 (Python, Git, TortoiseGit/PuTTY) - Phase 15
 - ✓ pip 包检测器 (requests) - Phase 15
 - ✓ 交互式 Python 依赖安装 - Phase 16
@@ -77,16 +82,17 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 **当前状态(v1.2 Phase 18 完成后):**
 - claude-notify: v1.0 已完成并归档
 - windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- installer: v1.2 Phase 18 完成,marketplace 集成功能就绪
+- installer: v1.2 Phase 14-18 完成,基础框架、环境检测、依赖安装、配置引导、marketplace 集成全部就绪
 - 代码量: ~2,800 行代码 (Python + JavaScript)
-- 测试覆盖: 109/109 测试通过 (63 installer + 16 installers + 17 configurators + 13 marketplace)
+- 测试覆盖: 128/128 测试通过 (19 installer + 16 installers + 17 configurators + 13 marketplace + 63 security)
 - 下一步: Phase 19 - 安装验证
 
 ## Current Milestone: v1.2 修复首次安装问题
 
 **Goal:** 创建独立的 npx 安装器，实现一步到位的安装体验，包括环境检测、交互式配置引导和安装后验证。
 
-**Current status (after Phase 18 completion):**
+**Current status (after Phase 14 completion):**
+- ✓ Installer foundation (NPX runner, Windows detection, welcome, CLI, i18n) (Phase 14)
 - ✓ Environment detection framework (Phase 15)
 - ✓ Python dependency auto-installation (Phase 16)
 - ✓ Interactive configuration guidance (Phase 17)
@@ -119,4 +125,4 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 | 紧急跳过机制 | 生产环境应急通道 | ✓ Validated (Phase 9, 12) |
 
 ---
-*Last updated: 2026-03-21 after Phase 18 completion*
+*Last updated: 2026-03-21 after Phase 14 completion and verification*

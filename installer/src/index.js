@@ -7,6 +7,7 @@ const { runAllDetectors } = require('./detectors/index.js');
 const { runInstaller } = require('./installers/index.js');
 const { runAllConfigurators } = require('./configurators/index.js');
 const { runMarketplaceIntegration } = require('./marketplace/index.js');
+const { runVerification } = require('./verification/index.js');
 
 /**
  * Main entry point for the installer
@@ -17,6 +18,12 @@ async function main() {
 
   // Step 2: Parse command line arguments
   const options = parseArgs();
+
+  // Handle --verify flag (skip to verification only)
+  if (options.verifyOnly) {
+    const result = await runVerification();
+    process.exit(result.success ? 0 : 1);
+  }
 
   // Step 3: Show welcome banner
   showWelcome({ useColors: options.useColors });
@@ -43,7 +50,7 @@ async function main() {
   await runMarketplaceIntegration();
 
   // Step 8: Installation verification (Phase 19)
-  // - To be implemented in Phase 19
+  await runVerification();
 }
 
 module.exports = {

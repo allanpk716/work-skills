@@ -20,6 +20,7 @@ function parseArgs(argv = process.argv) {
     .version(packageJson.version, '-v, --version', 'Show version')
     .option('-l, --lang <locale>', 'Language (en/zh)', 'auto')
     .option('--no-color', 'Disable colored output')
+    .option('--verify', 'Run installation verification only')
     .allowExcessArguments(true)
     .exitOverride() // Prevent process.exit in tests
     .parse(argv);
@@ -33,7 +34,8 @@ function parseArgs(argv = process.argv) {
 
   return {
     lang: options.lang,
-    useColors: options.color !== false
+    useColors: options.color !== false,
+    verifyOnly: options.verify === true
   };
 }
 

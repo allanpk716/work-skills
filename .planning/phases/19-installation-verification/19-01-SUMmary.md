@@ -1,0 +1,1 @@
+C:\WorkSpace\agent\work-skills\.planning\phases\19-installation-verification\19-01-PLAN.md

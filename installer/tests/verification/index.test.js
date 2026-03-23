@@ -9,12 +9,13 @@ jest.mock('../../src/verification/parser.js', () => ({
 
 jest.mock('../../src/verification/formatter.js', () => ({
   formatVerificationTable: jest.fn(),
-  calculateSummary: jest.fn()
+  calculateSummary: jest.fn(),
+  displayCommonSolutions: jest.fn()
 }));
 
 const { runPythonVerification } = require('../../src/verification/runner.js');
 const { parseVerificationOutput } = require('../../src/verification/parser.js');
-const { formatVerificationTable, calculateSummary } = require('../../src/verification/formatter.js');
+const { formatVerificationTable, calculateSummary, displayCommonSolutions } = require('../../src/verification/formatter.js');
 const { runVerification } = require('../../src/verification/index.js');
 
 describe('verification/index (integration)', () => {
@@ -23,7 +24,7 @@ describe('verification/index (integration)', () => {
   });
 
   describe('runVerification', () => {
-    it.skip('should return object with success, passed, total properties', async () => {
+    it('should return object with success, passed, total properties', async () => {
       runPythonVerification.mockResolvedValue({
         success: true,
         stdout: '[OK] Python: PASS'
@@ -43,7 +44,7 @@ describe('verification/index (integration)', () => {
       expect(result).toHaveProperty('total');
     });
 
-    it.skip('should display verification title using i18n', async () => {
+    it('should display verification title using i18n', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       runPythonVerification.mockResolvedValue({
@@ -63,7 +64,7 @@ describe('verification/index (integration)', () => {
       consoleSpy.mockRestore();
     });
 
-    it.skip('should show rerun command at the end', async () => {
+    it('should show rerun command at the end', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       runPythonVerification.mockResolvedValue({
@@ -84,7 +85,7 @@ describe('verification/index (integration)', () => {
       consoleSpy.mockRestore();
     });
 
-    it.skip('should display common solutions when checks fail', async () => {
+    it('should display common solutions when checks fail', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       runPythonVerification.mockResolvedValue({

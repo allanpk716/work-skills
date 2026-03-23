@@ -10,7 +10,7 @@ describe('verification/runner', () => {
   });
 
   describe('runPythonVerification', () => {
-    it.skip('should return success with stdout when script exits 0', async () => {
+    it('should return success with stdout when script exits 0', async () => {
       const mockStdout = '  [OK] Python version: PASS\n      Current: 3.9.1, Required: >=3.8';
       execa.mockResolvedValue({ stdout: mockStdout, exitCode: 0 });
 
@@ -21,7 +21,7 @@ describe('verification/runner', () => {
       expect(result.exitCode).toBe(0);
     });
 
-    it.skip('should handle timeout and return error', async () => {
+    it('should handle timeout and return error', async () => {
       const timeoutError = new Error('Timeout');
       timeoutError.timedOut = true;
       execa.mockRejectedValue(timeoutError);
@@ -32,7 +32,7 @@ describe('verification/runner', () => {
       expect(result.error).toBe('timeout');
     });
 
-    it.skip('should handle Python not found (ENOENT)', async () => {
+    it('should handle Python not found (ENOENT)', async () => {
       const enoentError = new Error('Command not found');
       enoentError.code = 'ENOENT';
       execa.mockRejectedValue(enoentError);
@@ -43,7 +43,7 @@ describe('verification/runner', () => {
       expect(result.error).toBe('python_not_found');
     });
 
-    it.skip('should handle script execution failure', async () => {
+    it('should handle script execution failure', async () => {
       execa.mockResolvedValue({
         failed: true,
         stderr: 'Script error',

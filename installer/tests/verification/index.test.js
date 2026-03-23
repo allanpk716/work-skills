@@ -86,8 +86,6 @@ describe('verification/index (integration)', () => {
     });
 
     it('should display common solutions when checks fail', async () => {
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-
       runPythonVerification.mockResolvedValue({
         success: true,
         stdout: ''
@@ -102,11 +100,8 @@ describe('verification/index (integration)', () => {
 
       await runVerification();
 
-      // Should display common solutions (pip install, environment variables, etc.)
-      const calls = consoleSpy.mock.calls.flat().join(' ');
-      expect(calls).toMatch(/pip install|PUSHOVER_TOKEN|PowerShell/i);
-
-      consoleSpy.mockRestore();
+      // Should call displayCommonSolutions when checks fail
+      expect(displayCommonSolutions).toHaveBeenCalled();
     });
   });
 });

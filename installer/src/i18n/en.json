@@ -93,5 +93,12 @@
   "marketplace.complete": "Plugin installation complete. Run Claude Code to use them.",
   "marketplace.error.network": "Failed to fetch plugin list. Check your network connection.",
   "marketplace.error.git": "Git is required to install plugins.",
-  "marketplace.error.unknown": "An error occurred during marketplace integration."
+  "marketplace.error.unknown": "An error occurred during marketplace integration.",
+  "verification.title": "Installation Verification",
+  "verification.summary": "Summary: {passed}/{total} checks passed",
+  "verification.rerunCommand": "To re-run verification: npx @allanpk716/work-skills-setup --verify",
+  "verification.error.pythonNotFound": "Error: Python is required for verification",
+  "verification.error.scriptNotFound": "Error: Verification script not found",
+  "verification.error.timeout": "Error: Verification timeout (30s)",
+  "verification.error.executionFailed": "Error: Verification failed"
 }

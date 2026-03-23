@@ -93,5 +93,12 @@
   "marketplace.complete": "插件安装完成。运行 Claude Code 即可使用。",
   "marketplace.error.network": "获取插件列表失败。请检查网络连接。",
   "marketplace.error.git": "安装插件需要 Git。",
-  "marketplace.error.unknown": "市场集成过程中发生错误。"
+  "marketplace.error.unknown": "市场集成过程中发生错误。",
+  "verification.title": "安装验证",
+  "verification.summary": "摘要: {passed}/{total} 项检查通过",
+  "verification.rerunCommand": "重新验证命令: npx @allanpk716/work-skills-setup --verify",
+  "verification.error.pythonNotFound": "错误: 验证需要 Python 环境",
+  "verification.error.scriptNotFound": "错误: 验证脚本未找到",
+  "verification.error.timeout": "错误: 验证超时 (30秒)",
+  "verification.error.executionFailed": "错误: 验证失败"
 }

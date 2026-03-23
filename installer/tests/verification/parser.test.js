@@ -3,7 +3,7 @@ const { parseVerificationOutput } = require('../../src/verification/parser.js');
 
 describe('verification/parser', () => {
   describe('parseVerificationOutput', () => {
-    it.skip('should extract PASS results with [OK] symbol', () => {
+    it('should extract PASS results with [OK] symbol', () => {
       const stdout = '  [OK] Python version: PASS\n      Current: 3.9.1, Required: >=3.8';
 
       const results = parseVerificationOutput(stdout);
@@ -17,7 +17,7 @@ describe('verification/parser', () => {
       });
     });
 
-    it.skip('should extract FAIL results with [X] symbol', () => {
+    it('should extract FAIL results with [X] symbol', () => {
       const stdout = '  [X] Environment Variables: FAIL\n      PUSHOVER_TOKEN not set';
 
       const results = parseVerificationOutput(stdout);
@@ -31,7 +31,7 @@ describe('verification/parser', () => {
       });
     });
 
-    it.skip('should capture detail lines (indented text after result)', () => {
+    it('should capture detail lines (indented text after result)', () => {
       const stdout = '  [OK] Python version: PASS\n      Current: 3.9.1, Required: >=3.8\n  [OK] Standard Libraries: PASS\n      All libraries available';
 
       const results = parseVerificationOutput(stdout);
@@ -41,7 +41,7 @@ describe('verification/parser', () => {
       expect(results[1].details).toBe('All libraries available');
     });
 
-    it.skip('should handle SKIP status', () => {
+    it('should handle SKIP status', () => {
       const stdout = '  [OK] Pushover API: SKIP\n      Credentials not configured';
 
       const results = parseVerificationOutput(stdout);
@@ -50,7 +50,7 @@ describe('verification/parser', () => {
       expect(results[0].status).toBe('SKIP');
     });
 
-    it.skip('should return empty array for empty input', () => {
+    it('should return empty array for empty input', () => {
       const stdout = '';
 
       const results = parseVerificationOutput(stdout);

@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-03-21
+**Last Updated:** 2026-03-23
 
 ## Milestones
 
@@ -145,10 +145,11 @@ Plans:
   2. User sees a summary of pass/fail status for all verification checks
   3. User sees specific problems and resolution suggestions if verification fails
   4. User is shown the command to manually re-run verification
-**Plans:** 1 plan
+**Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 19-01: Implement installation verification and reporting
+- [ ] 19-01-PLAN.md - Implement verification module (runner, parser, formatter, orchestrator) - VER-01, VER-02, VER-03
+- [ ] 19-02-PLAN.md - Integrate verification with CLI and main flow - VER-04
 
 ---
 
@@ -224,9 +225,9 @@ Claude Code 任务完成通知技能,支持 Pushover 推送和 Windows 系统通
 | 16. Python Dependencies | 2/2 | Complete | 2026-03-20 |
 | 17. Interactive Configuration | 3/3 | Complete | 2026-03-21 |
 | 18. Marketplace Integration | 1/1 | Complete   | 2026-03-21 |
-| 19. Installation Verification | 0/1 | Not started | - |
+| 19. Installation Verification | 0/2 | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-21 after Phase 18 planning*
+*Last updated: 2026-03-23 after Phase 19 plan revision*

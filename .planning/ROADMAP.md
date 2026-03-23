@@ -31,8 +31,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 15: Environment Detection** - 实现环境依赖检测功能
 - [x] **Phase 16: Python Dependencies** - 实现 Python 依赖自动安装
 - [x] **Phase 17: Interactive Configuration** - 实现交互式配置引导
-- [ ] **Phase 18: Marketplace Integration** - 集成 Claude Code 技能市场
-- [ ] **Phase 19: Installation Verification** - 实现安装后验证
+- [x] **Phase 18: Marketplace Integration** - 集成 Claude Code 技能市场
+- [x] **Phase 19: Installation Verification** - 实现安装后验证
 
 ## Phase Details
 
@@ -148,8 +148,9 @@ Plans:
 **Plans:** 2 plans in 2 waves
 
 Plans:
-- [ ] 19-01-PLAN.md - Implement verification module (runner, parser, formatter, orchestrator) - VER-01, VER-02, VER-03
-- [ ] 19-02-PLAN.md - Integrate verification with CLI and main flow - VER-04
+- [x] 19-00-PLAN.md - Create TDD test scaffolds for verification modules - completed 2026-03-23
+- [x] 19-01-PLAN.md - Implement verification module (runner, parser, formatter, orchestrator) - VER-01, VER-02, VER-03 - completed 2026-03-23
+- [x] 19-02-PLAN.md - Integrate verification with CLI and main flow - VER-04 - completed 2026-03-23
 
 ---
 

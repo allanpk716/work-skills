@@ -14,10 +14,21 @@
 
 ### 一键安装
 
-打开命令提示符或 PowerShell,运行:
+#### 方法 1: 从 GitHub 直接安装 (推荐)
 
 ```bash
-npx @allanpk716/work-skills-setup
+npx github:allanpk716/work-skills#main installer
+```
+
+#### 方法 2: 克隆仓库后安装
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
+
+# 2. 运行安装器
+node installer/src/index.js
 ```
 
 安装器将自动完成以下步骤:
@@ -36,8 +47,11 @@ npx @allanpk716/work-skills-setup
 安装完成后,您可以运行:
 
 ```bash
+# 进入安装目录
+cd work-skills
+
 # 验证安装是否成功
-npx @allanpk716/work-skills-setup --verify
+node installer/src/index.js --verify
 ```
 
 这将检查以下项目:
@@ -51,7 +65,20 @@ npx @allanpk716/work-skills-setup --verify
 
 ## 🔄 升级现有安装
 
-### 方法 1: 使用 Claude Code 插件管理器 (推荐)
+### 方法 1: Git 拉取更新 (推荐)
+
+```bash
+# 进入仓库目录
+cd work-skills
+
+# 拉取最新代码
+git pull origin main
+
+# 重新运行安装器
+node installer/src/index.js
+```
+
+### 方法 2: 使用 Claude Code 插件管理器
 
 1. 在 Claude Code 中运行:
    ```
@@ -66,24 +93,19 @@ npx @allanpk716/work-skills-setup --verify
 
 5. 启用 **Auto-update** 以自动获取最新版本
 
-### 方法 2: 重新运行安装器
+### 方法 3: 重新克隆
 
 ```bash
-# 重新运行安装器,会自动更新到最新版本
-npx @allanpk716/work-skills-setup
-```
+# 备份配置 (如果有自定义配置)
+# ...
 
-安装器会:
-- 保留您现有的配置
-- 更新插件到最新版本
-- 重新验证安装
+# 删除旧目录并重新克隆
+rm -rf work-skills
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
 
-### 方法 3: 手动更新特定插件
-
-```bash
-# 更新特定插件
-npx skills update claude-notify@work-skills
-npx skills update git-skills@work-skills
+# 运行安装器
+node installer/src/index.js
 ```
 
 ---
@@ -112,7 +134,7 @@ setx PUSHOVER_TOKEN "your-token-here"
 setx PUSHOVER_USER "your-user-key-here"
 
 # 重新运行验证
-npx @allanpk716/work-skills-setup --verify
+node installer/src/index.js --verify
 ```
 
 ### 3. Git SSH 配置问题
@@ -132,7 +154,24 @@ git config --global core.sshCommand "C:/Program Files/TortoiseGit/bin/TortoisePl
 # 1. 清理 Claude Code 缓存
 # 2. 重启 Claude Code
 # 3. 重新运行安装器
-npx @allanpk716/work-skills-setup --verify
+cd work-skills
+node installer/src/index.js --verify
+```
+
+### 5. npx 安装失败: Package not found
+
+**原因:** 安装器包还未发布到 npm registry。
+
+**解决方案:** 使用 GitHub 直接安装:
+```bash
+npx github:allanpk716/work-skills#main installer
+```
+
+或克隆仓库:
+```bash
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
+node installer/src/index.js
 ```
 
 ---
@@ -144,7 +183,7 @@ npx @allanpk716/work-skills-setup --verify
 - [ ] Python 3.8+ 已安装
 - [ ] Git 已安装
 - [ ] Node.js 16+ 已安装
-- [ ] work-skills 插件已添加到 Claude Code
+- [ ] work-skills 仓库已克隆
 - [ ] 至少安装了一个技能插件:
   - [ ] claude-notify (通知)
   - [ ] git-skills (Git 自动化)
@@ -155,20 +194,26 @@ npx @allanpk716/work-skills-setup --verify
 ## 🎯 快速命令参考
 
 ```bash
-# 首次安装
-npx @allanpk716/work-skills-setup
+# 克隆仓库
+git clone https://github.com/allanpk716/work-skills.git
+
+# 进入目录
+cd work-skills
+
+# 运行安装
+node installer/src/index.js
 
 # 验证安装
-npx @allanpk716/work-skills-setup --verify
+node installer/src/index.js --verify
 
 # 查看帮助
-npx @allanpk716/work-skills-setup --help
+node installer/src/index.js --help
 
 # 查看版本
-npx @allanpk716/work-skills-setup --version
+node installer/src/index.js --version
 
 # 中文界面
-npx @allanpk716/work-skills-setup --lang zh
+node installer/src/index.js --lang zh
 ```
 
 ---
@@ -189,14 +234,30 @@ npx @allanpk716/work-skills-setup --lang zh
    - 保持网络连接稳定
 
 2. **升级建议:**
-   - 定期运行 `--verify` 检查安装状态
-   - 启用自动更新以获取最新功能
+   - 定期运行 `git pull` 获取更新
+   - 运行 `--verify` 检查安装状态
    - 升级前查看 [CHANGELOG.md](CHANGELOG.md)
 
 3. **故障排查:**
    - 运行 `--verify` 查看具体失败项
    - 查看 Claude Code 日志
    - 提交 Issue: https://github.com/allanpk716/work-skills/issues
+
+---
+
+## 🚀 发布到 npm 后的安装方法 (Coming Soon)
+
+一旦安装器发布到 npm,您将可以使用:
+
+```bash
+# 一键安装(发布后可用)
+npx @allanpk716/work-skills-setup
+
+# 验证安装
+npx @allanpk716/work-skills-setup --verify
+```
+
+在此之前,请使用上述 GitHub 安装方法。
 
 ---
 

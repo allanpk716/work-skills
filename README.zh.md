@@ -9,8 +9,13 @@
 **初次使用?** 请按照 **[安装指南](INSTALLATION.zh.md)** 一步步设置。
 
 ```bash
-# 一键安装
-npx @allanpk716/work-skills-setup
+# 从 GitHub 安装
+npx github:allanpk716/work-skills#main installer
+
+# 或克隆后运行
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
+node installer/src/index.js
 ```
 
 **已安装?** 查看 **[升级说明](INSTALLATION.zh.md#-升级现有安装)**。

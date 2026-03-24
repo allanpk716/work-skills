@@ -50,6 +50,9 @@ async function main() {
   await runMarketplaceIntegration();
 
   // Step 8: Installation verification (Phase 19)
+  const chalk = require('chalk');
+  console.log(chalk.cyan('\n=== Installation Complete ===\n'));
+  console.log(chalk.gray('Running verification to check your setup...\n'));
   await runVerification();
 }
 

@@ -172,8 +172,13 @@ async function configurePushover(maxRetries = 3) {
       return { status: 'failed', details: 'setx failed for user' };
     }
 
+    // Set environment variables for current process (immediate effect)
+    process.env.PUSHOVER_TOKEN = token;
+    process.env.PUSHOVER_USER = user;
+
     // Success
     console.log(chalk.green(t('pushover.configured')));
+    console.log(chalk.gray(t('pushover.currentSessionSet')));
     console.log(chalk.yellow(t('pushover.restartReminder')));
     return { status: 'configured', details: 'validated and saved' };
   }

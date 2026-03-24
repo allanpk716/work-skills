@@ -62,7 +62,14 @@ async function runVerification() {
   // Step 7: Display rerun command
   console.log(chalk.gray('\n' + t('verification.rerunCommand')));
 
-  // Step 8: Return result (success requires at least 5/7 checks to pass)
+  // Step 8: Display next steps guidance
+  console.log(chalk.cyan('\n=== ' + t('verification.nextSteps') + ' ==='));
+  console.log(chalk.white(t('verification.nextStep1')));
+  console.log(chalk.white(t('verification.nextStep2')));
+  console.log(chalk.white(t('verification.nextStep3')));
+  console.log(chalk.gray(t('verification.nextStep4')));
+
+  // Step 9: Return result (success requires at least 5/7 checks to pass)
   const success = passed >= 5;
   return { success, passed, total };
 }

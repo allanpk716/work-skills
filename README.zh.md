@@ -4,6 +4,19 @@
 
 个人技能集合,用于提升 Claude Code 的日常工作效率。
 
+## 🚀 快速开始
+
+**初次使用?** 请按照 **[安装指南](INSTALLATION.zh.md)** 一步步设置。
+
+```bash
+# 一键安装
+npx @allanpk716/work-skills-setup
+```
+
+**已安装?** 查看 **[升级说明](INSTALLATION.zh.md#-升级现有安装)**。
+
+---
+
 ## 前提条件
 
 - Windows 开发环境

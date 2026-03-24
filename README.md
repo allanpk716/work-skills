@@ -4,6 +4,19 @@ English | [中文](README.zh.md)
 
 Personal skills collection for improving daily work efficiency with Claude Code.
 
+## 🚀 Quick Start
+
+**New to Work Skills?** Follow our **[Installation Guide](INSTALLATION.md)** for step-by-step setup.
+
+```bash
+# One-line installation
+npx @allanpk716/work-skills-setup
+```
+
+**Already installed?** See **[Upgrade Instructions](INSTALLATION.md#-升级现有安装)**.
+
+---
+
 ## Prerequisites
 
 - Windows development environment

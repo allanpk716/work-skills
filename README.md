@@ -6,22 +6,23 @@ Personal skills collection for improving daily work efficiency with Claude Code.
 
 ## 🚀 Quick Start
 
-**New to Work Skills?** Just 3 steps:
+**New to Work Skills?** Just run:
 
 ```bash
-# 1. Clone repository
+npx github:allanpk716/work-skills#main
+```
+
+**Prefer manual install?**
+
+```bash
 git clone https://github.com/allanpk716/work-skills.git
-
-# 2. Enter directory
 cd work-skills
-
-# 3. Run installer
 node installer/src/index.js
 ```
 
-**Need details?** See **[Quick Start Guide](QUICK-START.md)** or **[Full Installation Guide](INSTALLATION.md)**
+**Need details?** See **[Quick Start Guide](QUICK-START.md)**
 
-**Already installed?** Run `git pull && node installer/src/index.js` to update
+**Already installed?** Run `git pull && npx .` to update
 
 ---
 

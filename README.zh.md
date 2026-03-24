@@ -6,16 +6,17 @@
 
 ## 🚀 快速开始
 
-**初次使用?** 只需 3 步:
+**初次使用?** 直接运行:
 
 ```bash
-# 1. 克隆仓库
+npx github:allanpk716/work-skills#main
+```
+
+**喜欢手动安装?**
+
+```bash
 git clone https://github.com/allanpk716/work-skills.git
-
-# 2. 进入目录
 cd work-skills
-
-# 3. 运行安装器
 node installer/src/index.js
 ```
 

@@ -12,9 +12,20 @@
 - ✅ **Git** 已安装
 - ✅ **TortoiseGit 或 PuTTY** (用于 SSH 认证,可选)
 
-### 一键安装
+### 一键安装 (推荐)
 
-#### 方法 1: 从 GitHub 直接安装 (推荐)
+```bash
+npx github:allanpk716/work-skills#main
+```
+
+这个命令会自动完成:
+- 克隆最新版本
+- 安装依赖
+- 运行安装器
+
+### 备用方法: 手动克隆安装
+
+#### 方法 1: 从 GitHub 直接安装
 
 ```bash
 npx github:allanpk716/work-skills#main installer

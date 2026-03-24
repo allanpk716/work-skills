@@ -6,20 +6,24 @@
 
 ## 🚀 快速开始
 
-**初次使用?** 请按照 **[安装指南](INSTALLATION.zh.md)** 一步步设置。
+**初次使用?** 只需 3 步:
 
 ```bash
-# 从 GitHub 安装
-npx github:allanpk716/work-skills#main installer
-
-# 或克隆后运行
+# 1. 克隆仓库
 git clone https://github.com/allanpk716/work-skills.git
+
+# 2. 进入目录
 cd work-skills
+
+# 3. 运行安装器
 node installer/src/index.js
 ```
 
-**已安装?** 查看 **[升级说明](INSTALLATION.zh.md#-升级现有安装)**。
+**详细步骤?** 查看 **[快速安装指南](QUICK-START.md)** 或 **[完整安装文档](INSTALLATION.zh.md)**
 
+**已安装?** 运行 `git pull && node installer/src/index.js` 更新
+
+---
 ---
 
 ## 前提条件

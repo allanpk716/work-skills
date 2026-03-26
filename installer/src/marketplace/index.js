@@ -1,7 +1,7 @@
 'use strict';
 
 const chalk = require('chalk');
-const { Checkbox } = require('enquirer');
+const { MultiSelect } = require('enquirer');
 const { t } = require('../i18n/index.js');
 const { registerMarketplaceSource } = require('./config-manager.js');
 const { fetchMarketplaceJson, parsePluginList } = require('./plugin-discovery.js');
@@ -96,7 +96,7 @@ async function runMarketplaceIntegration() {
     // Step 3: Display plugins and prompt for selection
     displayPluginTable(plugins);
 
-    const checkbox = new Checkbox({
+    const multiselect = new MultiSelect({
       name: 'plugins',
       message: t('marketplace.select_plugins'),
       choices: plugins.map(p => ({
@@ -107,7 +107,7 @@ async function runMarketplaceIntegration() {
       initial: []
     });
 
-    const selectedNames = await checkbox.run();
+    const selectedNames = await multiselect.run();
 
     if (selectedNames.length === 0) {
       console.log(chalk.yellow('\n' + t('marketplace.none_selected')));

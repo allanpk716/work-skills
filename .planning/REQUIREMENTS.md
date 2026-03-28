@@ -37,19 +37,19 @@ Requirements for smart configuration detection in installer.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CFGD-01 | — | Pending |
-| CFGD-02 | — | Pending |
-| INTX-01 | — | Pending |
-| INTX-02 | — | Pending |
-| INTX-03 | — | Pending |
-| UFLOW-01 | — | Pending |
-| UFLOW-02 | — | Pending |
+| CFGD-01 | Phase 20 | Pending |
+| CFGD-02 | Phase 20 | Pending |
+| INTX-01 | Phase 20 | Pending |
+| INTX-02 | Phase 20 | Pending |
+| INTX-03 | Phase 20 | Pending |
+| UFLOW-01 | Phase 21 | Pending |
+| UFLOW-02 | Phase 21 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 7 total
-- Mapped to phases: 0
-- Unmapped: 7 ⚠️
+- Mapped to phases: 7
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 after initial definition*
+*Last updated: 2026-03-28 after roadmap creation*

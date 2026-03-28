@@ -99,7 +99,7 @@
   "installation.verificationStarting": "Running verification to check your setup...",
   "verification.title": "Installation Verification",
   "verification.summary": "Summary: {passed}/{total} checks passed",
-  "verification.rerunCommand": "To re-run verification: npx @allanpk716/work-skills-setup --verify",
+  "verification.rerunCommand": "To re-run verification: npx github:allanpk716/work-skills#main --verify",
   "verification.error.pythonNotFound": "Error: Python is required for verification",
   "verification.error.scriptNotFound": "Error: Verification script not found",
   "verification.error.timeout": "Error: Verification timeout (30s)",

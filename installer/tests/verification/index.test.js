@@ -80,7 +80,7 @@ describe('verification/index (integration)', () => {
 
       // Should display rerun command (i18n key: verification.rerunCommand)
       const calls = consoleSpy.mock.calls.flat().join(' ');
-      expect(calls).toContain('npx @allanpk716/work-skills-setup --verify');
+      expect(calls).toContain('npx github:allanpk716/work-skills#main --verify');
 
       consoleSpy.mockRestore();
     });

@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供自动化工具。目前包含 Git 工作流自动化(windows-git-commit)和任务完成通知(claude-notify)两个插件,帮助开发者在 Windows 环境下提高工作效率。
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。用户通过 `npx @allanpk716/work-skills-setup` 一键完成环境检测、依赖安装、配置引导和插件安装。
 
 ## Core Value
 
@@ -12,7 +12,7 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 
 ### Validated
 
-**v1.0 - Claude Notify 插件:**
+**v1.0 - Claude Notify 插件 (shipped 2026-02-24):**
 - ✓ 将 cc-pushover-hook 重构为全局技能
 - ✓ 支持从 CLAUDE_PROJECT_DIR 提取项目名称
 - ✓ Pushover 推送通知
@@ -22,29 +22,7 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ 多实例并发运行(PID 隔离)
 - ✓ 完整的安装和配置文档
 
-**v1.2 - Installer v1.2 milestone (2026-03-21):**
-- ✓ NPX 安装器基础框架 (package.json, bin 入口) - Phase 14
-- ✓ Windows 系统检测与错误提示 - Phase 14
-- ✓ 双语支持 (中英文, 自动检测系统语言) - Phase 14
-- ✓ 欢迎横幅和功能介绍 (boxen 美化) - Phase 14
-- ✓ CLI 选项 (--help, --version, --lang, --no-color) - Phase 14
-- ✓ 环境依赖检测框架 (Python, Git, TortoiseGit/PuTTY) - Phase 15
-- ✓ pip 包检测器 (requests) - Phase 15
-- ✓ 交互式 Python 依赖安装 - Phase 16
-- ✓ 错误检测和解决指导 (permission, network, pipNotFound) - Phase 16
-- ✓ 安装摘要报告 (installed, failed, skipped) - Phase 16
-- ✓ TDD 开发流程 (Wave 0 测试骨架 + Wave 1 实现) - Phase 16
-- ✓ 16/16 测试通过 (pip-installer + orchestrator) - Phase 16**
-- ✓ Pushover 配置检测与引导 (环境变量、API 验证、setx 持久化) - Phase 17
-- ✓ Git SSH 配置检测与指导 (core.sshCommand 检测、配置引导) - Phase 17
-- ✓ Git 用户配置检测与引导 (user.name/user.email、交互式输入) - Phase 17
-- ✓ 配置摘要显示 (状态图标、配置详情) - Phase 17
-- ✓ 双语配置引导 (中英文) - Phase 17
-- ✓ Marketplace source 注册 (work-skills 添加到 config.json) - Phase 18
-- ✓ 插件发现和列表显示 (GitHub API fetch + 表格展示) - Phase 18
-- ✓ 交互式插件安装 (enquirer Checkbox + git clone + fs.cp) - Phase 18
-- ✓ 已安装插件检测和跳过 - Phase 18
-- ✓ 安装摘要报告 (installed, skipped, failed counts) - Phase 18
+**v1.1 - Git Security Scanning (shipped 2026-02-27):**
 - ✓ 敏感信息检测(密钥、密码、私钥、PGP、PEM) - Phase 6, 11
 - ✓ 缓存文件检测(Python、Node.js、编译产物、临时文件) - Phase 6
 - ✓ 配置文件泄露检测(.env、credentials 等) - Phase 6
@@ -56,15 +34,39 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - ✓ 基于 .gitignore 的自定义规则和白名单 - Phase 7, 8
 - ✓ Windows 性能优化(16.77ms 扫描时间,比要求快 116 倍) - Phase 9
 - ✓ 紧急跳过扫描选项(带明确风险警告) - Phase 9, 12
-- ✓ 完整的测试覆盖(12/12 测试通过) - Phase 9
+
+**v1.2 - Installer (shipped 2026-03-28):**
+- ✓ NPX 安装器 — `npx @allanpk716/work-skills-setup` 一键安装
+- ✓ Windows 系统检测与错误提示 - Phase 14
+- ✓ 双语支持 (中英文, 自动检测系统语言) - Phase 14
+- ✓ 欢迎横幅和功能介绍 (boxen 美化) - Phase 14
+- ✓ CLI 选项 (--help, --version, --lang, --no-color, --verify) - Phase 14, 19
+- ✓ 环境依赖检测 (Python, Git, TortoiseGit/PuTTY, pip packages) - Phase 15
+- ✓ 交互式 Python 依赖安装 (pip --user, 错误检测) - Phase 16
+- ✓ Pushover 凭证配置 (API 验证, setx 持久化) - Phase 17
+- ✓ Git SSH 和用户配置引导 - Phase 17
+- ✓ Claude Code 技能市场集成 (注册, 发现, 安装插件) - Phase 18
+- ✓ 安装后自动验证 (--verify 独立重验) - Phase 19
+- ✓ 通知渠道切换命令 (/notify-enable, /notify-disable) - Phase 13
+
+### Active
+
+**v1.3 - 智能配置检测 (in progress):**
+- [ ] Pushover 凭证检测 — 检测 PUSHOVER_API_KEY/PUSHOVER_USER_KEY 环境变量是否已持久化
+- [ ] Git 用户信息检测 — 检测 git config user.name/user.email 是否已配置
+- [ ] 交互式跳过/更新 — 检测到已有配置时显示当前值，询问用户跳过还是重新输入
+- [ ] 统一安装流程 — 首次安装和更新运行走同一流程，自动适配
 
 ### Out of Scope
 
-**v1.1 排除:**
-- 自动修复问题(只检测和提示)
-- Linux/macOS 支持(专注 Windows)
-- 独立的配置文件格式(复用 .gitignore)
-- 实时文件监控(只在提交时扫描)
+| Feature | Reason |
+|---------|--------|
+| Linux/macOS 支持 | 项目专注于 Windows 开发环境 |
+| 自动下载安装 Python/Git | 超出安装器职责范围,只提供检测和指导 |
+| GUI 安装界面 | CLI 交互已足够,GUI 增加复杂度 |
+| 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
+| 静默安装模式 (--quiet) | 未来版本考虑 |
+| 配置文件导出/导入 | 未来版本考虑 |
 
 ## Context
 
@@ -72,57 +74,65 @@ Work Skills 是一个 Claude Code 技能集合项目,为日常开发工作提供
 - 多技能集合仓库,为个人开发工作提供 Claude Code 技能
 - v1.0 完成了 claude-notify 通知插件,已发布并投入使用
 - v1.1 完成了 windows-git-commit 安全扫描功能,生产就绪
+- v1.2 完成了独立 NPX 安装器,实现一步到位的安装体验
 
 **技术环境:**
 - 目标系统: Windows 10/11
-- 开发语言: Python 3.6+, Bash scripts
+- 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
-- 分发方式: Claude Code 插件市场
+- 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态(v1.2 Phase 18 完成后):**
+**当前状态 (v1.2 shipped):**
 - claude-notify: v1.0 已完成并归档
 - windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- installer: v1.2 Phase 14-18 完成,基础框架、环境检测、依赖安装、配置引导、marketplace 集成全部就绪
-- 代码量: ~2,800 行代码 (Python + JavaScript)
-- 测试覆盖: 128/128 测试通过 (19 installer + 16 installers + 17 configurators + 13 marketplace + 63 security)
-- 下一步: Phase 19 - 安装验证
-
-## Current Milestone: v1.2 修复首次安装问题
-
-**Goal:** 创建独立的 npx 安装器，实现一步到位的安装体验，包括环境检测、交互式配置引导和安装后验证。
-
-**Current status (after Phase 14 completion):**
-- ✓ Installer foundation (NPX runner, Windows detection, welcome, CLI, i18n) (Phase 14)
-- ✓ Environment detection framework (Phase 15)
-- ✓ Python dependency auto-installation (Phase 16)
-- ✓ Interactive configuration guidance (Phase 17)
-- ✓ Marketplace integration (Phase 18)
-- Pending: Installation verification (Phase 19)
-
-## Constraints
-
-- **系统平台**: 主要支持 Windows 系统,需兼容 Windows 10+
-- **Python 版本**: 需要 Python 3.6 或更高版本
-- **扫描性能**: 不能显著增加提交流程时间(目标 <2 秒)
-- **误报率**: 需要平衡检测严格度和误报率
-- **兼容性**: 不能破坏现有的 git 工作流
+- installer: v1.2 完成,包含完整的安装流程(环境检测→依赖安装→配置引导→市场集成→安装验证)
+- 代码量: ~10,500 行代码 (JavaScript installer + Python scripts)
+- 测试覆盖: 128+ 测试通过
+- 下一步: 规划下一里程碑
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| 在 git commit 前扫描 | 能捕获已暂存的问题,避免进入版本历史 | ✓ Validated (Phase 7) |
-| 复用 .gitignore 格式 | 无需学习新语法,用户熟悉 | ✓ Validated (Phase 7) |
-| 阻止提交而非警告 | 强制用户处理安全问题,更安全 | ✓ Validated (Phase 7) |
-| 显示详细问题信息 | 帮助用户快速定位和修复问题 | ✓ Validated (Phase 7) |
-| 内置规则 + 自定义 | 覆盖常见场景,同时支持项目定制 | ✓ Validated (Phase 7) |
+| NPX 独立安装器 | 用户无需克隆仓库,一键安装 | ✓ Validated (v1.2) |
+| TDD 开发流程 (Wave 0 测试骨架) | 测试先行,减少 bug | ✓ Validated (Phase 16, 19) |
+| CJS 而非 ESM | chalk/boxen 兼容性 | ✓ Applied (Phase 14) |
+| enquirer 交互提示 | 简单 API,维护良好 | ✓ Validated (Phase 16-18) |
+| pip --user 标志 | 避免 Windows 权限问题 | ✓ Validated (Phase 16) |
+| Pushover API 验证后保存 | 确保凭证有效 | ✓ Validated (Phase 17) |
+| Git shallow clone (--depth 1) | 插件安装更快速 | ✓ Validated (Phase 18) |
+| 在 git commit 前扫描 | 能捕获已暂存的问题 | ✓ Validated (Phase 7) |
+| 阻止提交而非警告 | 强制用户处理安全问题 | ✓ Validated (Phase 7) |
 | ASCII 字符替代 Unicode | Windows GBK 编码兼容性 | ✓ Applied (Phase 7) |
-| Fail-open 错误处理 | 允许扫描错误时继续提交 | ✓ Applied (Phase 7) |
-| 分阶段交付检测器 | 降低复杂度,先核心再高级 | ✓ Validated (Phase 6-8) |
-| 使用 Python 标准库 | 无外部依赖,Windows 预装 | ✓ Validated (Phase 6) |
-| 双语支持 | 提升用户体验 | ✓ Validated (Phase 10) |
-| 8KB 二进制文件采样 | 平衡性能和准确性 | ✓ Validated (Phase 9) |
-| 紧急跳过机制 | 生产环境应急通道 | ✓ Validated (Phase 9, 12) |
+| 双语支持 | 提升用户体验 | ✓ Validated (Phase 10, 14) |
+| 并行检测 (Promise.all) | 提高环境检测速度 | ✓ Validated (Phase 15) |
+
+## Current Milestone: v1.3 智能配置检测
+
+**Goal:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
+
+**Target features:**
+- 检测 Pushover 凭证 (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) 是否已持久化
+- 检测 Git 用户信息 (user.name, user.email) 是否已配置
+- 检测到已有配置时显示当前值并询问跳过还是重新输入
+- 首次安装和更新运行统一流程
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
 
 ---
-*Last updated: 2026-03-21 after Phase 14 completion and verification*
+*Last updated: 2026-03-28 after v1.3 milestone start*

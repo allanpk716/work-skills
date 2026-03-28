@@ -62,7 +62,14 @@ blocked: 0
   reason: "User reported: npx @allanpk716/work-skills-setup --verify npm error 404 Not Found - package not published to npm registry"
   severity: major
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Package @allanpk716/work-skills-setup was never published to npm registry. User installs via npx github:allanpk716/work-skills#main. The documented --verify command references npm package name which doesn't exist."
+  artifacts:
+    - path: "installer/package.json"
+      issue: "Package name configured but never published"
+    - path: "installer/src/cli.js"
+      issue: "--verify flag works locally but unreachable via npm npx"
+    - path: "INSTALLATION.zh.md"
+      issue: "FAQ already notes package not on npm, but rerun command still shows npm syntax"
+  missing:
+    - "Either publish package to npm, or update all documented commands (help text, rerun command, README) to use the GitHub npx method"
   debug_session: ""

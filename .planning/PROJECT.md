@@ -56,12 +56,14 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
 - ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
 
+**v1.4 - 修复插件安装检测 (shipped 2026-03-29):**
+- ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
+- ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
+- ✓ 重复运行安装器自动跳过已安装插件 - Phase 23
+
 ### Active
 
-**v1.4 - 修复插件安装检测:**
-- ✓ windows-git-commit 插件目录结构扁平化,SKILL.md 移至插件根目录 - Phase 22
-- 安装器 isPluginInstalled() 检测逻辑与实际插件结构一致
-- 更新安装时自动判断已安装插件,无需重复提示安装
+*(No active requirements — v1.4 milestone complete)*
 
 ### Out of Scope
 
@@ -91,10 +93,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.4 进行中):**
-- v1.3 已完成智能配置检测
-- Phase 22 完成 — windows-git-commit 插件结构已扁平化
-- 下一步: Phase 23 检测与回归验证
+**当前状态 (v1.4 完成):**
+- v1.4 milestone 完成 — 插件安装检测已修复并验证
+- Phase 22: 插件结构扁平化 ✓
+- Phase 23: 检测回归验证 ✓
+- 所有里程碑均已完成
 
 ## Key Decisions
 
@@ -144,4 +147,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — Phase 22 complete*
+*Last updated: 2026-03-29 — v1.4 milestone complete*

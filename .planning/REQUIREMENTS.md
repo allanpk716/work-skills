@@ -10,7 +10,7 @@ Requirements for smart configuration detection in installer.
 ### Config Detection (CFGD)
 
 - [x] **CFGD-01**: Installer can detect if Pushover credentials (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) are already persisted via setx in environment variables
-- [ ] **CFGD-02**: Installer can detect if Git user info (user.name, user.email) is already configured via git config --global
+- [x] **CFGD-02**: Installer can detect if Git user info (user.name, user.email) is already configured via git config --global
 
 ### Smart Interaction (INTX)
 
@@ -38,7 +38,7 @@ Requirements for smart configuration detection in installer.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | CFGD-01 | Phase 20 | Complete |
-| CFGD-02 | Phase 20 | Pending |
+| CFGD-02 | Phase 20 | Complete |
 | INTX-01 | Phase 20 | Complete |
 | INTX-02 | Phase 20 | Complete |
 | INTX-03 | Phase 20 | Complete |

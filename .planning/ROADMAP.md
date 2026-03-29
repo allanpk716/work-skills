@@ -33,7 +33,7 @@
 
 **Milestone Goal:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
 
-- [ ] **Phase 20: Config Detection & Smart Interaction** - 检测已有配置并提供跳过/更新选择
+- [x] **Phase 20: Config Detection & Smart Interaction** - 检测已有配置并提供跳过/更新选择 (completed 2026-03-29)
 - [ ] **Phase 21: Unified Flow Integration** - 统一首次安装和重复运行两种场景的端到端流程
 
 ## Phase Details
@@ -49,11 +49,11 @@
   3. When existing Pushover config is detected, user sees masked API key and can choose to skip or re-enter
   4. When existing Git user info is detected, user sees current name/email and can choose to skip or re-enter
   5. User who chooses to re-enter gets the same validation and persistence flow as a fresh setup
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 20-01-PLAN.md -- Pushover registry detection + per-item Confirm interaction
-- [ ] 20-02-PLAN.md -- Git user skip/update Confirm + per-item interaction
+- [x] 20-02-PLAN.md -- Git user skip/update Confirm + per-item interaction
 
 ### Phase 21: Unified Flow Integration
 
@@ -75,7 +75,7 @@ Phases execute in numeric order: 20 -> 21
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Config Detection & Smart Interaction | 1/2 | In Progress|  |
+| 20. Config Detection & Smart Interaction | 2/2 | Complete   | 2026-03-29 |
 | 21. Unified Flow Integration | 0/? | Not started | - |
 
 ### v1.3 Progress

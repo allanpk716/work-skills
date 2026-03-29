@@ -199,7 +199,7 @@ internal_host = "192.168.1.1"  # gitcheck:ignore-all-ips
 **Configuration:**
 Security scanning is enabled by default. To disable:
 
-1. Open `plugins/windows-git-commit/skills/windows-git-commit/SKILL.md`
+1. Open `plugins/windows-git-commit/SKILL.md`
 2. Add configuration:
    ```yaml
    security_scanner:
@@ -848,7 +848,7 @@ To enable automatic security scanning before each commit, install the pre-commit
 1. **Copy hook to Git directory:**
    ```bash
    # From project root
-   cp plugins/windows-git-commit/skills/windows-git-commit/hooks/pre-commit .git/hooks/pre-commit
+   cp plugins/windows-git-commit/hooks/pre-commit .git/hooks/pre-commit
    ```
 
 2. **Make hook executable (Windows):**

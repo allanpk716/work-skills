@@ -1,15 +1,14 @@
 # Milestones
 
-## v1.3 智能配置检测 (In Progress)
+## v1.3 智能配置检测 (Shipped: 2026-03-29)
 
-**Phases:** 20-21
-**Goal:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
+**Phases completed:** 2 phases, 3 plans, 6 tasks
 
-**Target features:**
-- 检测 Pushover 凭证 (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) 是否已持久化
-- 检测 Git 用户信息 (user.name, user.email) 是否已配置
-- 检测到已有配置时显示当前值并询问跳过还是重新输入
-- 首次安装和更新运行统一流程，自动适配
+**Key accomplishments:**
+
+- Dual-source Pushover credential detection with registry fallback and per-item Confirm interaction
+- Git user configurator enhanced with per-item Confirm prompts for keep/re-enter, supporting 4 cases (both, only name, only email, neither) with unified save logic
+- 14 integration tests verifying UFLOW-01 (fresh install) and UFLOW-02 (re-run) detection and case-mapping logic across pushover, git-user, and git-ssh configurators
 
 ---
 

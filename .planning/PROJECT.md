@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。用户通过 `npx @allanpk716/work-skills-setup` 一键完成环境检测、依赖安装、配置引导和插件安装。
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测,能自动识别已有环境配置并适配首次安装或重复运行场景。用户通过 `npx @allanpk716/work-skills-setup` 一键完成环境检测、依赖安装、配置引导和插件安装。
 
 ## Core Value
 
@@ -49,13 +49,16 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 安装后自动验证 (--verify 独立重验) - Phase 19
 - ✓ 通知渠道切换命令 (/notify-enable, /notify-disable) - Phase 13
 
+**v1.3 - 智能配置检测 (shipped 2026-03-29):**
+- ✓ Pushover 凭证双源检测 — process.env + Windows 注册表回退 - Phase 20
+- ✓ Git 用户信息检测 — git config --global 读取 - Phase 20
+- ✓ Per-item Confirm 交互 — 4 种场景(双有/仅有 token/仅有 user/均无) - Phase 20
+- ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
+- ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
+
 ### Active
 
-**v1.3 - 智能配置检测 (shipped 2026-03-29):**
-- ✓ Pushover 凭证检测 — 检测 PUSHOVER_API_KEY/PUSHOVER_USER_KEY 环境变量是否已持久化 - Phase 20
-- ✓ Git 用户信息检测 — 检测 git config user.name/user.email 是否已配置 - Phase 20
-- ✓ 交互式跳过/更新 — 检测到已有配置时显示当前值，询问用户跳过还是重新输入 - Phase 20
-- ✓ 统一安装流程 — 首次安装和更新运行走同一流程，自动适配 - Phase 21
+(待下一里程碑定义)
 
 ### Out of Scope
 
@@ -67,6 +70,8 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
 | 静默安装模式 (--quiet) | 未来版本考虑 |
 | 配置文件导出/导入 | 未来版本考虑 |
+| Git SSH 配置检测 | v1.3 明确排除,SSH 配置仍走原始引导流程 |
+| 已安装插件检测 | v1.3 明确排除 |
 
 ## Context
 
@@ -75,19 +80,20 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - v1.0 完成了 claude-notify 通知插件,已发布并投入使用
 - v1.1 完成了 windows-git-commit 安全扫描功能,生产就绪
 - v1.2 完成了独立 NPX 安装器,实现一步到位的安装体验
+- v1.3 完成了智能配置检测,安装器能自动适配首次安装和重复运行
 
 **技术环境:**
 - 目标系统: Windows 10/11
-- 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript
+- 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript (CJS)
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.2 shipped):**
+**当前状态 (v1.3 shipped):**
 - claude-notify: v1.0 已完成并归档
 - windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- installer: v1.2 完成,包含完整的安装流程(环境检测→依赖安装→配置引导→市场集成→安装验证)
+- installer: v1.3 完成,包含智能配置检测和统一安装流程
 - 代码量: ~10,500 行代码 (JavaScript installer + Python scripts)
-- 测试覆盖: 128+ 测试通过
+- 测试覆盖: 163+ 测试通过 (35 个配置器测试 + 128 个安装器测试)
 - 下一步: 规划下一里程碑
 
 ## Key Decisions
@@ -106,10 +112,14 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | ASCII 字符替代 Unicode | Windows GBK 编码兼容性 | ✓ Applied (Phase 7) |
 | 双语支持 | 提升用户体验 | ✓ Validated (Phase 10, 14) |
 | 并行检测 (Promise.all) | 提高环境检测速度 | ✓ Validated (Phase 15) |
+| 双源检测 (process.env + registry) | setx 持久化值不在当前 process.env 中 | ✓ Validated (Phase 20) |
+| Per-item Confirm 模式 | 每项独立处理,支持部分配置 | ✓ Validated (Phase 20) |
+| 统一流程 (无单独 update 命令) | 减少用户认知负担 | ✓ Validated (Phase 21) |
+| Detection-level 测试策略 | 避免交互式 prompt mock 复杂度 | ✓ Applied (Phase 21) |
 
-## Current Milestone: v1.3 complete — ready for `/gsd:complete-milestone`
+## Current Milestone: v1.3 shipped — ready for next milestone
 
-Phase 21 complete — v1.3 智能配置检测 milestone 所有 phase 已完成。安装器现在能自动检测已有配置，首次安装和重复运行统一流程。
+v1.3 智能配置检测已完成并归档。安装器现在支持双源 Pushover 凭证检测、Git 用户配置检测、per-item Confirm 交互，以及统一的首次/重复安装流程。
 
 ## Evolution
 

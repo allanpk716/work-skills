@@ -34,10 +34,20 @@ node installer/src/index.js
 
 ## Installation
 
-### Quick Install (Recommended)
+### NPX Install (Recommended)
+
+One-line install via GitHub:
 
 ```bash
-npx skills add allanpk716/work-skills
+npx github:allanpk716/work-skills#main
+```
+
+This automatically downloads and runs the installer. No clone needed.
+
+### Official Project Install
+
+```bash
+npx allanpk716/work-skills
 ```
 
 ### Register as Plugin Marketplace

@@ -22,7 +22,7 @@ node installer/src/index.js
 
 **详细步骤?** 查看 **[快速安装指南](QUICK-START.md)** 或 **[完整安装文档](INSTALLATION.zh.md)**
 
-**已安装?** 运行 `git pull && node installer/src/index.js` 更新
+**已安装?** 运行 `git pull && npx .` 更新
 
 ---
 ---
@@ -35,10 +35,20 @@ node installer/src/index.js
 
 ## 安装
 
-### 快速安装 (推荐)
+### NPX 安装 (推荐)
+
+通过 GitHub 一键安装:
 
 ```bash
-npx skills add allanpk716/work-skills
+npx github:allanpk716/work-skills#main
+```
+
+自动下载并运行安装程序,无需克隆仓库。
+
+### 官方项目安装
+
+```bash
+npx allanpk716/work-skills
 ```
 
 ### 注册为插件市场

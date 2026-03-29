@@ -192,24 +192,37 @@ function registerGlobalHooks(settings) {
 }
 
 /**
- * Clean up marketplace plugin cache for claude-notify
- * Removes hooks.json from cache to prevent double-loading
+ * Clean up stale marketplace hooks that would cause duplicate notifications.
+ * Removes hooks.json from both the plugin cache and the skills directory,
+ * since Claude Code loads hooks from all these locations independently.
  */
 function cleanMarketplaceCache() {
-  const cacheBase = path.join(
-    os.homedir(), '.claude', 'plugins', 'cache', 'work-skills', 'claude-notify'
-  );
+  const locations = [
+    // Plugin cache (marketplace installed plugins)
+    path.join(os.homedir(), '.claude', 'plugins', 'cache', 'work-skills', 'claude-notify'),
+    // Skills directory (npx installer target)
+    path.join(os.homedir(), '.claude', 'skills', 'claude-notify')
+  ];
 
-  if (!fs.existsSync(cacheBase)) return;
+  for (const baseDir of locations) {
+    if (!fs.existsSync(baseDir)) continue;
 
-  // Find version subdirectories (e.g., 1.0.2/)
-  const entries = fs.readdirSync(cacheBase);
-  for (const entry of entries) {
-    const versionDir = path.join(cacheBase, entry);
-    if (fs.statSync(versionDir).isDirectory()) {
-      const hooksCacheDir = path.join(versionDir, 'hooks');
-      if (fs.existsSync(hooksCacheDir)) {
-        fs.rmSync(hooksCacheDir, { recursive: true, force: true });
+    // Find version subdirectories (e.g., 1.0.2/) or handle flat structure
+    const entries = fs.statSync(baseDir).isDirectory() ? fs.readdirSync(baseDir) : [];
+    const dirs = entries.filter(e => {
+      const fullPath = path.join(baseDir, e);
+      return fs.statSync(fullPath).isDirectory();
+    });
+
+    // Check both version subdirectories and the base directory itself
+    const checkDirs = dirs.length > 0
+      ? dirs.map(d => path.join(baseDir, d))
+      : [baseDir];
+
+    for (const dir of checkDirs) {
+      const hooksDir = path.join(dir, 'hooks');
+      if (fs.existsSync(hooksDir)) {
+        fs.rmSync(hooksDir, { recursive: true, force: true });
       }
     }
   }

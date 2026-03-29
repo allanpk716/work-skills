@@ -1,23 +1,23 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: "Milestone: 智能配置检测"
-status: milestone_complete
-stopped_at: Milestone v1.3 shipped
-last_updated: "2026-03-29T07:30:00.000Z"
+milestone: v1.4
+milestone_name: "Milestone: 修复插件安装检测"
+status: defining_requirements
+stopped_at: Defining requirements
+last_updated: "2026-03-29T13:22:00.000Z"
 last_activity: 2026-03-29
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# STATE: Work Skills v1.3
+# STATE: Work Skills v1.4
 
 **Last Updated:** 2026-03-29
-**Milestone:** v1.3 - 智能配置检测 (SHIPPED)
+**Milestone:** v1.4 - 修复插件安装检测
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -26,15 +26,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** 规划下一里程碑
+**Current focus:** 修复 windows-git-commit 插件安装检测问题
 
 ## Current Position
 
-Phase: All complete
-Status: Milestone v1.3 shipped
-Last activity: 2026-03-29
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-29 — Milestone v1.4 started
 
-Progress: [██████████] 100%
+Progress: [          ] 0%
 
 ## Previous Milestone Summary
 
@@ -60,6 +61,7 @@ Recent decisions affecting current work:
 - v1.3 approach: Unified flow (no separate "update" command), single installer adapts to context
 - Dual-source detection: process.env priority, registry fallback for setx-persisted values
 - Detection-level testing: test detect*() + orchestration without interactive prompts
+- v1.4 focus: Fix windows-git-commit plugin directory structure to match isPluginInstalled() expectations
 
 ### Pending Todos
 
@@ -71,10 +73,10 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-29T07:30:00.000Z
-Stopped at: Milestone v1.3 shipped — ready for /gsd:new-milestone
+Last session: 2026-03-29T13:22:00.000Z
+Stopped at: Defining requirements
 Resume file: None
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-03-29 after v1.3 milestone completion*
+*Last updated: 2026-03-29 — milestone v1.4 started*

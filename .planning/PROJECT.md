@@ -58,7 +58,10 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-(待下一里程碑定义)
+**v1.4 - 修复插件安装检测:**
+- windows-git-commit 插件目录结构扁平化,SKILL.md 移至插件根目录
+- 安装器 isPluginInstalled() 检测逻辑与实际插件结构一致
+- 更新安装时自动判断已安装插件,无需重复提示安装
 
 ### Out of Scope
 
@@ -71,7 +74,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 静默安装模式 (--quiet) | 未来版本考虑 |
 | 配置文件导出/导入 | 未来版本考虑 |
 | Git SSH 配置检测 | v1.3 明确排除,SSH 配置仍走原始引导流程 |
-| 已安装插件检测 | v1.3 明确排除 |
+| 已安装插件检测 | v1.3 明确排除,在 v1.4 中修复 |
 
 ## Context
 
@@ -88,13 +91,10 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.3 shipped):**
-- claude-notify: v1.0 已完成并归档
-- windows-git-commit: v1.1 安全扫描功能完成,生产就绪
-- installer: v1.3 完成,包含智能配置检测和统一安装流程
-- 代码量: ~10,500 行代码 (JavaScript installer + Python scripts)
-- 测试覆盖: 163+ 测试通过 (35 个配置器测试 + 128 个安装器测试)
-- 下一步: 规划下一里程碑
+**当前状态 (v1.4 进行中):**
+- v1.3 已完成智能配置检测
+- v1.4 修复 windows-git-commit 插件安装检测问题
+- 下一步: 完成 v1.4 插件结构修复
 
 ## Key Decisions
 
@@ -117,9 +117,14 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 统一流程 (无单独 update 命令) | 减少用户认知负担 | ✓ Validated (Phase 21) |
 | Detection-level 测试策略 | 避免交互式 prompt mock 复杂度 | ✓ Applied (Phase 21) |
 
-## Current Milestone: v1.3 shipped — ready for next milestone
+## Current Milestone: v1.4 修复插件安装检测
 
-v1.3 智能配置检测已完成并归档。安装器现在支持双源 Pushover 凭证检测、Git 用户配置检测、per-item Confirm 交互，以及统一的首次/重复安装流程。
+**Goal:** 修复 windows-git-commit 插件重复运行时始终提示安装的问题。
+
+**Target features:**
+- 修复 windows-git-commit 插件 SKILL.md 路径结构
+- 确保 isPluginInstalled() 检测与实际安装路径一致
+- 更新安装时自动跳过已安装且无需更新的插件
 
 ## Evolution
 
@@ -139,4 +144,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 after v1.3 milestone completion*
+*Last updated: 2026-03-29 — milestone v1.4 started*

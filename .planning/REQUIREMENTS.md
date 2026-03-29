@@ -28,17 +28,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DETECT-01 | — | Pending |
-| DETECT-02 | — | Pending |
-| DETECT-03 | — | Pending |
-| STRUCT-01 | — | Pending |
-| STRUCT-02 | — | Pending |
+| DETECT-01 | Phase 23 | Pending |
+| DETECT-02 | Phase 23 | Pending |
+| DETECT-03 | Phase 23 | Pending |
+| STRUCT-01 | Phase 22 | Pending |
+| STRUCT-02 | Phase 22 | Pending |
 
 **Coverage:**
 - v1 requirements: 5 total
-- Mapped to phases: 0
-- Unmapped: 5 ⚠️
+- Mapped to phases: 5
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-29*
-*Last updated: 2026-03-29 after initial definition*
+*Last updated: 2026-03-29 — roadmap created, all requirements mapped*

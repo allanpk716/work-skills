@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-03-28
+**Last Updated:** 2026-03-29
 
 ## Milestones
 
@@ -44,12 +44,16 @@
 **Depends on:** Phase 19 (completed)
 **Requirements:** CFGD-01, CFGD-02, INTX-01, INTX-02, INTX-03
 **Success Criteria** (what must be TRUE):
-  1. Installer detects existing Pushover credentials (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) persisted via setx and reports their presence
+  1. Installer detects existing Pushover credentials (PUSHOVER_TOKEN, PUSHOVER_USER) persisted via setx and reports their presence
   2. Installer detects existing Git user info (user.name, user.email) configured via git config --global and displays current values
   3. When existing Pushover config is detected, user sees masked API key and can choose to skip or re-enter
   4. When existing Git user info is detected, user sees current name/email and can choose to skip or re-enter
   5. User who chooses to re-enter gets the same validation and persistence flow as a fresh setup
-**Plans:** TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 20-01-PLAN.md -- Pushover registry detection + per-item Confirm interaction
+- [ ] 20-02-PLAN.md -- Git user skip/update Confirm + per-item interaction
 
 ### Phase 21: Unified Flow Integration
 
@@ -71,17 +75,17 @@ Phases execute in numeric order: 20 -> 21
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Config Detection & Smart Interaction | 0/? | Not started | - |
+| 20. Config Detection & Smart Interaction | 0/2 | Planning complete | - |
 | 21. Unified Flow Integration | 0/? | Not started | - |
 
 ### v1.3 Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Config Detection & Smart Interaction | 0/? | Not started | - |
+| 20. Config Detection & Smart Interaction | 0/2 | Planning complete | - |
 | 21. Unified Flow Integration | 0/? | Not started | - |
 
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-28 for v1.3 milestone*
+*Last updated: 2026-03-29 for Phase 20 planning*

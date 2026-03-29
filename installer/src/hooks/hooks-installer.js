@@ -201,7 +201,9 @@ function cleanMarketplaceCache() {
     // Plugin cache (marketplace installed plugins)
     path.join(os.homedir(), '.claude', 'plugins', 'cache', 'work-skills', 'claude-notify'),
     // Skills directory (npx installer target)
-    path.join(os.homedir(), '.claude', 'skills', 'claude-notify')
+    path.join(os.homedir(), '.claude', 'skills', 'claude-notify'),
+    // Marketplace directory (plugin registry)
+    path.join(os.homedir(), '.claude', 'plugins', 'marketplaces', 'work-skills', 'plugins', 'claude-notify')
   ];
 
   for (const baseDir of locations) {

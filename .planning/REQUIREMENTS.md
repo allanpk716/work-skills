@@ -9,14 +9,14 @@ Requirements for smart configuration detection in installer.
 
 ### Config Detection (CFGD)
 
-- [ ] **CFGD-01**: Installer can detect if Pushover credentials (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) are already persisted via setx in environment variables
+- [x] **CFGD-01**: Installer can detect if Pushover credentials (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) are already persisted via setx in environment variables
 - [ ] **CFGD-02**: Installer can detect if Git user info (user.name, user.email) is already configured via git config --global
 
 ### Smart Interaction (INTX)
 
-- [ ] **INTX-01**: When existing config is detected, installer displays current values to user (masked API key, full user info)
-- [ ] **INTX-02**: User can choose to skip the configuration step when existing values are detected, proceeding to next step
-- [ ] **INTX-03**: User can choose to re-enter configuration, updating existing values and re-persisting them
+- [x] **INTX-01**: When existing config is detected, installer displays current values to user (masked API key, full user info)
+- [x] **INTX-02**: User can choose to skip the configuration step when existing values are detected, proceeding to next step
+- [x] **INTX-03**: User can choose to re-enter configuration, updating existing values and re-persisting them
 
 ### Unified Flow (UFLOW)
 
@@ -37,11 +37,11 @@ Requirements for smart configuration detection in installer.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CFGD-01 | Phase 20 | Pending |
+| CFGD-01 | Phase 20 | Complete |
 | CFGD-02 | Phase 20 | Pending |
-| INTX-01 | Phase 20 | Pending |
-| INTX-02 | Phase 20 | Pending |
-| INTX-03 | Phase 20 | Pending |
+| INTX-01 | Phase 20 | Complete |
+| INTX-02 | Phase 20 | Complete |
+| INTX-03 | Phase 20 | Complete |
 | UFLOW-01 | Phase 21 | Pending |
 | UFLOW-02 | Phase 21 | Pending |
 

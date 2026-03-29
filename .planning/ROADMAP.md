@@ -49,10 +49,10 @@
   3. When existing Pushover config is detected, user sees masked API key and can choose to skip or re-enter
   4. When existing Git user info is detected, user sees current name/email and can choose to skip or re-enter
   5. User who chooses to re-enter gets the same validation and persistence flow as a fresh setup
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 20-01-PLAN.md -- Pushover registry detection + per-item Confirm interaction
+- [x] 20-01-PLAN.md -- Pushover registry detection + per-item Confirm interaction
 - [ ] 20-02-PLAN.md -- Git user skip/update Confirm + per-item interaction
 
 ### Phase 21: Unified Flow Integration
@@ -75,7 +75,7 @@ Phases execute in numeric order: 20 -> 21
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 20. Config Detection & Smart Interaction | 0/2 | Planning complete | - |
+| 20. Config Detection & Smart Interaction | 1/2 | In Progress|  |
 | 21. Unified Flow Integration | 0/? | Not started | - |
 
 ### v1.3 Progress

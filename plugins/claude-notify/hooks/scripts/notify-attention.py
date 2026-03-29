@@ -165,6 +165,29 @@ def send_windows_notification(title, message):
         return False
 
 
+def check_notification_flags():
+    """
+    Check for project-level notification disable flags.
+
+    Returns:
+        dict: {'pushover_disabled': bool, 'windows_disabled': bool}
+    """
+    project_dir = Path.cwd()
+
+    flags = {
+        'pushover_disabled': (project_dir / '.no-pushover').is_file(),
+        'windows_disabled': (project_dir / '.no-windows').is_file()
+    }
+
+    if flags['pushover_disabled']:
+        logger.info("Pushover notifications disabled by .no-pushover file")
+
+    if flags['windows_disabled']:
+        logger.info("Windows notifications disabled by .no-windows file")
+
+    return flags
+
+
 def main():
     """
     Main function: Process Notification hook input and send attention notifications.
@@ -195,6 +218,9 @@ def main():
         # Get project name
         project_name = get_project_name()
 
+        # Check project-level notification flags
+        flags = check_notification_flags()
+
         # Build notification content
         title = f"[{project_name}] Attention Needed"
         notification_message = hook_input.get('message', '')
@@ -209,14 +235,26 @@ def main():
         logger.info(f"Notification title: {title}")
         logger.info(f"Notification message: {message[:100]}...")
 
-        # Send notifications (both channels)
-        pushover_result = send_pushover_notification(title, message, priority=1)
-        windows_result = send_windows_notification(title, message)
+        # Send notifications based on flags
+        pushover_result = False
+        windows_result = False
+
+        if not flags['pushover_disabled']:
+            pushover_result = send_pushover_notification(title, message, priority=1)
+        else:
+            logger.info("Skipping Pushover notification (disabled by .no-pushover)")
+
+        if not flags['windows_disabled']:
+            windows_result = send_windows_notification(title, message)
+        else:
+            logger.info("Skipping Windows notification (disabled by .no-windows)")
 
         if pushover_result or windows_result:
             logger.info(f"Notifications sent successfully (Pushover: {pushover_result}, Windows: {windows_result})")
+        elif not flags['pushover_disabled'] or not flags['windows_disabled']:
+            logger.warning("All enabled notification channels failed")
         else:
-            logger.warning("All notification channels failed")
+            logger.info("All notifications disabled by project flags")
 
         logger.info("=== Claude Code Attention Notification Script Finished ===")
         return 0

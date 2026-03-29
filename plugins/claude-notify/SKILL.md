@@ -1,7 +1,7 @@
 ---
 name: claude-notify
 description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。支持斜杠命令控制通知通道。包含环境检查命令 `/check-notify-env` 用于快速诊断配置问题。
-version: 1.3.0
+version: 2.0.0
 ---
 
 # Claude Notify 技能
@@ -70,13 +70,22 @@ python -m pip install requests
 
 ### 步骤 1: 安装插件
 
-从插件市场安装:
-
+使用 npx 安装命令（推荐）:
+```bash
+npx github:allanpk716/work-skills#main
 ```
-/plugin install <marketplace-url>
+
+此命令将:
+- 自动注册全局通知 hooks 到 `~/.claude/settings.json`
+- 复制通知脚本到 `~/.claude/hooks/`
+- 注册 marketplace 插件源（用于 skills 和 slash commands）
+
+**或者从插件市场手动安装:**
+```
+/plugin install claude-notify@work-skills
 ```
 
-将 `<marketplace-url>` 替换为包含此市场的 GitHub 仓库 URL。
+> **注意:** 从 v2.0.0 开始，通知 hooks 注册在全局 `~/.claude/settings.json` 中，不再依赖 marketplace 插件的 hooks 加载机制。
 
 ### 步骤 2: 配置环境变量
 
@@ -167,6 +176,8 @@ python skills/claude-notify/scripts/verify-installation.py
 ### 步骤 4: 测试
 
 安装后 Hook 会自动激活。在 Claude Code 中完成任何任务,您应该会收到通知。
+
+> **注意:** 从 v2.0.0 开始,通知 hooks 通过全局 `~/.claude/settings.json` 注册,而非 marketplace 插件机制。这样确保在所有项目中都能正常工作。
 
 **预期行为:**
 - 任务完成时,您会在手机上收到 Pushover 推送通知(如果已配置)
@@ -361,9 +372,9 @@ type nul > .no-windows
 1. 环境变量未正确设置或未生效
 2. Python 依赖包缺失 (requests 库未安装)
 3. Pushover API 凭据无效
-4. Hook 未正确安装到 settings.json
+4. Hook 未正确注册到全局 settings.json
 5. 项目根目录存在 `.no-pushover` 和 `.no-windows` 文件
-6. **插件缓存未更新（修改 hooks.json 后未清理缓存）**
+6. **通知脚本未复制到 ~/.claude/hooks/ 目录**
 
 **解决步骤:**
 
@@ -422,33 +433,19 @@ type nul > .no-windows
    del .no-windows
    ```
 
-5. **清理插件缓存（重要）:**
+5. **重新运行安装命令（重要）:**
 
-   如果您最近修改了 `hooks/hooks.json` 文件，必须清理缓存才能生效：
+   如果通知功能异常，请重新运行安装命令来更新全局 hooks：
 
-   **方法 1: 使用清理脚本（推荐）**
-   ```cmd
-   scripts\clear-cache.bat
+   ```bash
+   npx github:allanpk716/work-skills#main
    ```
 
-   **方法 2: 手动清理**
-   ```cmd
-   rmdir /s /q "%USERPROFILE%\.claude\plugins\cache\work-skills\claude-notify"
-   ```
+   安装命令会自动：
+   - 复制最新的通知脚本到 `~/.claude/hooks/`
+   - 更新 `~/.claude/settings.json` 中的 hooks 注册
 
-   **清理后必须重启 Claude Code**
-
-   **如何判断是否需要清理缓存:**
-   - 修改了 `plugins/claude-notify/hooks/hooks.json` 文件
-   - 添加了新的 Hook 类型（如 Notification hook）
-   - 重启 Claude Code 后 Hook 仍未生效
-
-   **验证缓存已更新:**
-   ```cmd
-   type "%USERPROFILE%\.claude\plugins\cache\work-skills\claude-notify\1.0.0\hooks\hooks.json"
-   ```
-
-   应该看到与源文件 `plugins/claude-notify/hooks/hooks.json` 相同的内容。
+   **重启 Claude Code 后生效**
 
 ### Q: 为什么会收到"等待输入"通知?
 
@@ -901,7 +898,9 @@ python -c "import requests; requests.post('https://api.pushover.net/1/messages.j
 
 | 文件/目录 | 位置 | 用途 |
 |----------|------|------|
-| Hook 配置 | `hooks/hooks.json` | 定义 Stop 事件触发的脚本 |
+| 全局 Hooks 注册 | `~/.claude/settings.json` | Stop 和 Notification hooks 全局配置 |
+| 通知脚本 | `~/.claude/hooks/notify-stop.py` | 任务完成通知脚本 |
+| 通知脚本 | `~/.claude/hooks/notify-attention.py` | 用户注意力通知脚本 |
 | 通知脚本 | `skills/claude-notify/hooks/scripts/notify.py` | 主通知逻辑 |
 | 验证脚本 | `skills/claude-notify/scripts/verify-installation.py` | 安装验证工具 |
 | 日志目录 | `%APPDATA%\claude-notify\logs\` | 调试日志 |
@@ -967,6 +966,33 @@ pip install -r requirements.txt
 - 严格的超时保护,防止资源耗尽
 
 ## 版本历史
+
+### Version 2.0.0 (2026-03-29)
+
+**架构变更: 全局 Hooks 注册**
+
+**问题:**
+- 在 marketplace 源仓库（work-skills）项目中,通知功能完全不工作
+- marketplace 插件机制会跳过加载自身 hooks（自引用防护）
+- 修改 hooks.json 后需要清理缓存才能生效
+
+**解决方案:**
+- 仿照 GSD 模式,将 hooks 注册到全局 `~/.claude/settings.json`
+- 通知脚本复制到 `~/.claude/hooks/` 目录
+- 集成到 npx 安装流程,同一条命令完成安装和更新
+- 删除 marketplace 的 `hooks/hooks.json`,避免双重通知
+
+**变更:**
+- 通知脚本不再通过 marketplace 插件加载,改为全局 hooks
+- 安装/更新统一通过 `npx github:allanpk716/work-skills#main` 完成
+- 新增 `installer/src/hooks/` 模块处理 hooks 注册
+- 删除 `hooks/hooks.json`、`notify-wait.py`、`notify.py.backup`、`.no-pushover`
+- 更新验证脚本检查全局 hooks 而非 marketplace hooks
+
+**影响:**
+- 所有项目（包括 work-skills 自身）都能正常收到通知
+- 安装和更新流程统一,用户体验更好
+- 不再需要手动清理 marketplace 缓存
 
 ### Version 1.3.0 (2026-03-16)
 

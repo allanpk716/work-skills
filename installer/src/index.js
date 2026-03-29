@@ -7,6 +7,7 @@ const { runAllDetectors } = require('./detectors/index.js');
 const { runInstaller } = require('./installers/index.js');
 const { runAllConfigurators } = require('./configurators/index.js');
 const { runMarketplaceIntegration } = require('./marketplace/index.js');
+const { runHooksInstallation } = require('./hooks/index.js');
 const { runVerification } = require('./verification/index.js');
 
 /**
@@ -48,6 +49,9 @@ async function main() {
 
   // Step 7: Marketplace integration (Phase 18)
   await runMarketplaceIntegration();
+
+  // Step 7.5: Register global hooks for notification plugins
+  await runHooksInstallation();
 
   // Step 8: Installation verification (Phase 19)
   const chalk = require('chalk');

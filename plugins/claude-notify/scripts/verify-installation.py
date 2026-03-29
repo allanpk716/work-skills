@@ -197,23 +197,60 @@ def check_windows_toast():
 
 
 def check_hook_files():
-    """Check if hook files exist."""
-    print_header("Plugin Files Check")
+    """Check if global hook scripts are installed in ~/.claude/hooks/."""
+    print_header("Global Hooks Check")
 
-    # Get plugin root (assuming this script is in scripts/ directory)
-    script_dir = Path(__file__).parent
-    plugin_root = script_dir.parent
+    hooks_dir = Path.home() / '.claude' / 'hooks'
+    notify_stop = hooks_dir / 'notify-stop.py'
+    notify_attention = hooks_dir / 'notify-attention.py'
 
-    hooks_json = plugin_root / 'hooks' / 'hooks.json'
-    notify_script = plugin_root / 'hooks' / 'scripts' / 'notify.py'
+    stop_exists = notify_stop.exists()
+    attention_exists = notify_attention.exists()
 
-    hooks_exists = hooks_json.exists()
-    notify_exists = notify_script.exists()
+    print_result("~/.claude/hooks/notify-stop.py", stop_exists, str(notify_stop) if stop_exists else "Not found")
+    print_result("~/.claude/hooks/notify-attention.py", attention_exists, str(notify_attention) if attention_exists else "Not found")
 
-    print_result("hooks/hooks.json", hooks_exists, str(hooks_json) if hooks_exists else "Not found")
-    print_result("hooks/scripts/notify.py", notify_exists, str(notify_script) if notify_exists else "Not found")
+    return stop_exists and attention_exists
 
-    return hooks_exists and notify_exists
+
+def check_global_hooks_registration():
+    """Check if hooks are registered in global settings.json."""
+    print_header("Hooks Registration Check")
+
+    settings_path = Path.home() / '.claude' / 'settings.json'
+
+    if not settings_path.exists():
+        print_result("settings.json", False, "File not found")
+        return False
+
+    try:
+        import json
+        settings = json.loads(settings_path.read_text(encoding='utf-8'))
+    except Exception as e:
+        print_result("settings.json", False, f"Parse error: {e}")
+        return False
+
+    hooks = settings.get('hooks', {})
+
+    # Check Stop hook
+    stop_hooks = hooks.get('Stop', [])
+    stop_found = any(
+        entry.get('hooks', []) and
+        any(h.get('command', '').endswith('notify-stop.py') for h in entry.get('hooks', []))
+        for entry in stop_hooks
+    )
+    print_result("Stop hook registered", stop_found, "notify-stop.py in settings.json" if stop_found else "Not found")
+
+    # Check Notification hook
+    notify_hooks = hooks.get('Notification', [])
+    notify_found = any(
+        entry.get('hooks', []) and
+        any(h.get('command', '').endswith('notify-attention.py') for h in entry.get('hooks', []))
+        for entry in notify_hooks
+    )
+    print_result("Notification hook registered", notify_found, "notify-attention.py in settings.json" if notify_found else "Not found")
+
+    return stop_found and notify_found
 
 
 def check_slash_commands():
@@ -277,7 +314,8 @@ def main():
         'Environment Variables': check_environment_variables(),
         'Pushover API': check_pushover_api(),
         'Windows Toast': check_windows_toast(),
-        'Plugin Files': check_hook_files(),
+        'Global Hook Scripts': check_hook_files(),
+        'Hooks Registration': check_global_hooks_registration(),
         'Slash Commands': check_slash_commands()
     }
 

@@ -24,11 +24,12 @@ description: 检查 claude-notify 插件的运行环境是否满足要求
    - 验证 `PUSHOVER_USER` 是否已配置
    - 如果缺失，提示用户配置方法
 
-4. **检查 Hooks 配置**
-   - 读取 `~/.claude/settings.json`
-   - 验证 Stop hook 是否已配置
-   - 验证 Notification hook 是否已配置
-   - 如果缺失，给出配置说明
+4. **检查全局 Hooks 配置**
+   - 读取 `~/.claude/settings.json` 中的 `hooks` 部分
+   - 验证 `Stop` hook 中是否包含 `notify-stop.py`
+   - 验证 `Notification` hook 中是否包含 `notify-attention.py`
+   - 检查 `~/.claude/hooks/notify-stop.py` 和 `~/.claude/hooks/notify-attention.py` 是否存在
+   - 如果缺失，提示用户运行 npx 安装命令
 
 5. **生成诊断报告**
    - 列出所有检查项的状态（✅ 通过 / ❌ 失败）

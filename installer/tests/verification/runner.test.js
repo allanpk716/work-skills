@@ -43,17 +43,21 @@ describe('verification/runner', () => {
       expect(result.error).toBe('python_not_found');
     });
 
-    it('should handle script execution failure', async () => {
+    it('should return success with stdout when script exits 1 (some checks failed)', async () => {
+      const mockStdout = '  [X] Python version: FAIL';
       execa.mockResolvedValue({
         failed: true,
-        stderr: 'Script error',
+        stdout: mockStdout,
+        stderr: '',
         exitCode: 1
       });
 
       const result = await runPythonVerification();
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('execution_failed');
+      // Exit code 1 means some checks failed, not an execution error
+      expect(result.success).toBe(true);
+      expect(result.stdout).toBe(mockStdout);
+      expect(result.exitCode).toBe(1);
     });
   });
 });

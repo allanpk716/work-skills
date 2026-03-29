@@ -58,19 +58,22 @@
 **Depends on**: Nothing (structural fix is independent)
 **Requirements**: STRUCT-01, STRUCT-02
 **Success Criteria** (what must be TRUE):
-  1. windows-git-commit 插件目录中 SKILL.md 位于根层级(非 skills/ 子目录内)
-  2. 将插件安装到 ~/.claude/skills/ 后,SKILL.md 可在 ~/.claude/skills/windows-git-commit/SKILL.md 直接访问
-  3. 插件功能(git commit 安全扫描)在结构变更后仍然正常工作
-**Plans**: TBD
+ 1. windows-git-commit 插件目录中 SKILL.md 位于根层级(非 skills/ 子目录内)
+ 2. 将插件安装到 ~/.claude/skills/ 后,SKILL.md 可在 ~/.claude/skills/windows-git-commit/SKILL.md 直接访问
+ 3. 插件功能(git commit 安全扫描)在结构变更后仍然正常工作
+**Plans**: 1 plan
+
+Plans:
+- [ ] 22-01-PLAN.md — Flatten plugin directory and update path references
 
 ### Phase 23: Detection & Regression Verification
 **Goal**: 安装器能正确检测已安装的 windows-git-commit 插件,且不破坏 claude-notify 的检测
 **Depends on**: Phase 22
 **Requirements**: DETECT-01, DETECT-02, DETECT-03
 **Success Criteria** (what must be TRUE):
-  1. windows-git-commit 安装后,`isPluginInstalled('windows-git-commit')` 返回 true
-  2. 重复运行安装器时,windows-git-commit 在插件列表中显示 `[installed]` 标记且不提示重新安装
-  3. claude-notify 的安装检测(`isPluginInstalled('claude-notify')`)仍返回正确结果,不受本次修改影响
+ 1. windows-git-commit 安装后,`isPluginInstalled('windows-git-commit')` 返回 true
+ 2. 重复运行安装器时,windows-git-commit 在插件列表中显示 `[installed]` 标记且不提示重新安装
+ 3. claude-notify 的安装检测(`isPluginInstalled('claude-notify')`)仍返回正确结果,不受本次修改影响
 **Plans**: TBD
 
 ## Progress
@@ -80,9 +83,9 @@ Phases execute in numeric order: 22 -> 23
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 22. Plugin Structure Fix | v1.4 | 0/? | Not started | - |
+| 22. Plugin Structure Fix | v1.4 | 0/1 | Planned | - |
 | 23. Detection & Regression Verification | v1.4 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-29 — v1.4 roadmap added (Phases 22-23)*
+*Last updated: 2026-03-29 — Phase 22 planned (1 plan)*

@@ -1,40 +1,37 @@
 {
   "version": "1.0",
-  "timestamp": "2026-03-20T09:15:20.007Z",
-  "phase": "15",
-  "phase_name": "environment-detection",
-  "phase_dir": ".planning/phases/15-environment-detection",
+  "timestamp": "2026-03-29T02:05:59.796Z",
+  "phase": "20",
+  "phase_name": "Config Detection & Smart Interaction",
+  "phase_dir": ".planning/phases/20-config-detection-smart-interaction",
   "plan": 0,
   "task": 0,
-  "total_tasks": 6,
+  "total_tasks": 4,
   "status": "paused",
   "completed_tasks": [],
   "remaining_tasks": [
-    {"id": 1, "name": "15-01: Python & Git Detection", "status": "not_started", "wave": 1},
-    {"id": 2, "name": "15-02: SSH Tools Detection", "status": "not_started", "wave": 1},
-    {"id": 3, "name": "15-03: pip-package Utility", "status": "not_started", "wave": 1},
-    {"id": 4, "name": "15-04: Detection Orchestrator", "status": "not_started", "wave": 1}
+    {"id": "20-01-01", "name": "Add registry detection and per-item Confirm to pushover.js", "status": "not_started", "plan": "20-01"},
+    {"id": "20-01-02", "name": "Add i18n keys and extend pushover tests", "status": "not_started", "plan": "20-01"},
+    {"id": "20-02-01", "name": "Add per-item Confirm interaction to git-user.js", "status": "not_started", "plan": "20-02"},
+    {"id": "20-02-02", "name": "Add i18n keys and extend git-user tests", "status": "not_started", "plan": "20-02"}
   ],
   "blockers": [],
   "human_actions_pending": [],
   "decisions": [
-    {
-      "decision": "Split plan 15-03 into two plans for scope sanity",
-      "rationale": "Original 15-03 had too many responsibilities",
-      "phase": "15"
-    },
-    {
-      "decision": "Use Jest 30.3.0 for test infrastructure",
-      "rationale": "Fast feedback, existing project setup",
-      "phase": "15"
-    },
-    {
-      "decision": "All detectors use execa for command execution",
-      "rationale": "Consistent async API, good error handling",
-      "phase": "15"
-    }
+    {"decision": "双源检测 Pushover 凭证 (process.env + registry)", "rationale": "用户通过 setx 配置后终端未重启时 process.env 为空", "phase": "20"},
+    {"decision": "逐项处理部分配置 (D-02)", "rationale": "只有 token 或只有 user 时分别处理", "phase": "20"},
+    {"decision": "enquirer Confirm 默认 Y = 跳过 (D-03)", "rationale": "统一与现有 promptReconfigure 一致的交互模式", "phase": "20"},
+    {"decision": "环境变量名以代码为准 PUSHOVER_TOKEN/PUSHOVER_USER", "rationale": "REQUIREMENTS.md 写的 PUSHOVER_API_KEY 与代码不一致", "phase": "20"}
   ],
-  "uncommitted_files": [],
-  "next_action": "Run /gsd:execute-phase 15 to begin executing the 4 plans in wave 1",
-  "context_notes": "Phase 14 (installer-foundation) completed successfully. Phase 15 planning complete with 4 plans ready for execution. User interrupted execute-phase 15 before any plans started. All plans are in wave 1 with no dependencies between them, suitable for parallel execution. Validation strategy defines Jest test infrastructure with ~5s feedback latency."
+  "uncommitted_files": [
+    ".planning/milestones/v1.2-MILESTONE-AUDIT.md",
+    ".planning/milestones/v1.2-REQUIREMENTS.md",
+    ".planning/milestones/v1.2-ROADMAP.md",
+    "installer/.planning/phases/16-python-dependencies/",
+    "installer/.planning/phases/17-interactive-configuration/",
+    "installer/.planning/phases/19-installation-verification/",
+    "installer/installer/"
+  ],
+  "next_action": "Execute Plan 20-01 Task 1: modify pushover.js to add readRegistryEnvVar + detectPushoverFull + per-item Confirm",
+  "context_notes": "Phase 20 planning is fully complete. Two execution plans (20-01, 20-02) have been created and revised based on checker feedback. No execution has started. The plans are detailed with specific code snippets for implementation. Milestone v1.3 has requirements and roadmap defined. Phase 21 (Unified Flow Integration) is next after Phase 20 but not yet planned."
 }

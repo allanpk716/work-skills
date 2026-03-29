@@ -64,7 +64,10 @@ Plans:
   1. Fresh install (no existing config) proceeds through full configuration prompts with zero detection overhead -- no "skip/update" prompts appear
   2. Re-run with existing config detects each configured item individually and offers skip/update choice per item, adapting to partial configurations
   3. A re-run that skips all detected items completes the configuration step instantly without unnecessary prompts
-**Plans:** TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 21-01-PLAN.md -- Integration tests for unified flow (UFLOW-01 fresh install + UFLOW-02 re-run scenarios)
 
 ---
 
@@ -76,16 +79,16 @@ Phases execute in numeric order: 20 -> 21
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 20. Config Detection & Smart Interaction | 2/2 | Complete    | 2026-03-29 |
-| 21. Unified Flow Integration | 0/? | Not started | - |
+| 21. Unified Flow Integration | 0/1 | Planning complete | - |
 
 ### v1.3 Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 20. Config Detection & Smart Interaction | 0/2 | Planning complete | - |
-| 21. Unified Flow Integration | 0/? | Not started | - |
+| 21. Unified Flow Integration | 0/1 | Planning complete | - |
 
 ---
 
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-29 for Phase 20 planning*
+*Last updated: 2026-03-29 for Phase 21 planning*

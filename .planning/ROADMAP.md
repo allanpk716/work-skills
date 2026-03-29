@@ -79,7 +79,7 @@ Phases execute in numeric order: 20 -> 21
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 20. Config Detection & Smart Interaction | 2/2 | Complete    | 2026-03-29 |
-| 21. Unified Flow Integration | 1/1 | Complete   | 2026-03-29 |
+| 21. Unified Flow Integration | 1/1 | Complete    | 2026-03-29 |
 
 ### v1.3 Progress
 

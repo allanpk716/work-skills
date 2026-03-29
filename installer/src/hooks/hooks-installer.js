@@ -296,6 +296,189 @@ function isHooksInstalled() {
   return !!(stopEntry && notifyEntry);
 }
 
+/**
+ * Get the global commands directory path
+ * @returns {string} ~/.claude/commands/
+ */
+function getCommandsDir() {
+  return path.join(os.homedir(), '.claude', 'commands');
+}
+
+/**
+ * Get the installed scripts directory path (after plugin installation)
+ * @returns {string} ~/.claude/skills/claude-notify/scripts/
+ */
+function getScriptsInstallDir() {
+  return path.join(os.homedir(), '.claude', 'skills', 'claude-notify', 'scripts');
+}
+
+/**
+ * Command template definitions for global installation.
+ * Each template has a getContent(scriptsDir) function that returns the .md file content.
+ */
+const COMMAND_TEMPLATES = [
+  {
+    name: 'notify-enable',
+    description: 'Enable a notification channel (pushover or windows)',
+    getContent: (scriptsDir) => `---
+name: notify-enable
+description: Enable a notification channel (pushover or windows) by removing the .no-{channel} flag file
+---
+
+Enable the specified notification channel for this project.
+
+**Argument:** $ARGUMENTS
+
+<process>
+1. Parse the argument - must be either \`pushover\` or \`windows\`
+2. Run the enable script:
+   \`\`\`bash
+   python "${scriptsDir}/notify-enable.py" <pushover|windows>
+   \`\`\`
+3. Report the result to the user
+</process>
+
+<rules>
+- If no argument provided, ask user to specify: \`pushover\` or \`windows\`
+- If invalid argument, show valid options and ask again
+- The script is idempotent - enabling an already-enabled channel shows "already enabled"
+</rules>`
+  },
+  {
+    name: 'notify-disable',
+    description: 'Disable a notification channel (pushover or windows)',
+    getContent: (scriptsDir) => `---
+name: notify-disable
+description: Disable a notification channel (pushover or windows) by creating the .no-{channel} flag file
+---
+
+Disable the specified notification channel for this project.
+
+**Argument:** $ARGUMENTS
+
+<process>
+1. Parse the argument - must be either \`pushover\` or \`windows\`
+2. Run the disable script:
+   \`\`\`bash
+   python "${scriptsDir}/notify-disable.py" <pushover|windows>
+   \`\`\`
+3. Report the result to the user
+</process>
+
+<rules>
+- If no argument provided, ask user to specify: \`pushover\` or \`windows\`
+- If invalid argument, show valid options and ask again
+- The script is idempotent - disabling an already-disabled channel shows "already disabled"
+</rules>`
+  },
+  {
+    name: 'notify-status',
+    description: 'Show the current status of all notification channels',
+    getContent: (scriptsDir) => `---
+name: notify-status
+description: Show the current status of all notification channels (pushover and windows)
+---
+
+Show the current enable/disable status of all notification channels for this project.
+
+<process>
+1. Run the status script:
+   \`\`\`bash
+   python "${scriptsDir}/notify-status.py"
+   \`\`\`
+2. Display the output to the user
+3. If any channel is disabled, remind the user they can re-enable with \`/notify-enable <channel>\`
+</process>`
+  },
+  {
+    name: 'check-notify-env',
+    description: 'Check claude-notify plugin runtime environment',
+    getContent: () => `---
+name: check-notify-env
+description: Check claude-notify plugin runtime environment requirements
+---
+
+<objective>
+Systematically check the claude-notify plugin runtime environment configuration, including Python environment, dependencies, environment variables, and hooks configuration.
+
+This helps users quickly verify on new machines whether notification functionality will work properly.
+</objective>
+
+<process>
+1. **Check Python Environment**
+   - Verify Python is installed
+   - Check Python version
+
+2. **Check Python Dependencies**
+   - Verify \`requests\` package is installed
+   - If missing, provide installation command
+
+3. **Check Environment Variables**
+   - Verify \`PUSHOVER_TOKEN\` is configured
+   - Verify \`PUSHOVER_USER\` is configured
+   - If missing, prompt user to configure
+
+4. **Check Global Hooks Configuration**
+   - Read \`~/.claude/settings.json\` hooks section
+   - Verify \`Stop\` hook contains \`notify-stop.py\`
+   - Verify \`Notification\` hook contains \`notify-attention.py\`
+   - Check \`~/.claude/hooks/notify-stop.py\` and \`~/.claude/hooks/notify-attention.py\` exist
+   - If missing, prompt user to run npx install command
+
+5. **Generate Diagnostic Report**
+   - List all check item statuses
+   - For failures, provide specific fix steps
+   - Give overall assessment: environment ready or not
+</process>
+
+<success_criteria>
+- All check items executed and status reported
+- Clear fix guidance for each issue
+- Complete diagnostic report generated
+</success_criteria>`
+  }
+];
+
+/**
+ * Install slash command files to ~/.claude/commands/
+ * Called by the npx installer pipeline after plugin installation.
+ * @param {Object} options - {onProgress: function}
+ * @returns {{success: boolean, installed: string[], error?: string}}
+ */
+function installCommands(options = {}) {
+  try {
+    const commandsDir = getCommandsDir();
+    fs.mkdirSync(commandsDir, { recursive: true });
+
+    // Resolve scripts directory with forward slashes
+    const scriptsDir = getScriptsInstallDir().replace(/\\/g, '/');
+    const installed = [];
+
+    for (const tmpl of COMMAND_TEMPLATES) {
+      if (options.onProgress) options.onProgress('writing', tmpl.name);
+      const content = tmpl.getContent(scriptsDir);
+      const filePath = path.join(commandsDir, `${tmpl.name}.md`);
+      fs.writeFileSync(filePath, content, 'utf8');
+      installed.push(tmpl.name);
+    }
+
+    return { success: true, installed };
+  } catch (error) {
+    return { success: false, installed: [], error: error.message };
+  }
+}
+
+/**
+ * Check if global commands are already installed
+ * @returns {boolean}
+ */
+function isCommandsInstalled() {
+  const commandsDir = getCommandsDir();
+  return COMMAND_TEMPLATES.every(
+    tmpl => fs.existsSync(path.join(commandsDir, `${tmpl.name}.md`))
+  );
+}
+
 module.exports = {
   getHooksDir,
   getSettingsPath,
@@ -303,6 +486,8 @@ module.exports = {
   installHooks,
   isHooksInstalled,
   cleanMarketplaceCache,
+  installCommands,
+  isCommandsInstalled,
   // Exported for testing
   _removeExistingNotifyHooks: removeExistingNotifyHooks,
   _registerGlobalHooks: registerGlobalHooks,

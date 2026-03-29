@@ -236,7 +236,7 @@ def check_global_hooks_registration():
     stop_hooks = hooks.get('Stop', [])
     stop_found = any(
         entry.get('hooks', []) and
-        any(h.get('command', '').endswith('notify-stop.py') for h in entry.get('hooks', []))
+        any('notify-stop.py' in h.get('command', '') for h in entry.get('hooks', []))
         for entry in stop_hooks
     )
     print_result("Stop hook registered", stop_found, "notify-stop.py in settings.json" if stop_found else "Not found")
@@ -245,7 +245,7 @@ def check_global_hooks_registration():
     notify_hooks = hooks.get('Notification', [])
     notify_found = any(
         entry.get('hooks', []) and
-        any(h.get('command', '').endswith('notify-attention.py') for h in entry.get('hooks', []))
+        any('notify-attention.py' in h.get('command', '') for h in entry.get('hooks', []))
         for entry in notify_hooks
     )
     print_result("Notification hook registered", notify_found, "notify-attention.py in settings.json" if notify_found else "Not found")

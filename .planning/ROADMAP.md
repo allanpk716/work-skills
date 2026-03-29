@@ -74,7 +74,10 @@ Plans:
  1. windows-git-commit 安装后,`isPluginInstalled('windows-git-commit')` 返回 true
  2. 重复运行安装器时,windows-git-commit 在插件列表中显示 `[installed]` 标记且不提示重新安装
  3. claude-notify 的安装检测(`isPluginInstalled('claude-notify')`)仍返回正确结果,不受本次修改影响
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 23-01-PLAN.md — Reinstall windows-git-commit via installer and verify detection (DETECT-01/02/03)
 
 ## Progress
 
@@ -84,8 +87,8 @@ Phases execute in numeric order: 22 -> 23
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 22. Plugin Structure Fix | v1.4 | 1/1 | Complete    | 2026-03-29 |
-| 23. Detection & Regression Verification | v1.4 | 0/? | Not started | - |
+| 23. Detection & Regression Verification | v1.4 | 0/1 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-29 — Phase 22 planned (1 plan)*
+*Last updated: 2026-03-29 — Phase 23 planned (1 plan)*

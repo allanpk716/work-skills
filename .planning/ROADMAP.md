@@ -48,7 +48,7 @@
 
 **Milestone Goal:** 修复 windows-git-commit 插件重复运行安装器时始终提示安装的问题
 
-- [ ] **Phase 22: Plugin Structure Fix** - 扁平化 windows-git-commit 插件目录,使 SKILL.md 位于插件根目录
+- [x] **Phase 22: Plugin Structure Fix** - 扁平化 windows-git-commit 插件目录,使 SKILL.md 位于插件根目录 (completed 2026-03-29)
 - [ ] **Phase 23: Detection & Regression Verification** - 修复安装器检测逻辑并验证两个插件均正常工作
 
 ## Phase Details
@@ -64,7 +64,7 @@
 **Plans**: 1 plan
 
 Plans:
-- [ ] 22-01-PLAN.md — Flatten plugin directory and update path references
+- [x] 22-01-PLAN.md — Flatten plugin directory and update path references
 
 ### Phase 23: Detection & Regression Verification
 **Goal**: 安装器能正确检测已安装的 windows-git-commit 插件,且不破坏 claude-notify 的检测
@@ -83,7 +83,7 @@ Phases execute in numeric order: 22 -> 23
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 22. Plugin Structure Fix | v1.4 | 0/1 | Planned | - |
+| 22. Plugin Structure Fix | v1.4 | 1/1 | Complete   | 2026-03-29 |
 | 23. Detection & Regression Verification | v1.4 | 0/? | Not started | - |
 
 ---

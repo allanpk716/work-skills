@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.4
-milestone_name: "Milestone: 修复插件安装检测"
-status: roadmap_created
-stopped_at: Roadmap created, ready to plan Phase 22
-last_updated: "2026-03-29"
+milestone_name: - 修复插件安装检测
+status: verifying
+stopped_at: Completed 22-01-PLAN.md (plugin structure flattened)
+last_updated: "2026-03-29T14:25:08.040Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 2
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
   percent: 0
 ---
 
@@ -26,14 +26,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 22 - Plugin Structure Fix
+**Current focus:** Phase 22 — plugin-structure-fix
 
 ## Current Position
 
-Phase: 22 of 23 (Plugin Structure Fix)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-29 — v1.4 roadmap created, phases 22-23 defined
+Phase: 22 (plugin-structure-fix) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-03-29
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -60,6 +60,8 @@ Recent decisions affecting current work:
 - v1.4 focus: Fix windows-git-commit plugin directory structure to match isPluginInstalled() expectations
 - v1.4 approach: Minimal fix — restructure plugin directory so SKILL.md is at plugin root, matching claude-notify pattern
 - Root cause: SKILL.md nested at skills/windows-git-commit/SKILL.md inside plugin, installer copies entire directory causing double-nesting
+- [Phase 22]: Used git mv to flatten plugin directory, preserving history tracking
+- [Phase 22]: Fixed plugin structure instead of installer code; SKILL.md at root matches isPluginInstalled() expectations
 
 ### Pending Todos
 
@@ -71,8 +73,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-29
-Stopped at: Roadmap created for v1.4 (Phases 22-23), ready to plan Phase 22
+Last session: 2026-03-29T14:25:08.035Z
+Stopped at: Completed 22-01-PLAN.md (plugin structure flattened)
 Resume file: None
 
 ---

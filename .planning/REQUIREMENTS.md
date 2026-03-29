@@ -1,0 +1,44 @@
+# Requirements: Work Skills v1.4
+
+**Defined:** 2026-03-29
+**Core Value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
+
+## v1 Requirements
+
+### 插件检测修复
+
+- [ ] **DETECT-01**: windows-git-commit 安装后 `isPluginInstalled()` 能正确检测到 SKILL.md 存在
+- [ ] **DETECT-02**: 重复运行安装器时,windows-git-commit 显示 `[installed]` 标记且不提示安装
+- [ ] **DETECT-03**: 修复后 claude-notify 的安装检测仍正常工作(回归验证)
+
+### 插件结构一致性
+
+- [ ] **STRUCT-01**: windows-git-commit 插件结构与安装器检测逻辑保持一致
+- [ ] **STRUCT-02**: 所有插件的 SKILL.md 安装后都在 `~/.claude/skills/<name>/SKILL.md` 路径可访问
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| 插件版本比较 | 本次只修复检测逻辑,不引入版本比对 |
+| 自动更新机制 | 已安装插件跳过即可,无需自动更新 |
+| 重构安装器架构 | 最小修改原则,只修复检测问题 |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DETECT-01 | — | Pending |
+| DETECT-02 | — | Pending |
+| DETECT-03 | — | Pending |
+| STRUCT-01 | — | Pending |
+| STRUCT-02 | — | Pending |
+
+**Coverage:**
+- v1 requirements: 5 total
+- Mapped to phases: 0
+- Unmapped: 5 ⚠️
+
+---
+*Requirements defined: 2026-03-29*
+*Last updated: 2026-03-29 after initial definition*

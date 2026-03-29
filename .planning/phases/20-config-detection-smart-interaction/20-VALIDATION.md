@@ -2,8 +2,8 @@
 phase: 20
 slug: config-detection-smart-interaction
 status: draft
-nyquist_compliant: false
-wave_0_complete: false
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-03-29
 ---
 
@@ -39,8 +39,8 @@ created: 2026-03-29
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 20-01-01 | 01 | 1 | CFGD-01 | unit | `cd installer && npm test -- --testPathPattern="pushover" --no-coverage` | ✅ | ⬜ pending |
-| 20-02-01 | 02 | 1 | CFGD-02, INTX-01 | unit | `cd installer && npm test -- --testPathPattern="git-user" --no-coverage` | ✅ | ⬜ pending |
-| 20-03-01 | 03 | 1 | INTX-01, INTX-02, INTX-03 | unit | `cd installer && npm test -- --testPathPattern="configurators" --no-coverage` | ❌ W0 | ⬜ pending |
+| 20-02-01 | 02 | 2 | CFGD-02, INTX-01 | unit | `cd installer && npm test -- --testPathPattern="git-user" --no-coverage` | ✅ | ⬜ pending |
+| 20-03-01 | 03 | 2 | INTX-01, INTX-02, INTX-03 | unit | `cd installer && npm test -- --testPathPattern="configurators" --no-coverage` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -66,11 +66,11 @@ created: 2026-03-29
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 5s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 5s
+- [x] `nyquist_compliant: true` set in frontmatter
 
 **Approval:** pending

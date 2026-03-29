@@ -1,6 +1,6 @@
 'use strict';
 
-const { Input } = require('enquirer');
+const { Input, Confirm } = require('enquirer');
 const execa = require('execa');
 const chalk = require('chalk');
 const { t } = require('../i18n/index.js');
@@ -27,44 +27,103 @@ async function detectGitUser() {
 }
 
 /**
- * Configure Git user information through interactive prompts
+ * Configure Git user information through interactive prompts.
+ * Handles 4 cases: both exist, only name, only email, neither.
+ * Uses Confirm prompts per D-03 (default Y = keep existing).
  * @returns {Promise<{status: string, name?: string, email?: string}>}
  */
 async function configureGitUser() {
   const current = await detectGitUser();
 
-  // If already configured
+  let finalName = null;
+  let finalEmail = null;
+
+  // --- Case A: Both name AND email exist ---
   if (current.name && current.email) {
     console.log(chalk.green(t('gitUser.alreadyConfigured')));
     console.log(chalk.gray(`  user.name: ${current.name}`));
     console.log(chalk.gray(`  user.email: ${current.email}`));
-    return { status: 'configured', name: current.name, email: current.email };
+
+    const keepPrompt = new Confirm({
+      name: 'keepConfig',
+      message: t('gitUser.promptKeepConfig'),
+      initial: true  // per D-03: default Y = keep
+    });
+    const shouldKeep = await keepPrompt.run();
+    if (shouldKeep) {
+      return { status: 'configured', name: current.name, email: current.email };
+    }
+    // User chose to re-enter: fall through to unified input flow below
   }
 
-  // Show requirement
-  console.log(chalk.yellow(t('gitUser.required')));
+  // --- Case B: Only name exists ---
+  else if (current.name && !current.email) {
+    console.log(chalk.green(t('gitUser.partiallyConfigured')));
+    console.log(chalk.gray(`  user.name: ${current.name}`));
 
-  // Prompt for user.name
-  const namePrompt = new Input({
-    name: 'userName',
-    message: t('gitUser.promptName')
-  });
-  const userName = await namePrompt.run();
+    const keepNamePrompt = new Confirm({
+      name: 'keepName',
+      message: t('gitUser.promptKeepName', { value: current.name }),
+      initial: true  // per D-03
+    });
+    const keepName = await keepNamePrompt.run();
 
-  // Prompt for user.email
-  const emailPrompt = new Input({
-    name: 'userEmail',
-    message: t('gitUser.promptEmail')
-  });
-  const userEmail = await emailPrompt.run();
+    if (keepName) {
+      finalName = current.name;
+    }
 
-  // Set Git config
+    // Email is missing, always prompt
+    console.log(chalk.yellow(t('gitUser.emailRequired')));
+  }
+
+  // --- Case C: Only email exists ---
+  else if (!current.name && current.email) {
+    console.log(chalk.green(t('gitUser.partiallyConfigured')));
+    console.log(chalk.gray(`  user.email: ${current.email}`));
+
+    const keepEmailPrompt = new Confirm({
+      name: 'keepEmail',
+      message: t('gitUser.promptKeepEmail', { value: current.email }),
+      initial: true  // per D-03
+    });
+    const keepEmail = await keepEmailPrompt.run();
+
+    if (keepEmail) {
+      finalEmail = current.email;
+    }
+
+    // Name is missing, always prompt
+    console.log(chalk.yellow(t('gitUser.nameRequired')));
+  }
+
+  // --- Unified input flow ---
+  // For Case A fall-through and Case D (neither): prompt both
+  // For Case B/C: only prompt what's missing
+
+  if (!finalName) {
+    console.log(chalk.yellow(t('gitUser.required')));
+    const namePrompt = new Input({
+      name: 'userName',
+      message: t('gitUser.promptName')
+    });
+    finalName = await namePrompt.run();
+  }
+
+  if (!finalEmail) {
+    const emailPrompt = new Input({
+      name: 'userEmail',
+      message: t('gitUser.promptEmail')
+    });
+    finalEmail = await emailPrompt.run();
+  }
+
+  // --- Unified save ---
   try {
-    await execa('git', ['config', '--global', 'user.name', userName]);
-    await execa('git', ['config', '--global', 'user.email', userEmail]);
+    await execa('git', ['config', '--global', 'user.name', finalName]);
+    await execa('git', ['config', '--global', 'user.email', finalEmail]);
 
     console.log(chalk.green(t('gitUser.configured')));
-    return { status: 'configured', name: userName, email: userEmail };
+    return { status: 'configured', name: finalName, email: finalEmail };
   } catch (error) {
     console.log(chalk.red(t('gitUser.failed')));
     console.log(chalk.gray(error.message));

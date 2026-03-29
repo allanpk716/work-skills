@@ -49,7 +49,7 @@
 **Milestone Goal:** 修复 windows-git-commit 插件重复运行安装器时始终提示安装的问题
 
 - [x] **Phase 22: Plugin Structure Fix** - 扁平化 windows-git-commit 插件目录,使 SKILL.md 位于插件根目录 (completed 2026-03-29)
-- [ ] **Phase 23: Detection & Regression Verification** - 修复安装器检测逻辑并验证两个插件均正常工作
+- [x] **Phase 23: Detection & Regression Verification** - 修复安装器检测逻辑并验证两个插件均正常工作 (completed 2026-03-29)
 
 ## Phase Details
 
@@ -77,7 +77,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 23-01-PLAN.md — Reinstall windows-git-commit via installer and verify detection (DETECT-01/02/03)
+- [x] 23-01-PLAN.md — Reinstall windows-git-commit via installer and verify detection (DETECT-01/02/03)
 
 ## Progress
 
@@ -87,7 +87,7 @@ Phases execute in numeric order: 22 -> 23
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 22. Plugin Structure Fix | v1.4 | 1/1 | Complete    | 2026-03-29 |
-| 23. Detection & Regression Verification | v1.4 | 0/1 | Not started | - |
+| 23. Detection & Regression Verification | v1.4 | 1/1 | Complete   | 2026-03-29 |
 
 ---
 *Roadmap created: 2026-02-25*

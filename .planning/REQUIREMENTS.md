@@ -7,9 +7,9 @@
 
 ### 插件检测修复
 
-- [ ] **DETECT-01**: windows-git-commit 安装后 `isPluginInstalled()` 能正确检测到 SKILL.md 存在
-- [ ] **DETECT-02**: 重复运行安装器时,windows-git-commit 显示 `[installed]` 标记且不提示安装
-- [ ] **DETECT-03**: 修复后 claude-notify 的安装检测仍正常工作(回归验证)
+- [x] **DETECT-01**: windows-git-commit 安装后 `isPluginInstalled()` 能正确检测到 SKILL.md 存在
+- [x] **DETECT-02**: 重复运行安装器时,windows-git-commit 显示 `[installed]` 标记且不提示安装
+- [x] **DETECT-03**: 修复后 claude-notify 的安装检测仍正常工作(回归验证)
 
 ### 插件结构一致性
 
@@ -28,9 +28,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DETECT-01 | Phase 23 | Pending |
-| DETECT-02 | Phase 23 | Pending |
-| DETECT-03 | Phase 23 | Pending |
+| DETECT-01 | Phase 23 | Complete |
+| DETECT-02 | Phase 23 | Complete |
+| DETECT-03 | Phase 23 | Complete |
 | STRUCT-01 | Phase 22 | Complete |
 | STRUCT-02 | Phase 22 | Complete |
 

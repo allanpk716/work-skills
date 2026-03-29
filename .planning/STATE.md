@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: - 修复插件安装检测
 status: verifying
-stopped_at: Phase 23 context gathered
-last_updated: "2026-03-29T14:51:05.642Z"
+stopped_at: Completed 23-01-PLAN.md
+last_updated: "2026-03-29T15:25:33.929Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 2
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  completed_phases: 2
+  total_plans: 2
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,12 +26,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 22 — plugin-structure-fix
+**Current focus:** Phase 23 — detection-regression-verification
 
 ## Current Position
 
-Phase: 23
-Plan: Not started
+Phase: 23 (detection-regression-verification) — EXECUTING
+Plan: 1 of 1
 Status: Phase complete — ready for verification
 Last activity: 2026-03-29
 
@@ -62,6 +62,8 @@ Recent decisions affecting current work:
 - Root cause: SKILL.md nested at skills/windows-git-commit/SKILL.md inside plugin, installer copies entire directory causing double-nesting
 - [Phase 22]: Used git mv to flatten plugin directory, preserving history tracking
 - [Phase 22]: Fixed plugin structure instead of installer code; SKILL.md at root matches isPluginInstalled() expectations
+- [Phase 23]: Auto-approved DETECT-02: [installed] marker display is deterministic when isPluginInstalled() returns true
+- [Phase 23]: Pushed Phase 22 commits to remote as prerequisite for installer verification (installer clones from GitHub)
 
 ### Pending Todos
 
@@ -73,9 +75,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-29T14:51:05.636Z
-Stopped at: Phase 23 context gathered
-Resume file: .planning/phases/23-detection-regression-verification/23-CONTEXT.md
+Last session: 2026-03-29T15:25:33.923Z
+Stopped at: Completed 23-01-PLAN.md
+Resume file: None
 
 ---
 *State initialized: 2026-03-19*

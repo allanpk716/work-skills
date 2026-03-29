@@ -59,7 +59,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 ### Active
 
 **v1.4 - 修复插件安装检测:**
-- windows-git-commit 插件目录结构扁平化,SKILL.md 移至插件根目录
+- ✓ windows-git-commit 插件目录结构扁平化,SKILL.md 移至插件根目录 - Phase 22
 - 安装器 isPluginInstalled() 检测逻辑与实际插件结构一致
 - 更新安装时自动判断已安装插件,无需重复提示安装
 
@@ -93,8 +93,8 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 **当前状态 (v1.4 进行中):**
 - v1.3 已完成智能配置检测
-- v1.4 修复 windows-git-commit 插件安装检测问题
-- 下一步: 完成 v1.4 插件结构修复
+- Phase 22 完成 — windows-git-commit 插件结构已扁平化
+- 下一步: Phase 23 检测与回归验证
 
 ## Key Decisions
 
@@ -144,4 +144,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — milestone v1.4 started*
+*Last updated: 2026-03-29 — Phase 22 complete*

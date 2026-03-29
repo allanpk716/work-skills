@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: "Milestone: 智能配置检测"
 status: verifying
-stopped_at: Completed 20-02-PLAN.md
-last_updated: "2026-03-29T04:49:19.767Z"
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-29T06:47:58.139Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 2
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
   percent: 0
 ---
 
@@ -26,12 +26,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
-**Current focus:** Phase 20 — config-detection-smart-interaction
+**Current focus:** Phase 21 — unified-flow-integration
 
 ## Current Position
 
-Phase: 21
-Plan: Not started
+Phase: 21 (unified-flow-integration) — EXECUTING
+Plan: 1 of 1
 Status: Phase complete — ready for verification
 Last activity: 2026-03-29
 
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - [Phase 20]: Test helper enhanced to support async tests with Promise.all collection pattern
 - [Phase 20]: Unified save block in git-user.js instead of duplicating execa git config across cases
 - [Phase 20]: Fixed tests 4-5 to avoid calling interactive configureGitUser() directly
+- [Phase 21]: Detection-level testing strategy used instead of enquirer mocking (plan recommended approach)
 
 ### Pending Todos
 
@@ -74,8 +75,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-29T04:42:12.684Z
-Stopped at: Completed 20-02-PLAN.md
+Last session: 2026-03-29T06:47:50.882Z
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None
 
 ---

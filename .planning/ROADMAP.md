@@ -34,7 +34,7 @@
 **Milestone Goal:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
 
 - [x] **Phase 20: Config Detection & Smart Interaction** - 检测已有配置并提供跳过/更新选择 (completed 2026-03-29)
-- [ ] **Phase 21: Unified Flow Integration** - 统一首次安装和重复运行两种场景的端到端流程
+- [x] **Phase 21: Unified Flow Integration** - 统一首次安装和重复运行两种场景的端到端流程 (completed 2026-03-29)
 
 ## Phase Details
 
@@ -64,10 +64,10 @@ Plans:
   1. Fresh install (no existing config) proceeds through full configuration prompts with zero detection overhead -- no "skip/update" prompts appear
   2. Re-run with existing config detects each configured item individually and offers skip/update choice per item, adapting to partial configurations
   3. A re-run that skips all detected items completes the configuration step instantly without unnecessary prompts
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 21-01-PLAN.md -- Integration tests for unified flow (UFLOW-01 fresh install + UFLOW-02 re-run scenarios)
+- [x] 21-01-PLAN.md -- Integration tests for unified flow (UFLOW-01 fresh install + UFLOW-02 re-run scenarios)
 
 ---
 
@@ -79,7 +79,7 @@ Phases execute in numeric order: 20 -> 21
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 20. Config Detection & Smart Interaction | 2/2 | Complete    | 2026-03-29 |
-| 21. Unified Flow Integration | 0/1 | Planning complete | - |
+| 21. Unified Flow Integration | 1/1 | Complete   | 2026-03-29 |
 
 ### v1.3 Progress
 

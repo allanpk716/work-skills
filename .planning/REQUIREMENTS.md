@@ -20,8 +20,8 @@ Requirements for smart configuration detection in installer.
 
 ### Unified Flow (UFLOW)
 
-- [ ] **UFLOW-01**: Fresh install (no existing config) proceeds with full configuration prompts, no detection overhead
-- [ ] **UFLOW-02**: Re-run (existing config detected) checks each item and asks user skip/update per item, adapting automatically
+- [x] **UFLOW-01**: Fresh install (no existing config) proceeds with full configuration prompts, no detection overhead
+- [x] **UFLOW-02**: Re-run (existing config detected) checks each item and asks user skip/update per item, adapting automatically
 
 ## Out of Scope
 
@@ -42,8 +42,8 @@ Requirements for smart configuration detection in installer.
 | INTX-01 | Phase 20 | Complete |
 | INTX-02 | Phase 20 | Complete |
 | INTX-03 | Phase 20 | Complete |
-| UFLOW-01 | Phase 21 | Pending |
-| UFLOW-02 | Phase 21 | Pending |
+| UFLOW-01 | Phase 21 | Complete |
+| UFLOW-02 | Phase 21 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 7 total

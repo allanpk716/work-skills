@@ -51,11 +51,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-**v1.3 - 智能配置检测 (in progress):**
-- [ ] Pushover 凭证检测 — 检测 PUSHOVER_API_KEY/PUSHOVER_USER_KEY 环境变量是否已持久化
-- [ ] Git 用户信息检测 — 检测 git config user.name/user.email 是否已配置
-- [ ] 交互式跳过/更新 — 检测到已有配置时显示当前值，询问用户跳过还是重新输入
-- [ ] 统一安装流程 — 首次安装和更新运行走同一流程，自动适配
+**v1.3 - 智能配置检测 (shipped 2026-03-29):**
+- ✓ Pushover 凭证检测 — 检测 PUSHOVER_API_KEY/PUSHOVER_USER_KEY 环境变量是否已持久化 - Phase 20
+- ✓ Git 用户信息检测 — 检测 git config user.name/user.email 是否已配置 - Phase 20
+- ✓ 交互式跳过/更新 — 检测到已有配置时显示当前值，询问用户跳过还是重新输入 - Phase 20
+- ✓ 统一安装流程 — 首次安装和更新运行走同一流程，自动适配 - Phase 21
 
 ### Out of Scope
 
@@ -107,15 +107,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 双语支持 | 提升用户体验 | ✓ Validated (Phase 10, 14) |
 | 并行检测 (Promise.all) | 提高环境检测速度 | ✓ Validated (Phase 15) |
 
-## Current Milestone: v1.3 智能配置检测
+## Current Milestone: v1.3 complete — ready for `/gsd:complete-milestone`
 
-**Goal:** 安装器在配置步骤中自动检测已有配置，避免重复输入，提升重复运行体验
-
-**Target features:**
-- 检测 Pushover 凭证 (PUSHOVER_API_KEY, PUSHOVER_USER_KEY) 是否已持久化
-- 检测 Git 用户信息 (user.name, user.email) 是否已配置
-- 检测到已有配置时显示当前值并询问跳过还是重新输入
-- 首次安装和更新运行统一流程
+Phase 21 complete — v1.3 智能配置检测 milestone 所有 phase 已完成。安装器现在能自动检测已有配置，首次安装和重复运行统一流程。
 
 ## Evolution
 
@@ -135,4 +129,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-28 after v1.3 milestone start*
+*Last updated: 2026-03-29 after v1.3 milestone completion*

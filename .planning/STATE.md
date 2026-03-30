@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Progress
-current_plan: Not started
-status: Phase 25 context gathered
-last_updated: "2026-03-30T18:10:00.000Z"
+current_plan: 1
+status: Ready to execute
+last_updated: "2026-03-30T11:25:33.053Z"
 last_activity: 2026-03-30
 progress:
-  total_phases: 22
+  total_phases: 23
   completed_phases: 21
-  total_plans: 42
-  completed_plans: 42
+  total_plans: 44
+  completed_plans: 43
   percent: 100
 ---
 
@@ -26,12 +26,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 24 - CLI Entry & Detection (all plans complete)
+**Current focus:** Phase 25 — uninstall-execution-ux
 
 ## Current Position
 
+Phase: 25 (uninstall-execution-ux) — EXECUTING
+Plan: 2 of 2
 **Phase:** 25
-**Current Plan:** Context gathered
+**Current Plan:** 1
 **Last completed:** 25-CONTEXT.md (2026-03-30)
 Last activity: 2026-03-30
 
@@ -63,6 +65,9 @@ Progress: [==========] 100% (2/2 plans in phase 24)
 - Reuse existing detection functions for uninstall detection (isPluginInstalled, isHooksInstalled, etc.) (2026-03-30, Phase 24-02)
 
 Other decisions logged in PROJECT.md Key Decisions table.
+
+- [Phase 25]: removeStep helper pattern: each removal step wrapped in try/catch, returns status object, never throws
+- [Phase 25]: Status tri-state: removed/failed/skipped with per-step granularity for removal reporting
 
 ### Pending Todos
 

@@ -59,7 +59,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 25-01-PLAN.md -- Create removal execution (remover.js) and result report (reporter.js) modules with tests
+- [x] 25-01-PLAN.md -- Create removal execution (remover.js) and result report (reporter.js) modules with tests
 - [ ] 25-02-PLAN.md -- Add i18n keys, create runUninstall() orchestration, update CLI routing
 
 #### Progress
@@ -67,7 +67,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 24. CLI Entry & Detection | 2/2 | Complete    | 2026-03-30 |
-| 25. Uninstall Execution & UX | 0/2 | Planned | - |
+| 25. Uninstall Execution & UX | 1/2 | In Progress|  |
 
 <details>
 <summary>v1.4 - 修复插件安装检测 (Phases 22-23) -- SHIPPED 2026-03-30</summary>

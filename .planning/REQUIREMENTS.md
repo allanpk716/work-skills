@@ -16,22 +16,22 @@ Requirements for v1.5 milestone. Each maps to roadmap phases.
 ### 插件清理
 
 - [ ] **PLUG-01**: System detects which plugins are currently installed (claude-notify, windows-git-commit)
-- [ ] **PLUG-02**: System removes installed plugin directories from Claude Code plugins folder
-- [ ] **PLUG-03**: System removes plugin entries from Claude Code settings.json (skills/hooks references)
-- [ ] **PLUG-04**: System removes source registration from marketplace.json
+- [x] **PLUG-02**: System removes installed plugin directories from Claude Code plugins folder
+- [x] **PLUG-03**: System removes plugin entries from Claude Code settings.json (skills/hooks references)
+- [x] **PLUG-04**: System removes source registration from marketplace.json
 
 ### 环境清理
 
 - [ ] **ENV-01**: System detects Pushover environment variables set via setx (PUSHOVER_USER_KEY, PUSHOVER_API_TOKEN)
-- [ ] **ENV-02**: System removes detected Pushover environment variables via registry deletion (persistent setx values)
+- [x] **ENV-02**: System removes detected Pushover environment variables via registry deletion (persistent setx values)
 
 ### UX & 安全
 
 - [ ] **UX-01**: User sees a summary list of all items to be removed before uninstall starts
 - [ ] **UX-02**: User must confirm the uninstall action before any changes are made
-- [ ] **UX-03**: System displays a clear uninstall report (success/failure per item) after completion
+- [x] **UX-03**: System displays a clear uninstall report (success/failure per item) after completion
 - [ ] **UX-04**: Uninstall flow supports bilingual output (Chinese/English, auto-detected)
-- [ ] **UX-05**: System handles partial failures gracefully — continues uninstalling remaining items if one fails
+- [x] **UX-05**: System handles partial failures gracefully — continues uninstalling remaining items if one fails
 - [ ] **UX-06**: User can abort uninstall at confirmation prompt without any changes made
 
 ## Future Requirements
@@ -67,13 +67,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-04 | Phase 24 | Pending |
 | UX-01 | Phase 25 | Pending |
 | UX-02 | Phase 25 | Pending |
-| UX-03 | Phase 25 | Pending |
-| UX-05 | Phase 25 | Pending |
+| UX-03 | Phase 25 | Complete |
+| UX-05 | Phase 25 | Complete |
 | UX-06 | Phase 25 | Pending |
-| PLUG-02 | Phase 25 | Pending |
-| PLUG-03 | Phase 25 | Pending |
-| PLUG-04 | Phase 25 | Pending |
-| ENV-02 | Phase 25 | Pending |
+| PLUG-02 | Phase 25 | Complete |
+| PLUG-03 | Phase 25 | Complete |
+| PLUG-04 | Phase 25 | Complete |
+| ENV-02 | Phase 25 | Complete |
 
 **Coverage:**
 - v1.5 requirements: 15 total

@@ -1,23 +1,23 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: - 修复插件安装检测
-status: complete
-stopped_at: Milestone complete
-last_updated: "2026-03-30T00:37:00.000Z"
+milestone: v1.5
+milestone_name: NPX 卸载功能
+status: defining_requirements
+stopped_at: Requirements definition
+last_updated: "2026-03-30T02:22:00.000Z"
 last_activity: 2026-03-30
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# STATE: Work Skills v1.4 — COMPLETE
+# STATE: Work Skills v1.5 — IN PROGRESS
 
 **Last Updated:** 2026-03-30
-**Milestone:** v1.4 - 修复插件安装检测 — SHIPPED
+**Milestone:** v1.5 - NPX 卸载功能 — DEFINING REQUIREMENTS
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -26,14 +26,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Planning next milestone
+**Current focus:** v1.5 — NPX 卸载功能
 
 ## Current Position
 
-Status: Milestone v1.4 complete — ready for next milestone
-Last activity: 2026-03-30
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-30 — Milestone v1.5 started
 
 ## Previous Milestone Summary
 
@@ -66,4 +66,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-03-30 — v1.4 milestone complete*
+*Last updated: 2026-03-30 — Milestone v1.5 started*

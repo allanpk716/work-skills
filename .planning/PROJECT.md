@@ -63,7 +63,12 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-*(No active requirements — awaiting next milestone planning)*
+**v1.5 - NPX 卸载功能 (current milestone):**
+- [ ] `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程
+- [ ] 卸载已安装的插件 (claude-notify, windows-git-commit)
+- [ ] 清理通过 setx 配置的环境变量 (Pushover 凭证等)
+- [ ] 卸载前显示将删除的内容清单,用户确认后再执行
+- [ ] 双语支持 (中英文)
 
 ### Out of Scope
 
@@ -138,5 +143,17 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
+## Current Milestone: v1.5 NPX 卸载功能
+
+**Goal:** 在现有安装器中添加 `--uninstall` 选项,让用户能通过 npx 一键卸载已安装的插件和清理环境变量
+
+**Target features:**
+- `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程
+- 卸载已安装的插件 (claude-notify, windows-git-commit)
+- 清理通过 setx 配置的环境变量 (Pushover 凭证等)
+- 卸载前显示将删除的内容清单,用户确认后再执行
+- 双语支持 (中英文)
+
 ---
-*Last updated: 2026-03-30 after v1.4 milestone*
+
+*Last updated: 2026-03-30 after starting v1.5 milestone*

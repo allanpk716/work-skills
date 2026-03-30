@@ -64,11 +64,13 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 ### Active
 
 **v1.5 - NPX 卸载功能 (current milestone):**
-- [ ] `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程
-- [ ] 卸载已安装的插件 (claude-notify, windows-git-commit)
-- [ ] 清理通过 setx 配置的环境变量 (Pushover 凭证等)
-- [ ] 卸载前显示将删除的内容清单,用户确认后再执行
-- [ ] 双语支持 (中英文)
+- ✓ `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程 - Phase 24
+- ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
+- ✓ ASCII 彩色表格展示检测结果 - Phase 24
+- ✓ 双语 i18n 支持 (18 个 uninstall.* 键) - Phase 24
+- [ ] 卸载已安装的插件 (claude-notify, windows-git-commit) - Phase 25
+- [ ] 清理通过 setx 配置的环境变量 (Pushover 凭证等) - Phase 25
+- [ ] 卸载前显示将删除的内容清单,用户确认后再执行 - Phase 25
 
 ### Out of Scope
 
@@ -97,10 +99,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.4 完成):**
-- 所有 5 个里程碑均已完成
-- 插件安装检测工作正常,windows-git-commit 和 claude-notify 均通过验证
-- 准备规划下一个里程碑
+**当前状态 (v1.5 进行中):**
+- Phase 24 (CLI Entry & Detection) 已完成 — --uninstall 入口和检测模块就绪
+- Phase 25 (Uninstall Execution & UX) 待规划 — 实际卸载执行和用户交互
 
 ## Key Decisions
 

@@ -3,7 +3,7 @@
 const { main } = require('../src/index.js');
 
 jest.mock('../src/uninstall/index.js', () => ({
-  runUninstallDetection: jest.fn().mockResolvedValue({ hasAnyInstalled: false })
+  runUninstall: jest.fn().mockResolvedValue({ success: true })
 }));
 
 jest.mock('../src/cli.js', () => ({
@@ -39,7 +39,7 @@ jest.mock('../src/verification/index.js', () => ({
 }));
 
 const { parseArgs } = require('../src/cli.js');
-const { runUninstallDetection } = require('../src/uninstall/index.js');
+const { runUninstall } = require('../src/uninstall/index.js');
 
 describe('Main Entry Point', () => {
   beforeEach(() => {
@@ -98,7 +98,7 @@ describe('Main Entry Point', () => {
 
     await main();
 
-    expect(runUninstallDetection).toHaveBeenCalled();
+    expect(runUninstall).toHaveBeenCalled();
     expect(mockExit).toHaveBeenCalledWith(0);
 
     mockExit.mockRestore();

@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: NPX 卸载功能
-status: roadmap_created
-stopped_at: Roadmap created
-last_updated: "2026-03-30T02:30:00.000Z"
+status: context_gathered
+stopped_at: Phase 24 context gathered
+last_updated: "2026-03-30T03:20:00.000Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 2
@@ -32,8 +32,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 
 Phase: Phase 24 — CLI Entry & Detection
 Plan: Not started
-Status: Roadmap created, awaiting plan
-Last activity: 2026-03-30 — Roadmap created
+Status: Context gathered, awaiting plan
+Last activity: 2026-03-30 — Phase 24 context gathered
 
 ## Previous Milestone Summary
 

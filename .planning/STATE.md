@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.5
-milestone_name: NPX 卸载功能
-status: in-progress
-stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-30T09:45:00Z"
+milestone_name: Progress
+current_plan: Not started
+status: Milestone complete
+last_updated: "2026-03-30T10:00:26.727Z"
 last_activity: 2026-03-30
 progress:
-  total_phases: 2
-  completed_phases: 0
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 22
+  completed_phases: 21
+  total_plans: 42
+  completed_plans: 42
   percent: 100
 ---
 
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-03-30)
 
 ## Current Position
 
-**Phase:** 24 - CLI Entry & Detection
-**Current Plan:** All plans complete
+**Phase:** 24
+**Current Plan:** Not started
 **Last completed:** 24-02-PLAN.md (2026-03-30)
 Last activity: 2026-03-30
 

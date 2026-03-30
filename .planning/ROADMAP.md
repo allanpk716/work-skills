@@ -47,7 +47,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. CLI Entry & Detection | 2/2 | All plans complete | 2026-03-30 |
+| 24. CLI Entry & Detection | 2/2 | Complete    | 2026-03-30 |
 | 25. Uninstall Execution & UX | 0/? | Not started | - |
 
 <details>

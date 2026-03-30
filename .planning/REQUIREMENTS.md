@@ -59,27 +59,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLI-01 | — | Pending |
-| CLI-02 | — | Pending |
-| CLI-03 | — | Pending |
-| PLUG-01 | — | Pending |
-| PLUG-02 | — | Pending |
-| PLUG-03 | — | Pending |
-| PLUG-04 | — | Pending |
-| ENV-01 | — | Pending |
-| ENV-02 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| UX-03 | — | Pending |
-| UX-04 | — | Pending |
-| UX-05 | — | Pending |
-| UX-06 | — | Pending |
+| CLI-01 | Phase 24 | Pending |
+| CLI-02 | Phase 24 | Pending |
+| CLI-03 | Phase 24 | Pending |
+| PLUG-01 | Phase 24 | Pending |
+| ENV-01 | Phase 24 | Pending |
+| UX-04 | Phase 24 | Pending |
+| UX-01 | Phase 25 | Pending |
+| UX-02 | Phase 25 | Pending |
+| UX-03 | Phase 25 | Pending |
+| UX-05 | Phase 25 | Pending |
+| UX-06 | Phase 25 | Pending |
+| PLUG-02 | Phase 25 | Pending |
+| PLUG-03 | Phase 25 | Pending |
+| PLUG-04 | Phase 25 | Pending |
+| ENV-02 | Phase 25 | Pending |
 
 **Coverage:**
 - v1.5 requirements: 15 total
-- Mapped to phases: 0
-- Unmapped: 15 ⚠️
+- Mapped to phases: 15
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after initial definition*
+*Last updated: 2026-03-30 after roadmap creation*

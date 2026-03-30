@@ -10,50 +10,45 @@
 - [x] **v1.2 - Installer NPX 安装体验** - Phases 13-19 (shipped 2026-03-28)
 - [x] **v1.3 - 智能配置检测** - Phases 20-21 (shipped 2026-03-29)
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
+- [ ] **v1.5 - NPX 卸载功能** - Phases 24-25 (current)
 
 ## Phases
 
-<details>
-<summary>v1.4 - 修复插件安装检测 (Phases 22-23) -- SHIPPED 2026-03-30</summary>
+- [ ] **Phase 24: CLI Entry & Detection** - Establish --uninstall entry point and detect installed components
+- [ ] **Phase 25: Uninstall Execution & UX** - Implement confirmation, removal, reporting with fault tolerance
 
-- [x] Phase 22: Plugin Structure Fix (1/1 plans) -- completed 2026-03-29
-- [x] Phase 23: Detection & Regression Verification (1/1 plans) -- completed 2026-03-29
+## Phase Details
 
-**Total:** 2 phases, 2 plans, all complete
+### Phase 24: CLI Entry & Detection
+**Goal**: Users can trigger uninstall via CLI and see what will be removed
+**Depends on**: Phase 23 (v1.4 shipped)
+**Requirements**: CLI-01, CLI-02, CLI-03, PLUG-01, ENV-01, UX-04
+**Success Criteria** (what must be TRUE):
+  1. User can run `npx @allanpk716/work-skills-setup --uninstall` and the uninstall flow starts (not the install flow)
+  2. `--help` output shows uninstall usage with description in both Chinese and English
+  3. System correctly detects which plugins are installed and which Pushover env vars exist (empty result when nothing installed, full list when everything installed)
+  4. Uninstall output is bilingual — respects system language or --lang flag
+**Plans**: TBD
 
-**详细归档:** `.planning/milestones/v1.4-ROADMAP.md`
+### Phase 25: Uninstall Execution & UX
+**Goal**: Users can review, confirm, and complete uninstallation with clear feedback and fault tolerance
+**Depends on**: Phase 24
+**Requirements**: UX-01, UX-02, UX-03, UX-05, UX-06, PLUG-02, PLUG-03, PLUG-04, ENV-02
+**Success Criteria** (what must be TRUE):
+  1. Before any changes, user sees a complete summary of all items to be removed (plugins, env vars, marketplace entries)
+  2. User must type confirm to proceed; pressing cancel/abort leaves system unchanged
+  3. After completion, user sees a clear report showing success/failure status for each removed item
+  4. If one item fails to remove (e.g., file locked), remaining items continue to be processed and the failure is reported
+  5. Installed plugin directories are removed, settings.json references are cleaned, and Pushover env vars are deleted from registry
+**Plans**: TBD
 
-</details>
+## Progress
 
-<details>
-<summary>v1.3 - 智能配置检测 (Phases 20-21) -- SHIPPED 2026-03-29</summary>
-
-- [x] Phase 20: Config Detection & Smart Interaction (2/2 plans) -- completed 2026-03-29
-- [x] Phase 21: Unified Flow Integration (1/1 plan) -- completed 2026-03-29
-
-**Total:** 2 phases, 3 plans, all complete
-
-**详细归档:** `.planning/milestones/v1.3-ROADMAP.md`
-
-</details>
-
-<details>
-<summary>v1.2 - Installer NPX 安装体验 (Phases 13-19) -- SHIPPED 2026-03-28</summary>
-
-- [x] Phase 13: Notify Toggle Commands (2/2 plans) -- completed 2026-02-27
-- [x] Phase 14: Installer Foundation (2/2 plans) -- completed 2026-03-20
-- [x] Phase 15: Environment Detection (4/4 plans) -- completed 2026-03-20
-- [x] Phase 16: Python Dependencies (2/2 plans) -- completed 2026-03-20
-- [x] Phase 17: Interactive Configuration (3/3 plans) -- completed 2026-03-21
-- [x] Phase 18: Marketplace Integration (1/1 plan) -- completed 2026-03-21
-- [x] Phase 19: Installation Verification (3/3 plans) -- completed 2026-03-23
-
-**Total:** 7 phases, 17 plans, all complete
-
-**详细归档:** `.planning/milestones/v1.2-ROADMAP.md`
-
-</details>
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 24. CLI Entry & Detection | 0/? | Not started | - |
+| 25. Uninstall Execution & UX | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-30 — v1.4 milestone archived*
+*Last updated: 2026-03-30 — v1.5 roadmap created*

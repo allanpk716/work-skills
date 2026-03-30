@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测和完整卸载功能,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。用户可通过 `--uninstall` 一键卸载所有已安装组件。
 
 ## Core Value
 
@@ -56,6 +56,16 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
 - ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
 
+**v1.5 - NPX 卸载功能 (shipped 2026-03-30):**
+- ✓ `--uninstall` CLI 入口和 i18n 路由 (18 个 uninstall.* 键) - Phase 24
+- ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
+- ✓ ASCII 彩色表格展示检测结果 - Phase 24
+- ✓ 双语 i18n 支持 (中英文) - Phase 24
+- ✓ 7 步容错卸载执行 (remover.js) - Phase 25
+- ✓ 彩色 ASCII 结果报告 (reporter.js) - Phase 25
+- ✓ enquirer Confirm 默认 No 安全确认 - Phase 25
+- ✓ 完整 detect→confirm→remove→report 编排 - Phase 25
+
 **v1.4 - 修复插件安装检测 (shipped 2026-03-30):**
 - ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
 - ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
@@ -63,14 +73,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-**v1.5 - NPX 卸载功能 (current milestone):**
-- ✓ `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程 - Phase 24
-- ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
-- ✓ ASCII 彩色表格展示检测结果 - Phase 24
-- ✓ 双语 i18n 支持 (18 个 uninstall.* 键) - Phase 24
-- ✓ 卸载已安装的插件 (claude-notify, windows-git-commit) - Phase 25
-- ✓ 清理通过 setx 配置的环境变量 (Pushover 凭证等) - Phase 25
-- ✓ 卸载前显示将删除的内容清单,用户确认后再执行 - Phase 25
+(None — awaiting next milestone definition)
 
 ### Out of Scope
 
@@ -99,9 +102,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.5 进行中):**
-- Phase 24 (CLI Entry & Detection) 已完成 — --uninstall 入口和检测模块就绪
-- Phase 25 (Uninstall Execution & UX) 待规划 — 实际卸载执行和用户交互
+**当前状态 (v1.5 shipped):**
+- Phase 24 (CLI Entry & Detection) 完成 — --uninstall 入口和检测模块就绪
+- Phase 25 (Uninstall Execution & UX) 完成 — detect→confirm→remove→report 完整流程
+- 57 个卸载相关测试全部通过
+- 里程碑已归档
 
 ## Key Decisions
 
@@ -123,9 +128,18 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | Per-item Confirm 模式 | 每项独立处理,支持部分配置 | ✓ Validated (Phase 20) |
 | 统一流程 (无单独 update 命令) | 减少用户认知负担 | ✓ Validated (Phase 21) |
 | Detection-level 测试策略 | 避免交互式 prompt mock 复杂度 | ✓ Applied (Phase 21) |
+| enquirer Confirm initial: false | 卸载操作安全优先,默认 No | ✓ Validated (Phase 25) |
+| removeStep helper pattern | 每步 try/catch,永不抛出异常 | ✓ Validated (Phase 25) |
+| Status tri-state (removed/failed/skipped) | 每步独立报告结果,支持部分失败 | ✓ Validated (Phase 25) |
+| 模块化卸载 (remover/reporter 分离) | 独立测试,职责分离 | ✓ Validated (Phase 25) |
 | 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4, Phase 22) |
 | 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4, Phase 22) |
 | git mv 保留历史跟踪 | 目录重构时保留 Git 历史 | ✓ Applied (Phase 22) |
+
+| removeStep helper pattern | Per-step try/catch, never throws, returns status object | ✓ Validated (Phase 25) |
+| Status tri-state (removed/failed/skipped) | Per-step granularity for removal reporting | ✓ Validated (Phase 25) |
+| enquirer Confirm initial: false | User must actively opt-in to uninstall | ✓ Validated (Phase 25) |
+| Structured return from runUninstall() | { success, aborted?, nothingToRemove?, results? } | ✓ Validated (Phase 25) |
 
 ## Evolution
 
@@ -144,17 +158,12 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current Milestone: v1.5 NPX 卸载功能
+## Current Milestone: Awaiting v1.6 definition
 
-**Goal:** 在现有安装器中添加 `--uninstall` 选项,让用户能通过 npx 一键卸载已安装的插件和清理环境变量
+**Status:** v1.5 shipped 2026-03-30. Ready for next milestone planning.
 
-**Target features:**
-- `npx @allanpk716/work-skills-setup --uninstall` 触发卸载流程
-- 卸载已安装的插件 (claude-notify, windows-git-commit)
-- 清理通过 setx 配置的环境变量 (Pushover 凭证等)
-- 卸载前显示将删除的内容清单,用户确认后再执行
-- 双语支持 (中英文)
+**Run:** `/gsd:new-milestone` to define v1.6 scope
 
 ---
 
-*Last updated: 2026-03-30 after starting v1.5 milestone*
+*Last updated: 2026-03-30 after v1.5 milestone completion*

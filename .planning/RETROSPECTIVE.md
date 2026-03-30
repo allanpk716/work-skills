@@ -2,6 +2,49 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v1.5 — NPX 卸载功能
+
+**Shipped:** 2026-03-30
+**Phases:** 2 | **Plans:** 4 | **Sessions:** 2
+
+### What Was Built
+- `--uninstall` CLI entry point with 7-component detection (plugins, hooks scripts, hooks registration, commands, marketplace source, marketplace cache, env vars)
+- ASCII colored table for detection results display
+- 7-step fault-tolerant removal execution (remover.js) with per-step try/catch
+- Colored ASCII result report (reporter.js) with [v]/[x]/[-] status icons
+- Full detect→confirm→remove→report orchestration via enquirer Confirm (default: No)
+- Bilingual i18n support (26 uninstall.* keys in en/zh)
+- CLI routing update from runUninstallDetection to runUninstall
+
+### What Worked
+- Phase 24 (detection) and Phase 25 (execution) separation was clean — detection tested independently before building execution on top
+- TDD for remover.js (17 tests) caught edge cases early — fault tolerance worked correctly on first try
+- SUMMARY.md one-liners from Phase 24 directly informed Phase 25's integration plan
+- Key-links verification between waves caught no gaps — clean dependency chain
+
+### What Was Inefficient
+- Phase 25 could have been a single plan (orchestration is straightforward), but splitting into remover+reporter vs orchestration allowed parallel test writing
+- Pre-existing test suite failures (8 suites) unrelated to v1.5 caused noise in regression gate — should clean those up
+
+### Patterns Established
+- removeStep helper: per-step try/catch with status tri-state (removed/failed/skipped), never throws
+- Structured return pattern: runUninstall() returns { success, aborted?, nothingToRemove?, results? }
+- enquirer Confirm initial:false as safety default for destructive operations
+- Module separation: detector/remover/reporter as independent testable units, index.js as thin orchestrator
+
+### Key Lessons
+1. Fault-tolerant design (continue on failure) is essential for uninstall — file locks and permission issues are common on Windows
+2. Detection and removal as separate phases enables clean testing — detect first, then remove
+3. Confirm default:No prevents accidental data loss — user must actively opt-in
+4. Pre-existing test debt should be cleaned up between milestones to keep regression gates useful
+
+### Cost Observations
+- Model mix: ~90% sonnet, ~10% opus
+- Sessions: 2
+- Notable: 2-phase milestone completed in single session (auto-advance), ~20 min total execution time
+
+---
+
 ## Milestone: v1.4 — 修复插件安装检测
 
 **Shipped:** 2026-03-30
@@ -88,6 +131,7 @@
 | v1.2 | 8 | 7 | NPX installer foundation, full TDD workflow |
 | v1.3 | 2 | 2 | Tight scope, fast delivery, audit-first |
 | v1.4 | 1 | 2 | Single-session ship, structural fix over code fix |
+| v1.5 | 2 | 2 | Uninstall flow, fault-tolerant removal, auto-advance |
 
 ### Cumulative Quality
 
@@ -96,6 +140,7 @@
 | v1.2 | 128+ | Full | 0 new deps |
 | v1.3 | 163+ | Full | 0 new deps |
 | v1.4 | 163+ | Full | 0 new deps (verification only) |
+| v1.5 | 220+ | Full | 0 new deps (57 uninstall tests) |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -103,3 +148,5 @@
 2. Bilingual support (en + zh) should be added alongside features, not retrofitted
 3. Detection-level testing is the right abstraction for interactive CLI features
 4. Tight-scope milestones (1-2 sessions) consistently outperform large ones — keep it small
+5. Fault-tolerant design (continue-on-failure) is essential for Windows uninstall — file locks are inevitable
+6. Confirm default:No prevents accidental data loss in destructive operations — always use initial:false

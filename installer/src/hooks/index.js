@@ -2,7 +2,7 @@
 
 const chalk = require('chalk');
 const { t } = require('../i18n/index.js');
-const { installHooks, isHooksInstalled, installCommands, isCommandsInstalled } = require('./hooks-installer.js');
+const { installHooks, isHooksInstalled, isHooksRegistered, installCommands, isCommandsInstalled } = require('./hooks-installer.js');
 
 /**
  * Run hooks installation step in the npx installer pipeline.
@@ -13,33 +13,40 @@ const { installHooks, isHooksInstalled, installCommands, isCommandsInstalled } =
 async function runHooksInstallation() {
   console.log(chalk.bold.blue('\n=== Notification Hooks Setup ===\n'));
 
-  if (isHooksInstalled()) {
-    console.log(chalk.green('  ✓ Notification hooks already registered globally'));
+  // Always re-copy scripts to ensure deployed versions match source
+  const alreadyRegistered = isHooksRegistered();
+
+  if (alreadyRegistered && isHooksInstalled()) {
+    console.log(chalk.gray('  Updating notification hook scripts...'));
   } else {
     console.log(chalk.gray('  Registering notification hooks globally...'));
+  }
 
-    const result = installHooks({
-      onProgress: (stage) => {
-        const messages = {
-          locating: '  Locating notification scripts...',
-          copying: '  Copying scripts to ~/.claude/hooks/...',
-          registering: '  Registering hooks in settings.json...',
-          cleaning: '  Cleaning up marketplace cache...'
-        };
-        if (messages[stage]) {
-          console.log(chalk.gray(messages[stage]));
-        }
+  const result = installHooks({
+    onProgress: (stage) => {
+      const messages = {
+        locating: '  Locating notification scripts...',
+        copying: '  Copying scripts to ~/.claude/hooks/...',
+        registering: '  Registering hooks in settings.json...',
+        cleaning: '  Cleaning up marketplace cache...'
+      };
+      if (messages[stage]) {
+        console.log(chalk.gray(messages[stage]));
       }
-    });
-
-    if (result.success) {
-      console.log(chalk.green('  ✓ Notification hooks registered successfully'));
-      result.copied.forEach(script => {
-        console.log(chalk.gray(`    - ${script}`));
-      });
-    } else {
-      console.log(chalk.yellow('  ⊘ Notification hooks skipped: ' + (result.error || 'unknown error')));
     }
+  });
+
+  if (result.success) {
+    if (alreadyRegistered) {
+      console.log(chalk.green('  ✓ Notification hook scripts updated'));
+    } else {
+      console.log(chalk.green('  ✓ Notification hooks registered successfully'));
+    }
+    result.copied.forEach(script => {
+      console.log(chalk.gray(`    - ${script}`));
+    });
+  } else {
+    console.log(chalk.yellow('  ⊘ Notification hooks skipped: ' + (result.error || 'unknown error')));
   }
 
   // Install slash commands globally

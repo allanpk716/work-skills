@@ -59,6 +59,11 @@
 - [插件开发最佳实践](docs/plugin-development-best-practices.md)
 - [快速参考卡片](docs/plugin-quick-reference.md)
 
+## 发布规范
+- 发布 npm 时,`package.json` 的 `version` 必须**与最新的 git tag 版本保持一致**
+- 发布前执行 `git tag -l` 确认当前 tag,然后用 `npm version <版本号> --no-git-tag-version` 同步
+- 发布后用 `npm deprecate` 标记旧的无效版本
+
 ## 工作原则
 - 优先在现有文件上修改,避免创建不必要的文件
 - 保持代码和文档的简洁性

@@ -1,0 +1,35 @@
+# Development files
+.planning/
+docs/
+tests/
+tmp/
+scripts/
+
+# Planning files in subdirectories
+installer/.planning/
+installer/installer/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+
+# Build artifacts
+*.tgz
+
+# Config
+CLAUDE.md
+pytest.ini
+
+# Planning docs
+INSTALLATION.md
+INSTALLATION.zh.md
+QUICK-START.md

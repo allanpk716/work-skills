@@ -287,17 +287,11 @@ function installHooks(options = {}) {
 }
 
 /**
- * Check if global hooks are already registered
+ * Check if global hooks are already registered in settings.json.
+ * Does NOT check script content - scripts are always re-copied on install.
  * @returns {boolean}
  */
-function isHooksInstalled() {
-  const hooksDir = getHooksDir();
-  const hasScripts = SCRIPT_MAPPINGS.every(
-    ({ target }) => fs.existsSync(path.join(hooksDir, target))
-  );
-
-  if (!hasScripts) return false;
-
+function isHooksRegistered() {
   const settings = readSettings();
   if (!settings.hooks) return false;
 
@@ -309,6 +303,17 @@ function isHooksInstalled() {
   );
 
   return !!(stopEntry && notifyEntry);
+}
+
+/**
+ * Check if hook scripts exist on disk (regardless of settings.json registration).
+ * @returns {boolean}
+ */
+function isHooksInstalled() {
+  const hooksDir = getHooksDir();
+  return SCRIPT_MAPPINGS.every(
+    ({ target }) => fs.existsSync(path.join(hooksDir, target))
+  );
 }
 
 /**
@@ -500,6 +505,7 @@ module.exports = {
   findScriptsSourceDir,
   installHooks,
   isHooksInstalled,
+  isHooksRegistered,
   cleanMarketplaceCache,
   installCommands,
   isCommandsInstalled,

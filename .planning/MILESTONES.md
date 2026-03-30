@@ -1,5 +1,16 @@
 # Milestones
 
+## v1.4 修复插件安装检测 (Shipped: 2026-03-30)
+
+**Phases completed:** 2 phases, 2 plans, 4 tasks
+
+**Key accomplishments:**
+
+- Flattened windows-git-commit plugin from nested skills/windows-git-commit/ to root level, matching claude-notify structure for installer isPluginInstalled() detection
+- Verified windows-git-commit plugin detection end-to-end: pushed Phase 22 fix to remote, reinstalled via installer, confirmed isPluginInstalled() returns true for both plugins (DETECT-01/03), auto-approved [installed] marker display logic (DETECT-02)
+
+---
+
 ## v1.3 智能配置检测 (Shipped: 2026-03-29)
 
 **Phases completed:** 2 phases, 3 plans, 6 tasks

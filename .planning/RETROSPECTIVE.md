@@ -2,6 +2,43 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v1.4 — 修复插件安装检测
+
+**Shipped:** 2026-03-30
+**Phases:** 2 | **Plans:** 2 | **Sessions:** 1
+
+### What Was Built
+- Flattened windows-git-commit plugin directory from nested skills/ subdirectory to root level
+- Verified isPluginInstalled() detection end-to-end through real installer reinstallation
+- Confirmed no regression in claude-notify detection
+
+### What Worked
+- Root cause analysis was precise: SKILL.md path mismatch between installer expectations and actual plugin structure
+- Minimal fix approach — restructure plugin directory instead of modifying installer code — kept blast radius small
+- git mv preserved full history tracking during directory restructure
+- E2E verification through actual installer (push to remote, reinstall, verify) caught a real issue (unpushed commits)
+
+### What Was Inefficient
+- Phase 23 discovered Phase 22 commits hadn't been pushed to remote — installer cloned stale code
+- Small milestone could have been a single phase (fix + verify) but keeping structure/verification separate was cleaner for traceability
+
+### Patterns Established
+- Plugin root layout convention: plugins/<name>/SKILL.md at root level (matches claude-notify pattern)
+- E2E verification: push structural fix to remote, reinstall via real installer, verify detection
+- Auto-approve deterministic checkpoints when code path analysis proves the result is guaranteed
+
+### Key Lessons
+1. Always verify remote state before testing installer flows — local != remote
+2. Structural fixes (directory layout) can solve detection issues without touching detection logic
+3. v1.4 continued the tight-scope pattern from v1.3 — 1 session, 2 phases, fast ship
+
+### Cost Observations
+- Model mix: ~80% sonnet, ~20% opus
+- Sessions: 1
+- Notable: Fastest milestone yet — single session from requirements to shipped
+
+---
+
 ## Milestone: v1.3 — 智能配置检测
 
 **Shipped:** 2026-03-29
@@ -50,6 +87,7 @@
 |-----------|----------|--------|------------|
 | v1.2 | 8 | 7 | NPX installer foundation, full TDD workflow |
 | v1.3 | 2 | 2 | Tight scope, fast delivery, audit-first |
+| v1.4 | 1 | 2 | Single-session ship, structural fix over code fix |
 
 ### Cumulative Quality
 
@@ -57,9 +95,11 @@
 |-----------|-------|----------|-------------------|
 | v1.2 | 128+ | Full | 0 new deps |
 | v1.3 | 163+ | Full | 0 new deps |
+| v1.4 | 163+ | Full | 0 new deps (verification only) |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. CJS + zero new dependencies keeps the installer lightweight and compatible
 2. Bilingual support (en + zh) should be added alongside features, not retrofitted
 3. Detection-level testing is the right abstraction for interactive CLI features
+4. Tight-scope milestones (1-2 sessions) consistently outperform large ones — keep it small

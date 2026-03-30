@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测,能自动识别已有环境配置并适配首次安装或重复运行场景。用户通过 `npx @allanpk716/work-skills-setup` 一键完成环境检测、依赖安装、配置引导和插件安装。
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。
 
 ## Core Value
 
@@ -56,14 +56,14 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
 - ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
 
-**v1.4 - 修复插件安装检测 (shipped 2026-03-29):**
+**v1.4 - 修复插件安装检测 (shipped 2026-03-30):**
 - ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
 - ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
 - ✓ 重复运行安装器自动跳过已安装插件 - Phase 23
 
 ### Active
 
-*(No active requirements — v1.4 milestone complete)*
+*(No active requirements — awaiting next milestone planning)*
 
 ### Out of Scope
 
@@ -75,8 +75,6 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
 | 静默安装模式 (--quiet) | 未来版本考虑 |
 | 配置文件导出/导入 | 未来版本考虑 |
-| Git SSH 配置检测 | v1.3 明确排除,SSH 配置仍走原始引导流程 |
-| 已安装插件检测 | v1.3 明确排除,在 v1.4 中修复 |
 
 ## Context
 
@@ -86,6 +84,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - v1.1 完成了 windows-git-commit 安全扫描功能,生产就绪
 - v1.2 完成了独立 NPX 安装器,实现一步到位的安装体验
 - v1.3 完成了智能配置检测,安装器能自动适配首次安装和重复运行
+- v1.4 修复了插件安装检测,两个插件在重复运行安装器时均能正确识别已安装状态
 
 **技术环境:**
 - 目标系统: Windows 10/11
@@ -94,10 +93,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
 **当前状态 (v1.4 完成):**
-- v1.4 milestone 完成 — 插件安装检测已修复并验证
-- Phase 22: 插件结构扁平化 ✓
-- Phase 23: 检测回归验证 ✓
-- 所有里程碑均已完成
+- 所有 5 个里程碑均已完成
+- 插件安装检测工作正常,windows-git-commit 和 claude-notify 均通过验证
+- 准备规划下一个里程碑
 
 ## Key Decisions
 
@@ -119,15 +117,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | Per-item Confirm 模式 | 每项独立处理,支持部分配置 | ✓ Validated (Phase 20) |
 | 统一流程 (无单独 update 命令) | 减少用户认知负担 | ✓ Validated (Phase 21) |
 | Detection-level 测试策略 | 避免交互式 prompt mock 复杂度 | ✓ Applied (Phase 21) |
-
-## Current Milestone: v1.4 修复插件安装检测
-
-**Goal:** 修复 windows-git-commit 插件重复运行时始终提示安装的问题。
-
-**Target features:**
-- 修复 windows-git-commit 插件 SKILL.md 路径结构
-- 确保 isPluginInstalled() 检测与实际安装路径一致
-- 更新安装时自动跳过已安装且无需更新的插件
+| 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4, Phase 22) |
+| 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4, Phase 22) |
+| git mv 保留历史跟踪 | 目录重构时保留 Git 历史 | ✓ Applied (Phase 22) |
 
 ## Evolution
 
@@ -147,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — v1.4 milestone complete*
+*Last updated: 2026-03-30 after v1.4 milestone*

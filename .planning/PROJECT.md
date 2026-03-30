@@ -68,9 +68,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
 - ✓ ASCII 彩色表格展示检测结果 - Phase 24
 - ✓ 双语 i18n 支持 (18 个 uninstall.* 键) - Phase 24
-- [ ] 卸载已安装的插件 (claude-notify, windows-git-commit) - Phase 25
-- [ ] 清理通过 setx 配置的环境变量 (Pushover 凭证等) - Phase 25
-- [ ] 卸载前显示将删除的内容清单,用户确认后再执行 - Phase 25
+- ✓ 卸载已安装的插件 (claude-notify, windows-git-commit) - Phase 25
+- ✓ 清理通过 setx 配置的环境变量 (Pushover 凭证等) - Phase 25
+- ✓ 卸载前显示将删除的内容清单,用户确认后再执行 - Phase 25
 
 ### Out of Scope
 

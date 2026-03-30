@@ -1,16 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: - 修复插件安装检测
-status: complete
-stopped_at: Milestone complete
-last_updated: "2026-03-30T00:37:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: completed
+last_updated: "2026-03-30T09:41:53.782Z"
 last_activity: 2026-03-30
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 22
+  completed_phases: 20
+  total_plans: 40
+  completed_plans: 41
   percent: 100
 ---
 
@@ -55,6 +54,8 @@ Progress: [██████████] 100%
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
+
+- [Phase 24]: Reuse existing detection functions for uninstall detection (isPluginInstalled, isHooksInstalled, etc.)
 
 ### Pending Todos
 

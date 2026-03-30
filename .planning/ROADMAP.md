@@ -11,6 +11,16 @@
 - [x] **v1.3 - 智能配置检测** - Phases 20-21 (shipped 2026-03-29)
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
 
+## Active Milestone
+
+- **v1.5 - Uninstall Support** - Phases 24+ (in progress)
+
+### v1.5 Progress
+
+- [ ] Phase 24: CLI Entry & Detection (1/2 plans) -- in progress
+  - [ ] Plan 24-01: CLI entry point and i18n keys (parallel worktree)
+  - [x] Plan 24-02: Uninstall detection module (1/1 complete)
+
 ## Phases
 
 <details>
@@ -56,4 +66,4 @@
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-30 — v1.4 milestone archived*
+*Last updated: 2026-03-30 — v1.5 phase 24 in progress*

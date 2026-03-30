@@ -1,23 +1,23 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: - 修复插件安装检测
-status: complete
-stopped_at: Milestone complete
-last_updated: "2026-03-30T00:37:00.000Z"
+milestone: v1.5
+milestone_name: NPX 卸载功能
+status: in-progress
+stopped_at: Completed 24-01-PLAN.md
+last_updated: "2026-03-30T06:57:25Z"
 last_activity: 2026-03-30
 progress:
   total_phases: 2
-  completed_phases: 2
+  completed_phases: 0
   total_plans: 2
-  completed_plans: 2
-  percent: 100
+  completed_plans: 1
+  percent: 50
 ---
 
-# STATE: Work Skills v1.4 — COMPLETE
+# STATE: Work Skills v1.5 — IN PROGRESS
 
 **Last Updated:** 2026-03-30
-**Milestone:** v1.4 - 修复插件安装检测 — SHIPPED
+**Milestone:** v1.5 - NPX 卸载功能 — ACTIVE
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -26,14 +26,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Planning next milestone
+**Current focus:** Phase 24 - CLI Entry & Detection
 
 ## Current Position
 
-Status: Milestone v1.4 complete — ready for next milestone
+**Phase:** 24 - CLI Entry & Detection
+**Current Plan:** 24-02-PLAN.md (next)
+**Last completed:** 24-01-PLAN.md (2026-03-30)
 Last activity: 2026-03-30
 
-Progress: [██████████] 100%
+Progress: [=====.....] 50% (1/2 plans in phase 24)
 
 ## Previous Milestone Summary
 
@@ -45,7 +47,8 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed (all milestones): 43
+- Total plans completed (all milestones): 44
+- v1.5: 1 plan so far (24-01 in 10 min)
 - v1.4: 2 plans in 1 session
 - v1.3: 3 plans in 2 days
 - v1.2 average: ~1 day per phase
@@ -54,7 +57,11 @@ Progress: [██████████] 100%
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
+- Mocked parseArgs in index.test.js for reliable test isolation (2026-03-30, Phase 24-01)
+- Kept --uninstall help description as static English string, consistent with --verify (2026-03-30, Phase 24-01)
+- Created stub uninstall/index.js entry point; full impl deferred to Plan 02 (2026-03-30, Phase 24-01)
+
+Other decisions logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
@@ -66,4 +73,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-03-30 — v1.4 milestone complete*
+*Last updated: 2026-03-30 — v1.5 milestone, Phase 24 Plan 01 complete*

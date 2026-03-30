@@ -67,7 +67,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 24. CLI Entry & Detection | 2/2 | Complete    | 2026-03-30 |
-| 25. Uninstall Execution & UX | 2/2 | Complete   | 2026-03-30 |
+| 25. Uninstall Execution & UX | 2/2 | Complete    | 2026-03-30 |
 
 <details>
 <summary>v1.4 - 修复插件安装检测 (Phases 22-23) -- SHIPPED 2026-03-30</summary>

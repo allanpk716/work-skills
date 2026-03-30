@@ -6,25 +6,12 @@
 
 ## 🚀 快速开始
 
-**初次使用?** 直接运行:
-
 ```bash
 npx github:allanpk716/work-skills#main
 ```
 
-**喜欢手动安装?**
+简写形式：`npx allanpk716/work-skills`
 
-```bash
-git clone https://github.com/allanpk716/work-skills.git
-cd work-skills
-node installer/src/index.js
-```
-
-**详细步骤?** 查看 **[快速安装指南](QUICK-START.md)** 或 **[完整安装文档](INSTALLATION.zh.md)**
-
-**已安装?** 运行 `git pull && npx .` 更新
-
----
 ---
 
 ## 前提条件
@@ -35,77 +22,50 @@ node installer/src/index.js
 
 ## 安装
 
-### NPX 安装 (推荐)
+任选一条命令安装（均从 GitHub 拉取）：
 
-通过 GitHub 一键安装:
+```bash
+# 推荐 - 显式指定 GitHub 源和分支
+npx github:allanpk716/work-skills#main
+
+# 简写形式 - 效果相同
+npx allanpk716/work-skills
+```
+
+安装器自动完成环境检测、插件安装和 Claude Code 配置。**无需在 Claude Code 中手动管理插件。**
+
+### 手动安装
+
+```bash
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
+node installer/src/index.js
+```
+
+### 更新
+
+重新运行安装命令即可获取最新版本：
 
 ```bash
 npx github:allanpk716/work-skills#main
 ```
 
-自动下载并运行安装程序,无需克隆仓库。
-
-### 官方项目安装
+手动克隆方式：
 
 ```bash
-npx allanpk716/work-skills
+cd work-skills && git pull origin main && node installer/src/index.js
 ```
-
-### 注册为插件市场
-
-在 Claude Code 中运行以下命令:
-
-```
-/plugin marketplace add allanpk716/work-skills
-```
-
-### 安装技能
-
-**方式 1: 通过浏览界面**
-
-1. 选择 __Browse and install plugins__
-2. 选择 __work-skills__
-3. 选择要安装的插件
-4. 选择 __Install now__
-
-**方式 2: 直接安装**
-
-```
-# 安装 git 技能插件
-/plugin install git-skills@work-skills
-```
-
-**方式 3: 询问 Agent**
-
-直接告诉 Claude Code:
-
-> Please install Skills from github.com/allanpk716/work-skills
 
 ## 可用插件
 
 | 插件 | 描述 | 技能 |
 | --- | --- | --- |
-| __git-skills__ | Windows Git 工作流自动化 | windows-git-commit |
-| __claude-notify__ | 通过 Pushover 和 Windows Toast 发送任务完成通知 | claude-notify |
-
-## 更新技能
-
-更新技能到最新版本:
-
-1. 在 Claude Code 中运行 `/plugin`
-2. 切换到 __Marketplaces__ 标签页
-3. 选择 __work-skills__
-4. 选择 __Update marketplace__
-
-你也可以启用 __自动更新__ 来获取最新版本。
+| __windows-git-commit__ | Windows Git 工作流自动化 (plink + PPK) | windows-git-commit |
+| __claude-notify__ | 任务完成通知 (Pushover + Windows Toast) | claude-notify |
 
 ## 可用技能
 
-### Git 技能
-
-为 Windows 开发优化的 Git 工作流自动化技能,支持 PuTTY/Pageant 认证。
-
-#### windows-git-commit
+### windows-git-commit
 
 使用命令行 git 和 plink + PPK 认证的自动化 Git 提交和推送。
 
@@ -146,11 +106,7 @@ git config --global core.sshcommand "\"C:\\Program Files (x86)\\TortoiseGit\\bin
 
 详细故障排除请参阅技能文档。
 
-### Claude Notify
-
-通过 Pushover 和 Windows Toast 发送任务完成通知。
-
-#### claude-notify
+### claude-notify
 
 当 Claude Code 完成任务时自动发送通知。通过 Pushover 接收移动推送通知,在 Windows 系统上接收桌面 Toast 通知。
 
@@ -200,16 +156,10 @@ Windows Toast 通知无需任何配置即可工作。只需安装插件即可开
 
 ```
 work-skills/
-├── .claude-plugin/
-│   └── marketplace.json      # 插件市场配置
 ├── plugins/
 │   ├── windows-git-commit/   # Git 工作流自动化插件
-│   │   ├── commands/         # 斜杠命令
-│   │   └── skills/           # 技能定义
-│   └── claude-notify/        # 通知插件
-│       ├── hooks/            # Hook 定义
-│       ├── SKILL.md          # 技能文档
-│       └── tests/            # 测试套件
+│   ├── claude-notify/        # 通知插件
+├── installer/                # NPX 安装器
 ├── README.md                 # 英文说明
 ├── README.zh.md              # 中文说明 (本文件)
 └── CHANGELOG.md              # 版本历史

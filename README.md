@@ -6,23 +6,11 @@ Personal skills collection for improving daily work efficiency with Claude Code.
 
 ## 🚀 Quick Start
 
-**New to Work Skills?** Just run:
-
 ```bash
 npx github:allanpk716/work-skills#main
 ```
 
-**Prefer manual install?**
-
-```bash
-git clone https://github.com/allanpk716/work-skills.git
-cd work-skills
-node installer/src/index.js
-```
-
-**Need details?** See **[Quick Start Guide](QUICK-START.md)**
-
-**Already installed?** Run `git pull && npx .` to update
+Or the shorthand: `npx allanpk716/work-skills`
 
 ---
 
@@ -34,77 +22,50 @@ node installer/src/index.js
 
 ## Installation
 
-### NPX Install (Recommended)
+Run either command to install (both pull from GitHub):
 
-One-line install via GitHub:
+```bash
+# Recommended - explicit GitHub source with branch
+npx github:allanpk716/work-skills#main
+
+# Shorthand - same effect
+npx allanpk716/work-skills
+```
+
+The installer automatically handles environment detection, plugin installation, and Claude Code configuration. **No manual plugin management needed in Claude Code.**
+
+### Manual Install
+
+```bash
+git clone https://github.com/allanpk716/work-skills.git
+cd work-skills
+node installer/src/index.js
+```
+
+### Update
+
+Re-run the install command to get the latest version:
 
 ```bash
 npx github:allanpk716/work-skills#main
 ```
 
-This automatically downloads and runs the installer. No clone needed.
-
-### Official Project Install
+Or if you cloned manually:
 
 ```bash
-npx allanpk716/work-skills
+cd work-skills && git pull origin main && node installer/src/index.js
 ```
-
-### Register as Plugin Marketplace
-
-Run the following command in Claude Code:
-
-```
-/plugin marketplace add allanpk716/work-skills
-```
-
-### Install Skills
-
-**Option 1: Via Browse UI**
-
-1. Select __Browse and install plugins__
-2. Select __work-skills__
-3. Select the plugin(s) you want to install
-4. Select __Install now__
-
-**Option 2: Direct Install**
-
-```
-# Install git skills plugin
-/plugin install git-skills@work-skills
-```
-
-**Option 3: Ask the Agent**
-
-Simply tell Claude Code:
-
-> Please install Skills from github.com/allanpk716/work-skills
 
 ## Available Plugins
 
 | Plugin | Description | Skills |
 | --- | --- | --- |
-| __git-skills__ | Git workflow automation for Windows | windows-git-commit |
-| __claude-notify__ | Task completion notifications via Pushover and Windows Toast | claude-notify |
-
-## Update Skills
-
-To update skills to the latest version:
-
-1. Run `/plugin` in Claude Code
-2. Switch to __Marketplaces__ tab
-3. Select __work-skills__
-4. Choose __Update marketplace__
-
-You can also __Enable auto-update__ to get the latest versions automatically.
+| __windows-git-commit__ | Git workflow automation for Windows (plink + PPK) | windows-git-commit |
+| __claude-notify__ | Task completion notifications (Pushover + Windows Toast) | claude-notify |
 
 ## Available Skills
 
-### Git Skills
-
-Git workflow automation skills optimized for Windows development with PuTTY/Pageant authentication.
-
-#### windows-git-commit
+### windows-git-commit
 
 Automated Git commit and push for Windows using command-line git with plink + PPK authentication.
 
@@ -145,11 +106,7 @@ git config --global core.sshcommand "\"C:\\Program Files (x86)\\TortoiseGit\\bin
 
 For detailed troubleshooting, see the skill documentation.
 
-### Claude Notify
-
-Task completion notifications via Pushover and Windows Toast.
-
-#### claude-notify
+### claude-notify
 
 Automatically sends notifications when Claude Code completes tasks. Receive mobile push notifications via Pushover and desktop toast notifications on Windows.
 
@@ -199,16 +156,10 @@ For detailed documentation, see the [skill documentation](plugins/claude-notify/
 
 ```
 work-skills/
-├── .claude-plugin/
-│   └── marketplace.json      # Plugin marketplace configuration
 ├── plugins/
 │   ├── windows-git-commit/   # Git workflow automation plugin
-│   │   ├── commands/         # Slash commands
-│   │   └── skills/           # Skill definitions
-│   └── claude-notify/        # Notification plugin
-│       ├── hooks/            # Hook definitions
-│       ├── SKILL.md          # Skill documentation
-│       └── tests/            # Test suite
+│   ├── claude-notify/        # Notification plugin
+├── installer/                # NPX installer
 ├── README.md                 # This file
 ├── README.zh.md              # Chinese version
 └── CHANGELOG.md              # Version history

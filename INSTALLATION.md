@@ -12,33 +12,25 @@
 - ✅ **Git** 已安装
 - ✅ **TortoiseGit 或 PuTTY** (用于 SSH 认证,可选)
 
-### 一键安装 (推荐)
+### NPX Install (Recommended)
+
+Two equivalent commands, both pull from GitHub:
 
 ```bash
+# Explicit GitHub source with branch (recommended)
 npx github:allanpk716/work-skills#main
+
+# Shorthand form
+npx allanpk716/work-skills
 ```
 
-这个命令会自动完成:
-- 克隆最新版本
-- 安装依赖
-- 运行安装器
+This automatically downloads and runs the installer. No clone needed.
 
-### 备用方法: 手动克隆安装
-
-#### 方法 1: 从 GitHub 直接安装
+### Manual Clone Install
 
 ```bash
-npx github:allanpk716/work-skills#main installer
-```
-
-#### 方法 2: 克隆仓库后安装
-
-```bash
-# 1. 克隆仓库
 git clone https://github.com/allanpk716/work-skills.git
 cd work-skills
-
-# 2. 运行安装器
 node installer/src/index.js
 ```
 
@@ -76,7 +68,13 @@ node installer/src/index.js --verify
 
 ## 🔄 升级现有安装
 
-### 方法 1: Git 拉取更新 (推荐)
+### 方法 1: 重新运行 NPX (推荐)
+
+```bash
+npx github:allanpk716/work-skills#main
+```
+
+### 方法 2: Git 拉取更新
 
 ```bash
 # 进入仓库目录
@@ -88,21 +86,6 @@ git pull origin main
 # 重新运行安装器
 node installer/src/index.js
 ```
-
-### 方法 2: 使用 Claude Code 插件管理器
-
-1. 在 Claude Code 中运行:
-   ```
-   /plugin
-   ```
-
-2. 切换到 **Marketplaces** 标签
-
-3. 选择 **work-skills**
-
-4. 选择 **Update marketplace**
-
-5. 启用 **Auto-update** 以自动获取最新版本
 
 ### 方法 3: 重新克隆
 
@@ -169,22 +152,6 @@ cd work-skills
 node installer/src/index.js --verify
 ```
 
-### 5. npx 安装失败: Package not found
-
-**原因:** 安装器包还未发布到 npm registry。
-
-**解决方案:** 使用 GitHub 直接安装:
-```bash
-npx github:allanpk716/work-skills#main installer
-```
-
-或克隆仓库:
-```bash
-git clone https://github.com/allanpk716/work-skills.git
-cd work-skills
-node installer/src/index.js
-```
-
 ---
 
 ## 📋 安装检查清单
@@ -194,10 +161,9 @@ node installer/src/index.js
 - [ ] Python 3.8+ 已安装
 - [ ] Git 已安装
 - [ ] Node.js 16+ 已安装
-- [ ] work-skills 仓库已克隆
 - [ ] 至少安装了一个技能插件:
   - [ ] claude-notify (通知)
-  - [ ] git-skills (Git 自动化)
+  - [ ] windows-git-commit (Git 自动化)
 - [ ] 验证脚本通过 5/7 检查或更多
 
 ---
@@ -253,22 +219,6 @@ node installer/src/index.js --lang zh
    - 运行 `--verify` 查看具体失败项
    - 查看 Claude Code 日志
    - 提交 Issue: https://github.com/allanpk716/work-skills/issues
-
----
-
-## 🚀 发布到 npm 后的安装方法 (Coming Soon)
-
-一旦安装器发布到 npm,您将可以使用:
-
-```bash
-# 一键安装(发布后可用)
-npx @allanpk716/work-skills-setup
-
-# 验证安装
-npx @allanpk716/work-skills-setup --verify
-```
-
-在此之前,请使用上述 GitHub 安装方法。
 
 ---
 

@@ -96,6 +96,13 @@ async function runMarketplaceIntegration() {
     // Step 3: Display plugins and prompt for selection
     displayPluginTable(plugins);
 
+    // Check if all plugins are already installed
+    const allInstalled = plugins.every(p => isPluginInstalled(p.name));
+    if (allInstalled) {
+      console.log(chalk.green('\n  ✓ All plugins are already installed'));
+      return { success: true, installed: 0, skipped: plugins.length, failed: 0 };
+    }
+
     const multiselect = new MultiSelect({
       name: 'plugins',
       message: t('marketplace.select_plugins'),

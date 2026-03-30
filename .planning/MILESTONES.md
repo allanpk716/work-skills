@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.5 NPX Uninstall Support (Shipped: 2026-03-30)
+
+**Phases completed:** 23 phases, 45 plans, 89 tasks
+
+**Key accomplishments:**
+
+- Problem:
+- Problem:
+- Test contracts established for Python dependency auto-installation with 16 test cases defining expected behavior
+- One-liner:
+- One-liner:
+- One-liner:
+- Marketplace Integration Flow (installer/src/marketplace/index.js)
+- Created 4 TDD test scaffold files with 18 test cases for verification module development, establishing test-first pattern for Phase 19
+- Dual-source Pushover credential detection with registry fallback and per-item Confirm interaction
+- Git user configurator enhanced with per-item Confirm prompts for keep/re-enter, supporting 4 cases (both, only name, only email, neither) with unified save logic
+- 14 integration tests verifying UFLOW-01 (fresh install) and UFLOW-02 (re-run) detection and case-mapping logic across pushover, git-user, and git-ssh configurators
+- 7-step fault-tolerant removal execution (remover.js) and colored ASCII result table (reporter.js) as independent testable modules
+- Full uninstall flow orchestration: enquirer Confirm with default-No safety, detect->confirm->remove->report pipeline, and CLI routing from runUninstallDetection to runUninstall
+
+---
+
 ## v1.4 修复插件安装检测 (Shipped: 2026-03-30)
 
 **Phases completed:** 2 phases, 2 plans, 4 tasks

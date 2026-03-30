@@ -12,6 +12,16 @@
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
 - [ ] **v1.5 - NPX 卸载功能** - Phases 24-25 (current)
 
+## Active Milestone
+
+- **v1.5 - Uninstall Support** - Phases 24+ (in progress)
+
+### v1.5 Progress
+
+- [ ] Phase 24: CLI Entry & Detection (2/2 plans) -- all plans complete, awaiting verification
+  - [x] Plan 24-01: CLI entry point and i18n keys
+  - [x] Plan 24-02: Uninstall detection module
+
 ## Phases
 
 ### v1.5 - NPX 卸载功能 (Phases 24-25) -- IN PROGRESS
@@ -31,13 +41,13 @@
 
 Plans:
 - [x] 24-01-PLAN.md -- Add --uninstall CLI entry point, routing, and i18n translation keys
-- [ ] 24-02-PLAN.md -- Create uninstall detection module (detector + formatter + entry point)
+- [x] 24-02-PLAN.md -- Create uninstall detection module (detector + formatter + entry point)
 
 #### Progress
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. CLI Entry & Detection | 1/2 | In progress | 2026-03-30 |
+| 24. CLI Entry & Detection | 2/2 | All plans complete | 2026-03-30 |
 | 25. Uninstall Execution & UX | 0/? | Not started | - |
 
 <details>
@@ -57,8 +67,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 24-01-PLAN.md — Add --uninstall CLI entry point, routing, and i18n translation keys
-- [ ] 24-02-PLAN.md — Create uninstall detection module (detector + formatter + entry point)
+- [x] 24-01-PLAN.md — Add --uninstall CLI entry point, routing, and i18n translation keys
+- [x] 24-02-PLAN.md — Create uninstall detection module (detector + formatter + entry point)
 
 ### Phase 25: Uninstall Execution & UX
 **Goal**: Users can review, confirm, and complete uninstallation with clear feedback and fault tolerance
@@ -76,11 +86,11 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. CLI Entry & Detection | 0/2 | Not started | - |
+| 24. CLI Entry & Detection | 2/2 | All plans complete | 2026-03-30 |
 | 25. Uninstall Execution & UX | 0/? | Not started | - |
 
 </details>
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-30 -- v1.5 milestone, Phase 24 Plan 01 complete*
+*Last updated: 2026-03-30 — v1.5 phase 24 all plans complete*

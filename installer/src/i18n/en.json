@@ -138,5 +138,15 @@
   "uninstall.item.hookReg": "Hook registration in settings.json",
   "uninstall.item.command": "Slash command: {name}",
   "uninstall.item.marketplaceSource": "Marketplace source: work-skills",
-  "uninstall.item.envVar": "Environment variable: {name}"
+  "uninstall.item.envVar": "Environment variable: {name}",
+  "uninstall.remove.confirmPrompt": "Proceed with uninstall? This will remove all detected items.",
+  "uninstall.remove.aborted": "Uninstall cancelled. No changes were made.",
+  "uninstall.remove.progress": "Removing installed components...",
+  "uninstall.remove.reportTitle": "Removal Results",
+  "uninstall.remove.status.removed": "Removed",
+  "uninstall.remove.status.failed": "Failed",
+  "uninstall.remove.status.skipped": "Skipped",
+  "uninstall.remove.summary": "{removed} removed, {failed} failed, {skipped} skipped",
+  "uninstall.remove.complete": "Uninstall complete.",
+  "uninstall.remove.nothingToRemove": "Nothing to remove."
 }

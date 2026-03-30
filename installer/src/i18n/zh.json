@@ -138,5 +138,15 @@
   "uninstall.item.hookReg": "settings.json 中的 Hook 注册",
   "uninstall.item.command": "斜杠命令: {name}",
   "uninstall.item.marketplaceSource": "Marketplace 源: work-skills",
-  "uninstall.item.envVar": "环境变量: {name}"
+  "uninstall.item.envVar": "环境变量: {name}",
+  "uninstall.remove.confirmPrompt": "确认卸载? 将移除所有已检测到的组件。",
+  "uninstall.remove.aborted": "卸载已取消,未做任何更改。",
+  "uninstall.remove.progress": "正在移除已安装组件...",
+  "uninstall.remove.reportTitle": "移除结果",
+  "uninstall.remove.status.removed": "已移除",
+  "uninstall.remove.status.failed": "失败",
+  "uninstall.remove.status.skipped": "已跳过",
+  "uninstall.remove.summary": "{removed} 已移除, {failed} 失败, {skipped} 已跳过",
+  "uninstall.remove.complete": "卸载完成。",
+  "uninstall.remove.nothingToRemove": "无需移除。"
 }

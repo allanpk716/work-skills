@@ -1,7 +1,10 @@
 'use strict';
 
+const { Confirm } = require('enquirer');
 const { detectAllInstalled } = require('./detector.js');
 const { formatDetectionTable } = require('./formatter.js');
+const { removeAllComponents } = require('./remover.js');
+const { formatRemovalReport } = require('./reporter.js');
 const { t } = require('../i18n/index.js');
 
 /**
@@ -53,4 +56,66 @@ async function runUninstallDetection() {
   return results;
 }
 
-module.exports = { runUninstallDetection };
+/**
+ * Prompt the user to confirm uninstall action.
+ * Default is No (initial: false) for safety.
+ * @returns {Promise<boolean>}
+ */
+async function confirmUninstall() {
+  const prompt = new Confirm({
+    name: 'confirmUninstall',
+    message: t('uninstall.remove.confirmPrompt'),
+    initial: false
+  });
+  return await prompt.run();
+}
+
+/**
+ * Run the full uninstall flow:
+ *   1. Detect all installed components
+ *   2. Display detection table
+ *   3. Handle nothing-installed case
+ *   4. Print summary line
+ *   5. Ask user for confirmation (default No)
+ *   6. Remove all components (if confirmed)
+ *   7. Display removal report
+ * @returns {Promise<Object>} { success, aborted?, nothingToRemove?, results? }
+ */
+async function runUninstall() {
+  // Step 1: Detect (reuse existing)
+  const results = await detectAllInstalled();
+
+  // Step 2: Display detection table
+  const output = formatDetectionTable(results);
+  console.log(output);
+
+  // Step 3: Handle nothing-installed
+  if (!results.hasAnyInstalled) {
+    console.log(t('uninstall.nothingFound'));
+    return { success: true, nothingToRemove: true };
+  }
+
+  // Step 4: Print summary line
+  const installedCount = countInstalled(results);
+  const totalCount = countTotal(results);
+  console.log(t('uninstall.summary', { found: installedCount, total: totalCount }));
+
+  // Step 5: Confirm (default No)
+  const confirmed = await confirmUninstall();
+  if (!confirmed) {
+    console.log(t('uninstall.remove.aborted'));
+    return { success: true, aborted: true };
+  }
+
+  // Step 6: Remove
+  console.log(t('uninstall.remove.progress'));
+  const removalResults = await removeAllComponents(results);
+
+  // Step 7: Report
+  console.log(formatRemovalReport(removalResults));
+  console.log(t('uninstall.remove.complete'));
+
+  return { success: true, results: removalResults };
+}
+
+module.exports = { runUninstallDetection, runUninstall };

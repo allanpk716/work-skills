@@ -63,6 +63,7 @@
 - 发布 npm 时,`package.json` 的 `version` 必须**与最新的 git tag 版本保持一致**
 - 发布前执行 `git tag -l` 确认当前 tag,然后用 `npm version <版本号> --no-git-tag-version` 同步
 - 发布后用 `npm deprecate` 标记旧的无效版本
+- **注意**: `installer/package.json` 的 version 也需要同步更新,因为安装器(`welcome.js`、`cli.js`)读取的是这个文件,不是根目录的 `package.json`
 
 ## 工作原则
 - 优先在现有文件上修改,避免创建不必要的文件

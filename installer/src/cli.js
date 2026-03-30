@@ -21,6 +21,7 @@ function parseArgs(argv = process.argv) {
     .option('-l, --lang <locale>', 'Language (en/zh)', 'auto')
     .option('--no-color', 'Disable colored output')
     .option('--verify', 'Run installation verification only')
+    .option('--uninstall', 'Run uninstall detection')
     .allowExcessArguments(true)
     .exitOverride() // Prevent process.exit in tests
     .parse(argv);
@@ -35,7 +36,8 @@ function parseArgs(argv = process.argv) {
   return {
     lang: options.lang,
     useColors: options.color !== false,
-    verifyOnly: options.verify === true
+    verifyOnly: options.verify === true,
+    uninstallOnly: options.uninstall === true
   };
 }
 

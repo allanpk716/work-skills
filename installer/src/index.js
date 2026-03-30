@@ -9,6 +9,7 @@ const { runAllConfigurators } = require('./configurators/index.js');
 const { runMarketplaceIntegration } = require('./marketplace/index.js');
 const { runHooksInstallation } = require('./hooks/index.js');
 const { runVerification } = require('./verification/index.js');
+const { runUninstallDetection } = require('./uninstall/index.js');
 
 /**
  * Main entry point for the installer
@@ -19,6 +20,12 @@ async function main() {
 
   // Step 2: Parse command line arguments
   const options = parseArgs();
+
+  // Handle --uninstall flag (uninstallOnly takes priority over verifyOnly)
+  if (options.uninstallOnly) {
+    const result = await runUninstallDetection();
+    process.exit(0);
+  }
 
   // Handle --verify flag (skip to verification only)
   if (options.verifyOnly) {

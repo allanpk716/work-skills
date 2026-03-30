@@ -14,10 +14,10 @@ progress:
   percent: 100
 ---
 
-# STATE: Work Skills v1.5 — IN PROGRESS
+# STATE: Work Skills v1.5 — MILESTONE COMPLETE
 
 **Last Updated:** 2026-03-30
-**Milestone:** v1.5 - NPX 卸载功能 — ACTIVE
+**Milestone:** v1.5 - NPX 卸载功能 — COMPLETE
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -26,18 +26,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 25 — uninstall-execution-ux
+**Current focus:** Milestone v1.5 complete — ready for archival
 
 ## Current Position
 
-Phase: 25 (uninstall-execution-ux) — EXECUTING
-Plan: 2 of 2
-**Phase:** 25
-**Current Plan:** Not started
-**Last completed:** 25-CONTEXT.md (2026-03-30)
+**Phase:** 25 (last phase) — COMPLETE
+**Status:** Milestone v1.5 all phases complete
 Last activity: 2026-03-30
 
-Progress: [==========] 100% (2/2 plans in phase 24)
+Progress: [████████████████████] 100% (44/44 plans across all phases)
 
 ## Previous Milestone Summary
 
@@ -50,7 +47,7 @@ Progress: [==========] 100% (2/2 plans in phase 24)
 **Velocity:**
 
 - Total plans completed (all milestones): 46
-- v1.5: 2 plans (24-01, 24-02)
+- v1.5: 4 plans (24-01, 24-02, 25-01, 25-02)
 - v1.4: 2 plans in 1 session
 - v1.3: 3 plans in 2 days
 - v1.2 average: ~1 day per phase
@@ -81,4 +78,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-03-30 — v1.5 milestone, Phase 24 all plans complete*
+*Last updated: 2026-03-30 — v1.5 milestone COMPLETE, all 46 plans done*

@@ -28,7 +28,11 @@
   2. `--help` output shows uninstall usage with description in both Chinese and English
   3. System correctly detects which plugins are installed and which Pushover env vars exist (empty result when nothing installed, full list when everything installed)
   4. Uninstall output is bilingual — respects system language or --lang flag
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — Add --uninstall CLI entry point, routing, and i18n translation keys
+- [ ] 24-02-PLAN.md — Create uninstall detection module (detector + formatter + entry point)
 
 ### Phase 25: Uninstall Execution & UX
 **Goal**: Users can review, confirm, and complete uninstallation with clear feedback and fault tolerance
@@ -46,9 +50,9 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 24. CLI Entry & Detection | 0/? | Not started | - |
+| 24. CLI Entry & Detection | 0/2 | Not started | - |
 | 25. Uninstall Execution & UX | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-30 — v1.5 roadmap created*
+*Last updated: 2026-03-30 — Phase 24 plans created*

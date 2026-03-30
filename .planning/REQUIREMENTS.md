@@ -27,12 +27,12 @@ Requirements for v1.5 milestone. Each maps to roadmap phases.
 
 ### UX & 安全
 
-- [ ] **UX-01**: User sees a summary list of all items to be removed before uninstall starts
-- [ ] **UX-02**: User must confirm the uninstall action before any changes are made
+- [x] **UX-01**: User sees a summary list of all items to be removed before uninstall starts
+- [x] **UX-02**: User must confirm the uninstall action before any changes are made
 - [x] **UX-03**: System displays a clear uninstall report (success/failure per item) after completion
 - [ ] **UX-04**: Uninstall flow supports bilingual output (Chinese/English, auto-detected)
 - [x] **UX-05**: System handles partial failures gracefully — continues uninstalling remaining items if one fails
-- [ ] **UX-06**: User can abort uninstall at confirmation prompt without any changes made
+- [x] **UX-06**: User can abort uninstall at confirmation prompt without any changes made
 
 ## Future Requirements
 
@@ -65,11 +65,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLUG-01 | Phase 24 | Pending |
 | ENV-01 | Phase 24 | Pending |
 | UX-04 | Phase 24 | Pending |
-| UX-01 | Phase 25 | Pending |
-| UX-02 | Phase 25 | Pending |
+| UX-01 | Phase 25 | Complete |
+| UX-02 | Phase 25 | Complete |
 | UX-03 | Phase 25 | Complete |
 | UX-05 | Phase 25 | Complete |
-| UX-06 | Phase 25 | Pending |
+| UX-06 | Phase 25 | Complete |
 | PLUG-02 | Phase 25 | Complete |
 | PLUG-03 | Phase 25 | Complete |
 | PLUG-04 | Phase 25 | Complete |

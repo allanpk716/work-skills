@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 # Add hooks/scripts directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'hooks' / 'scripts'))
 
-from notify import get_project_name, get_claude_summary, check_notification_flags, cleanup_old_logs
+from notify import get_project_name, get_claude_summary, cleanup_old_logs
 
 
 class TestNotify(unittest.TestCase):
@@ -86,94 +86,6 @@ class TestNotify(unittest.TestCase):
 
         result = get_claude_summary('test-project')
         self.assertEqual(result, '[test-project] Task completed')
-
-    @patch('notify.Path')
-    def test_check_notification_flags_none(self, mock_path_class):
-        """Test notification flags when no control files exist."""
-        mock_project_dir = MagicMock()
-        mock_pushover = MagicMock()
-        mock_pushover.is_file.return_value = False
-        mock_windows = MagicMock()
-        mock_windows.is_file.return_value = False
-
-        mock_project_dir.__truediv__ = lambda self, key: (
-            mock_pushover if key == '.no-pushover'
-            else mock_windows if key == '.no-windows'
-            else MagicMock()
-        )
-
-        mock_path_class.cwd.return_value = mock_project_dir
-
-        result = check_notification_flags()
-
-        self.assertFalse(result['pushover_disabled'])
-        self.assertFalse(result['windows_disabled'])
-
-    @patch('notify.Path')
-    def test_check_notification_flags_pushover_disabled(self, mock_path_class):
-        """Test notification flags when .no-pushover exists."""
-        mock_project_dir = MagicMock()
-        mock_pushover = MagicMock()
-        mock_pushover.is_file.return_value = True
-        mock_windows = MagicMock()
-        mock_windows.is_file.return_value = False
-
-        mock_project_dir.__truediv__ = lambda self, key: (
-            mock_pushover if key == '.no-pushover'
-            else mock_windows if key == '.no-windows'
-            else MagicMock()
-        )
-
-        mock_path_class.cwd.return_value = mock_project_dir
-
-        result = check_notification_flags()
-
-        self.assertTrue(result['pushover_disabled'])
-        self.assertFalse(result['windows_disabled'])
-
-    @patch('notify.Path')
-    def test_check_notification_flags_windows_disabled(self, mock_path_class):
-        """Test notification flags when .no-windows exists."""
-        mock_project_dir = MagicMock()
-        mock_pushover = MagicMock()
-        mock_pushover.is_file.return_value = False
-        mock_windows = MagicMock()
-        mock_windows.is_file.return_value = True
-
-        mock_project_dir.__truediv__ = lambda self, key: (
-            mock_pushover if key == '.no-pushover'
-            else mock_windows if key == '.no-windows'
-            else MagicMock()
-        )
-
-        mock_path_class.cwd.return_value = mock_project_dir
-
-        result = check_notification_flags()
-
-        self.assertFalse(result['pushover_disabled'])
-        self.assertTrue(result['windows_disabled'])
-
-    @patch('notify.Path')
-    def test_check_notification_flags_both_disabled(self, mock_path_class):
-        """Test notification flags when both control files exist."""
-        mock_project_dir = MagicMock()
-        mock_pushover = MagicMock()
-        mock_pushover.is_file.return_value = True
-        mock_windows = MagicMock()
-        mock_windows.is_file.return_value = True
-
-        mock_project_dir.__truediv__ = lambda self, key: (
-            mock_pushover if key == '.no-pushover'
-            else mock_windows if key == '.no-windows'
-            else MagicMock()
-        )
-
-        mock_path_class.cwd.return_value = mock_project_dir
-
-        result = check_notification_flags()
-
-        self.assertTrue(result['pushover_disabled'])
-        self.assertTrue(result['windows_disabled'])
 
     def test_cleanup_old_logs(self):
         """Test log cleanup removes old files."""

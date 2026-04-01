@@ -13,7 +13,8 @@ const os = require('os');
 // Script file mappings: source name -> target name
 const SCRIPT_MAPPINGS = [
   { source: 'notify.py', target: 'notify-stop.py' },
-  { source: 'notify-attention.py', target: 'notify-attention.py' }
+  { source: 'notify-attention.py', target: 'notify-attention.py' },
+  { source: 'flags.py', target: 'flags.py' }
 ];
 
 // Hook definitions

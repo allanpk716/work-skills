@@ -7,7 +7,7 @@
 
 ### 向上查找 (Find-up)
 
-- [ ] **FIND-01**: `check_notification_flags()` 在当前目录未找到 `.no-xxx` 文件时，向上遍历父目录查找，直到找到文件或到达根目录
+- [x] **FIND-01**: `check_notification_flags()` 在当前目录未找到 `.no-xxx` 文件时，向上遍历父目录查找，直到找到文件或到达根目录
 - [ ] **FIND-02**: `notify-attention.py` 中的检测逻辑同步支持向上查找
 
 ### 全局控制 (Global Control)
@@ -33,7 +33,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FIND-01 | Phase 26 | Pending |
+| FIND-01 | Phase 26 | Complete |
 | FIND-02 | Phase 26 | Pending |
 | GLOB-01 | Phase 27 | Pending |
 | GLOB-02 | Phase 27 | Pending |

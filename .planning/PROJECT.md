@@ -74,10 +74,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 ### Active
 
 **v1.6 - 通知标志文件向上查找 + 全局控制 (in progress):**
-- 向上遍历父目录查找 `.no-xxx` 文件
-- `~/.claude/.no-xxx` 全局通知控制
-- `notify-attention.py` 同步修改
-- 诊断模式显示查找结果
+- ✓ 向上遍历父目录查找 `.no-xxx` 文件 - Phase 26
+- ✓ `~/.claude/.no-xxx` 全局通知控制 - Phase 27
+- ✓ `notify-enable`/`notify-disable` 支持 `--global` 参数 - Phase 27
+- ✓ `notify-status` 显示全局标志状态 - Phase 27
+- 诊断模式显示查找结果 — Phase 28
 
 ### Out of Scope
 
@@ -108,9 +109,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 **当前状态 (v1.6 in progress):**
 - Phase 26 (Find-up Implementation) 完成 — `.no-xxx` 标志文件向上查找，共享 flags.py 模块
-- Phase 27 (Global Control) 待执行 — `~/.claude/.no-xxx` 全局通知控制
-- Phase 28 (Diagnostics Update) 待执行 — 诊断模式显示查找结果
-- 31 个 Python 测试全部通过
+- Phase 27 (Global Control) 完成 — `~/.claude/.no-xxx` 全局通知控制，`--global` 斜杠命令支持
+- Phase 28 (Diagnostics & Testing) 待执行 — 诊断模式显示查找结果
+- 67 个 Python 测试全部通过
 
 ## Key Decisions
 
@@ -177,4 +178,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-01 after Phase 26 completion*
+*Last updated: 2026-04-01 after Phase 27 completion*

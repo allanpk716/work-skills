@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: - 通知标志文件向上查找 + 全局控制
-status: complete
-last_updated: "2026-04-01T05:34:22Z"
-last_activity: 2026-04-01 -- 27-02-PLAN complete
+status: planning
+last_updated: "2026-04-01T05:42:00.919Z"
+last_activity: 2026-04-01
 progress:
   total_phases: 3
   completed_phases: 2
@@ -31,10 +31,10 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 
 Phase: 27 (global-control) — EXECUTING
 Plan: 2 of 2 (complete)
-**Phase:** 27 of 28 (global control)
-**Plan:** 27-02 complete
-**Status:** Phase 27 complete
-Last activity: 2026-04-01 -- 27-02-PLAN complete
+**Phase:** 28 of 28 (diagnostics & testing)
+**Plan:** Not started
+**Status:** Ready to plan
+Last activity: 2026-04-01
 
 Progress: [██████████] 100%
 

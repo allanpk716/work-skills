@@ -131,7 +131,7 @@ Phases execute in numeric order: 26 -> 27 -> 28
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete    | 2026-04-01 |
-| 27. Global Control | v1.6 | 2/2 | Complete   | 2026-04-01 |
+| 27. Global Control | v1.6 | 2/2 | Complete    | 2026-04-01 |
 | 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
 
 ---

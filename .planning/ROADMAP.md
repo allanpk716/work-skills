@@ -95,7 +95,7 @@
 
 Plans:
 - [x] 26-01-PLAN.md — TDD: Create shared flags.py module with find-up traversal
-- [ ] 26-02-PLAN.md — Integrate shared module into notify.py, notify-attention.py, and installer
+- [x] 26-02-PLAN.md — Integrate shared module into notify.py, notify-attention.py, and installer
 
 #### Phase 27: Global Control
 **Goal**: 用户可通过 `~/.claude/.no-xxx` 文件全局屏蔽所有项目的通知，无需逐项目配置
@@ -126,7 +126,7 @@ Phases execute in numeric order: 26 -> 27 -> 28
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 26. Find-up Implementation | v1.6 | 1/2 | In Progress|  |
+| 26. Find-up Implementation | v1.6 | 2/2 | Complete   | 2026-04-01 |
 | 27. Global Control | v1.6 | 0/? | Not started | - |
 | 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
 

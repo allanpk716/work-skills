@@ -106,11 +106,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 
-**当前状态 (v1.5 shipped):**
-- Phase 24 (CLI Entry & Detection) 完成 — --uninstall 入口和检测模块就绪
-- Phase 25 (Uninstall Execution & UX) 完成 — detect→confirm→remove→report 完整流程
-- 57 个卸载相关测试全部通过
-- 里程碑已归档
+**当前状态 (v1.6 in progress):**
+- Phase 26 (Find-up Implementation) 完成 — `.no-xxx` 标志文件向上查找，共享 flags.py 模块
+- Phase 27 (Global Control) 待执行 — `~/.claude/.no-xxx` 全局通知控制
+- Phase 28 (Diagnostics Update) 待执行 — 诊断模式显示查找结果
+- 31 个 Python 测试全部通过
 
 ## Key Decisions
 
@@ -177,4 +177,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-*Last updated: 2026-04-01 after v1.6 milestone started*
+*Last updated: 2026-04-01 after Phase 26 completion*

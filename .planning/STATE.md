@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: - 通知标志文件向上查找 + 全局控制
-status: planning
-last_updated: "2026-04-01T03:38:28.352Z"
-last_activity: 2026-04-01
+status: executing
+last_updated: "2026-04-01T05:28:12.697Z"
+last_activity: 2026-04-01 -- 27-01-PLAN complete
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 50
+  total_plans: 4
+  completed_plans: 3
+  percent: 75
 ---
 
 # STATE: Work Skills v1.6 — 通知标志文件向上查找 + 全局控制
@@ -25,18 +25,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 26 — find-up-implementation
+**Current focus:** Phase 27 — global-control
 
 ## Current Position
 
-Phase: 26 (find-up-implementation) — EXECUTING
-Plan: 2 of 2 in current phase (01 complete)
+Phase: 27 (global-control) — EXECUTING
+Plan: 2 of 2
 **Phase:** 27 of 28 (global control)
-**Plan:** Not started
-**Status:** Ready to plan
-Last activity: 2026-04-01
+**Plan:** 27-01 complete
+**Status:** Executing Phase 27
+Last activity: 2026-04-01 -- 27-01-PLAN complete
 
-Progress: [█████░░░░░] 50%
+Progress: [████████░░] 75%
 
 ## Previous Milestone Summary
 
@@ -65,6 +65,8 @@ Recent decisions affecting current work:
 - Priority: project-level > global-level for notification flags
 - [Phase 26]: Per-channel independence: .no-pushover find does not stop .no-windows search, even past CLAUDE.md
 - [Phase 26]: Shared flags module integrated via drop-in import replacement in both notify scripts
+- [Phase 27]: Global fallback uses Path.home()/.claude/.no-xxx checked only for channels not disabled at project level, project-level takes priority
+- [Phase 27]: Return dict expanded to 6 keys with global_pushover_path and global_windows_path, separate from project-level paths
 
 ### Pending Todos
 
@@ -76,4 +78,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-01 — v1.6 roadmap created*
+*Last updated: 2026-04-01 -- Completed 27-01-PLAN.md*

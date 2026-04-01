@@ -12,8 +12,8 @@
 
 ### 全局控制 (Global Control)
 
-- [ ] **GLOB-01**: 支持 `~/.claude/.no-pushover` 和 `~/.claude/.no-windows` 文件作为全局通知屏蔽，对所有项目生效
-- [ ] **GLOB-02**: 查找优先级：项目级（当前目录向上）优先，`~/.claude/` 全局作为回退
+- [x] **GLOB-01**: 支持 `~/.claude/.no-pushover` 和 `~/.claude/.no-windows` 文件作为全局通知屏蔽，对所有项目生效
+- [x] **GLOB-02**: 查找优先级：项目级（当前目录向上）优先，`~/.claude/` 全局作为回退
 
 ### 诊断与测试 (Diagnostics & Testing)
 
@@ -35,8 +35,8 @@
 |-------------|-------|--------|
 | FIND-01 | Phase 26 | Complete |
 | FIND-02 | Phase 26 | Complete |
-| GLOB-01 | Phase 27 | Pending |
-| GLOB-02 | Phase 27 | Pending |
+| GLOB-01 | Phase 27 | Complete |
+| GLOB-02 | Phase 27 | Complete |
 | DIAG-01 | Phase 28 | Pending |
 | TEST-01 | Phase 28 | Pending |
 | TEST-02 | Phase 28 | Pending |

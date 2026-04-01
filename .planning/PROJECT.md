@@ -73,7 +73,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-(None — awaiting next milestone definition)
+**v1.6 - 通知标志文件向上查找 + 全局控制 (in progress):**
+- 向上遍历父目录查找 `.no-xxx` 文件
+- `~/.claude/.no-xxx` 全局通知控制
+- `notify-attention.py` 同步修改
+- 诊断模式显示查找结果
 
 ### Out of Scope
 
@@ -158,12 +162,19 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current Milestone: Awaiting v1.6 definition
+## Current Milestone: v1.6 通知标志文件向上查找 + 全局控制
 
-**Status:** v1.5 shipped 2026-03-30. Ready for next milestone planning.
+**Goal:** 修复 `.no-windows` / `.no-pushover` 在子目录中失效的问题，并支持 `~/.claude/` 全局通知控制
 
-**Run:** `/gsd:new-milestone` to define v1.6 scope
+**Target features:**
+- `check_notification_flags()` 向上遍历父目录查找 `.no-xxx` 文件
+- 支持 `~/.claude/.no-pushover` / `~/.claude/.no-windows` 全局屏蔽
+- `notify-attention.py` 同步修改
+- `diagnose_configuration()` 显示向上查找和全局查找结果
+- 更新测试覆盖新场景
+
+**Status:** v1.5 shipped 2026-03-30. v1.6 in progress.
 
 ---
 
-*Last updated: 2026-03-30 after v1.5 milestone completion*
+*Last updated: 2026-04-01 after v1.6 milestone started*

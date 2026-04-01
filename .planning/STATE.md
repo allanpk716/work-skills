@@ -1,45 +1,43 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: Progress
-status: completed
-last_updated: "2026-03-30T12:13:47.010Z"
-last_activity: 2026-03-30
+milestone: v1.6
+milestone_name: 通知标志文件向上查找 + 全局控制
+status: defining_requirements
+last_updated: "2026-04-01T00:00:00.000Z"
+last_activity: 2026-04-01
 progress:
-  total_phases: 23
-  completed_phases: 22
-  total_plans: 44
-  completed_plans: 44
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# STATE: Work Skills v1.5 — MILESTONE COMPLETE
+# STATE: Work Skills v1.6 — 通知标志文件向上查找 + 全局控制
 
-**Last Updated:** 2026-03-30
-**Milestone:** v1.5 - NPX 卸载功能 — COMPLETE
+**Last Updated:** 2026-04-01
+**Milestone:** v1.6 - 通知标志文件向上查找 + 全局控制 — Defining Requirements
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-30)
+See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Milestone v1.5 complete — ready for archival
+**Current focus:** v1.6 — 修复 .no-xxx 文件在子目录中失效 + 支持全局控制
 
 ## Current Position
 
-**Phase:** 25 (last phase) — COMPLETE
-**Status:** v1.5 milestone complete
-Last activity: 2026-03-30
-
-Progress: [████████████████████] 100% (44/44 plans across all phases)
+**Phase:** Not started (defining requirements)
+**Status:** Defining requirements
+Last activity: 2026-04-01 — Milestone v1.6 started
 
 ## Previous Milestone Summary
 
-**v1.4 shipped:** 2 phases, 2 plans, 4 tasks (Phases 22-23)
-**v1.3 shipped:** 2 phases, 3 plans, 6 tasks (Phases 20-21)
-**v1.2 shipped:** 7 phases, 17 plans, 43 tasks (Phases 13-19)
+**v1.5 shipped:** 2 phases, 4 plans (Phases 24-25) — NPX 卸载功能
+**v1.4 shipped:** 2 phases, 2 plans (Phases 22-23) — 修复插件安装检测
+**v1.3 shipped:** 2 phases, 3 plans (Phases 20-21) — 智能配置检测
 
 ## Performance Metrics
 
@@ -55,17 +53,7 @@ Progress: [████████████████████] 100% (4
 
 ### Decisions
 
-- Mocked parseArgs in index.test.js for reliable test isolation (2026-03-30, Phase 24-01)
-- Kept --uninstall help description as static English string, consistent with --verify (2026-03-30, Phase 24-01)
-- Created stub uninstall/index.js entry point; full impl deferred to Plan 02 (2026-03-30, Phase 24-01)
-- Reuse existing detection functions for uninstall detection (isPluginInstalled, isHooksInstalled, etc.) (2026-03-30, Phase 24-02)
-
 Other decisions logged in PROJECT.md Key Decisions table.
-
-- [Phase 25]: removeStep helper pattern: each removal step wrapped in try/catch, returns status object, never throws
-- [Phase 25]: Status tri-state: removed/failed/skipped with per-step granularity for removal reporting
-- [Phase 25]: enquirer Confirm with initial: false ensures user must actively opt-in to uninstall
-- [Phase 25]: runUninstall returns structured result { success, aborted?, nothingToRemove?, results? }
 
 ### Pending Todos
 
@@ -77,4 +65,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-03-30 — v1.5 milestone COMPLETE, all 46 plans done*
+*Last updated: 2026-04-01 — v1.6 milestone started*

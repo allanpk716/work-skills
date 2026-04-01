@@ -274,21 +274,25 @@ def diagnose_configuration():
     else:
         print("  PUSHOVER_USER: NOT SET")
 
-    # 2. Project Configuration Files
-    print("\n[2] Project Configuration Files")
-    project_dir = Path.cwd()
-    no_pushover = project_dir / '.no-pushover'
-    no_windows = project_dir / '.no-windows'
+    # 2. Notification Flags (per D-01, D-02)
+    print("\n[2] Notification Flags")
+    flags = check_notification_flags()
 
-    if no_pushover.is_file():
-        print("  .no-pushover: FOUND (Pushover notifications disabled)")
+    # Pushover
+    if flags['pushover_disabled']:
+        path = flags['pushover_path'] or flags['global_pushover_path']
+        source = "project-level" if flags['pushover_path'] else "global"
+        print(f"  Pushover: DISABLED - Found at {path} ({source})")
     else:
-        print("  .no-pushover: Not found (Pushover enabled)")
+        print("  Pushover: Enabled (no .no-pushover found)")
 
-    if no_windows.is_file():
-        print("  .no-windows: FOUND (Windows notifications disabled)")
+    # Windows
+    if flags['windows_disabled']:
+        path = flags['windows_path'] or flags['global_windows_path']
+        source = "project-level" if flags['windows_path'] else "global"
+        print(f"  Windows: DISABLED - Found at {path} ({source})")
     else:
-        print("  .no-windows: Not found (Windows enabled)")
+        print("  Windows: Enabled (no .no-windows found)")
 
     # 3. Log Files
     print("\n[3] Log Files")

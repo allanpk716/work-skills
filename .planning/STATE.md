@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: - 通知标志文件向上查找 + 全局控制
-status: executing
-last_updated: "2026-04-01T05:28:12.697Z"
-last_activity: 2026-04-01 -- 27-01-PLAN complete
+status: complete
+last_updated: "2026-04-01T05:34:22Z"
+last_activity: 2026-04-01 -- 27-02-PLAN complete
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # STATE: Work Skills v1.6 — 通知标志文件向上查找 + 全局控制
@@ -30,13 +30,13 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 ## Current Position
 
 Phase: 27 (global-control) — EXECUTING
-Plan: 2 of 2
+Plan: 2 of 2 (complete)
 **Phase:** 27 of 28 (global control)
-**Plan:** 27-01 complete
-**Status:** Executing Phase 27
-Last activity: 2026-04-01 -- 27-01-PLAN complete
+**Plan:** 27-02 complete
+**Status:** Phase 27 complete
+Last activity: 2026-04-01 -- 27-02-PLAN complete
 
-Progress: [████████░░] 75%
+Progress: [██████████] 100%
 
 ## Previous Milestone Summary
 
@@ -48,7 +48,8 @@ Progress: [████████░░] 75%
 
 **Velocity:**
 
-- Total plans completed (all milestones): 46
+- Total plans completed (all milestones): 47
+- v1.6: 4 plans in 1 session
 - v1.5: 4 plans in 1 session
 - v1.4: 2 plans in 1 session
 - v1.3: 3 plans in 2 days
@@ -67,6 +68,7 @@ Recent decisions affecting current work:
 - [Phase 26]: Shared flags module integrated via drop-in import replacement in both notify scripts
 - [Phase 27]: Global fallback uses Path.home()/.claude/.no-xxx checked only for channels not disabled at project level, project-level takes priority
 - [Phase 27]: Return dict expanded to 6 keys with global_pushover_path and global_windows_path, separate from project-level paths
+- [Phase 27]: --global flag for notify-enable/disable with flexible arg parsing, notify-status uses check_notification_flags() for source annotation
 
 ### Pending Todos
 
@@ -78,4 +80,4 @@ None.
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-01 -- Completed 27-01-PLAN.md*
+*Last updated: 2026-04-01 -- Completed 27-02-PLAN.md*

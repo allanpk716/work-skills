@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测和完整卸载功能,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。用户可通过 `--uninstall` 一键卸载所有已安装组件。
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测和完整卸载功能,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。用户可通过 `--uninstall` 一键卸载所有已安装组件。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
 
 ## Core Value
 
@@ -56,6 +56,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
 - ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
 
+**v1.4 - 修复插件安装检测 (shipped 2026-03-30):**
+- ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
+- ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
+- ✓ 重复运行安装器自动跳过已安装插件 - Phase 23
+
 **v1.5 - NPX 卸载功能 (shipped 2026-03-30):**
 - ✓ `--uninstall` CLI 入口和 i18n 路由 (18 个 uninstall.* 键) - Phase 24
 - ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
@@ -66,19 +71,19 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ enquirer Confirm 默认 No 安全确认 - Phase 25
 - ✓ 完整 detect→confirm→remove→report 编排 - Phase 25
 
-**v1.4 - 修复插件安装检测 (shipped 2026-03-30):**
-- ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
-- ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
-- ✓ 重复运行安装器自动跳过已安装插件 - Phase 23
+**v1.6 - 通知标志文件向上查找 + 全局控制 (shipped 2026-04-01):**
+- ✓ 向上遍历父目录查找 `.no-xxx` 文件 - Phase 26
+- ✓ `notify-attention.py` 同步支持向上查找 - Phase 26
+- ✓ `~/.claude/.no-xxx` 全局通知控制 - Phase 27
+- ✓ 项目级优先于全局级的查找优先级 - Phase 27
+- ✓ `notify-enable`/`notify-disable` 支持 `--global` 参数 - Phase 27
+- ✓ `notify-status` 显示全局标志状态 - Phase 27
+- ✓ 诊断模式显示查找结果和来源标注 - Phase 28
+- ✓ 72 个 Python 测试全部通过 - Phase 28
 
 ### Active
 
-**v1.6 - 通知标志文件向上查找 + 全局控制 (shipped 2026-04-01):**
-- ✓ 向上遍历父目录查找 `.no-xxx` 文件 - Phase 26
-- ✓ `~/.claude/.no-xxx` 全局通知控制 - Phase 27
-- ✓ `notify-enable`/`notify-disable` 支持 `--global` 参数 - Phase 27
-- ✓ `notify-status` 显示全局标志状态 - Phase 27
-- ✓ 诊断模式显示查找结果 - Phase 28
+(等待下一个里程碑定义)
 
 ### Out of Scope
 
@@ -90,6 +95,8 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
 | 静默安装模式 (--quiet) | 未来版本考虑 |
 | 配置文件导出/导入 | 未来版本考虑 |
+| 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
+| 交互式全局通知开关命令 | 未来版本考虑 |
 
 ## Context
 
@@ -100,18 +107,20 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - v1.2 完成了独立 NPX 安装器,实现一步到位的安装体验
 - v1.3 完成了智能配置检测,安装器能自动适配首次安装和重复运行
 - v1.4 修复了插件安装检测,两个插件在重复运行安装器时均能正确识别已安装状态
+- v1.5 完成了 NPX 卸载功能,一键卸载所有已安装组件
+- v1.6 完成了通知标志文件向上查找和全局控制
 
 **技术环境:**
 - 目标系统: Windows 10/11
 - 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript (CJS)
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
+- 测试覆盖: 72 个 Python 测试
 
-**当前状态 (v1.6 in progress):**
-- Phase 26 (Find-up Implementation) 完成 — `.no-xxx` 标志文件向上查找，共享 flags.py 模块
-- Phase 27 (Global Control) 完成 — `~/.claude/.no-xxx` 全局通知控制，`--global` 斜杠命令支持
-- Phase 28 (Diagnostics & Testing) 待执行 — 诊断模式显示查找结果
-- 67 个 Python 测试全部通过
+**当前状态 (v1.6 shipped 2026-04-01):**
+- 7 个里程碑已交付 (v1.0 - v1.6)
+- 47 个计划全部完成
+- 等待下一个里程碑规划
 
 ## Key Decisions
 
@@ -137,14 +146,15 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | removeStep helper pattern | 每步 try/catch,永不抛出异常 | ✓ Validated (Phase 25) |
 | Status tri-state (removed/failed/skipped) | 每步独立报告结果,支持部分失败 | ✓ Validated (Phase 25) |
 | 模块化卸载 (remover/reporter 分离) | 独立测试,职责分离 | ✓ Validated (Phase 25) |
-| 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4, Phase 22) |
-| 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4, Phase 22) |
+| 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4) |
+| 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4) |
 | git mv 保留历史跟踪 | 目录重构时保留 Git 历史 | ✓ Applied (Phase 22) |
-
-| removeStep helper pattern | Per-step try/catch, never throws, returns status object | ✓ Validated (Phase 25) |
-| Status tri-state (removed/failed/skipped) | Per-step granularity for removal reporting | ✓ Validated (Phase 25) |
-| enquirer Confirm initial: false | User must actively opt-in to uninstall | ✓ Validated (Phase 25) |
-| Structured return from runUninstall() | { success, aborted?, nothingToRemove?, results? } | ✓ Validated (Phase 25) |
+| 共享 flags.py 模块 | 消除 notify.py 和 notify-attention.py 中的重复代码 | ✓ Validated (v1.6) |
+| Per-channel independence | 各通知频道独立查找,互不干扰 | ✓ Validated (v1.6) |
+| 项目级优先于全局级 | 项目级 .no-xxx 存在时跳过全局检查 | ✓ Validated (v1.6) |
+| 6-key 返回字典 | 分离项目级和全局级路径信息 | ✓ Validated (v1.6) |
+| --global 灵活参数解析 | 支持 --global 在任意位置 | ✓ Validated (v1.6) |
+| 诊断模式使用 check_notification_flags() | 统一数据源,显示来源标注 | ✓ Validated (v1.6) |
 
 ## Evolution
 
@@ -163,19 +173,5 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current Milestone: v1.6 通知标志文件向上查找 + 全局控制
-
-**Goal:** 修复 `.no-windows` / `.no-pushover` 在子目录中失效的问题，并支持 `~/.claude/` 全局通知控制
-
-**Target features:**
-- `check_notification_flags()` 向上遍历父目录查找 `.no-xxx` 文件
-- 支持 `~/.claude/.no-pushover` / `~/.claude/.no-windows` 全局屏蔽
-- `notify-attention.py` 同步修改
-- `diagnose_configuration()` 显示向上查找和全局查找结果
-- 更新测试覆盖新场景
-
-**Status:** v1.5 shipped 2026-03-30. v1.6 in progress.
-
 ---
-
-*Last updated: 2026-04-01 after Phase 27 completion*
+*Last updated: 2026-04-01 after v1.6 milestone*

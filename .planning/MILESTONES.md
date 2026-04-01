@@ -1,5 +1,19 @@
 # Milestones
 
+## v1.6 通知标志文件向上查找 + 全局控制 (Shipped: 2026-04-01)
+
+**Phases completed:** 3 phases, 5 plans, 11 tasks
+
+**Key accomplishments:**
+
+- Shared flags.py module with upward directory traversal for .no-xxx detection, 12 TDD tests covering parent find, CLAUDE.md stop, root stop, max depth, and channel independence
+- Replaced duplicated check_notification_flags() in notify.py and notify-attention.py with shared flags.py import; updated installer to deploy flags.py alongside notification scripts
+- Global ~/.claude/.no-xxx fallback detection with project-level priority, 6-key return dict, and 4 new test cases
+- --global flag for notify-enable/disable commands operating on ~/.claude/.no-xxx, plus notify-status showing project-level vs global source annotation via check_notification_flags()
+- diagnose_configuration() section [2] updated to use check_notification_flags() with project-level and global source labels, plus 5 new TDD tests verifying display output
+
+---
+
 ## v1.5 NPX Uninstall Support (Shipped: 2026-03-30)
 
 **Phases completed:** 23 phases, 45 plans, 89 tasks

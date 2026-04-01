@@ -1,0 +1,104 @@
+"""
+Shared notification flag detection module with upward directory traversal.
+
+Provides check_notification_flags() that searches from CWD upward through
+parent directories for .no-pushover and .no-windows flag files.
+
+Traversal rules (per D-01 through D-05):
+1. Start at CWD, check .no-pushover and .no-windows at each level
+2. Each channel tracked independently (D-02 strict reading)
+3. If CLAUDE.md found at a level where NEITHER .no-xxx was found, stop entirely (D-03)
+4. If CLAUDE.md found but one .no-xxx WAS found, continue searching for the other channel
+5. Maximum 10 levels (D-04)
+6. Stop at filesystem root (parent == self)
+"""
+
+import logging
+from pathlib import Path
+from typing import Dict, Optional
+
+logger = logging.getLogger(__name__)
+
+
+def check_notification_flags() -> Dict:
+    """
+    Check for notification disable flags, searching from CWD upward.
+
+    At each directory level, checks for .no-pushover and .no-windows files.
+    Each channel is tracked independently -- finding one does not stop the
+    search for the other (D-02).
+
+    Stops searching when:
+    - Both channels found (early exit)
+    - CLAUDE.md found and no .no-xxx found at that level (D-03)
+    - Filesystem root reached (parent == self)
+    - Maximum traversal depth (10) exceeded
+
+    Returns:
+        dict: {
+            'pushover_disabled': bool,
+            'windows_disabled': bool,
+            'pushover_path': Optional[Path],  # Path to found .no-pushover
+            'windows_path': Optional[Path]     # Path to found .no-windows
+        }
+    """
+    current = Path.cwd()
+    depth = 0
+    max_depth = 10
+
+    pushover_disabled = False
+    windows_disabled = False
+    pushover_path = None
+    windows_path = None
+
+    while depth <= max_depth:
+        # Track what we find at this level
+        found_pushover_this_level = False
+        found_windows_this_level = False
+
+        # Check pushover flag at current level
+        if not pushover_disabled:
+            flag = current / '.no-pushover'
+            if flag.is_file():
+                pushover_disabled = True
+                pushover_path = flag
+                found_pushover_this_level = True
+
+        # Check windows flag at current level (independent channel)
+        if not windows_disabled:
+            flag = current / '.no-windows'
+            if flag.is_file():
+                windows_disabled = True
+                windows_path = flag
+                found_windows_this_level = True
+
+        # Both found, no need to continue
+        if pushover_disabled and windows_disabled:
+            break
+
+        # Check for CLAUDE.md project root marker
+        has_claude_md = (current / 'CLAUDE.md').is_file()
+
+        # D-02/D-03: CLAUDE.md only stops search when NO .no-xxx found at this level
+        if has_claude_md and not found_pushover_this_level and not found_windows_this_level:
+            break
+
+        # Move up to parent directory
+        parent = current.parent
+        if parent == current:  # filesystem root
+            break
+        current = parent
+        depth += 1
+
+    # Log results
+    if pushover_disabled:
+        logger.info(f"Pushover disabled by {pushover_path}")
+    if windows_disabled:
+        logger.info(f"Windows disabled by {windows_path}")
+
+    return {
+        'pushover_disabled': pushover_disabled,
+        'windows_disabled': windows_disabled,
+        'pushover_path': pushover_path,
+        'windows_path': windows_path,
+    }

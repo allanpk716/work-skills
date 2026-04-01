@@ -34,12 +34,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.parent = mock_parent
         mock_parent.parent = mock_parent  # root stops traversal
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
@@ -66,12 +66,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         pushover_in_parent = MagicMock()
         pushover_in_parent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_parent
             m = MagicMock()
@@ -100,12 +100,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         windows_in_parent = MagicMock()
         windows_in_parent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-windows':
                 return windows_in_parent
             m = MagicMock()
@@ -136,12 +136,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         windows_in_parent = MagicMock()
         windows_in_parent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_parent
             if key == '.no-windows':
@@ -174,14 +174,14 @@ class TestCheckNotificationFlags(unittest.TestCase):
         windows_in_parent = MagicMock()
         windows_in_parent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_cwd
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-windows':
                 return windows_in_parent
             m = MagicMock()
@@ -215,17 +215,17 @@ class TestCheckNotificationFlags(unittest.TestCase):
         pushover_in_gp = MagicMock()
         pushover_in_gp.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def level1_div(key):
+        def level1_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def level2_div(key):
+        def level2_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_gp
             m = MagicMock()
@@ -255,12 +255,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         claude_md = MagicMock()
         claude_md.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == 'CLAUDE.md':
                 return claude_md
             m = MagicMock()
@@ -294,12 +294,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         claude_md = MagicMock()
         claude_md.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_parent
             if key == 'CLAUDE.md':
@@ -308,7 +308,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
             m.is_file.return_value = False
             return m
 
-        def grandparent_div(key):
+        def grandparent_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
@@ -343,12 +343,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         windows_in_grandparent = MagicMock()
         windows_in_grandparent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_parent
             if key == 'CLAUDE.md':
@@ -357,7 +357,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
             m.is_file.return_value = False
             return m
 
-        def grandparent_div(key):
+        def grandparent_div(self, key):
             if key == '.no-windows':
                 return windows_in_grandparent
             m = MagicMock()
@@ -399,7 +399,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
             if i == 11:
                 # Depth 11 - has .no-pushover but should NOT be reached
                 def make_div(idx):
-                    def div_fn(key):
+                    def div_fn(self, key):
                         if key == '.no-pushover':
                             return pushover_deep
                         m = MagicMock()
@@ -409,7 +409,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
                 level.__truediv__ = make_div(i)
             else:
                 def make_empty_div(idx):
-                    def div_fn(key):
+                    def div_fn(self, key):
                         m = MagicMock()
                         m.is_file.return_value = False
                         return m
@@ -431,7 +431,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_root = MagicMock()
         mock_root.parent = mock_root  # filesystem root: parent == self
 
-        def root_div(key):
+        def root_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
@@ -457,12 +457,12 @@ class TestCheckNotificationFlags(unittest.TestCase):
         pushover_in_parent = MagicMock()
         pushover_in_parent.is_file.return_value = True
 
-        def cwd_div(key):
+        def cwd_div(self, key):
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        def parent_div(key):
+        def parent_div(self, key):
             if key == '.no-pushover':
                 return pushover_in_parent
             m = MagicMock()

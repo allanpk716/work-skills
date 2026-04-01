@@ -106,7 +106,11 @@ Plans:
   2. 用户在 `~/.claude/` 目录创建 `.no-windows` 文件后，所有项目的 Windows 系统通知均被屏蔽
   3. 项目级 `.no-xxx` 文件优先于全局 `~/.claude/.no-xxx`，项目级存在时忽略全局设置
   4. 无项目级文件时，全局 `~/.claude/.no-xxx` 作为回退生效
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — TDD: Add global fallback to flags.py with tests
+- [ ] 27-02-PLAN.md — Add --global flag to slash commands and update notify-status
 
 #### Phase 28: Diagnostics & Testing
 **Goal**: 诊断模式可见向上查找和全局控制结果，新增测试覆盖所有新查找场景
@@ -127,9 +131,9 @@ Phases execute in numeric order: 26 -> 27 -> 28
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete    | 2026-04-01 |
-| 27. Global Control | v1.6 | 0/? | Not started | - |
+| 27. Global Control | v1.6 | 0/2 | Planned | - |
 | 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-01 — Phase 26 planned (2 plans, 2 waves)*
+*Last updated: 2026-04-01 — Phase 27 planned (2 plans, 1 wave)*

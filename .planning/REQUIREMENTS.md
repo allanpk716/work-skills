@@ -33,19 +33,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FIND-01 | — | Pending |
-| FIND-02 | — | Pending |
-| GLOB-01 | — | Pending |
-| GLOB-02 | — | Pending |
-| DIAG-01 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
+| FIND-01 | Phase 26 | Pending |
+| FIND-02 | Phase 26 | Pending |
+| GLOB-01 | Phase 27 | Pending |
+| GLOB-02 | Phase 27 | Pending |
+| DIAG-01 | Phase 28 | Pending |
+| TEST-01 | Phase 28 | Pending |
+| TEST-02 | Phase 28 | Pending |
 
 **Coverage:**
 - v1.6 requirements: 7 total
-- Mapped to phases: 0
-- Unmapped: 7 ⚠️
+- Mapped to phases: 7
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-01*
-*Last updated: 2026-04-01 after initial definition*
+*Last updated: 2026-04-01 after roadmap creation*

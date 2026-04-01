@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-03-30
+**Last Updated:** 2026-04-01
 
 ## Milestones
 
@@ -11,6 +11,7 @@
 - [x] **v1.3 - 智能配置检测** - Phases 20-21 (shipped 2026-03-29)
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
 - [x] **v1.5 - NPX 卸载功能** - Phases 24-25 (shipped 2026-03-30) — [Archive](milestones/v1.5-ROADMAP.md)
+- [ ] **v1.6 - 通知标志文件向上查找 + 全局控制** - Phases 26-28 (in progress)
 
 ## Phases
 
@@ -75,6 +76,56 @@
 
 </details>
 
+## Phase Details
+
+### v1.6 - 通知标志文件向上查找 + 全局控制 (In Progress)
+
+**Milestone Goal:** 修复 `.no-windows` / `.no-pushover` 在子目录中失效的问题，并支持 `~/.claude/` 全局通知控制
+
+#### Phase 26: Find-up Implementation
+**Goal**: 通知标志文件检测支持在父目录中向上查找，子目录中的 Claude Code 会话也能正确响应 `.no-xxx` 标志
+**Depends on**: Phase 25 (v1.5)
+**Requirements**: FIND-01, FIND-02
+**Success Criteria** (what must be TRUE):
+  1. 在项目子目录中运行 Claude Code 时，父目录中的 `.no-pushover` 文件能被正确检测到，Pushover 通知不发送
+  2. 在项目子目录中运行 Claude Code 时，父目录中的 `.no-windows` 文件能被正确检测到，Windows 系统通知不发送
+  3. `notify-attention.py` 中的检测逻辑与 `check_notification_flags()` 保持同步，行为一致
+  4. 当整个目录链中不存在 `.no-xxx` 文件时，通知正常发送，无性能影响
+**Plans**: TBD
+
+#### Phase 27: Global Control
+**Goal**: 用户可通过 `~/.claude/.no-xxx` 文件全局屏蔽所有项目的通知，无需逐项目配置
+**Depends on**: Phase 26
+**Requirements**: GLOB-01, GLOB-02
+**Success Criteria** (what must be TRUE):
+  1. 用户在 `~/.claude/` 目录创建 `.no-pushover` 文件后，所有项目的 Pushover 通知均被屏蔽
+  2. 用户在 `~/.claude/` 目录创建 `.no-windows` 文件后，所有项目的 Windows 系统通知均被屏蔽
+  3. 项目级 `.no-xxx` 文件优先于全局 `~/.claude/.no-xxx`，项目级存在时忽略全局设置
+  4. 无项目级文件时，全局 `~/.claude/.no-xxx` 作为回退生效
+**Plans**: TBD
+
+#### Phase 28: Diagnostics & Testing
+**Goal**: 诊断模式可见向上查找和全局控制结果，新增测试覆盖所有新查找场景
+**Depends on**: Phase 27
+**Requirements**: DIAG-01, TEST-01, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. 运行诊断模式时，输出中显示项目级 `.no-xxx` 文件的查找路径和结果（含向上遍历到的父目录路径）
+  2. 运行诊断模式时，输出中显示全局 `~/.claude/.no-xxx` 文件的检测结果
+  3. 测试覆盖父目录查找场景：文件在直接父目录、文件在更上层目录、整个目录链无文件
+  4. 测试覆盖全局查找场景：`~/.claude/.no-xxx` 存在、不存在、与项目级文件共存时的优先级
+**Plans**: TBD
+
+## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 26 -> 27 -> 28
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 26. Find-up Implementation | v1.6 | 0/? | Not started | - |
+| 27. Global Control | v1.6 | 0/? | Not started | - |
+| 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
+
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-03-30 — v1.5 shipped*
+*Last updated: 2026-04-01 — v1.6 roadmap created*

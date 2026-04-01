@@ -448,7 +448,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
 
     @patch('flags.Path')
     def test_return_structure_includes_paths(self, mock_path_class):
-        """Verify return dict has exactly 4 keys with correct types."""
+        """Verify return dict has exactly 6 keys with correct types."""
         mock_cwd = MagicMock()
         mock_parent = MagicMock()
         mock_cwd.parent = mock_parent
@@ -475,10 +475,11 @@ class TestCheckNotificationFlags(unittest.TestCase):
 
         result = check_notification_flags()
 
-        # Verify exactly 4 keys
+        # Verify exactly 6 keys (4 original + 2 global)
         self.assertEqual(set(result.keys()), {
             'pushover_disabled', 'windows_disabled',
-            'pushover_path', 'windows_path'
+            'pushover_path', 'windows_path',
+            'global_pushover_path', 'global_windows_path'
         })
 
         # Verify types
@@ -490,6 +491,223 @@ class TestCheckNotificationFlags(unittest.TestCase):
         # pushover_path should be the found mock, windows_path should be None
         self.assertEqual(result['pushover_path'], pushover_in_parent)
         self.assertIsNone(result['windows_path'])
+
+        # global fields should be None (no global flags set up)
+        self.assertIsNone(result['global_pushover_path'])
+        self.assertIsNone(result['global_windows_path'])
+
+    @patch('flags.Path')
+    def test_global_pushover_only(self, mock_path_class):
+        """Global ~/.claude/.no-pushover exists, no project-level flags -> pushover disabled."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        # Mock Path.home() -> ~/.claude/.no-pushover exists
+        mock_home = MagicMock()
+        mock_claude_dir = MagicMock()
+        mock_global_pushover = MagicMock()
+        mock_global_pushover.is_file.return_value = True
+        mock_global_windows = MagicMock()
+        mock_global_windows.is_file.return_value = False
+
+        def claude_dir_div(key):
+            if key == '.no-pushover':
+                return mock_global_pushover
+            if key == '.no-windows':
+                return mock_global_windows
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_home.__truediv__ = lambda self, key: mock_claude_dir
+        mock_path_class.home.return_value = mock_home
+
+        result = check_notification_flags()
+
+        self.assertTrue(result['pushover_disabled'])
+        self.assertEqual(result['global_pushover_path'], mock_global_pushover)
+        self.assertIsNone(result['pushover_path'])
+        self.assertFalse(result['windows_disabled'])
+        self.assertIsNone(result['global_windows_path'])
+
+    @patch('flags.Path')
+    def test_global_windows_only(self, mock_path_class):
+        """Global ~/.claude/.no-windows exists, no project-level flags -> windows disabled."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        # Mock Path.home() -> ~/.claude/.no-windows exists
+        mock_home = MagicMock()
+        mock_claude_dir = MagicMock()
+        mock_global_pushover = MagicMock()
+        mock_global_pushover.is_file.return_value = False
+        mock_global_windows = MagicMock()
+        mock_global_windows.is_file.return_value = True
+
+        def claude_dir_div(key):
+            if key == '.no-pushover':
+                return mock_global_pushover
+            if key == '.no-windows':
+                return mock_global_windows
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_home.__truediv__ = lambda self, key: mock_claude_dir
+        mock_path_class.home.return_value = mock_home
+
+        result = check_notification_flags()
+
+        self.assertTrue(result['windows_disabled'])
+        self.assertEqual(result['global_windows_path'], mock_global_windows)
+        self.assertIsNone(result['windows_path'])
+        self.assertFalse(result['pushover_disabled'])
+        self.assertIsNone(result['global_pushover_path'])
+
+    @patch('flags.Path')
+    def test_project_level_takes_priority(self, mock_path_class):
+        """Project-level .no-pushover AND global .no-pushover -> project-level wins."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        pushover_in_parent = MagicMock()
+        pushover_in_parent.is_file.return_value = True
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            if key == '.no-pushover':
+                return pushover_in_parent
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        # Global also has .no-pushover, but project-level already disabled it
+        mock_home = MagicMock()
+        mock_claude_dir = MagicMock()
+        mock_global_pushover = MagicMock()
+        mock_global_pushover.is_file.return_value = True
+
+        def claude_dir_div(key):
+            if key == '.no-pushover':
+                return mock_global_pushover
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_home.__truediv__ = lambda self, key: mock_claude_dir
+        mock_path_class.home.return_value = mock_home
+
+        result = check_notification_flags()
+
+        self.assertTrue(result['pushover_disabled'])
+        # Project-level path, not global
+        self.assertEqual(result['pushover_path'], pushover_in_parent)
+        # Global not checked because project-level already disabled
+        self.assertIsNone(result['global_pushover_path'])
+
+    @patch('flags.Path')
+    def test_mixed_project_and_global(self, mock_path_class):
+        """Project-level .no-pushover + global .no-windows -> mixed sources."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        pushover_in_parent = MagicMock()
+        pushover_in_parent.is_file.return_value = True
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            if key == '.no-pushover':
+                return pushover_in_parent
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        # Global has .no-windows only
+        mock_home = MagicMock()
+        mock_claude_dir = MagicMock()
+        mock_global_pushover = MagicMock()
+        mock_global_pushover.is_file.return_value = False
+        mock_global_windows = MagicMock()
+        mock_global_windows.is_file.return_value = True
+
+        def claude_dir_div(key):
+            if key == '.no-pushover':
+                return mock_global_pushover
+            if key == '.no-windows':
+                return mock_global_windows
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_home.__truediv__ = lambda self, key: mock_claude_dir
+        mock_path_class.home.return_value = mock_home
+
+        result = check_notification_flags()
+
+        # Pushover from project level
+        self.assertTrue(result['pushover_disabled'])
+        self.assertEqual(result['pushover_path'], pushover_in_parent)
+        self.assertIsNone(result['global_pushover_path'])
+        # Windows from global level
+        self.assertTrue(result['windows_disabled'])
+        self.assertIsNone(result['windows_path'])
+        self.assertEqual(result['global_windows_path'], mock_global_windows)
 
 
 if __name__ == '__main__':

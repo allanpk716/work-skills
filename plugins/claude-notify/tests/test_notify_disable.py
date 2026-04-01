@@ -111,6 +111,58 @@ class TestNotifyDisable:
         captured = capsys.readouterr()
         assert "错误" in captured.out or "Error" in captured.out
 
+    def test_disable_global_pushover(self, capsys, tmp_path):
+        """Test disabling pushover globally creates ~/.claude/.no-pushover."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-disable.py", "pushover", "--global"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "Pushover 通知已禁用" in captured.out
+        assert (global_dir / ".no-pushover").exists()
+
+    def test_disable_global_already_disabled(self, capsys, tmp_path):
+        """Test disabling globally when already disabled."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+        (global_dir / ".no-pushover").touch()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-disable.py", "pushover", "--global"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "已处于禁用状态" in captured.out
+
+    def test_disable_global_windows(self, capsys, tmp_path):
+        """Test disabling windows globally creates ~/.claude/.no-windows."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-disable.py", "windows", "--global"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "Windows 通知已禁用" in captured.out
+        assert (global_dir / ".no-windows").exists()
+
+    def test_disable_global_flag_position(self, capsys, tmp_path):
+        """Test --global before channel name works the same."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-disable.py", "--global", "pushover"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "Pushover 通知已禁用" in captured.out
+        assert (global_dir / ".no-pushover").exists()
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

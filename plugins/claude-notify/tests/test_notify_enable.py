@@ -114,6 +114,47 @@ class TestNotifyEnable:
         captured = capsys.readouterr()
         assert "错误" in captured.out or "Error" in captured.out
 
+    def test_enable_global_pushover(self, capsys, tmp_path):
+        """Test enabling pushover globally removes ~/.claude/.no-pushover."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+        (global_dir / ".no-pushover").touch()
+        assert (global_dir / ".no-pushover").exists()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-enable.py", "pushover", "--global"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "已启用" in captured.out
+        assert not (global_dir / ".no-pushover").exists()
+
+    def test_enable_global_already_enabled(self, capsys, tmp_path):
+        """Test enabling globally when no global flag exists."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-enable.py", "pushover", "--global"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "已处于启用状态" in captured.out
+
+    def test_enable_global_flag_position(self, capsys, tmp_path):
+        """Test --global before channel name works identically."""
+        global_dir = tmp_path / ".claude"
+        global_dir.mkdir()
+        (global_dir / ".no-pushover").touch()
+
+        with patch('pathlib.Path.home', return_value=tmp_path):
+            sys.argv = ["notify-enable.py", "--global", "pushover"]
+            main()
+
+        captured = capsys.readouterr()
+        assert "已启用" in captured.out
+        assert not (global_dir / ".no-pushover").exists()
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

@@ -38,8 +38,10 @@ def check_notification_flags() -> Dict:
         dict: {
             'pushover_disabled': bool,
             'windows_disabled': bool,
-            'pushover_path': Optional[Path],  # Path to found .no-pushover
-            'windows_path': Optional[Path]     # Path to found .no-windows
+            'pushover_path': Optional[Path],          # Path to found .no-pushover (project-level)
+            'windows_path': Optional[Path],           # Path to found .no-windows (project-level)
+            'global_pushover_path': Optional[Path],   # Path to ~/.claude/.no-pushover if global flag found
+            'global_windows_path': Optional[Path]     # Path to ~/.claude/.no-windows if global flag found
         }
     """
     current = Path.cwd()
@@ -96,9 +98,30 @@ def check_notification_flags() -> Dict:
     if windows_disabled:
         logger.info(f"Windows disabled by {windows_path}")
 
+    # Global fallback: check ~/.claude/.no-xxx for channels not found at project level (D-11)
+    global_dir = Path.home() / '.claude'
+    global_pushover_path = None
+    global_windows_path = None
+
+    if not pushover_disabled:
+        global_flag = global_dir / '.no-pushover'
+        if global_flag.is_file():
+            pushover_disabled = True
+            global_pushover_path = global_flag
+            logger.info(f"Pushover disabled by global flag {global_flag}")
+
+    if not windows_disabled:
+        global_flag = global_dir / '.no-windows'
+        if global_flag.is_file():
+            windows_disabled = True
+            global_windows_path = global_flag
+            logger.info(f"Windows disabled by global flag {global_flag}")
+
     return {
         'pushover_disabled': pushover_disabled,
         'windows_disabled': windows_disabled,
         'pushover_path': pushover_path,
         'windows_path': windows_path,
+        'global_pushover_path': global_pushover_path,
+        'global_windows_path': global_windows_path,
     }

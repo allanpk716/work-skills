@@ -26,6 +26,25 @@ from flags import check_notification_flags
 class TestCheckNotificationFlags(unittest.TestCase):
     """Test flags.py check_notification_flags() with upward traversal."""
 
+    def _setup_safe_global_home(self, mock_path_class):
+        """Configure mock Path.home() so global fallback finds no flags.
+
+        Without this, mock_path_class.home() returns a generic MagicMock
+        whose chained .is_file() returns a truthy MagicMock, causing
+        existing tests to falsely detect global flags.
+        """
+        mock_home = MagicMock()
+        mock_claude_dir = MagicMock()
+
+        def claude_dir_div(self, key):
+            m = MagicMock()
+            m.is_file.return_value = False
+            return m
+
+        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_home.__truediv__ = lambda self, key: mock_claude_dir
+        mock_path_class.home.return_value = mock_home
+
     @patch('flags.Path')
     def test_no_flags_no_claude_md(self, mock_path_class):
         """CWD has no flags, parent has none, filesystem root stops traversal."""
@@ -47,6 +66,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -81,6 +101,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -115,6 +136,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -153,6 +175,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -191,6 +214,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -236,6 +260,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_level1.__truediv__ = level1_div
         mock_level2.__truediv__ = level2_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -270,6 +295,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -317,6 +343,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_parent.__truediv__ = parent_div
         mock_grandparent.__truediv__ = grandparent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -368,6 +395,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_parent.__truediv__ = parent_div
         mock_grandparent.__truediv__ = grandparent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -417,6 +445,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
                 level.__truediv__ = make_empty_div(i)
 
         mock_path_class.cwd.return_value = levels[0]
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -438,6 +467,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
 
         mock_root.__truediv__ = root_div
         mock_path_class.cwd.return_value = mock_root
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -472,6 +502,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_cwd.__truediv__ = cwd_div
         mock_parent.__truediv__ = parent_div
         mock_path_class.cwd.return_value = mock_cwd
+        self._setup_safe_global_home(mock_path_class)
 
         result = check_notification_flags()
 
@@ -526,7 +557,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_global_windows = MagicMock()
         mock_global_windows.is_file.return_value = False
 
-        def claude_dir_div(key):
+        def claude_dir_div(self, key):
             if key == '.no-pushover':
                 return mock_global_pushover
             if key == '.no-windows':
@@ -577,7 +608,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_global_windows = MagicMock()
         mock_global_windows.is_file.return_value = True
 
-        def claude_dir_div(key):
+        def claude_dir_div_windows(self, key):
             if key == '.no-pushover':
                 return mock_global_pushover
             if key == '.no-windows':
@@ -586,7 +617,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
             m.is_file.return_value = False
             return m
 
-        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_claude_dir.__truediv__ = claude_dir_div_windows
         mock_home.__truediv__ = lambda self, key: mock_claude_dir
         mock_path_class.home.return_value = mock_home
 
@@ -631,14 +662,14 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_global_pushover = MagicMock()
         mock_global_pushover.is_file.return_value = True
 
-        def claude_dir_div(key):
+        def claude_dir_div_priority(self, key):
             if key == '.no-pushover':
                 return mock_global_pushover
             m = MagicMock()
             m.is_file.return_value = False
             return m
 
-        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_claude_dir.__truediv__ = claude_dir_div_priority
         mock_home.__truediv__ = lambda self, key: mock_claude_dir
         mock_path_class.home.return_value = mock_home
 
@@ -685,7 +716,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
         mock_global_windows = MagicMock()
         mock_global_windows.is_file.return_value = True
 
-        def claude_dir_div(key):
+        def claude_dir_div_mixed(self, key):
             if key == '.no-pushover':
                 return mock_global_pushover
             if key == '.no-windows':
@@ -694,7 +725,7 @@ class TestCheckNotificationFlags(unittest.TestCase):
             m.is_file.return_value = False
             return m
 
-        mock_claude_dir.__truediv__ = claude_dir_div
+        mock_claude_dir.__truediv__ = claude_dir_div_mixed
         mock_home.__truediv__ = lambda self, key: mock_claude_dir
         mock_path_class.home.return_value = mock_home
 

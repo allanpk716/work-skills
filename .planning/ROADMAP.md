@@ -91,7 +91,11 @@
   2. 在项目子目录中运行 Claude Code 时，父目录中的 `.no-windows` 文件能被正确检测到，Windows 系统通知不发送
   3. `notify-attention.py` 中的检测逻辑与 `check_notification_flags()` 保持同步，行为一致
   4. 当整个目录链中不存在 `.no-xxx` 文件时，通知正常发送，无性能影响
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — TDD: Create shared flags.py module with find-up traversal
+- [ ] 26-02-PLAN.md — Integrate shared module into notify.py, notify-attention.py, and installer
 
 #### Phase 27: Global Control
 **Goal**: 用户可通过 `~/.claude/.no-xxx` 文件全局屏蔽所有项目的通知，无需逐项目配置
@@ -122,10 +126,10 @@ Phases execute in numeric order: 26 -> 27 -> 28
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 26. Find-up Implementation | v1.6 | 0/? | Not started | - |
+| 26. Find-up Implementation | v1.6 | 0/2 | Planning complete | - |
 | 27. Global Control | v1.6 | 0/? | Not started | - |
 | 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-01 — v1.6 roadmap created*
+*Last updated: 2026-04-01 — Phase 26 planned (2 plans, 2 waves)*

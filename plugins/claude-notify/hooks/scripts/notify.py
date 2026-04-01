@@ -18,6 +18,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from flags import check_notification_flags
 
 # Configure logging with PID isolation for concurrent safety
 log_dir = Path(os.environ.get('APPDATA', '.')) / 'claude-notify' / 'logs'
@@ -91,29 +92,6 @@ def get_claude_summary(project_name):
     except Exception as e:
         logger.error(f"Failed to get Claude summary: {e}")
         return fallback_message
-
-
-def check_notification_flags():
-    """
-    Check for project-level notification disable flags.
-
-    Returns:
-        dict: {'pushover_disabled': bool, 'windows_disabled': bool}
-    """
-    project_dir = Path.cwd()
-
-    flags = {
-        'pushover_disabled': (project_dir / '.no-pushover').is_file(),
-        'windows_disabled': (project_dir / '.no-windows').is_file()
-    }
-
-    if flags['pushover_disabled']:
-        logger.info("Pushover notifications disabled by .no-pushover file")
-
-    if flags['windows_disabled']:
-        logger.info("Windows notifications disabled by .no-windows file")
-
-    return flags
 
 
 def send_pushover_notification(title, message):

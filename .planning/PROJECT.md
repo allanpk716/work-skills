@@ -73,12 +73,12 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-**v1.6 - 通知标志文件向上查找 + 全局控制 (in progress):**
+**v1.6 - 通知标志文件向上查找 + 全局控制 (shipped 2026-04-01):**
 - ✓ 向上遍历父目录查找 `.no-xxx` 文件 - Phase 26
 - ✓ `~/.claude/.no-xxx` 全局通知控制 - Phase 27
 - ✓ `notify-enable`/`notify-disable` 支持 `--global` 参数 - Phase 27
 - ✓ `notify-status` 显示全局标志状态 - Phase 27
-- 诊断模式显示查找结果 — Phase 28
+- ✓ 诊断模式显示查找结果 - Phase 28
 
 ### Out of Scope
 

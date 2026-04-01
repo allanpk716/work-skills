@@ -17,9 +17,9 @@
 
 ### 诊断与测试 (Diagnostics & Testing)
 
-- [ ] **DIAG-01**: `diagnose_configuration()` 显示项目级和全局级的 `.no-xxx` 文件检测结果
-- [ ] **TEST-01**: 新增测试覆盖父目录查找场景（文件在父目录、文件在更上层、无文件）
-- [ ] **TEST-02**: 新增测试覆盖全局 `~/.claude/` 查找场景
+- [x] **DIAG-01**: `diagnose_configuration()` 显示项目级和全局级的 `.no-xxx` 文件检测结果
+- [x] **TEST-01**: 新增测试覆盖父目录查找场景（文件在父目录、文件在更上层、无文件）
+- [x] **TEST-02**: 新增测试覆盖全局 `~/.claude/` 查找场景
 
 ## Out of Scope
 
@@ -37,9 +37,9 @@
 | FIND-02 | Phase 26 | Complete |
 | GLOB-01 | Phase 27 | Complete |
 | GLOB-02 | Phase 27 | Complete |
-| DIAG-01 | Phase 28 | Pending |
-| TEST-01 | Phase 28 | Pending |
-| TEST-02 | Phase 28 | Pending |
+| DIAG-01 | Phase 28 | Complete |
+| TEST-01 | Phase 28 | Complete |
+| TEST-02 | Phase 28 | Complete |
 
 **Coverage:**
 - v1.6 requirements: 7 total

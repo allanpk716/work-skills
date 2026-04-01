@@ -124,7 +124,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 28-01-PLAN.md — TDD: Update diagnose_configuration() to use check_notification_flags() and create test_diagnose.py
+- [x] 28-01-PLAN.md — TDD: Update diagnose_configuration() to use check_notification_flags() and create test_diagnose.py
 
 ## Progress
 
@@ -135,7 +135,7 @@ Phases execute in numeric order: 26 -> 27 -> 28
 |-------|-----------|----------------|--------|-----------|
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete    | 2026-04-01 |
 | 27. Global Control | v1.6 | 2/2 | Complete    | 2026-04-01 |
-| 28. Diagnostics & Testing | v1.6 | 0/1 | Not started | - |
+| 28. Diagnostics & Testing | v1.6 | 1/1 | Complete   | 2026-04-01 |
 
 ---
 *Roadmap created: 2026-02-25*

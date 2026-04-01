@@ -121,7 +121,10 @@ Plans:
   2. 运行诊断模式时，输出中显示全局 `~/.claude/.no-xxx` 文件的检测结果
   3. 测试覆盖父目录查找场景：文件在直接父目录、文件在更上层目录、整个目录链无文件
   4. 测试覆盖全局查找场景：`~/.claude/.no-xxx` 存在、不存在、与项目级文件共存时的优先级
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 28-01-PLAN.md — TDD: Update diagnose_configuration() to use check_notification_flags() and create test_diagnose.py
 
 ## Progress
 
@@ -132,8 +135,8 @@ Phases execute in numeric order: 26 -> 27 -> 28
 |-------|-----------|----------------|--------|-----------|
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete    | 2026-04-01 |
 | 27. Global Control | v1.6 | 2/2 | Complete    | 2026-04-01 |
-| 28. Diagnostics & Testing | v1.6 | 0/? | Not started | - |
+| 28. Diagnostics & Testing | v1.6 | 0/1 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-01 — Phase 27 planned (2 plans, 1 wave)*
+*Last updated: 2026-04-01 — Phase 28 planned (1 plan, TDD)*

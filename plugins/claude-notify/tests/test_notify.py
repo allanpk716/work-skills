@@ -27,19 +27,19 @@ class TestNotify(unittest.TestCase):
 
     def test_get_project_name_success(self):
         """Test project name extraction from current directory."""
-        with patch('os.getcwd', return_value='/path/to/my-project'):
+        with patch('flags.find_project_root', return_value=Path('/path/to/my-project')):
             result = get_project_name()
             self.assertEqual(result, 'my-project')
 
     def test_get_project_name_with_spaces(self):
         """Test project name with spaces in path."""
-        with patch('os.getcwd', return_value='C:/Users/Test/My Project'):
+        with patch('flags.find_project_root', return_value=Path('C:/Users/Test/My Project')):
             result = get_project_name()
             self.assertEqual(result, 'My Project')
 
     def test_get_project_name_with_chinese(self):
         """Test project name with Chinese characters."""
-        with patch('os.getcwd', return_value='C:/Users/Test/测试项目'):
+        with patch('flags.find_project_root', return_value=Path('C:/Users/Test/测试项目')):
             result = get_project_name()
             self.assertEqual(result, '测试项目')
 

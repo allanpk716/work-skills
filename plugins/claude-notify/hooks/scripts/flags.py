@@ -125,3 +125,58 @@ def check_notification_flags() -> Dict:
         'global_pushover_path': global_pushover_path,
         'global_windows_path': global_windows_path,
     }
+
+
+def find_project_root():
+    """
+    Find the project root directory by searching upward from CWD.
+
+    Looks for .git directory or CLAUDE.md file as project root markers.
+    Returns the first (closest) directory containing either marker.
+
+    Traversal stops when:
+    - .git directory or CLAUDE.md file is found
+    - Filesystem root is reached (parent == self)
+    - Maximum traversal depth (10) exceeded
+
+    Returns:
+        Optional[Path]: The project root directory, or None if no markers found
+    """
+    current = Path.cwd()
+    depth = 0
+    max_depth = 10
+
+    while depth <= max_depth:
+        # Check for .git directory (standard git repo)
+        if (current / '.git').is_dir():
+            return current
+
+        # Check for CLAUDE.md file (Claude Code project marker)
+        if (current / 'CLAUDE.md').is_file():
+            return current
+
+        # Move up to parent directory
+        parent = current.parent
+        if parent == current:  # filesystem root
+            break
+        current = parent
+        depth += 1
+
+    return None
+
+
+def get_project_name():
+    """
+    Get the current project name by finding the project root directory.
+
+    Returns the directory name of the project root. Falls back to
+    the current working directory's basename if no project root
+    markers (.git or CLAUDE.md) are found.
+
+    Returns:
+        str: Project name (directory name)
+    """
+    root = find_project_root()
+    if root is not None:
+        return root.name
+    return Path.cwd().name

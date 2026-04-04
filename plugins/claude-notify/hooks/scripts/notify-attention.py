@@ -18,7 +18,7 @@ import xml.sax.saxutils
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from flags import check_notification_flags
+from flags import check_notification_flags, get_project_name
 
 # Configure logging
 log_dir = Path(os.environ.get('APPDATA', '.')) / 'claude-notify' / 'logs'
@@ -33,22 +33,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-
-def get_project_name():
-    """
-    Get the current project name from the working directory.
-
-    Returns:
-        str: Project name (directory name)
-    """
-    try:
-        project_name = os.path.basename(os.getcwd())
-        logger.info(f"Project name: {project_name}")
-        return project_name
-    except Exception as e:
-        logger.error(f"Failed to get project name: {e}")
-        return "Claude Code"
 
 
 def send_pushover_notification(title, message, priority=1):

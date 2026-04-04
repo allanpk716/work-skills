@@ -18,7 +18,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from flags import check_notification_flags
+from flags import check_notification_flags, get_project_name
 
 # Configure logging with PID isolation for concurrent safety
 log_dir = Path(os.environ.get('APPDATA', '.')) / 'claude-notify' / 'logs'
@@ -33,22 +33,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-
-def get_project_name():
-    """
-    Get the current project name from the working directory.
-
-    Returns:
-        str: Project name (directory name)
-    """
-    try:
-        project_name = os.path.basename(os.getcwd())
-        logger.info(f"Project name: {project_name}")
-        return project_name
-    except Exception as e:
-        logger.error(f"Failed to get project name: {e}")
-        return "Claude Code"
 
 
 def get_claude_summary(project_name):

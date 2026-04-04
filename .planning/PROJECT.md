@@ -81,13 +81,12 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 诊断模式显示查找结果和来源标注 - Phase 28
 - ✓ 72 个 Python 测试全部通过 - Phase 28
 
-### Active
-
-**v1.7 - 通知项目名称智能识别:**
-- 向上查找项目根目录（以 `.git` 或 `CLAUDE.md` 为标记）
-- 用项目根目录的文件夹名称替代 `os.getcwd()` 的 basename
-- 在 `notify.py` 和 `notify-attention.py` 中使用新方法
-- 复用/扩展 flags.py 的向上遍历逻辑（DRY）
+**v1.7 - 通知项目名称智能识别 (shipped 2026-04-04):**
+- ✓ 向上查找项目根目录 — find_project_root() 以 `.git` 或 `CLAUDE.md` 为标记 - Phase 29
+- ✓ get_project_name() 用向上查找替代 os.getcwd() basename - Phase 29
+- ✓ notify.py 和 notify-attention.py 使用 flags.py 的 get_project_name() - Phase 30
+- ✓ 复用 flags.py 的向上遍历逻辑，保持 DRY - Phase 29
+- ✓ 38 个测试全部通过（9 test_notify + 29 test_flags）- Phase 30
 
 ### Out of Scope
 
@@ -121,13 +120,13 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 - 测试覆盖: 101 个 Python 测试 (29 test_flags + 72 其他)
 
-**当前状态 (v1.7 规划中):**
-- 7 个里程碑已交付 (v1.0 - v1.6)
-- 47 个计划全部完成
-- v1.7 通知项目名称智能识别 - Phase 29 complete, Phase 30 待执行
-- 测试覆盖: 101 个 Python 测试 (72 existing + 29 test_flags)
+**当前状态 (v1.7 shipped 2026-04-04):**
+- 8 个里程碑已交付 (v1.0 - v1.7)
+- 49 个计划全部完成
+- v1.7 通知项目名称智能识别 — Phase 29 + 30 全部完成
+- 测试覆盖: 38 个 Python 测试 (9 test_notify + 29 test_flags)
 
-**v1.7 - 通知项目名称智能识别 (Phase 29 complete):**
+- v1.7 完成了通知项目名称智能识别，子目录执行通知时显示正确的项目名
 
 ## Key Decisions
 
@@ -181,4 +180,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-04 — Phase 29 complete (find-up-project-root-logic)*
+*Last updated: 2026-04-04 — Phase 30 complete (v1.7 shipped)*

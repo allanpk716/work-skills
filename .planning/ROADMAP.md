@@ -113,11 +113,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. 在项目子目录中触发通知时,通知中显示的是项目根目录名称(如 "work-skills"),而非子目录名
   2. notify.py 和 notify-attention.py 都使用相同的查找逻辑,行为一致
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 30-01: Replace get_project_name() in notify.py and notify-attention.py with new find-up logic
-- [ ] 30-02: End-to-end verification — trigger notifications from subdirectory and confirm correct project name
+- [ ] 30-01-PLAN.md — Migrate get_project_name() from local implementations to flags.py import in both scripts, update test mocks
 
 ## Progress
 
@@ -127,8 +126,8 @@ Plans:
 | 27. Global Control | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 28. Diagnostics & Testing | v1.6 | 1/1 | Complete | 2026-04-01 |
 | 29. Find-up Project Root Logic | v1.7 | 2/2 | Complete    | 2026-04-04 |
-| 30. Integration into Notification Scripts | v1.7 | 0/2 | Not started | - |
+| 30. Integration into Notification Scripts | v1.7 | 0/1 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-04 — Phase 29 plans created*
+*Last updated: 2026-04-04 — Phase 30 plan created*

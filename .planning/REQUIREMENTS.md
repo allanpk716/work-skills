@@ -7,15 +7,15 @@
 
 ### 项目根目录检测
 
-- [ ] **PROJ-01**: `get_project_name()` 通过向上查找 `.git` 目录或 `CLAUDE.md` 文件定位项目根目录
-- [ ] **PROJ-02**: 向上查找逻辑复用 flags.py 中的遍历模式（最大深度、根目录停止、CLAUDE.md 标记）
-- [ ] **PROJ-03**: 找到项目根目录时返回该目录的文件夹名称作为项目名
+- [x] **PROJ-01**: `get_project_name()` 通过向上查找 `.git` 目录或 `CLAUDE.md` 文件定位项目根目录
+- [x] **PROJ-02**: 向上查找逻辑复用 flags.py 中的遍历模式（最大深度、根目录停止、CLAUDE.md 标记）
+- [x] **PROJ-03**: 找到项目根目录时返回该目录的文件夹名称作为项目名
 
 ### 集成
 
 - [ ] **PROJ-04**: `notify.py` 的 `get_project_name()` 使用新的查找逻辑
 - [ ] **PROJ-05**: `notify-attention.py` 的 `get_project_name()` 使用新的查找逻辑
-- [ ] **PROJ-06**: 所有查找失败时回退到现有的 `os.getcwd()` 行为
+- [x] **PROJ-06**: 所有查找失败时回退到现有的 `os.getcwd()` 行为
 
 ### 测试
 
@@ -33,12 +33,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROJ-01 | Phase 29 | Pending |
-| PROJ-02 | Phase 29 | Pending |
-| PROJ-03 | Phase 29 | Pending |
+| PROJ-01 | Phase 29 | Complete |
+| PROJ-02 | Phase 29 | Complete |
+| PROJ-03 | Phase 29 | Complete |
 | PROJ-04 | Phase 30 | Pending |
 | PROJ-05 | Phase 30 | Pending |
-| PROJ-06 | Phase 29 | Pending |
+| PROJ-06 | Phase 29 | Complete |
 | PROJ-07 | Phase 29 | Complete |
 
 **Coverage:**

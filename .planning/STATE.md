@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: - 通知项目名称智能识别
-status: executing
-last_updated: "2026-04-04T06:52:30.242Z"
+status: verifying
+last_updated: "2026-04-04T06:56:05.923Z"
 last_activity: 2026-04-04
 progress:
   total_phases: 2
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-04-04)
 
 ## Current Position
 
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 Phase: 29 (find-up-project-root-logic) — EXECUTING
 Plan: 2 of 2
 Last activity: 2026-04-04
@@ -64,6 +64,7 @@ Recent decisions affecting current work:
 
 - v1.6: 共享 flags.py 模块用于向上遍历,现在 v1.7 复用同一遍历模式
 - [Phase 29]: TestFindProjectRoot uses @patch('flags.Path') matching existing test pattern; TestGetProjectName uses @patch('flags.find_project_root') for isolation — Consistency with 16 existing tests using same mock pattern
+- [Phase 29]: find_project_root() and get_project_name() added to flags.py with upward traversal for .git dir and CLAUDE.md file detection, 29 tests all green
 
 ### Pending Todos
 

@@ -100,11 +100,11 @@
   3. 在没有 `.git` 或 `CLAUDE.md` 的目录中调用,回退到 `os.getcwd()` 的 basename
   4. 遍历逻辑复用 flags.py 的模式:最大深度限制、遇到 CLAUDE.md 标记时停止、到达文件系统根时停止
   5. TDD 测试覆盖子目录、嵌套项目、无标记回退、根目录停止等全部场景
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 29-01: TDD tests for find_project_root and get_project_name
-- [ ] 29-02: Implement find_project_root in flags.py (or shared module) + get_project_name
+- [ ] 29-01-PLAN.md — TDD RED phase: write 13 test cases for find_project_root and get_project_name
+- [ ] 29-02-PLAN.md — TDD GREEN phase: implement find_project_root() and get_project_name() in flags.py
 
 #### Phase 30: Integration into Notification Scripts
 **Goal**: notify.py 和 notify-attention.py 使用新的项目名称查找逻辑,在子目录执行时显示正确的项目名
@@ -131,4 +131,4 @@ Plans:
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-04 — v1.7 roadmap created*
+*Last updated: 2026-04-04 — Phase 29 plans created*

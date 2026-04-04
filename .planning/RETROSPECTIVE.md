@@ -2,6 +2,82 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v1.7 — 通知项目名称智能识别
+
+**Shipped:** 2026-04-04
+**Phases:** 2 | **Plans:** 3 | **Sessions:** 1
+
+### What Was Built
+- find_project_root() upward traversal detecting .git directories and CLAUDE.md files
+- get_project_name() returning directory name or cwd basename fallback
+- 13 TDD test cases (9 find_project_root + 4 get_project_name) using mock-based Path traversal
+- Migrated both notification scripts (notify.py, notify-attention.py) from local os.getcwd-based implementations to shared flags.py module
+- Total: 85 tests passing (9 test_notify + 29 test_flags + 47 others)
+
+### What Worked
+- TDD RED→GREEN flow was seamless — 13 tests defined behavioral contract, implementation made them all pass in 1 minute
+- Reusing flags.py upward traversal pattern from v1.6 (Phase 26) reduced design decisions to near-zero
+- Single-session completion (5 min execution time) — tightest scope milestone yet
+- No deviations from plan — all three plans executed exactly as written
+
+### What Was Inefficient
+- None identified — milestone was optimally scoped at 2 phases / 3 plans
+
+### Patterns Established
+- Dual marker detection: .git (is_dir) checked first, CLAUDE.md (is_file) second — covers Git and non-Git projects
+- Single source of truth: flags.py now owns all shared notification logic (flag checking + project name detection)
+- Mock setup convention: both is_dir and is_file set to False on all mock paths to prevent MagicMock truthiness
+
+### Key Lessons
+1. Building on established patterns (v1.6 upward traversal) enables sub-minute implementation phases
+2. TDD contract-first approach eliminates ambiguity — all 13 tests passed without modification
+3. Milestones that reuse infrastructure from previous milestones are dramatically faster
+
+### Cost Observations
+- Model mix: ~95% sonnet, ~5% opus
+- Sessions: 1
+- Notable: Fastest execution time — ~5 min total, demonstrating compound returns on infrastructure investment (v1.6 → v1.7)
+
+---
+
+## Milestone: v1.6 — 通知标志文件向上查找 + 全局控制
+
+**Shipped:** 2026-04-01
+**Phases:** 3 | **Plans:** 5 | **Sessions:** 1
+
+### What Was Built
+- Shared flags.py module with upward directory traversal for .no-xxx detection
+- Global ~/.claude/.no-xxx fallback detection with project-level priority
+- --global flag for notify-enable/disable commands
+- notify-status showing project-level vs global source annotation
+- diagnose_configuration() updated with source labels
+- 72 Python tests all passing
+
+### What Was Worked
+- 3-phase split (find-up → global → diagnostics) was clean and logical
+- TDD for shared module caught issues early — all tests stable
+- Installer updated to deploy flags.py alongside scripts
+
+### What Was Inefficient
+- None identified — milestone was well-scoped
+
+### Patterns Established
+- Shared flags.py as notification infrastructure module
+- 6-key return dict for separating project-level and global-level path info
+- Per-channel independence in flag checking
+
+### Key Lessons
+1. Shared modules (flags.py) enable DRY and become the foundation for future features (v1.7 proves this)
+2. Project-level vs global-level priority is a clean abstraction for file-based configuration
+3. Diagnostic mode should use the same data source as production code, not duplicate logic
+
+### Cost Observations
+- Model mix: ~90% sonnet, ~10% opus
+- Sessions: 1
+- Notable: 5 plans in 1 session, establishing flags.py infrastructure paid off immediately in v1.7
+
+---
+
 ## Milestone: v1.5 — NPX 卸载功能
 
 **Shipped:** 2026-03-30
@@ -132,6 +208,8 @@
 | v1.3 | 2 | 2 | Tight scope, fast delivery, audit-first |
 | v1.4 | 1 | 2 | Single-session ship, structural fix over code fix |
 | v1.5 | 2 | 2 | Uninstall flow, fault-tolerant removal, auto-advance |
+| v1.6 | 1 | 3 | Shared flags.py, global control, upward traversal infrastructure |
+| v1.7 | 1 | 2 | TDD project root detection, fastest execution (~5 min) |
 
 ### Cumulative Quality
 
@@ -141,6 +219,8 @@
 | v1.3 | 163+ | Full | 0 new deps |
 | v1.4 | 163+ | Full | 0 new deps (verification only) |
 | v1.5 | 220+ | Full | 0 new deps (57 uninstall tests) |
+| v1.6 | 72 Python | Full | 0 new deps (shared flags.py) |
+| v1.7 | 85 Python | Full | 0 new deps (38 notification tests) |
 
 ### Top Lessons (Verified Across Milestones)
 

@@ -1,5 +1,17 @@
 # Milestones
 
+## v1.7 通知项目名称智能识别 (Shipped: 2026-04-04)
+
+**Phases completed:** 2 phases, 3 plans, 3 tasks
+
+**Key accomplishments:**
+
+- TDD RED phase: 13 failing tests defining behavioral contract for find_project_root() and get_project_name() with mock-based Path traversal
+- Upward-traversal find_project_root() detecting .git directories and CLAUDE.md files, with get_project_name() returning directory name or cwd basename fallback
+- Migrated get_project_name() from local os.getcwd-based implementations to shared flags.py upward-traversal, fixing subdirectory name display (e.g., "scripts" -> "work-skills")
+
+---
+
 ## v1.6 通知标志文件向上查找 + 全局控制 (Shipped: 2026-04-01)
 
 **Phases completed:** 3 phases, 5 plans, 11 tasks

@@ -161,6 +161,9 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 6-key 返回字典 | 分离项目级和全局级路径信息 | ✓ Validated (v1.6) |
 | --global 灵活参数解析 | 支持 --global 在任意位置 | ✓ Validated (v1.6) |
 | 诊断模式使用 check_notification_flags() | 统一数据源,显示来源标注 | ✓ Validated (v1.6) |
+| Dual marker detection (.git + CLAUDE.md) | 向上遍历时同时检测两种标记,覆盖无 Git 的项目 | ✓ Validated (v1.7) |
+| flags.py 作为项目名称 single source of truth | 消除通知脚本中的重复实现,DRY 原则 | ✓ Validated (v1.7) |
+| TDD RED→GREEN for find_project_root | 先定义测试契约,再实现功能 | ✓ Validated (v1.7) |
 
 ## Evolution
 

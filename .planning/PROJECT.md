@@ -119,12 +119,15 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript (CJS)
 - 依赖工具: Git, TortoiseGit/PuTTY, Node.js
 - 分发方式: NPX 安装器 + Claude Code 插件市场
-- 测试覆盖: 72 个 Python 测试
+- 测试覆盖: 101 个 Python 测试 (29 test_flags + 72 其他)
 
 **当前状态 (v1.7 规划中):**
 - 7 个里程碑已交付 (v1.0 - v1.6)
 - 47 个计划全部完成
-- v1.7 通知项目名称智能识别 - 规划中
+- v1.7 通知项目名称智能识别 - Phase 29 complete, Phase 30 待执行
+- 测试覆盖: 101 个 Python 测试 (72 existing + 29 test_flags)
+
+**v1.7 - 通知项目名称智能识别 (Phase 29 complete):**
 
 ## Key Decisions
 
@@ -178,4 +181,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-04 — v1.7 milestone started*
+*Last updated: 2026-04-04 — Phase 29 complete (find-up-project-root-logic)*

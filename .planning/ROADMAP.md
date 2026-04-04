@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-04-01
+**Last Updated:** 2026-04-04
 
 ## Milestones
 
@@ -12,6 +12,7 @@
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
 - [x] **v1.5 - NPX 卸载功能** - Phases 24-25 (shipped 2026-03-30)
 - [x] **v1.6 - 通知标志文件向上查找 + 全局控制** - Phases 26-28 (shipped 2026-04-01)
+- [ ] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (in progress)
 
 ## Phases
 
@@ -85,6 +86,39 @@
 
 </details>
 
+### v1.7 - 通知项目名称智能识别 (In Progress)
+
+**Milestone Goal:** `get_project_name()` 通过向上查找 `.git` 或 `CLAUDE.md` 定位项目根目录,替代不可靠的 `os.path.basename(os.getcwd())`
+
+#### Phase 29: Find-up Project Root Logic
+**Goal**: 向上查找项目根目录的核心逻辑就绪,通过 TDD 测试验证所有场景
+**Depends on**: Phase 28 (flags.py find-up pattern already established)
+**Requirements**: PROJ-01, PROJ-02, PROJ-03, PROJ-06, PROJ-07
+**Success Criteria** (what must be TRUE):
+  1. 在项目子目录中调用查找函数,能正确定位到含 `.git` 或 `CLAUDE.md` 的项目根目录并返回文件夹名
+  2. 在嵌套项目中(如 vendor/project),返回最近的包含 `.git` 或 `CLAUDE.md` 的目录名称(非最外层)
+  3. 在没有 `.git` 或 `CLAUDE.md` 的目录中调用,回退到 `os.getcwd()` 的 basename
+  4. 遍历逻辑复用 flags.py 的模式:最大深度限制、遇到 CLAUDE.md 标记时停止、到达文件系统根时停止
+  5. TDD 测试覆盖子目录、嵌套项目、无标记回退、根目录停止等全部场景
+**Plans**: TBD
+
+Plans:
+- [ ] 29-01: TDD tests for find_project_root and get_project_name
+- [ ] 29-02: Implement find_project_root in flags.py (or shared module) + get_project_name
+
+#### Phase 30: Integration into Notification Scripts
+**Goal**: notify.py 和 notify-attention.py 使用新的项目名称查找逻辑,在子目录执行时显示正确的项目名
+**Depends on**: Phase 29
+**Requirements**: PROJ-04, PROJ-05
+**Success Criteria** (what must be TRUE):
+  1. 在项目子目录中触发通知时,通知中显示的是项目根目录名称(如 "work-skills"),而非子目录名
+  2. notify.py 和 notify-attention.py 都使用相同的查找逻辑,行为一致
+**Plans**: TBD
+
+Plans:
+- [ ] 30-01: Replace get_project_name() in notify.py and notify-attention.py with new find-up logic
+- [ ] 30-02: End-to-end verification — trigger notifications from subdirectory and confirm correct project name
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -92,7 +126,9 @@
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 27. Global Control | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 28. Diagnostics & Testing | v1.6 | 1/1 | Complete | 2026-04-01 |
+| 29. Find-up Project Root Logic | v1.7 | 0/2 | Not started | - |
+| 30. Integration into Notification Scripts | v1.7 | 0/2 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-01 — v1.6 milestone completed*
+*Last updated: 2026-04-04 — v1.7 roadmap created*

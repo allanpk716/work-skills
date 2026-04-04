@@ -33,19 +33,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROJ-01 | — | Pending |
-| PROJ-02 | — | Pending |
-| PROJ-03 | — | Pending |
-| PROJ-04 | — | Pending |
-| PROJ-05 | — | Pending |
-| PROJ-06 | — | Pending |
-| PROJ-07 | — | Pending |
+| PROJ-01 | Phase 29 | Pending |
+| PROJ-02 | Phase 29 | Pending |
+| PROJ-03 | Phase 29 | Pending |
+| PROJ-04 | Phase 30 | Pending |
+| PROJ-05 | Phase 30 | Pending |
+| PROJ-06 | Phase 29 | Pending |
+| PROJ-07 | Phase 29 | Pending |
 
 **Coverage:**
 - v1 requirements: 7 total
-- Mapped to phases: 0
-- Unmapped: 7 ⚠️
+- Mapped to phases: 7
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-04*
-*Last updated: 2026-04-04 after initial definition*
+*Last updated: 2026-04-04 after roadmap creation*

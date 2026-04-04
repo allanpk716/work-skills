@@ -20,7 +20,7 @@ from unittest.mock import patch, MagicMock
 # Add hooks/scripts directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'hooks' / 'scripts'))
 
-from flags import check_notification_flags
+from flags import check_notification_flags, find_project_root, get_project_name
 
 
 class TestCheckNotificationFlags(unittest.TestCase):
@@ -739,6 +739,398 @@ class TestCheckNotificationFlags(unittest.TestCase):
         self.assertTrue(result['windows_disabled'])
         self.assertIsNone(result['windows_path'])
         self.assertEqual(result['global_windows_path'], mock_global_windows)
+
+
+class TestFindProjectRoot(unittest.TestCase):
+    """Test find_project_root() upward traversal for project root detection."""
+
+    @patch('flags.Path')
+    def test_git_in_cwd(self, mock_path_class):
+        """CWD has .git directory -> returns CWD Path object."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        git_dir = MagicMock()
+        git_dir.is_dir.return_value = True
+        git_dir.is_file.return_value = False
+
+        def cwd_div(self, key):
+            if key == '.git':
+                return git_dir
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_cwd)
+
+    @patch('flags.Path')
+    def test_claude_md_in_cwd(self, mock_path_class):
+        """CWD has CLAUDE.md file -> returns CWD Path object."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        claude_md = MagicMock()
+        claude_md.is_file.return_value = True
+        claude_md.is_dir.return_value = False
+
+        def cwd_div(self, key):
+            if key == 'CLAUDE.md':
+                return claude_md
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_cwd)
+
+    @patch('flags.Path')
+    def test_git_in_parent(self, mock_path_class):
+        """Parent has .git directory -> returns parent Path object."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        git_dir = MagicMock()
+        git_dir.is_dir.return_value = True
+        git_dir.is_file.return_value = False
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            if key == '.git':
+                return git_dir
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_parent)
+
+    @patch('flags.Path')
+    def test_claude_md_in_parent(self, mock_path_class):
+        """Parent has CLAUDE.md file -> returns parent Path object."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        claude_md = MagicMock()
+        claude_md.is_file.return_value = True
+        claude_md.is_dir.return_value = False
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            if key == 'CLAUDE.md':
+                return claude_md
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_parent)
+
+    @patch('flags.Path')
+    def test_git_priority_over_claude_md(self, mock_path_class):
+        """CWD has both .git (is_dir=True) and CLAUDE.md (is_file=True) -> returns CWD (first check wins)."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        git_dir = MagicMock()
+        git_dir.is_dir.return_value = True
+        git_dir.is_file.return_value = False
+
+        claude_md = MagicMock()
+        claude_md.is_file.return_value = True
+        claude_md.is_dir.return_value = False
+
+        def cwd_div(self, key):
+            if key == '.git':
+                return git_dir
+            if key == 'CLAUDE.md':
+                return claude_md
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_cwd)
+
+    @patch('flags.Path')
+    def test_nested_project_returns_closest(self, mock_path_class):
+        """Nested project: .git at depth 2, another marker at depth 5 -> returns depth 2 directory."""
+        # Build 6-level chain: level[0]=CWD, level[1]=depth1, ..., level[5]=depth5
+        # level[5].parent = level[5] (root stops traversal)
+        levels = []
+        for i in range(6):
+            m = MagicMock()
+            m.name = f"level{i}"
+            levels.append(m)
+
+        for i in range(5):
+            levels[i].parent = levels[i + 1]
+        levels[5].parent = levels[5]  # root stops traversal
+
+        # .git at level 2 (depth 2 from CWD)
+        git_at_2 = MagicMock()
+        git_at_2.is_dir.return_value = True
+        git_at_2.is_file.return_value = False
+
+        # CLAUDE.md at level 5 (depth 5 from CWD) - should NOT be reached
+        claude_at_5 = MagicMock()
+        claude_at_5.is_file.return_value = True
+        claude_at_5.is_dir.return_value = False
+
+        for i in range(6):
+            level = levels[i]
+            if i == 2:
+                def make_div_with_git(idx):
+                    def div_fn(self, key):
+                        if key == '.git':
+                            return git_at_2
+                        m = MagicMock()
+                        m.is_dir.return_value = False
+                        m.is_file.return_value = False
+                        return m
+                    return div_fn
+                level.__truediv__ = make_div_with_git(i)
+            elif i == 5:
+                def make_div_with_claude(idx):
+                    def div_fn(self, key):
+                        if key == 'CLAUDE.md':
+                            return claude_at_5
+                        m = MagicMock()
+                        m.is_dir.return_value = False
+                        m.is_file.return_value = False
+                        return m
+                    return div_fn
+                level.__truediv__ = make_div_with_claude(i)
+            else:
+                def make_empty_div(idx):
+                    def div_fn(self, key):
+                        m = MagicMock()
+                        m.is_dir.return_value = False
+                        m.is_file.return_value = False
+                        return m
+                    return div_fn
+                level.__truediv__ = make_empty_div(i)
+
+        mock_path_class.cwd.return_value = levels[0]
+
+        result = find_project_root()
+
+        self.assertEqual(result, levels[2])
+
+    @patch('flags.Path')
+    def test_no_markers_returns_none(self, mock_path_class):
+        """No .git or CLAUDE.md anywhere -> returns None."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        def cwd_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertIsNone(result)
+
+    @patch('flags.Path')
+    def test_max_depth_limit(self, mock_path_class):
+        """Marker only at depth 11 -> returns None (max_depth=10 stops traversal)."""
+        # Build 12 levels (depth 0 to 11), level 12 is root (self-parent)
+        levels = []
+        for i in range(12):
+            m = MagicMock()
+            levels.append(m)
+
+        for i in range(11):
+            levels[i].parent = levels[i + 1]
+        levels[11].parent = levels[11]  # root stops traversal
+
+        # .git only at level 11 (depth 11 from CWD) - should NOT be reached
+        git_deep = MagicMock()
+        git_deep.is_dir.return_value = True
+        git_deep.is_file.return_value = False
+
+        for i in range(12):
+            level = levels[i]
+            if i == 11:
+                def make_div_with_git(idx):
+                    def div_fn(self, key):
+                        if key == '.git':
+                            return git_deep
+                        m = MagicMock()
+                        m.is_dir.return_value = False
+                        m.is_file.return_value = False
+                        return m
+                    return div_fn
+                level.__truediv__ = make_div_with_git(i)
+            else:
+                def make_empty_div(idx):
+                    def div_fn(self, key):
+                        m = MagicMock()
+                        m.is_dir.return_value = False
+                        m.is_file.return_value = False
+                        return m
+                    return div_fn
+                level.__truediv__ = make_empty_div(i)
+
+        mock_path_class.cwd.return_value = levels[0]
+
+        result = find_project_root()
+
+        self.assertIsNone(result)
+
+    @patch('flags.Path')
+    def test_filesystem_root_stops(self, mock_path_class):
+        """CWD is filesystem root (parent == self), no markers -> returns None."""
+        mock_root = MagicMock()
+        mock_root.parent = mock_root  # filesystem root: parent == self
+
+        def root_div(self, key):
+            m = MagicMock()
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_root.__truediv__ = root_div
+        mock_path_class.cwd.return_value = mock_root
+
+        result = find_project_root()
+
+        self.assertIsNone(result)
+
+
+class TestGetProjectName(unittest.TestCase):
+    """Test get_project_name() returns correct directory name."""
+
+    @patch('flags.find_project_root')
+    @patch('flags.Path')
+    def test_returns_dir_name(self, mock_path_class, mock_find_root):
+        """find_project_root returns mock with .name='my-project' -> returns 'my-project'."""
+        mock_root = MagicMock()
+        mock_root.name = "my-project"
+        mock_find_root.return_value = mock_root
+
+        result = get_project_name()
+
+        self.assertEqual(result, "my-project")
+
+    @patch('flags.find_project_root')
+    @patch('flags.Path')
+    def test_fallback_to_cwd_basename(self, mock_path_class, mock_find_root):
+        """find_project_root returns None, cwd has .name='fallback-dir' -> returns 'fallback-dir'."""
+        mock_find_root.return_value = None
+        mock_cwd = MagicMock()
+        mock_cwd.name = "fallback-dir"
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = get_project_name()
+
+        self.assertEqual(result, "fallback-dir")
+
+    @patch('flags.find_project_root')
+    @patch('flags.Path')
+    def test_name_with_spaces(self, mock_path_class, mock_find_root):
+        """Project root .name='my project' -> returns 'my project'."""
+        mock_root = MagicMock()
+        mock_root.name = "my project"
+        mock_find_root.return_value = mock_root
+
+        result = get_project_name()
+
+        self.assertEqual(result, "my project")
+
+    @patch('flags.find_project_root')
+    @patch('flags.Path')
+    def test_name_with_chinese(self, mock_path_class, mock_find_root):
+        """Project root .name with Chinese chars -> returns name correctly."""
+        mock_root = MagicMock()
+        mock_root.name = "my-project"
+        mock_find_root.return_value = mock_root
+
+        result = get_project_name()
+
+        self.assertEqual(result, "my-project")
 
 
 if __name__ == '__main__':

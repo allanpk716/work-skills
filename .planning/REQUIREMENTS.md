@@ -13,8 +13,8 @@
 
 ### 集成
 
-- [ ] **PROJ-04**: `notify.py` 的 `get_project_name()` 使用新的查找逻辑
-- [ ] **PROJ-05**: `notify-attention.py` 的 `get_project_name()` 使用新的查找逻辑
+- [x] **PROJ-04**: `notify.py` 的 `get_project_name()` 使用新的查找逻辑
+- [x] **PROJ-05**: `notify-attention.py` 的 `get_project_name()` 使用新的查找逻辑
 - [x] **PROJ-06**: 所有查找失败时回退到现有的 `os.getcwd()` 行为
 
 ### 测试
@@ -36,8 +36,8 @@
 | PROJ-01 | Phase 29 | Complete |
 | PROJ-02 | Phase 29 | Complete |
 | PROJ-03 | Phase 29 | Complete |
-| PROJ-04 | Phase 30 | Pending |
-| PROJ-05 | Phase 30 | Pending |
+| PROJ-04 | Phase 30 | Complete |
+| PROJ-05 | Phase 30 | Complete |
 | PROJ-06 | Phase 29 | Complete |
 | PROJ-07 | Phase 29 | Complete |
 

@@ -116,7 +116,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 30-01-PLAN.md — Migrate get_project_name() from local implementations to flags.py import in both scripts, update test mocks
+- [x] 30-01-PLAN.md — Migrate get_project_name() from local implementations to flags.py import in both scripts, update test mocks
 
 ## Progress
 
@@ -126,7 +126,7 @@ Plans:
 | 27. Global Control | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 28. Diagnostics & Testing | v1.6 | 1/1 | Complete | 2026-04-01 |
 | 29. Find-up Project Root Logic | v1.7 | 2/2 | Complete    | 2026-04-04 |
-| 30. Integration into Notification Scripts | v1.7 | 0/1 | Not started | - |
+| 30. Integration into Notification Scripts | v1.7 | 1/1 | Complete   | 2026-04-04 |
 
 ---
 *Roadmap created: 2026-02-25*

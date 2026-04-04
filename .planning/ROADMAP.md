@@ -103,7 +103,7 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 29-01-PLAN.md — TDD RED phase: write 13 test cases for find_project_root and get_project_name
+- [x] 29-01-PLAN.md — TDD RED phase: write 13 test cases for find_project_root and get_project_name
 - [ ] 29-02-PLAN.md — TDD GREEN phase: implement find_project_root() and get_project_name() in flags.py
 
 #### Phase 30: Integration into Notification Scripts
@@ -126,7 +126,7 @@ Plans:
 | 26. Find-up Implementation | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 27. Global Control | v1.6 | 2/2 | Complete | 2026-04-01 |
 | 28. Diagnostics & Testing | v1.6 | 1/1 | Complete | 2026-04-01 |
-| 29. Find-up Project Root Logic | v1.7 | 0/2 | Not started | - |
+| 29. Find-up Project Root Logic | v1.7 | 1/2 | In Progress|  |
 | 30. Integration into Notification Scripts | v1.7 | 0/2 | Not started | - |
 
 ---

@@ -19,7 +19,7 @@
 
 ### 测试
 
-- [ ] **PROJ-07**: 向上查找项目根的 TDD 测试覆盖（子目录、嵌套项目、根目录等场景）
+- [x] **PROJ-07**: 向上查找项目根的 TDD 测试覆盖（子目录、嵌套项目、根目录等场景）
 
 ## Out of Scope
 
@@ -39,7 +39,7 @@
 | PROJ-04 | Phase 30 | Pending |
 | PROJ-05 | Phase 30 | Pending |
 | PROJ-06 | Phase 29 | Pending |
-| PROJ-07 | Phase 29 | Pending |
+| PROJ-07 | Phase 29 | Complete |
 
 **Coverage:**
 - v1 requirements: 7 total

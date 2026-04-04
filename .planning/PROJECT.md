@@ -83,7 +83,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ### Active
 
-(等待下一个里程碑定义)
+**v1.7 - 通知项目名称智能识别:**
+- 向上查找项目根目录（以 `.git` 或 `CLAUDE.md` 为标记）
+- 用项目根目录的文件夹名称替代 `os.getcwd()` 的 basename
+- 在 `notify.py` 和 `notify-attention.py` 中使用新方法
+- 复用/扩展 flags.py 的向上遍历逻辑（DRY）
 
 ### Out of Scope
 
@@ -117,10 +121,10 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 - 测试覆盖: 72 个 Python 测试
 
-**当前状态 (v1.6 shipped 2026-04-01):**
+**当前状态 (v1.7 规划中):**
 - 7 个里程碑已交付 (v1.0 - v1.6)
 - 47 个计划全部完成
-- 等待下一个里程碑规划
+- v1.7 通知项目名称智能识别 - 规划中
 
 ## Key Decisions
 
@@ -174,4 +178,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-01 after v1.6 milestone*
+*Last updated: 2026-04-04 — v1.7 milestone started*

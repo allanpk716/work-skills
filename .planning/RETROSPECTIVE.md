@@ -2,6 +2,46 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v1.8 — Worktree 区分
+
+**Shipped:** 2026-04-09
+**Phases:** 1 | **Plans:** 2 | **Sessions:** 1
+
+### What Was Built
+- get_git_branch() with git branch --show-current, robust error handling (timeout, DETACHED HEAD, non-git dir)
+- build_notification_title() shared [project:branch] title formatting for DRY compliance
+- find_project_root() worktree fix (.exists() replaces .is_dir() to support git worktree .git files)
+- Both notification scripts (notify.py, notify-attention.py) use shared title builder
+- session_id included in attention notification message body
+- 14 new tests (105 total, all passing)
+
+### What Worked
+- TDD RED→GREEN pattern produced zero bugs — both plans had only 1 auto-fixed deviation each (existing test compatibility)
+- Reusing flags.py as single source of truth (established in v1.6/v1.7) made Plan 02 a clean integration
+- .exists() fix for git worktrees was discovered proactively during research phase
+- Cross-AI review (separate review pass) caught issues before execution
+
+### What Was Inefficient
+- SUMM requirements (LLM 智能摘要) were scoped in v1.8 roadmap but removed before execution — minor planning waste
+- Roadmap originally had 3 phases (31-33), only Phase 31 was kept — scope reduction should happen earlier
+
+### Patterns Established
+- Git branch detection: subprocess.run with timeout + encoding + FileNotFoundError handling
+- Notification title format: [project:branch] suffix with graceful degradation to [project]
+- .exists() over .is_dir() for .git detection — covers both regular repos and worktrees
+
+### Key Lessons
+1. Shared infrastructure (flags.py) enables 2-plan phases with near-zero design decisions
+2. Scope reduction (removing SUMM from v1.8) was correct — shipping focused beats shipping late
+3. .exists() vs .is_dir() is a subtle but critical distinction for git worktree support
+
+### Cost Observations
+- Model mix: ~90% sonnet, ~10% opus
+- Sessions: 1
+- Notable: ~13 min execution time, continuing the single-session trend from v1.5-v1.7
+
+---
+
 ## Milestone: v1.7 — 通知项目名称智能识别
 
 **Shipped:** 2026-04-04
@@ -210,6 +250,7 @@
 | v1.5 | 2 | 2 | Uninstall flow, fault-tolerant removal, auto-advance |
 | v1.6 | 1 | 3 | Shared flags.py, global control, upward traversal infrastructure |
 | v1.7 | 1 | 2 | TDD project root detection, fastest execution (~5 min) |
+| v1.8 | 1 | 1 | Worktree 区分, git branch detection, shared title builder |
 
 ### Cumulative Quality
 
@@ -221,6 +262,7 @@
 | v1.5 | 220+ | Full | 0 new deps (57 uninstall tests) |
 | v1.6 | 72 Python | Full | 0 new deps (shared flags.py) |
 | v1.7 | 85 Python | Full | 0 new deps (38 notification tests) |
+| v1.8 | 105 Python | Full | 0 new deps (14 worktree tests) |
 
 ### Top Lessons (Verified Across Milestones)
 

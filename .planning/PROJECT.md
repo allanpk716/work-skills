@@ -101,44 +101,51 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
 | 交互式全局通知开关命令 | 未来版本考虑 |
 
-## Current Milestone: v1.8 通知智能摘要与 Worktree 区分
+**v1.8 - Worktree 区分 (shipped 2026-04-09):**
+- ✓ 通知标题包含 git 分支名 — [project:branch] 格式，多 worktree 并行可区分来源 - Phase 31
+- ✓ get_git_branch() robust branch detection with timeout/error handling - Phase 31
+- ✓ build_notification_title() shared title formatting for DRY compliance - Phase 31
+- ✓ find_project_root() worktree fix (.exists() replaces .is_dir()) - Phase 31
+- ✓ Attention 通知包含 session_id 用于会话追溯 - Phase 31
+- ✓ 14 new tests (105 total, all passing) - Phase 31
 
-**Goal:** 提升通知质量 — 用 LLM 生成有意义的任务摘要，并支持多 worktree 场景区分
+### Active
 
-**Target features:**
-- 通知标题包含 git 分支名（worktree 区分）
-- 用 OpenAI 兼容 API 生成任务完成摘要（基于 git diff 上下文）
-- 三级降级链：LLM 摘要 → claude --print → 静态 fallback
-- 安装器支持 LLM API 配置（key/base_url/model）
+- [ ] LLM 智能摘要 — Stop hook 调用 OpenAI 兼容 API 生成任务摘要
+- [ ] 三级降级链 — LLM API → claude --print → 静态 fallback
+- [ ] 安装器 LLM API 配置 — API key、base URL、model 交互式配置
+
+### Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Linux/macOS 支持 | 项目专注于 Windows 开发环境 |
+| 自动下载安装 Python/Git | 超出安装器职责范围,只提供检测和指导 |
+| GUI 安装界面 | CLI 交互已足够,GUI 增加复杂度 |
+| 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
+| 静默安装模式 (--quiet) | 未来版本考虑 |
+| 配置文件导出/导入 | 未来版本考虑 |
+| 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
+| 交互式全局通知开关命令 | 未来版本考虑 |
+| Pushover 双向回复 | Pushover API 不支持用户文本回复 |
+| 非 git 项目的摘要 | git diff 是摘要的核心上下文来源 |
 
 ## Context
 
-**项目背景:**
-- 多技能集合仓库,为个人开发工作提供 Claude Code 技能
-- v1.0 完成了 claude-notify 通知插件,已发布并投入使用
-- v1.1 完成了 windows-git-commit 安全扫描功能,生产就绪
-- v1.2 完成了独立 NPX 安装器,实现一步到位的安装体验
-- v1.3 完成了智能配置检测,安装器能自动适配首次安装和重复运行
-- v1.4 修复了插件安装检测,两个插件在重复运行安装器时均能正确识别已安装状态
-- v1.5 完成了 NPX 卸载功能,一键卸载所有已安装组件
-- v1.6 完成了通知标志文件向上查找和全局控制
-
-**技术环境:**
-- 目标系统: Windows 10/11
-- 开发语言: Python 3.6+, Bash scripts, Node.js/JavaScript (CJS)
-- 依赖工具: Git, TortoiseGit/PuTTY, Node.js
-- 分发方式: NPX 安装器 + Claude Code 插件市场
-- 测试覆盖: 101 个 Python 测试 (29 test_flags + 72 其他)
-
-**当前状态 (v1.7 shipped 2026-04-04, v1.8 规划中):**
-- 8 个里程碑已交付 (v1.0 - v1.7)
-- 49 个计划全部完成
-- v1.8 通知智能摘要与 Worktree 区分 — 规划中
+**当前状态 (v1.8 shipped 2026-04-09):**
+- 9 个里程碑已交付 (v1.0 - v1.8)
+- 52 个计划全部完成
+- 技术栈: Python 3.6+, Bash, Node.js/CJS
+- 测试覆盖: 105 个 Python 测试全部通过
+- 通知标题现在支持 [project:branch] worktree 区分
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
+| .exists() 替代 .is_dir() 检测 .git | git worktree 中 .git 是文件而非目录 | ✓ Validated (v1.8) |
+| build_notification_title() 共享标题构建 | 消除 notify.py 和 notify-attention.py DRY 违规 | ✓ Validated (v1.8) |
+| get_git_branch() timeout 1s + stderr suppress | Windows 编码和噪声输出处理 | ✓ Validated (v1.8) |
 | NPX 独立安装器 | 用户无需克隆仓库,一键安装 | ✓ Validated (v1.2) |
 | TDD 开发流程 (Wave 0 测试骨架) | 测试先行,减少 bug | ✓ Validated (Phase 16, 19) |
 | CJS 而非 ESM | chalk/boxen 兼容性 | ✓ Applied (Phase 14) |
@@ -190,4 +197,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-08 — v1.8 milestone started*
+*Last updated: 2026-04-09 — v1.8 milestone complete*

@@ -1,5 +1,16 @@
 # Milestones
 
+## v1.8 Worktree 区分 (Shipped: 2026-04-08)
+
+**Phases completed:** 1 phases, 2 plans, 2 tasks
+
+**Key accomplishments:**
+
+- get_git_branch() with git branch --show-current, build_notification_title() for [project:branch] format, and find_project_root() worktree fix (.exists() replacing .is_dir())
+- notify.py and notify-attention.py use shared build_notification_title() from flags.py for [project:branch] title format; both scripts import get_git_branch() for worktree-aware notification titles; 6 integration tests added in TestWorktreeTitleFormat class
+
+---
+
 ## v1.7 通知项目名称智能识别 (Shipped: 2026-04-04)
 
 **Phases completed:** 2 phases, 3 plans, 3 tasks

@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.8
 milestone_name: - 通知智能摘要与 Worktree 区分
 status: planning
-last_updated: "2026-04-08T08:45:33.353Z"
+last_updated: "2026-04-08T08:48:51.716Z"
 last_activity: 2026-04-08 — Roadmap created for v1.8
 progress:
-  total_phases: 2
+  total_phases: 1
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-04-08)
 ## Current Position
 
 **Status:** Roadmap created, ready to plan Phase 31
-Phase: 31 of 32 (Worktree 区分)
+Phase: 31 of 31 (Worktree 区分)
 Plan: 0/? (not yet planned)
 Last activity: 2026-04-08 — Roadmap created for v1.8
 

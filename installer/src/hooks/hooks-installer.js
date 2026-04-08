@@ -77,8 +77,8 @@ function writeSettings(settings) {
 
 /**
  * Find the source scripts directory.
- * Checks: marketplace cache -> skills dir -> local plugin dir (dev mode)
- * @returns {string|null} Path to the hooks/scripts/ directory containing notify.py
+ * Checks: marketplace cache -> skills dir -> local plugin dir (dev mode) -> deployed hooks
+ * @returns {string|null} Path to the directory containing the hook scripts
  */
 function findScriptsSourceDir() {
   const candidates = [
@@ -90,12 +90,21 @@ function findScriptsSourceDir() {
     path.join(process.cwd(), 'plugins', 'claude-notify')
   ];
 
+  // Check standard locations with hooks/scripts/ subdirectory
   for (const baseDir of candidates) {
     const scriptsDir = path.join(baseDir, 'hooks', 'scripts');
     const notifyPy = path.join(scriptsDir, 'notify.py');
     if (fs.existsSync(notifyPy)) {
       return scriptsDir;
     }
+  }
+
+  // 4. Fallback: already deployed hooks directory (scripts already in target location)
+  // When source scripts were cleaned up but hooks are already deployed, reuse them
+  const deployedDir = getHooksDir();
+  const deployedNotifyStop = path.join(deployedDir, 'notify-stop.py');
+  if (fs.existsSync(deployedNotifyStop)) {
+    return deployedDir;
   }
 
   return null;
@@ -201,10 +210,10 @@ function cleanMarketplaceCache() {
   const locations = [
     // Plugin cache (marketplace installed plugins)
     path.join(os.homedir(), '.claude', 'plugins', 'cache', 'work-skills', 'claude-notify'),
-    // Skills directory (npx installer target)
-    path.join(os.homedir(), '.claude', 'skills', 'claude-notify'),
     // Marketplace directory (plugin registry)
     path.join(os.homedir(), '.claude', 'plugins', 'marketplaces', 'work-skills', 'plugins', 'claude-notify')
+    // NOTE: skills directory is NOT cleaned here - preserving hooks/scripts/ as source
+    // for subsequent installer runs (findScriptsSourceDir checks this location)
   ];
 
   for (const baseDir of locations) {
@@ -251,16 +260,30 @@ function installHooks(options = {}) {
       };
     }
 
-    // Step 2: Copy scripts to ~/.claude/hooks/
-    if (options.onProgress) options.onProgress('copying');
-    const copyResult = copyScripts(sourceDir);
+    // Determine if source is the deployed hooks directory itself (fallback scenario)
+    const hooksDir = getHooksDir();
+    const alreadyDeployed = (sourceDir === hooksDir);
 
-    if (copyResult.copied.length === 0) {
-      return {
-        success: false,
-        copied: [],
-        error: 'No notification scripts were copied.'
-      };
+    let copied = [];
+
+    if (alreadyDeployed) {
+      // Scripts are already in the target location, no need to copy
+      copied = SCRIPT_MAPPINGS
+        .filter(({ target }) => fs.existsSync(path.join(hooksDir, target)))
+        .map(({ target }) => target);
+    } else {
+      // Step 2: Copy scripts to ~/.claude/hooks/
+      if (options.onProgress) options.onProgress('copying');
+      const copyResult = copyScripts(sourceDir);
+
+      if (copyResult.copied.length === 0) {
+        return {
+          success: false,
+          copied: [],
+          error: 'No notification scripts were copied.'
+        };
+      }
+      copied = copyResult.copied;
     }
 
     // Step 3: Update settings.json (remove old + add new = idempotent)
@@ -276,7 +299,7 @@ function installHooks(options = {}) {
 
     return {
       success: true,
-      copied: copyResult.copied
+      copied
     };
   } catch (error) {
     return {

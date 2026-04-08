@@ -16,6 +16,8 @@ from datetime import datetime, timedelta
 sys.path.insert(0, str(Path(__file__).parent.parent / 'hooks' / 'scripts'))
 
 from notify import get_project_name, get_claude_summary, cleanup_old_logs
+import flags
+from flags import build_notification_title, get_git_branch
 
 
 class TestNotify(unittest.TestCase):
@@ -132,6 +134,72 @@ class TestNotify(unittest.TestCase):
 
         # Should not attempt to remove any files
         mock_remove.assert_not_called()
+
+
+class TestWorktreeTitleFormat(unittest.TestCase):
+    """Test worktree-aware title formatting in notification scripts."""
+
+    @patch('flags.get_git_branch', return_value='feature-x')
+    @patch('flags.get_project_name', return_value='my-project')
+    def test_notify_title_with_branch(self, mock_name, mock_branch):
+        """Verify [project:branch] title format when git branch is available."""
+        title = build_notification_title(
+            flags.get_project_name(),
+            flags.get_git_branch()
+        )
+        self.assertEqual(title, "[my-project:feature-x]")
+
+    @patch('flags.get_git_branch', return_value=None)
+    @patch('flags.get_project_name', return_value='my-project')
+    def test_notify_title_without_branch(self, mock_name, mock_branch):
+        """Verify [project] title format when no git branch available."""
+        title = build_notification_title(
+            flags.get_project_name(),
+            flags.get_git_branch()
+        )
+        self.assertEqual(title, "[my-project]")
+
+    @patch('flags.get_git_branch', return_value='feature-x')
+    @patch('flags.get_project_name', return_value='my-project')
+    def test_attention_title_with_branch(self, mock_name, mock_branch):
+        """Verify [project:branch] Attention Needed format for attention hook."""
+        title = build_notification_title(
+            flags.get_project_name(),
+            flags.get_git_branch(),
+            suffix="Attention Needed"
+        )
+        self.assertEqual(title, "[my-project:feature-x] Attention Needed")
+
+    @patch('flags.get_git_branch', return_value=None)
+    @patch('flags.get_project_name', return_value='my-project')
+    def test_attention_title_without_branch(self, mock_name, mock_branch):
+        """Verify [project] Attention Needed format when no git branch."""
+        title = build_notification_title(
+            flags.get_project_name(),
+            flags.get_git_branch(),
+            suffix="Attention Needed"
+        )
+        self.assertEqual(title, "[my-project] Attention Needed")
+
+    def test_attention_message_contains_session_id(self):
+        """Verify session_id is included in attention notification message."""
+        session_id = "test-session-123"
+        notification_type = "notification"
+        details = "User input required"
+        message = f"Session: {session_id}\nType: {notification_type}\n{details}"
+        self.assertIn("Session: test-session-123", message)
+
+    def test_no_local_title_builders_in_scripts(self):
+        """Verify no DRY violation: scripts don't define local build_title/build_attention_title."""
+        # Check notify.py source
+        notify_path = Path(__file__).parent.parent / 'hooks' / 'scripts' / 'notify.py'
+        notify_source = notify_path.read_text(encoding='utf-8')
+        self.assertNotIn('def build_title(', notify_source)
+
+        # Check notify-attention.py source
+        attention_path = Path(__file__).parent.parent / 'hooks' / 'scripts' / 'notify-attention.py'
+        attention_source = attention_path.read_text(encoding='utf-8')
+        self.assertNotIn('def build_attention_title(', attention_source)
 
 
 if __name__ == '__main__':

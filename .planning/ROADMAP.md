@@ -110,8 +110,8 @@
   2. 非 git 仓库场景下,通知标题退化为 `[project]` 格式,不影响已有功能
   3. Attention hook 通知内容包含 session_id 字段,用户可据此追溯到需要关注的具体会话
   4. 现有测试全部通过,新增 worktree 区分测试覆盖 git 和非 git 场景
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 31-01: TBD
-- [ ] 31-02: TBD
+- [ ] 31-01-PLAN.md — flags.py 新增 get_git_branch() 并修复 find_project_root() 支持 worktree
+- [ ] 31-02-PLAN.md — notify.py 和 notify-attention.py 标题格式升级为 [project:branch]

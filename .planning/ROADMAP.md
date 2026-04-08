@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-04-04
+**Last Updated:** 2026-04-08
 
 ## Milestones
 
@@ -12,7 +12,8 @@
 - [x] **v1.4 - 修复插件安装检测** - Phases 22-23 (shipped 2026-03-30)
 - [x] **v1.5 - NPX 卸载功能** - Phases 24-25 (shipped 2026-03-30)
 - [x] **v1.6 - 通知标志文件向上查找 + 全局控制** - Phases 26-28 (shipped 2026-04-01)
-- [x] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (shipped 2026-04-01)
+- [x] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (shipped 2026-04-04)
+- [ ] **v1.8 - 通知智能摘要与 Worktree 区分** - Phases 31-33 (in progress)
 
 ## Phases
 
@@ -94,15 +95,68 @@
 
 </details>
 
----
+## Phase Details
+
+### v1.8 - 通知智能摘要与 Worktree 区分
+
+**Milestone Goal:** 提升通知质量 -- 用 LLM 生成有意义的任务摘要,并支持多 worktree 场景区分
+
+#### Phase 31: Worktree 区分
+**Goal**: 用户在多个 worktree 并行工作时,能从通知标题区分来源项目和分支,且 Attention 通知可追溯到具体会话
+**Depends on**: Phase 30 (通知项目名称智能识别已完成)
+**Requirements**: WTREE-01, WTREE-02
+**Success Criteria** (what must be TRUE):
+  1. Stop hook 通知标题格式为 `[project:branch]`,在多个 worktree 并行时可区分每个通知来源
+  2. 非 git 仓库场景下,通知标题退化为 `[project]` 格式,不影响已有功能
+  3. Attention hook 通知内容包含 session_id 字段,用户可据此追溯到需要关注的具体会话
+  4. 现有测试全部通过,新增 worktree 区分测试覆盖 git 和非 git 场景
+**Plans**: TBD
+
+Plans:
+- [ ] 31-01: TBD
+- [ ] 31-02: TBD
+
+#### Phase 32: LLM 智能摘要核心
+**Goal**: Stop hook 触发时,用户收到基于 git diff 生成的有意义的任务摘要;无 LLM 配置时自动降级,确保任何情况都有通知
+**Depends on**: Phase 31 (通知标题格式已包含 worktree 区分)
+**Requirements**: SUMM-01, SUMM-02, SUMM-03, SUMM-05
+**Success Criteria** (what must be TRUE):
+  1. 配置 LLM_API_KEY 后,Stop hook 通知包含基于 git diff 的 AI 生成摘要,描述本次任务完成的工作内容
+  2. LLM API 不可用(无 key/网络错误/超时)时,自动降级到 `claude --print` 生成摘要,再降级到静态 fallback 消息,用户始终能收到通知
+  3. 用户可通过环境变量 LLM_API_KEY、LLM_BASE_URL、LLM_MODEL 控制摘要行为,无配置时跳过 LLM 直接到降级链下一级
+  4. LLM API 调用在 5 秒内超时返回,Stop hook 整体执行在 10 秒内完成,不阻塞用户工作流
+**Plans**: TBD
+
+Plans:
+- [ ] 32-01: TBD
+- [ ] 32-02: TBD
+- [ ] 32-03: TBD
+
+#### Phase 33: 安装器 LLM 配置
+**Goal**: 用户通过安装器交互式配置 LLM API 参数,无需手动设置环境变量
+**Depends on**: Phase 32 (LLM 环境变量和行为已定义)
+**Requirements**: SUMM-04
+**Success Criteria** (what must be TRUE):
+  1. 安装器运行时提供 LLM API 配置步骤(API key、base URL、model),用户可选择配置或跳过
+  2. 用户选择跳过 LLM 配置时,安装器正常继续,通知功能保持现有降级行为不受影响
+  3. 配置完成后,LLM_API_KEY、LLM_BASE_URL、LLM_MODEL 通过 setx 持久化为环境变量,重启后仍生效
+**Plans**: TBD
+
+Plans:
+- [ ] 33-01: TBD
+- [ ] 33-02: TBD
 
 ## Progress
 
+**Execution Order:**
+Phases execute in numeric order: 31 -> 32 -> 33
+
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 29. Find-up Project Root Logic | v1.7 | 2/2 | Complete | 2026-04-04 |
-| 30. Integration into Notification Scripts | v1.7 | 1/1 | Complete | 2026-04-04 |
+| 31. Worktree 区分 | v1.8 | 0/? | Not started | - |
+| 32. LLM 智能摘要核心 | v1.8 | 0/? | Not started | - |
+| 33. 安装器 LLM 配置 | v1.8 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*
-*Last updated: 2026-04-04 — v1.7 shipped*
+*Last updated: 2026-04-08 — v1.8 roadmap created*

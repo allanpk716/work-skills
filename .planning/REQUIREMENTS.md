@@ -46,19 +46,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WTREE-01 | — | Pending |
-| WTREE-02 | — | Pending |
-| SUMM-01 | — | Pending |
-| SUMM-02 | — | Pending |
-| SUMM-03 | — | Pending |
-| SUMM-04 | — | Pending |
-| SUMM-05 | — | Pending |
+| WTREE-01 | Phase 31 | Pending |
+| WTREE-02 | Phase 31 | Pending |
+| SUMM-01 | Phase 32 | Pending |
+| SUMM-02 | Phase 32 | Pending |
+| SUMM-03 | Phase 32 | Pending |
+| SUMM-04 | Phase 33 | Pending |
+| SUMM-05 | Phase 32 | Pending |
 
 **Coverage:**
 - v1 requirements: 7 total
-- Mapped to phases: 0
-- Unmapped: 7 ⚠️
+- Mapped to phases: 7
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-08*
-*Last updated: 2026-04-08 after initial definition*
+*Last updated: 2026-04-08 after roadmap creation*

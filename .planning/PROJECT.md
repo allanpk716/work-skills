@@ -101,6 +101,16 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
 | 交互式全局通知开关命令 | 未来版本考虑 |
 
+## Current Milestone: v1.8 通知智能摘要与 Worktree 区分
+
+**Goal:** 提升通知质量 — 用 LLM 生成有意义的任务摘要，并支持多 worktree 场景区分
+
+**Target features:**
+- 通知标题包含 git 分支名（worktree 区分）
+- 用 OpenAI 兼容 API 生成任务完成摘要（基于 git diff 上下文）
+- 三级降级链：LLM 摘要 → claude --print → 静态 fallback
+- 安装器支持 LLM API 配置（key/base_url/model）
+
 ## Context
 
 **项目背景:**
@@ -120,13 +130,10 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 分发方式: NPX 安装器 + Claude Code 插件市场
 - 测试覆盖: 101 个 Python 测试 (29 test_flags + 72 其他)
 
-**当前状态 (v1.7 shipped 2026-04-04):**
+**当前状态 (v1.7 shipped 2026-04-04, v1.8 规划中):**
 - 8 个里程碑已交付 (v1.0 - v1.7)
 - 49 个计划全部完成
-- v1.7 通知项目名称智能识别 — Phase 29 + 30 全部完成
-- 测试覆盖: 38 个 Python 测试 (9 test_notify + 29 test_flags)
-
-- v1.7 完成了通知项目名称智能识别，子目录执行通知时显示正确的项目名
+- v1.8 通知智能摘要与 Worktree 区分 — 规划中
 
 ## Key Decisions
 
@@ -183,4 +190,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-04 — Phase 30 complete (v1.7 shipped)*
+*Last updated: 2026-04-08 — v1.8 milestone started*

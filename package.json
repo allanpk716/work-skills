@@ -1,6 +1,6 @@
 {
   "name": "@allanpk716/work-skills-setup",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Work Skills installer for Windows developers",
   "main": "installer/src/index.js",
   "bin": {

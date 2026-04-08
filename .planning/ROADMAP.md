@@ -113,5 +113,5 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 31-01-PLAN.md — flags.py 新增 get_git_branch() 并修复 find_project_root() 支持 worktree
-- [ ] 31-02-PLAN.md — notify.py 和 notify-attention.py 标题格式升级为 [project:branch]
+- [x] 31-01-PLAN.md — flags.py 新增 get_git_branch() 并修复 find_project_root() 支持 worktree
+- [x] 31-02-PLAN.md — notify.py 和 notify-attention.py 标题格式升级为 [project:branch]

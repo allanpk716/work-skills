@@ -20,7 +20,7 @@ from unittest.mock import patch, MagicMock
 # Add hooks/scripts directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / 'hooks' / 'scripts'))
 
-from flags import check_notification_flags, find_project_root, get_project_name
+from flags import check_notification_flags, find_project_root, get_project_name, get_git_branch, build_notification_title
 
 
 class TestCheckNotificationFlags(unittest.TestCase):
@@ -1131,6 +1131,137 @@ class TestGetProjectName(unittest.TestCase):
         result = get_project_name()
 
         self.assertEqual(result, "my-project")
+
+
+import subprocess
+
+
+class TestGetGitBranch(unittest.TestCase):
+    """Test get_git_branch() git branch detection."""
+
+    @patch('flags.subprocess.run')
+    def test_returns_branch_name(self, mock_run):
+        """git branch --show-current returns branch name."""
+        mock_run.return_value = MagicMock(returncode=0, stdout="feature-branch\n")
+        result = get_git_branch()
+        self.assertEqual(result, "feature-branch")
+
+    @patch('flags.subprocess.run')
+    def test_returns_none_not_git_repo(self, mock_run):
+        """Non git directory returns None (exit code 128)."""
+        mock_run.return_value = MagicMock(returncode=128, stdout="")
+        result = get_git_branch()
+        self.assertIsNone(result)
+
+    @patch('flags.subprocess.run')
+    def test_returns_none_detached_head(self, mock_run):
+        """DETACHED HEAD returns None (stdout is whitespace)."""
+        mock_run.return_value = MagicMock(returncode=0, stdout="\n")
+        result = get_git_branch()
+        self.assertIsNone(result)
+
+    @patch('flags.subprocess.run')
+    def test_returns_none_git_not_found(self, mock_run):
+        """Git not in PATH raises FileNotFoundError -> returns None."""
+        mock_run.side_effect = FileNotFoundError
+        result = get_git_branch()
+        self.assertIsNone(result)
+
+    @patch('flags.subprocess.run')
+    def test_returns_none_timeout(self, mock_run):
+        """Git command timeout -> returns None."""
+        mock_run.side_effect = subprocess.TimeoutExpired(cmd='git', timeout=1)
+        result = get_git_branch()
+        self.assertIsNone(result)
+
+    @patch('flags.subprocess.run')
+    def test_branch_with_special_characters(self, mock_run):
+        """Branch name with special characters returned correctly."""
+        mock_run.return_value = MagicMock(returncode=0, stdout="feature/JIRA-123:fix\n")
+        result = get_git_branch()
+        self.assertEqual(result, "feature/JIRA-123:fix")
+
+
+class TestBuildNotificationTitle(unittest.TestCase):
+    """Test build_notification_title() title formatting."""
+
+    def test_with_branch(self):
+        """Branch present -> [project:branch]."""
+        self.assertEqual(build_notification_title("my-project", "feature-x"), "[my-project:feature-x]")
+
+    def test_without_branch(self):
+        """No branch -> [project]."""
+        self.assertEqual(build_notification_title("my-project", None), "[my-project]")
+
+    def test_empty_branch(self):
+        """Empty string branch -> [project]."""
+        self.assertEqual(build_notification_title("my-project", ""), "[my-project]")
+
+    def test_with_branch_and_suffix(self):
+        """Branch and suffix -> [project:branch] suffix."""
+        self.assertEqual(
+            build_notification_title("my-project", "feature-x", suffix="Attention Needed"),
+            "[my-project:feature-x] Attention Needed"
+        )
+
+    def test_without_branch_with_suffix(self):
+        """No branch with suffix -> [project] suffix."""
+        self.assertEqual(
+            build_notification_title("my-project", None, suffix="Attention Needed"),
+            "[my-project] Attention Needed"
+        )
+
+    def test_with_branch_no_suffix(self):
+        """Branch with no suffix -> [project:branch]."""
+        self.assertEqual(build_notification_title("my-project", "main", suffix=None), "[my-project:main]")
+
+    def test_special_char_branch_in_title(self):
+        """Branch with special chars in title."""
+        self.assertEqual(
+            build_notification_title("proj", "feature/JIRA-123:fix"),
+            "[proj:feature/JIRA-123:fix]"
+        )
+
+
+class TestFindProjectRootWorktree(unittest.TestCase):
+    """Test find_project_root() in git worktree scenario (.git is file, not directory)."""
+
+    @patch('flags.Path')
+    def test_worktree_git_file_not_dir(self, mock_path_class):
+        """In worktree, .git is a file (exists=True, is_dir=False) -> still returns CWD."""
+        mock_cwd = MagicMock()
+        mock_parent = MagicMock()
+        mock_cwd.parent = mock_parent
+        mock_parent.parent = mock_parent  # root stops traversal
+
+        git_path = MagicMock()
+        git_path.exists.return_value = True
+        git_path.is_dir.return_value = False
+        git_path.is_file.return_value = True
+
+        def cwd_div(self, key):
+            if key == '.git':
+                return git_path
+            m = MagicMock()
+            m.exists.return_value = False
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        def parent_div(self, key):
+            m = MagicMock()
+            m.exists.return_value = False
+            m.is_dir.return_value = False
+            m.is_file.return_value = False
+            return m
+
+        mock_cwd.__truediv__ = cwd_div
+        mock_parent.__truediv__ = parent_div
+        mock_path_class.cwd.return_value = mock_cwd
+
+        result = find_project_root()
+
+        self.assertEqual(result, mock_cwd)
 
 
 if __name__ == '__main__':

@@ -116,23 +116,7 @@ Plans:
 - [ ] 31-01: TBD
 - [ ] 31-02: TBD
 
-#### Phase 32: LLM 智能摘要核心
-**Goal**: Stop hook 触发时,用户收到基于 git diff 生成的有意义的任务摘要;无 LLM 配置时自动降级,确保任何情况都有通知
-**Depends on**: Phase 31 (通知标题格式已包含 worktree 区分)
-**Requirements**: SUMM-01, SUMM-02, SUMM-03, SUMM-05
-**Success Criteria** (what must be TRUE):
-  1. 配置 LLM_API_KEY 后,Stop hook 通知包含基于 git diff 的 AI 生成摘要,描述本次任务完成的工作内容
-  2. LLM API 不可用(无 key/网络错误/超时)时,自动降级到 `claude --print` 生成摘要,再降级到静态 fallback 消息,用户始终能收到通知
-  3. 用户可通过环境变量 LLM_API_KEY、LLM_BASE_URL、LLM_MODEL 控制摘要行为,无配置时跳过 LLM 直接到降级链下一级
-  4. LLM API 调用在 5 秒内超时返回,Stop hook 整体执行在 10 秒内完成,不阻塞用户工作流
-**Plans**: TBD
-
-Plans:
-- [ ] 32-01: TBD
-- [ ] 32-02: TBD
-- [ ] 32-03: TBD
-
-#### Phase 33: 安装器 LLM 配置
+#### Phase 32: 安装器 LLM 配置
 **Goal**: 用户通过安装器交互式配置 LLM API 参数,无需手动设置环境变量
 **Depends on**: Phase 32 (LLM 环境变量和行为已定义)
 **Requirements**: SUMM-04
@@ -143,8 +127,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 33-01: TBD
-- [ ] 33-02: TBD
+- [ ] 32-01: TBD
+- [ ] 32-02: TBD
 
 ## Progress
 
@@ -154,8 +138,7 @@ Phases execute in numeric order: 31 -> 32 -> 33
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 31. Worktree 区分 | v1.8 | 0/? | Not started | - |
-| 32. LLM 智能摘要核心 | v1.8 | 0/? | Not started | - |
-| 33. 安装器 LLM 配置 | v1.8 | 0/? | Not started | - |
+| 32. 安装器 LLM 配置 | v1.8 | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-02-25*

@@ -14,6 +14,7 @@ Traversal rules (per D-01 through D-05):
 """
 
 import logging
+import subprocess
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -131,7 +132,7 @@ def find_project_root():
     """
     Find the project root directory by searching upward from CWD.
 
-    Looks for .git directory or CLAUDE.md file as project root markers.
+    Looks for .git (directory or file for worktree support) or CLAUDE.md file as project root markers.
     Returns the first (closest) directory containing either marker.
 
     Traversal stops when:
@@ -148,7 +149,7 @@ def find_project_root():
 
     while depth <= max_depth:
         # Check for .git directory (standard git repo)
-        if (current / '.git').is_dir():
+        if (current / '.git').exists():
             return current
 
         # Check for CLAUDE.md file (Claude Code project marker)
@@ -180,3 +181,67 @@ def get_project_name():
     if root is not None:
         return root.name
     return Path.cwd().name
+
+
+def get_git_branch() -> Optional[str]:
+    """
+    Get current git branch name.
+
+    Uses 'git branch --show-current' which correctly handles:
+    - Normal branches: returns branch name
+    - DETACHED HEAD: returns empty string (exit 0)
+    - Not a git repo: exit code 128
+    - Worktrees: returns the worktree's checked-out branch
+
+    Returns:
+        Optional[str]: Branch name or None if not available
+    """
+    try:
+        result = subprocess.run(
+            ['git', 'branch', '--show-current'],
+            capture_output=True,
+            text=True,
+            timeout=1,
+            encoding='utf-8',
+            stderr=subprocess.DEVNULL
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            branch = result.stdout.strip()
+            logger.info(f"Detected git branch: {branch}")
+            return branch
+        return None
+    except subprocess.TimeoutExpired:
+        logger.warning("Git branch detection timeout (1s)")
+        return None
+    except FileNotFoundError:
+        logger.warning("Git not found in PATH")
+        return None
+    except Exception as e:
+        logger.error(f"Failed to detect git branch: {e}")
+        return None
+
+
+def build_notification_title(project_name: str, git_branch: Optional[str] = None, suffix: Optional[str] = None) -> str:
+    """
+    Build notification title with optional git branch and suffix.
+
+    Consolidates title formatting for both stop and attention hooks
+    to avoid duplication (per WTREE-01, D-01, D-02).
+
+    Args:
+        project_name: Project name (from get_project_name())
+        git_branch: Git branch name (from get_git_branch()), None for no branch
+        suffix: Optional suffix like "Attention Needed"
+
+    Returns:
+        str: "[project:branch] suffix" or "[project] suffix" or "[project:branch]" or "[project]"
+    """
+    if git_branch:
+        title = f"[{project_name}:{git_branch}]"
+    else:
+        title = f"[{project_name}]"
+
+    if suffix:
+        title = f"{title} {suffix}"
+
+    return title

@@ -755,6 +755,7 @@ class TestFindProjectRoot(unittest.TestCase):
         git_dir = MagicMock()
         git_dir.is_dir.return_value = True
         git_dir.is_file.return_value = False
+        git_dir.exists.return_value = True
 
         def cwd_div(self, key):
             if key == '.git':
@@ -762,12 +763,14 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -796,12 +799,14 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -823,11 +828,13 @@ class TestFindProjectRoot(unittest.TestCase):
         git_dir = MagicMock()
         git_dir.is_dir.return_value = True
         git_dir.is_file.return_value = False
+        git_dir.exists.return_value = True
 
         def cwd_div(self, key):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
@@ -836,6 +843,7 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -862,6 +870,7 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
@@ -870,6 +879,7 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -891,6 +901,7 @@ class TestFindProjectRoot(unittest.TestCase):
         git_dir = MagicMock()
         git_dir.is_dir.return_value = True
         git_dir.is_file.return_value = False
+        git_dir.exists.return_value = True
 
         claude_md = MagicMock()
         claude_md.is_file.return_value = True
@@ -904,12 +915,14 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -939,6 +952,7 @@ class TestFindProjectRoot(unittest.TestCase):
         git_at_2 = MagicMock()
         git_at_2.is_dir.return_value = True
         git_at_2.is_file.return_value = False
+        git_at_2.exists.return_value = True
 
         # CLAUDE.md at level 5 (depth 5 from CWD) - should NOT be reached
         claude_at_5 = MagicMock()
@@ -955,6 +969,7 @@ class TestFindProjectRoot(unittest.TestCase):
                         m = MagicMock()
                         m.is_dir.return_value = False
                         m.is_file.return_value = False
+                        m.exists.return_value = False
                         return m
                     return div_fn
                 level.__truediv__ = make_div_with_git(i)
@@ -966,6 +981,7 @@ class TestFindProjectRoot(unittest.TestCase):
                         m = MagicMock()
                         m.is_dir.return_value = False
                         m.is_file.return_value = False
+                        m.exists.return_value = False
                         return m
                     return div_fn
                 level.__truediv__ = make_div_with_claude(i)
@@ -975,6 +991,7 @@ class TestFindProjectRoot(unittest.TestCase):
                         m = MagicMock()
                         m.is_dir.return_value = False
                         m.is_file.return_value = False
+                        m.exists.return_value = False
                         return m
                     return div_fn
                 level.__truediv__ = make_empty_div(i)
@@ -997,12 +1014,14 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         def parent_div(self, key):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_cwd.__truediv__ = cwd_div
@@ -1030,6 +1049,7 @@ class TestFindProjectRoot(unittest.TestCase):
         git_deep = MagicMock()
         git_deep.is_dir.return_value = True
         git_deep.is_file.return_value = False
+        git_deep.exists.return_value = True
 
         for i in range(12):
             level = levels[i]
@@ -1041,6 +1061,7 @@ class TestFindProjectRoot(unittest.TestCase):
                         m = MagicMock()
                         m.is_dir.return_value = False
                         m.is_file.return_value = False
+                        m.exists.return_value = False
                         return m
                     return div_fn
                 level.__truediv__ = make_div_with_git(i)
@@ -1050,6 +1071,7 @@ class TestFindProjectRoot(unittest.TestCase):
                         m = MagicMock()
                         m.is_dir.return_value = False
                         m.is_file.return_value = False
+                        m.exists.return_value = False
                         return m
                     return div_fn
                 level.__truediv__ = make_empty_div(i)
@@ -1070,6 +1092,7 @@ class TestFindProjectRoot(unittest.TestCase):
             m = MagicMock()
             m.is_dir.return_value = False
             m.is_file.return_value = False
+            m.exists.return_value = False
             return m
 
         mock_root.__truediv__ = root_div

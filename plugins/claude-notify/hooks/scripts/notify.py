@@ -18,7 +18,7 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from flags import check_notification_flags, get_project_name
+from flags import check_notification_flags, get_project_name, get_git_branch, build_notification_title
 
 # Configure logging with PID isolation for concurrent safety
 log_dir = Path(os.environ.get('APPDATA', '.')) / 'claude-notify' / 'logs'
@@ -352,6 +352,10 @@ def main():
         # Get project name
         project_name = get_project_name()
 
+        # Get git branch and build title (WTREE-01)
+        git_branch = get_git_branch()
+        title = build_notification_title(project_name, git_branch)
+
         # Get Claude CLI summary
         summary = get_claude_summary(project_name)
 
@@ -366,11 +370,11 @@ def main():
 
             # Only submit Pushover if not disabled
             if not flags['pushover_disabled']:
-                futures[executor.submit(send_pushover_notification, project_name, summary)] = 'pushover'
+                futures[executor.submit(send_pushover_notification, title, summary)] = 'pushover'
 
             # Only submit Windows if not disabled
             if not flags['windows_disabled']:
-                futures[executor.submit(send_windows_notification, project_name, summary)] = 'windows'
+                futures[executor.submit(send_windows_notification, title, summary)] = 'windows'
 
             # If both disabled, log and exit
             if not futures:

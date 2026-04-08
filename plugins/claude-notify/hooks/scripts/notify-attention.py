@@ -18,7 +18,7 @@ import xml.sax.saxutils
 import subprocess
 from pathlib import Path
 from datetime import datetime
-from flags import check_notification_flags, get_project_name
+from flags import check_notification_flags, get_project_name, get_git_branch, build_notification_title
 
 # Configure logging
 log_dir = Path(os.environ.get('APPDATA', '.')) / 'claude-notify' / 'logs'
@@ -180,11 +180,13 @@ def main():
         # Get project name
         project_name = get_project_name()
 
+        # Get git branch and build title (WTREE-01)
+        git_branch = get_git_branch()
+        title = build_notification_title(project_name, git_branch, suffix="Attention Needed")
+
         # Check project-level notification flags
         flags = check_notification_flags()
 
-        # Build notification content
-        title = f"[{project_name}] Attention Needed"
         notification_message = hook_input.get('message', '')
 
         if notification_message:

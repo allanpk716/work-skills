@@ -17,6 +17,9 @@ const SCRIPT_MAPPINGS = [
   { source: 'flags.py', target: 'flags.py' }
 ];
 
+// Guard script that auto-repairs notification hooks at session start
+const GUARD_SCRIPT = 'notify-hooks-guard.js';
+
 // Hook definitions
 const HOOK_DEFINITIONS = {
   Stop: {
@@ -153,7 +156,7 @@ function removeExistingNotifyHooks(settings) {
       if (!entry.hooks || !Array.isArray(entry.hooks)) return entry;
       entry.hooks = entry.hooks.filter(hook => {
         const cmd = hook.command || '';
-        return !cmd.includes('notify-stop.py') && !cmd.includes('notify-attention.py');
+        return !cmd.includes('notify-stop.py') && !cmd.includes('notify-attention.py') && !cmd.includes(GUARD_SCRIPT);
       });
       // Remove entry if no hooks remain
       return entry;
@@ -197,6 +200,16 @@ function registerGlobalHooks(settings) {
       }]
     });
   }
+
+  // Register guard as SessionStart hook for auto-repair
+  settings.hooks.SessionStart = settings.hooks.SessionStart || [];
+  const guardPath = `${hooksDirForward}/${GUARD_SCRIPT}`;
+  settings.hooks.SessionStart.push({
+    hooks: [{
+      type: 'command',
+      command: `node "${guardPath}"`
+    }]
+  });
 
   return settings;
 }
@@ -296,6 +309,17 @@ function installHooks(options = {}) {
     // Step 4: Clean marketplace cache to prevent double-loading
     if (options.onProgress) options.onProgress('cleaning');
     cleanMarketplaceCache();
+
+    // Step 5: Deploy guard script for auto-repair at session start
+    try {
+      const guardSource = path.join(__dirname, GUARD_SCRIPT);
+      const guardDest = path.join(getHooksDir(), GUARD_SCRIPT);
+      if (fs.existsSync(guardSource)) {
+        fs.copyFileSync(guardSource, guardDest);
+      }
+    } catch {
+      // Guard deployment failure is non-critical
+    }
 
     return {
       success: true,

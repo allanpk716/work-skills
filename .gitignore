@@ -16,6 +16,9 @@ Thumbs.db
 *.swo
 *~
 
+# Sensitive files
+.npm-token
+
 # Temporary files
 *.tmp
 *.log

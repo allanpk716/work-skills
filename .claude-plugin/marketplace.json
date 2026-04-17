@@ -30,6 +30,17 @@
         "name": "allanpk716",
         "email": "allanpk716@gmail.com"
       }
+    },
+    {
+      "name": "codepoint",
+      "description": "Runtime probe-driven development skill for placing code points at critical execution paths to give AI runtime visibility into code",
+      "source": "./plugins/codepoint",
+      "category": "development",
+      "version": "1.0.0",
+      "author": {
+        "name": "allanpk716",
+        "email": "allanpk716@gmail.com"
+      }
     }
   ]
 }

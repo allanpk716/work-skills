@@ -88,19 +88,6 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 复用 flags.py 的向上遍历逻辑，保持 DRY - Phase 29
 - ✓ 38 个测试全部通过（9 test_notify + 29 test_flags）- Phase 30
 
-### Out of Scope
-
-| Feature | Reason |
-|---------|--------|
-| Linux/macOS 支持 | 项目专注于 Windows 开发环境 |
-| 自动下载安装 Python/Git | 超出安装器职责范围,只提供检测和指导 |
-| GUI 安装界面 | CLI 交互已足够,GUI 增加复杂度 |
-| 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
-| 静默安装模式 (--quiet) | 未来版本考虑 |
-| 配置文件导出/导入 | 未来版本考虑 |
-| 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
-| 交互式全局通知开关命令 | 未来版本考虑 |
-
 **v1.8 - Worktree 区分 (shipped 2026-04-09):**
 - ✓ 通知标题包含 git 分支名 — [project:branch] 格式，多 worktree 并行可区分来源 - Phase 31
 - ✓ get_git_branch() robust branch detection with timeout/error handling - Phase 31
@@ -109,11 +96,24 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ Attention 通知包含 session_id 用于会话追溯 - Phase 31
 - ✓ 14 new tests (105 total, all passing) - Phase 31
 
+## Current Milestone: v1.9.1 Codepoint V2 E2E 测试
+
+**Goal:** 通过创建实际测试项目验证代码点 V2 技能的完整流程（scan/plan/implement/跨语言集成），发现问题并改进
+
+**Target features:**
+- 纯 Go 计算器项目 — 验证 scan/plan/implement 基础流程
+- 纯 Python 计算器项目 — 验证 scan/plan/implement 基础流程
+- Go+JS 全栈计算器 — 验证跨语言探针联动
+- Python+TS 全栈计算器 — 验证跨语言探针联动
+- 问题修复 — 根据测试结果改进技能
+
 ### Active
 
-- [ ] LLM 智能摘要 — Stop hook 调用 OpenAI 兼容 API 生成任务摘要
-- [ ] 三级降级链 — LLM API → claude --print → 静态 fallback
-- [ ] 安装器 LLM API 配置 — API key、base URL、model 交互式配置
+- [ ] Go 单语言计算器 — codepoint scan/plan/implement E2E 验证
+- [ ] Python 单语言计算器 — codepoint scan/plan/implement E2E 验证
+- [ ] Go+JS 全栈计算器 — 跨语言探针联动验证
+- [ ] Python+TS 全栈计算器 — 跨语言探针联动验证
+- [ ] 发现的问题修复 — 技能改进
 
 ### Out of Scope
 
@@ -132,12 +132,12 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ## Context
 
-**当前状态 (v1.8 shipped 2026-04-09):**
+**当前状态 (v1.9.1 开始 2026-04-18):**
 - 9 个里程碑已交付 (v1.0 - v1.8)
 - 52 个计划全部完成
-- 技术栈: Python 3.6+, Bash, Node.js/CJS
+- 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
 - 测试覆盖: 105 个 Python 测试全部通过
-- 通知标题现在支持 [project:branch] worktree 区分
+- Codepoint V2 技能待 E2E 验证（scan/plan/implement/跨语言集成）
 
 ## Key Decisions
 
@@ -197,4 +197,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 — v1.8 milestone complete*
+*Last updated: 2026-04-18 — v1.9.1 milestone started*

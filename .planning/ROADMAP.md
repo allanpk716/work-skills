@@ -109,7 +109,7 @@
 - [x] Phase 01: Core Infrastructure
 - [x] Phase 01.1: Hook Claude Code Skill
 - [x] Phase 02: Configuration Diagnostics
-- [x] Phase 03: Documentation & Testing
+- [x] Phase 03: Documentation & Efficiency
 - [x] Phase 03.1: Fix Missing Features
 
 </details>
@@ -160,12 +160,12 @@ Plans:
   1. 所有在 Go/Python 单语言测试中发现的问题被完整记录在文档中，包含问题描述、复现步骤、预期行为
   2. 记录的所有问题已修复，在对应测试项目中重新验证通过
   3. Go 探针模板和 Python 探针模板生成的代码在实际项目中可编译/运行，堆栈信息格式正确可读
-**Plans:** 5 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] 34-01: 汇总记录单语言测试中发现的所有缺陷
-- [ ] 34-02: 修复缺陷并在测试项目中重新验证
-- [ ] 34-03: 确认探针模板（Go/Python）在实际项目中生成代码的质量
+- [ ] 34-01: 创建结构化缺陷记录文件 34-DEFECTS.yaml（FIX1-01）
+- [ ] 34-02: 为 golang.md 和 python.md 添加编译检查说明并验证测试项目编译/运行通过（FIX1-02, FIX1-03）
+- [ ] 34-03: 在 go-calculator 和 python-calculator 上运行完整 codepoint scan/plan/implement 技能验证（FIX1-02, FIX1-03）
 
 ### Phase 35: Go+JS 全栈跨语言集成
 **Goal**: 用户可以在 Go+JS 全栈计算器上验证跨语言探针联动，前端 JS 探针数据通过 collector 端点被后端 Go 收集
@@ -230,4 +230,4 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-18 — Phase 32 plans revised per 32-REVIEWS.md feedback*
+*Last updated: 2026-04-18 — Phase 34 planned (3 plans, 2 waves)*

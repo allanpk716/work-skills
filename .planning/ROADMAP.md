@@ -180,7 +180,7 @@ Plans:
 
 Plans:
 - [ ] 35-01: 创建 Go 后端项目（calculator + API + 增强 collector + go:embed + 测试）— FULL-01
-- [ ] 35-02: 创建 React 前端（Vite 构建 + codepoint.ts + 三组件 + 构建+集成验证）— FULL-01
+- [x] 35-02: 创建 React 前端（Vite 构建 + codepoint.ts + 三组件 + 构建+集成验证）— FULL-01 (completed 2026-04-18)
 - [ ] 35-03: 运行 codepoint scan 验证跨语言业务流识别 — FULL-02
 - [ ] 35-04: 验证 collector 联动 + 多流程跨语言堆栈完整性 — FULL-03, FULL-04
 
@@ -224,10 +224,10 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 | 32. Go 单语言计算器验证 | v1.9.1 | 0/5 | Not started | - |
 | 33. Python 单语言计算器验证 | v1.9.1 | 0/3 | Not started | - |
 | 34. 单语言问题修复 | v1.9.1 | 0/3 | Not started | - |
-| 35. Go+JS 全栈跨语言集成 | v1.9.1 | 0/4 | Not started | - |
+| 35. Go+JS 全栈跨语言集成 | v1.9.1 | 2/4 | In progress | 2026-04-18 |
 | 36. Python+TS 全栈跨语言集成 | v1.9.1 | 0/3 | Not started | - |
 | 37. 全栈问题修复 | v1.9.1 | 0/3 | Not started | - |
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-18 — Phase 35 planned (4 plans, 4 waves)*
+*Last updated: 2026-04-18 — Phase 35 Plan 02 complete (2/4 plans)*

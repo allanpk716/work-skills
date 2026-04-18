@@ -28,7 +28,7 @@
 
 全栈项目延续单语言的验证思路：前后端共享业务流，探针需捕获跨语言调用链路的完整调试信息。
 
-- [ ] **FULL-01**: 创建 Go+JS 全栈计算器项目，前端 JS 调用后端 Go API，业务流跨前后端且共享核心代码点
+- [x] **FULL-01**: 创建 Go+JS 全栈计算器项目，前端 JS 调用后端 Go API，业务流跨前后端且共享核心代码点
 - [ ] **FULL-02**: 在 Go+JS 项目上运行 `/codepoint:scan`，识别前后端各自的业务流及跨语言调用链路
 - [ ] **FULL-03**: Go 后端 collector 通过 `/__codepoint__/` 端点收集前端 JS 探针数据，验证跨语言探针联动
 - [ ] **FULL-04**: 运行全栈业务流程，验证同一跨语言代码点在不同流程下的完整调用链堆栈信息
@@ -66,7 +66,7 @@
 | FIX1-01 | Phase 34 | Pending |
 | FIX1-02 | Phase 34 | Pending |
 | FIX1-03 | Phase 34 | Pending |
-| FULL-01 | Phase 35 | Pending |
+| FULL-01 | Phase 35 | Done (35-01, 35-02) |
 | FULL-02 | Phase 35 | Pending |
 | FULL-03 | Phase 35 | Pending |
 | FULL-04 | Phase 35 | Pending |

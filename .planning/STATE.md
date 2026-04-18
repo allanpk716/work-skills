@@ -4,13 +4,13 @@ milestone: v1.9.1
 milestone_name: - Codepoint V2 E2E 测试
 status: executing
 last_updated: "2026-04-18T15:36:00.000Z"
-last_activity: 2026-04-18 — Phase 35 Plan 01 complete (Go backend with 3 API flows, enhanced collector)
+last_activity: 2026-04-18 — Phase 35 Plan 02 complete (React frontend with event-handler probes and go:embed integration)
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 17
-  completed_plans: 10
-  percent: 59
+  completed_plans: 11
+  percent: 65
 ---
 
 # STATE: Work Skills — Ready to Execute
@@ -30,11 +30,11 @@ See: .planning/PROJECT.md (updated 2026-04-18)
 ## Current Position
 
 Phase: 4 of 6 (Go+JS 全栈跨语言集成) — EXECUTING
-Plan: 1 of 4 complete (Plan 01 done, Plan 02 next)
-Status: Phase 35 Plan 01 completed, ready for Plan 02 (React frontend)
-Last activity: 2026-04-18 — Phase 35 Plan 01 complete (Go backend with 3 API flows, enhanced collector)
+Plan: 2 of 4 complete (Plans 01-02 done, Plan 03 next)
+Status: Phase 35 Plan 02 completed, ready for Plan 03 (codepoint scan)
+Last activity: 2026-04-18 — Phase 35 Plan 02 complete (React frontend with event-handler probes and go:embed integration)
 
-Progress: [████████████] 100% (Plan 01)
+Progress: [████████████] 100% (Plan 02)
 
 ## Shipped Milestones Summary
 
@@ -46,9 +46,9 @@ Progress: [████████████] 100% (Plan 01)
 
 **Velocity:**
 
-- Total plans completed (all milestones): 53
-- v1.9.1: 1 of 4 plans executed in Phase 35
-- Trend: Phase 35 Plan 01 complete in 6 min, Plan 02 (React frontend) next
+- Total plans completed (all milestones): 54
+- v1.9.1: 2 of 4 plans executed in Phase 35
+- Trend: Phase 35 Plan 02 complete in 5.5 min, Plan 03 (codepoint scan) next
 
 ## Accumulated Context
 
@@ -63,6 +63,8 @@ v1.9.1 decisions:
 - Test projects located in tmp/ directory within work-skills project
 - Enhanced collector with sync.Mutex for thread safety, flow_id routing to per-flow files, JSON output for meta-bearing entries
 - Module name gojs-calculator ensures output directory ~/.codepoint/gojs-calculator/ does not collide with ~/.codepoint/go-calculator/
+- All frontend probes in event handlers only (onClick, onKeyDown), not useEffect -- prevents React strict mode double-invocation
+- codepoint.ts copied verbatim from frontend.md template for dual-mode (browser POST + Node.js file write) compatibility
 
 ### Pending Todos
 
@@ -82,4 +84,4 @@ Items acknowledged and carried forward from previous milestone close:
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-18 — Phase 35 Plan 01 complete*
+*Last updated: 2026-04-18 — Phase 35 Plan 02 complete*

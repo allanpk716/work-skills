@@ -33,10 +33,10 @@
     },
     {
       "name": "codepoint",
-      "description": "Runtime probe-driven development skill for placing code points at critical execution paths to give AI runtime visibility into code",
+      "description": "Collection-based runtime observability: scan codebases, plan probe locations, implement with TDD verification",
       "source": "./plugins/codepoint",
       "category": "development",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": {
         "name": "allanpk716",
         "email": "allanpk716@gmail.com"

@@ -176,13 +176,13 @@ Plans:
   2. `/codepoint:scan` 识别前后端各自的业务流及跨语言调用链路，输出包含完整的调用链信息
   3. Go 后端 `/__codepoint__/` collector 端点正确收集前端 JS 探针数据，跨语言探针联动正常
   4. 运行全栈业务流程时，同一跨语言代码点在不同流程下输出完整的调用链堆栈信息，包含前端和后端部分
-**Plans:** 5 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] 35-01: 创建 Go+JS 全栈计算器项目（跨语言共享代码点架构）
-- [ ] 35-02: 运行 codepoint scan 并验证跨语言业务流识别
-- [ ] 35-03: 验证跨语言 collector 联动（前端探针 -> 后端收集）
-- [ ] 35-04: 多流程运行验证跨语言堆栈完整性
+- [ ] 35-01: 创建 Go 后端项目（calculator + API + 增强 collector + go:embed + 测试）— FULL-01
+- [ ] 35-02: 创建 React 前端（Vite 构建 + codepoint.ts + 三组件 + 构建+集成验证）— FULL-01
+- [ ] 35-03: 运行 codepoint scan 验证跨语言业务流识别 — FULL-02
+- [ ] 35-04: 验证 collector 联动 + 多流程跨语言堆栈完整性 — FULL-03, FULL-04
 
 ### Phase 36: Python+TS 全栈跨语言集成
 **Goal**: 用户可以在 Python+TS 全栈计算器上验证跨语言探针联动和 Toggle 机制，确认技能对 Python+TS 技术栈的完整支持
@@ -230,4 +230,4 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-18 — Phase 34 plans revised per cross-AI review (3 plans, 3 waves)*
+*Last updated: 2026-04-18 — Phase 35 planned (4 plans, 4 waves)*

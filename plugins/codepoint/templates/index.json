@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "project": "{{PROJECT_NAME}}",
+  "language": "{{LANGUAGE}}",
+  "created": "{{DATE}}",
+  "updated": "{{DATE}}",
+  "collections": [],
+  "flows": [],
+  "points": []
+}

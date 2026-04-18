@@ -6,9 +6,9 @@ import (
 
 // Record represents a single calculation history entry.
 type Record struct {
-	ID         int
-	Expression string
-	Result     any // string for success, error string for failure
+	ID         int    `json:"id"`
+	Expression string `json:"expression"`
+	Result     any    `json:"result"`
 }
 
 // HistoryStore is an in-memory store for calculation history.

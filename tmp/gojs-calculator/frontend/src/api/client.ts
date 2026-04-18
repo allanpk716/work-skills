@@ -55,5 +55,6 @@ export async function batchCalculate(expressions: string[]): Promise<BatchResult
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ expressions }),
   });
-  return res.json();
+  const data = await res.json();
+  return data.results || data;
 }

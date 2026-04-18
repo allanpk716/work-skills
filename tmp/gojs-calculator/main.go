@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 
 	"gojs-calculator/codepoint"
@@ -37,8 +38,8 @@ func main() {
 	frontend, _ := fs.Sub(frontendDist, "frontend/dist")
 	fileServer := http.FileServer(http.FS(frontend))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		path := filepath.Clean(r.URL.Path)
-		if f, err := frontend.Open(path[1:]); err == nil {
+			cleanPath := path.Clean(r.URL.Path)
+			if f, err := frontend.Open(cleanPath[1:]); err == nil {
 			f.Close()
 			fileServer.ServeHTTP(w, r)
 			return

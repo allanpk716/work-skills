@@ -1,0 +1,314 @@
+{
+  "version": "2.0",
+  "project": "gojs-calculator",
+  "languages": ["go", "typescript"],
+  "scanned_at": "2026-04-18T15:48:00.000Z",
+  "scan_mode": "manual-fallback",
+  "scan_notes": "Scan performed by analyzing source code. The codepoint skill does not have a separate automated scan tool -- /codepoint:scan is a methodology for identifying codepoints by reading source files. Both Go backend and TypeScript frontend source files were analyzed to identify all probe locations, business flows, and cross-language connections.",
+  "collections": [
+    {
+      "id": "col-fullstack-calculator",
+      "name": "Fullstack Calculator System",
+      "description": "Go+JS fullstack arithmetic calculator with REST API, batch processing, and history query flows. Frontend React components call backend Go API endpoints via fetch. Frontend probes POST to /__codepoint__ collector endpoint. Shared calculator.Evaluate() pipeline is the cross-language convergence point.",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+      "languages": ["go", "typescript"],
+      "cross_language_connections": [
+        {
+          "description": "Calculator flow: frontend handleSubmit -> fetch POST /api/calculate -> Go HandleCalculate -> calculator.Evaluate",
+          "frontend_entry": "cp-fe-calc-submit",
+          "api_route": "POST /api/calculate",
+          "backend_entry": "cp-api-calc-entry",
+          "shared_codepoint": "cp-calc-compute"
+        },
+        {
+          "description": "History flow: frontend handleClick -> fetch GET /api/history/{id} -> Go HandleHistoryGet -> calculator.Evaluate",
+          "frontend_entry": "cp-fe-history-click",
+          "api_route": "GET /api/history/{id}",
+          "backend_entry": "cp-history-entry",
+          "shared_codepoint": "cp-calc-compute"
+        },
+        {
+          "description": "Batch flow: frontend handleSubmit -> fetch POST /api/batch -> Go HandleBatch -> batch.ProcessExpressions -> calculator.Evaluate",
+          "frontend_entry": "cp-fe-batch-submit",
+          "api_route": "POST /api/batch",
+          "backend_entry": "cp-batch-entry",
+          "shared_codepoint": "cp-calc-compute"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow-api-calculate",
+      "name": "REST API Calculation (Fullstack)",
+      "trigger": "User clicks Calculate button in Calculator.tsx",
+      "frontend_entry": "frontend/src/components/Calculator.tsx:handleSubmit",
+      "api_route": "POST /api/calculate",
+      "backend_entry": "internal/api/server.go:HandleCalculate",
+      "sequence": [
+        "cp-fe-calc-submit",
+        "cp-api-calc-entry",
+        "cp-calc-parse",
+        "cp-calc-validate",
+        "cp-calc-compute",
+        "cp-calc-format",
+        "cp-api-calc-done",
+        "cp-fe-calc-response"
+      ],
+      "shared_points": ["cp-calc-parse", "cp-calc-validate", "cp-calc-compute", "cp-calc-format"],
+      "error_points": ["cp-fe-calc-error"],
+      "languages": ["typescript", "go"]
+    },
+    {
+      "id": "flow-history-query",
+      "name": "History Query with Recompute (Fullstack)",
+      "trigger": "User clicks history item in History.tsx",
+      "frontend_entry": "frontend/src/components/History.tsx:handleClick",
+      "api_route": "GET /api/history/{id}",
+      "backend_entry": "internal/api/server.go:HandleHistoryGet",
+      "sequence": [
+        "cp-fe-history-click",
+        "cp-history-entry",
+        "cp-history-lookup",
+        "cp-calc-parse",
+        "cp-calc-validate",
+        "cp-calc-compute",
+        "cp-calc-format",
+        "cp-history-done",
+        "cp-fe-history-detail"
+      ],
+      "shared_points": ["cp-calc-parse", "cp-calc-validate", "cp-calc-compute", "cp-calc-format"],
+      "error_points": ["cp-fe-history-error"],
+      "languages": ["typescript", "go"]
+    },
+    {
+      "id": "flow-batch-process",
+      "name": "Batch Processing (Fullstack)",
+      "trigger": "User clicks Calculate All button in BatchCalc.tsx",
+      "frontend_entry": "frontend/src/components/BatchCalc.tsx:handleSubmit",
+      "api_route": "POST /api/batch",
+      "backend_entry": "internal/api/server.go:HandleBatch",
+      "sequence": [
+        "cp-fe-batch-submit",
+        "cp-batch-entry",
+        "cp-calc-parse",
+        "cp-calc-validate",
+        "cp-calc-compute",
+        "cp-calc-format",
+        "cp-batch-done",
+        "cp-fe-batch-response"
+      ],
+      "shared_points": ["cp-calc-parse", "cp-calc-validate", "cp-calc-compute", "cp-calc-format"],
+      "error_points": ["cp-fe-batch-error"],
+      "languages": ["typescript", "go"]
+    }
+  ],
+  "points": [
+    {
+      "id": "cp-fe-calc-submit",
+      "language": "typescript",
+      "location": "frontend/src/components/Calculator.tsx:15",
+      "type": "entry",
+      "description": "Frontend: Calculator submit action (event handler)",
+      "flows": ["flow-api-calculate"],
+      "meta": { "point_id": "cp-fe-calc-submit", "flow_id": "flow-api-calculate" }
+    },
+    {
+      "id": "cp-fe-calc-response",
+      "language": "typescript",
+      "location": "frontend/src/components/Calculator.tsx:25",
+      "type": "state-change",
+      "description": "Frontend: Calculator response received (async continuation)",
+      "flows": ["flow-api-calculate"],
+      "meta": { "point_id": "cp-fe-calc-response", "flow_id": "flow-api-calculate" }
+    },
+    {
+      "id": "cp-fe-calc-error",
+      "language": "typescript",
+      "location": "frontend/src/components/Calculator.tsx:38",
+      "type": "error",
+      "description": "Frontend: Calculator network error caught",
+      "flows": ["flow-api-calculate"],
+      "meta": { "point_id": "cp-fe-calc-error", "flow_id": "flow-api-calculate" }
+    },
+    {
+      "id": "cp-fe-history-click",
+      "language": "typescript",
+      "location": "frontend/src/components/History.tsx:21",
+      "type": "entry",
+      "description": "Frontend: History item click (event handler)",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-fe-history-click", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-fe-history-detail",
+      "language": "typescript",
+      "location": "frontend/src/components/History.tsx:31",
+      "type": "state-change",
+      "description": "Frontend: History detail received (async continuation)",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-fe-history-detail", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-fe-history-error",
+      "language": "typescript",
+      "location": "frontend/src/components/History.tsx:43",
+      "type": "error",
+      "description": "Frontend: History network error caught",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-fe-history-error", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-fe-batch-submit",
+      "language": "typescript",
+      "location": "frontend/src/components/BatchCalc.tsx:23",
+      "type": "entry",
+      "description": "Frontend: Batch submit action (event handler)",
+      "flows": ["flow-batch-process"],
+      "meta": { "point_id": "cp-fe-batch-submit", "flow_id": "flow-batch-process" }
+    },
+    {
+      "id": "cp-fe-batch-response",
+      "language": "typescript",
+      "location": "frontend/src/components/BatchCalc.tsx:32",
+      "type": "state-change",
+      "description": "Frontend: Batch response received (async continuation)",
+      "flows": ["flow-batch-process"],
+      "meta": { "point_id": "cp-fe-batch-response", "flow_id": "flow-batch-process" }
+    },
+    {
+      "id": "cp-fe-batch-error",
+      "language": "typescript",
+      "location": "frontend/src/components/BatchCalc.tsx:40",
+      "type": "error",
+      "description": "Frontend: Batch network error caught",
+      "flows": ["flow-batch-process"],
+      "meta": { "point_id": "cp-fe-batch-error", "flow_id": "flow-batch-process" }
+    },
+    {
+      "id": "cp-api-calc-entry",
+      "language": "go",
+      "location": "internal/api/server.go:91",
+      "type": "entry",
+      "description": "Backend: Entry point for REST API calculation flow",
+      "flows": ["flow-api-calculate"],
+      "meta": { "point_id": "cp-api-calc-entry", "flow_id": "flow-api-calculate" }
+    },
+    {
+      "id": "cp-api-calc-done",
+      "language": "go",
+      "location": "internal/api/server.go:109",
+      "type": "state-change",
+      "description": "Backend: API calculation complete, result stored in history",
+      "flows": ["flow-api-calculate"],
+      "meta": { "point_id": "cp-api-calc-done", "flow_id": "flow-api-calculate" }
+    },
+    {
+      "id": "cp-batch-entry",
+      "language": "go",
+      "location": "internal/batch/processor.go:29",
+      "type": "entry",
+      "description": "Backend: Entry point for batch processing flow",
+      "flows": ["flow-batch-process"],
+      "meta": { "point_id": "cp-batch-entry", "flow_id": "flow-batch-process" }
+    },
+    {
+      "id": "cp-batch-done",
+      "language": "go",
+      "location": "internal/api/server.go:244",
+      "type": "state-change",
+      "description": "Backend: Batch processing complete, all results stored in history",
+      "flows": ["flow-batch-process"],
+      "meta": { "point_id": "cp-batch-done", "flow_id": "flow-batch-process" }
+    },
+    {
+      "id": "cp-history-entry",
+      "language": "go",
+      "location": "internal/api/server.go:137",
+      "type": "entry",
+      "description": "Backend: Entry point for history query flow",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-history-entry", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-history-lookup",
+      "language": "go",
+      "location": "internal/api/server.go:157",
+      "type": "boundary",
+      "description": "Backend: History store lookup before recompute through shared pipeline",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-history-lookup", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-history-done",
+      "language": "go",
+      "location": "internal/api/server.go:178",
+      "type": "state-change",
+      "description": "Backend: History recompute complete, response sent",
+      "flows": ["flow-history-query"],
+      "meta": { "point_id": "cp-history-done", "flow_id": "flow-history-query" }
+    },
+    {
+      "id": "cp-calc-parse",
+      "language": "go",
+      "location": "internal/calculator/calculator.go:139",
+      "type": "boundary",
+      "description": "Shared: Expression parsing (tokenizer) -- called by all three flows",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+      "meta": { "point_id": "cp-calc-parse" }
+    },
+    {
+      "id": "cp-calc-validate",
+      "language": "go",
+      "location": "internal/calculator/calculator.go:150",
+      "type": "boundary",
+      "description": "Shared: Token validation (syntax check) -- called by all three flows",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+      "meta": { "point_id": "cp-calc-validate" }
+    },
+    {
+      "id": "cp-calc-compute",
+      "language": "go",
+      "location": "internal/calculator/calculator.go:159",
+      "type": "state-change",
+      "description": "Shared: Expression evaluation (recursive descent) -- THE key shared codepoint across all flows",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+      "meta": { "point_id": "cp-calc-compute" }
+    },
+    {
+      "id": "cp-calc-format",
+      "language": "go",
+      "location": "internal/calculator/calculator.go:170",
+      "type": "boundary",
+      "description": "Shared: Result formatting -- called by all three flows",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+      "meta": { "point_id": "cp-calc-format" }
+    }
+  ],
+  "shared_codepoints_summary": {
+    "description": "calculator.Evaluate() contains 4 shared codepoints (cp-calc-parse, cp-calc-validate, cp-calc-compute, cp-calc-format) that are exercised by all three business flows. This is the convergence point where cross-language call chains can be compared.",
+    "shared_function": "calculator.Evaluate()",
+    "shared_function_location": "internal/calculator/calculator.go:136",
+    "shared_points": ["cp-calc-parse", "cp-calc-validate", "cp-calc-compute", "cp-calc-format"],
+    "flows_using_shared": ["flow-api-calculate", "flow-batch-process", "flow-history-query"],
+    "cross_language_verification": "When running the fullstack app, cp-calc-compute stack traces in cp-go-flow-*.log will show different caller chains depending on whether the trigger was HandleCalculate, HandleHistoryGet, or HandleBatch/ProcessExpressions. The corresponding frontend probes in cp-ts-flow-*.log confirm which user action initiated the flow."
+  },
+  "infrastructure": {
+    "collector": {
+      "endpoint": "POST /__codepoint__",
+      "implementation": "codepoint/collector.go",
+      "features": ["flow_id routing to per-flow files", "JSON output for meta-bearing entries", "sync.Mutex thread safety", "toggle-based enable/disable"]
+    },
+    "probe_libraries": {
+      "go": "codepoint/codepoint.go",
+      "typescript": "frontend/src/lib/codepoint.ts"
+    },
+    "output_directory": "~/.codepoint/gojs-calculator/",
+    "output_files": {
+      "go_general": "cp-go-{timestamp}.log",
+      "go_per_flow": "cp-go-{flow_id}-{timestamp}.log",
+      "ts_general": "cp-ts-{timestamp}.log",
+      "ts_per_flow": "cp-ts-{flow_id}-{timestamp}.log"
+    }
+  }
+}

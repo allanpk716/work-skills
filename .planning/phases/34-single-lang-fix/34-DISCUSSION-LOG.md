@@ -39,12 +39,12 @@
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| 不测技能自动化 | Phase 34 只关注修复模板和文档缺陷，技能自动化测试留给后续 milestone | ✓ |
-| 在现有项目中测试技能 | 在 go-calculator 或 python-calculator 上实际运行 /codepoint:scan、plan、implement | |
+| 不测技能自动化 | Phase 34 只关注修复模板和文档缺陷，技能自动化测试留给后续 milestone | |
+| 在现有项目中测试技能 | 在 go-calculator 或 python-calculator 上实际运行 /codepoint:scan、plan、implement | ✓ |
 | 新项目中测试技能 | 创建一个干净的项目，实际运行全部三个技能，验证从零开始的完整流程 | |
 
-**User's choice:** 不测技能自动化
-**Notes:** /codepoint:scan、plan、implement 的实际调用测试留给后续 milestone。
+**User's choice:** 在现有项目中测试技能
+**Notes:** 在现有 go-calculator/python-calculator 上实际运行技能验证完整工作流。
 
 ---
 
@@ -52,19 +52,19 @@
 
 | Option | Description | Selected |
 |--------|-------------|----------|
-| 34-DEFECTS.md 表格格式 | 在 Phase 34 目录下创建 34-DEFECTS.md，用表格记录每个缺陷的 ID、描述、复现步骤、修复状态 | ✓ |
-| 结构化 YAML/JSON | 在 Phase 34 目录下创建结构化 YAML/JSON 文件，每个缺陷一个条目 | |
+| 34-DEFECTS.md 表格格式 | 在 Phase 34 目录下创建 34-DEFECTS.md，用表格记录每个缺陷的 ID、描述、复现步骤、修复状态 | |
+| 结构化 YAML/JSON | 在 Phase 34 目录下创建结构化 YAML/JSON 文件，每个缺陷一个条目 | ✓ |
 | 追加到 SUMMARY.md | 在现有 SUMMARY.md 中追加"缺陷记录"章节 | |
 
-**User's choice:** 34-DEFECTS.md 表格格式
-**Notes:** 使用 Markdown 表格格式，包含 ID、描述、复现步骤、预期行为、修复状态列。
+**User's choice:** 结构化 YAML/JSON
+**Notes:** 使用结构化格式记录缺陷（如 34-DEFECTS.yaml），便于机器读取和自动化验证。
 
 ---
 
 ## Claude's Discretion
 
 - 缺陷修复的具体实施顺序（先修模板还是先修测试项目）
-- 34-DEFECTS.md 中每个缺陷的详细复现步骤编写
+- 结构化缺陷文件中每个缺陷的详细复现步骤编写
 
 ## Deferred Ideas
 

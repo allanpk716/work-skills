@@ -8,7 +8,7 @@
 
 记录并修复 Phase 32 (Go) 和 Phase 33 (Python) 单语言 E2E 测试中发现的所有技能缺陷，确认探针模板在实际项目中生成的代码可编译运行。
 
-本阶段不涉及技能自动化验证（/codepoint:scan、plan、implement 的实际调用测试）。
+本阶段包含在现有测试项目中实际运行 /codepoint:scan、/codepoint:plan、/codepoint:implement 技能进行验证。
 
 </domain>
 
@@ -26,14 +26,14 @@
 - **D-02:** 在现有 go-calculator 和 python-calculator 项目中验证修复后的模板代码。同时在 golang.md 和 python.md 参考文档中添加编译检查说明（go vet / python -c import）。
 
 ### 技能自动化验证
-- **D-03:** 不在本阶段测试技能自动化流程。/codepoint:scan、plan、implement 的实际调用测试留给后续 milestone。
+- **D-03:** 在现有 go-calculator 和/或 python-calculator 项目上实际运行 /codepoint:scan、/codepoint:plan、/codepoint:implement 技能，验证技能工作流的完整性和正确性。
 
 ### 缺陷文档格式
-- **D-04:** 创建 `34-DEFECTS.md` 文件，使用 Markdown 表格格式记录每个缺陷的 ID、描述、复现步骤、预期行为、修复状态。
+- **D-04:** 创建结构化 YAML/JSON 文件记录缺陷（如 34-DEFECTS.yaml），每个缺陷一个条目，包含 id、description、steps_to_reproduce、expected、actual、status 字段，便于机器读取和自动化验证。
 
 ### Claude's Discretion
 - 缺陷修复的具体实施顺序（先修模板还是先修测试项目）
-- 34-DEFECTS.md 中每个缺陷的详细复现步骤编写
+- 结构化缺陷文件中每个缺陷的详细复现步骤编写
 
 </decisions>
 

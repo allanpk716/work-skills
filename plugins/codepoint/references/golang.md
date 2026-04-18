@@ -691,3 +691,67 @@ net/http.(*ServeMux).ServeHTTP(...)
 // Always call Close() to flush buffered output
 defer codepoint.Close()
 ```
+
+---
+
+## V2 Probe Templates (with point_id and flow_id)
+
+V2 probes include `point_id` and `flow_id` in metadata, enabling collection-based querying.
+
+### Updated PointWithMeta Pattern
+
+```go
+// V2 probe: includes point_id and flow_id for collection indexing
+codepoint.PointWithMeta("cp-auth-check", map[string]any{
+    "point_id": "cp-auth-check",
+    "flow_id":  "flow-user-login",
+})
+
+// V2 probe with additional context
+codepoint.PointWithMeta("cp-order-validate-after", map[string]any{
+    "point_id": "cp-order-validate-after",
+    "flow_id":  "flow-order-create",
+    "order_id": order.ID,
+    "status":   "validated",
+})
+```
+
+### Full Flow Example (V2)
+
+```go
+func (s *OrderService) CreateOrder(ctx context.Context, req *CreateOrderReq) (*Order, error) {
+    codepoint.PointWithMeta("cp-order-create-entry", map[string]any{
+        "point_id": "cp-order-create-entry",
+        "flow_id":  "flow-order-create",
+    })
+
+    validated, err := s.validate(req)
+    codepoint.PointWithMeta("cp-order-after-validate", map[string]any{
+        "point_id": "cp-order-after-validate",
+        "flow_id":  "flow-order-create",
+    })
+    if err != nil {
+        codepoint.PointWithMeta("cp-order-validate-error", map[string]any{
+            "point_id": "cp-order-validate-error",
+            "flow_id":  "flow-order-create",
+            "error":    err.Error(),
+        })
+        return nil, err
+    }
+
+    priced, err := s.pricingEngine.Calculate(ctx, validated)
+    codepoint.PointWithMeta("cp-order-after-price", map[string]any{
+        "point_id": "cp-order-after-price",
+        "flow_id":  "flow-order-create",
+    })
+
+    saved, err := s.repo.Save(ctx, priced)
+    codepoint.PointWithMeta("cp-order-after-save", map[string]any{
+        "point_id": "cp-order-after-save",
+        "flow_id":  "flow-order-create",
+        "order_id": saved.ID,
+    })
+
+    return saved, nil
+}
+```

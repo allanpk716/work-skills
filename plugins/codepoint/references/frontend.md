@@ -570,3 +570,61 @@ node --async-stack-traces dist/index.js
 ```
 
 This makes `new Error().stack` inside async functions show the async call chain, which is critical for debugging promise-based flows.
+
+---
+
+## V2 Probe Templates (with point_id and flow_id)
+
+### Updated pointWithMeta Pattern
+
+```typescript
+import { pointWithMeta } from '@/lib/codepoint';
+
+// V2 probe: includes point_id and flow_id
+pointWithMeta('cp-auth-check', {
+  point_id: 'cp-auth-check',
+  flow_id: 'flow-user-login',
+});
+
+// V2 probe with additional context
+pointWithMeta('cp-order-validate-after', {
+  point_id: 'cp-order-validate-after',
+  flow_id: 'flow-order-create',
+  order_id: order.id,
+  status: 'validated',
+});
+```
+
+### Full Flow Example (V2)
+
+```typescript
+class OrderService {
+  async create(data: OrderCreate): Promise<Order> {
+    pointWithMeta('cp-order-create-entry', {
+      point_id: 'cp-order-create-entry',
+      flow_id: 'flow-order-create',
+    });
+
+    const validated = this.validate(data);
+    pointWithMeta('cp-order-after-validate', {
+      point_id: 'cp-order-after-validate',
+      flow_id: 'flow-order-create',
+    });
+
+    const priced = await this.pricing.calculate(validated);
+    pointWithMeta('cp-order-after-price', {
+      point_id: 'cp-order-after-price',
+      flow_id: 'flow-order-create',
+    });
+
+    const saved = await this.repo.save(priced);
+    pointWithMeta('cp-order-after-save', {
+      point_id: 'cp-order-after-save',
+      flow_id: 'flow-order-create',
+      order_id: saved.id,
+    });
+
+    return saved;
+  }
+}
+```

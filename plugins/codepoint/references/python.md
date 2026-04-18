@@ -750,3 +750,59 @@ pytest tests/ -s
 ```json
 {"name": "route_orders_create_entry", "timestamp": "...", "thread": "MainThread", "frames": [{"file": "/app/handlers/orders.py", "line": 15, "func": "create_order", "code": "..."}]}
 ```
+
+---
+
+## V2 Probe Templates (with point_id and flow_id)
+
+### Updated point_json Pattern
+
+```python
+from codepoint import point_json
+
+# V2 probe: includes point_id and flow_id
+point_json("cp-auth-check", {
+    "point_id": "cp-auth-check",
+    "flow_id": "flow-user-login",
+})
+
+# V2 probe with additional context
+point_json("cp-order-validate-after", {
+    "point_id": "cp-order-validate-after",
+    "flow_id": "flow-order-create",
+    "order_id": order.id,
+    "status": "validated",
+})
+```
+
+### Full Flow Example (V2)
+
+```python
+class OrderService:
+    async def create(self, data: OrderCreate) -> Order:
+        point_json("order-service-create-entry", {
+            "point_id": "cp-order-create-entry",
+            "flow_id": "flow-order-create",
+        })
+
+        validated = self._validate(data)
+        point_json("order-service-after-validate", {
+            "point_id": "cp-order-after-validate",
+            "flow_id": "flow-order-create",
+        })
+
+        priced = await self.pricing.calculate(validated)
+        point_json("order-service-after-price", {
+            "point_id": "cp-order-after-price",
+            "flow_id": "flow-order-create",
+        })
+
+        saved = await self.repo.save(priced)
+        point_json("order-service-after-save", {
+            "point_id": "cp-order-after-save",
+            "flow_id": "flow-order-create",
+            "order_id": saved.id,
+        })
+
+        return saved
+```

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.9.1
 milestone_name: - Codepoint V2 E2E 测试
 status: executing
-last_updated: "2026-04-18T22:30:00.000Z"
-last_activity: 2026-04-18 — Phase 35 planned (4 plans, 4 waves)
+last_updated: "2026-04-18T15:36:00.000Z"
+last_activity: 2026-04-18 — Phase 35 Plan 01 complete (Go backend with 3 API flows, enhanced collector)
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 17
-  completed_plans: 9
-  percent: 53
+  completed_plans: 10
+  percent: 59
 ---
 
 # STATE: Work Skills — Ready to Execute
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-18)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 34 complete — 单语言问题修复验证通过
+**Current focus:** Phase 35 Plan 01 complete — Go backend with enhanced collector ready for frontend integration
 
 ## Current Position
 
-Phase: 4 of 6 (Go+JS 全栈跨语言集成) — PLANNED
-Plan: 4 plans in 4 waves — Ready to execute
-Status: Phase 35 planned, awaiting execution
-Last activity: 2026-04-18 — Phase 35 planned (4 plans, 4 waves)
+Phase: 4 of 6 (Go+JS 全栈跨语言集成) — EXECUTING
+Plan: 1 of 4 complete (Plan 01 done, Plan 02 next)
+Status: Phase 35 Plan 01 completed, ready for Plan 02 (React frontend)
+Last activity: 2026-04-18 — Phase 35 Plan 01 complete (Go backend with 3 API flows, enhanced collector)
 
-Progress: [██████████] 100%
+Progress: [████████████] 100% (Plan 01)
 
 ## Shipped Milestones Summary
 
@@ -46,9 +46,9 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed (all milestones): 52
-- v1.9.1: 13 of 17 plans planned
-- Trend: Phase 35 planned (4 plans, 4 waves)
+- Total plans completed (all milestones): 53
+- v1.9.1: 1 of 4 plans executed in Phase 35
+- Trend: Phase 35 Plan 01 complete in 6 min, Plan 02 (React frontend) next
 
 ## Accumulated Context
 
@@ -61,6 +61,8 @@ v1.9.1 decisions:
 - Test project methodology: progressive validation -> fix -> deeper validation -> fix (SING -> FIX1 -> FULL -> FIX2 interleaved pattern)
 - Calculator test projects must have 3+ business flows sharing core computation code points (parse -> validate -> compute -> format) to verify probe captures different stack traces across flows
 - Test projects located in tmp/ directory within work-skills project
+- Enhanced collector with sync.Mutex for thread safety, flow_id routing to per-flow files, JSON output for meta-bearing entries
+- Module name gojs-calculator ensures output directory ~/.codepoint/gojs-calculator/ does not collide with ~/.codepoint/go-calculator/
 
 ### Pending Todos
 
@@ -68,7 +70,7 @@ None.
 
 ### Blockers/Concerns
 
-None yet. FIX1 and FIX2 phases depend on test results — scope of fixes cannot be estimated until E2E testing reveals actual defects.
+- `-race` flag crashes on this Windows CGO environment (DLL entry point 0xc0000139). Thread safety validated by concurrent test design but race detector unavailable.
 
 ## Deferred Items
 
@@ -80,4 +82,4 @@ Items acknowledged and carried forward from previous milestone close:
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-18 — Phase 35 planned (4 plans, 4 waves)*
+*Last updated: 2026-04-18 — Phase 35 Plan 01 complete*

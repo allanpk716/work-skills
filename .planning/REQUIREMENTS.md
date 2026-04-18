@@ -55,33 +55,33 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SING-01 | — | Pending |
-| SING-02 | — | Pending |
-| SING-03 | — | Pending |
-| SING-04 | — | Pending |
-| SING-05 | — | Pending |
-| SING-06 | — | Pending |
-| SING-07 | — | Pending |
-| SING-08 | — | Pending |
-| FIX1-01 | — | Pending |
-| FIX1-02 | — | Pending |
-| FIX1-03 | — | Pending |
-| FULL-01 | — | Pending |
-| FULL-02 | — | Pending |
-| FULL-03 | — | Pending |
-| FULL-04 | — | Pending |
-| FULL-05 | — | Pending |
-| FULL-06 | — | Pending |
-| FULL-07 | — | Pending |
-| FIX2-01 | — | Pending |
-| FIX2-02 | — | Pending |
-| FIX2-03 | — | Pending |
+| SING-01 | Phase 32 | Pending |
+| SING-02 | Phase 32 | Pending |
+| SING-03 | Phase 32 | Pending |
+| SING-04 | Phase 32 | Pending |
+| SING-05 | Phase 32 | Pending |
+| SING-06 | Phase 33 | Pending |
+| SING-07 | Phase 33 | Pending |
+| SING-08 | Phase 33 | Pending |
+| FIX1-01 | Phase 34 | Pending |
+| FIX1-02 | Phase 34 | Pending |
+| FIX1-03 | Phase 34 | Pending |
+| FULL-01 | Phase 35 | Pending |
+| FULL-02 | Phase 35 | Pending |
+| FULL-03 | Phase 35 | Pending |
+| FULL-04 | Phase 35 | Pending |
+| FULL-05 | Phase 36 | Pending |
+| FULL-06 | Phase 36 | Pending |
+| FULL-07 | Phase 36 | Pending |
+| FIX2-01 | Phase 37 | Pending |
+| FIX2-02 | Phase 37 | Pending |
+| FIX2-03 | Phase 37 | Pending |
 
 **Coverage:**
 - v1.9.1 requirements: 21 total
-- Mapped to phases: 0 ⚠️
-- Unmapped: 21 ⚠️
+- Mapped to phases: 21
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-18*
-*Last updated: 2026-04-18 after requirement redesign*
+*Last updated: 2026-04-18 — roadmap traceability added*

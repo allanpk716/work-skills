@@ -222,6 +222,19 @@ def _extract_frames(stack: str) -> set[str]:
     return frames
 ```
 
+## Quick Import Check
+
+After copying the base library to your project, verify it imports:
+
+```bash
+cd your-project
+python -c "import codepoint; print('OK')"
+```
+
+Expected: `OK`.
+
+This catches syntax errors and missing dependencies before you start adding probes.
+
 ## FastAPI / Flask Patterns
 
 ### FastAPI Middleware Chain

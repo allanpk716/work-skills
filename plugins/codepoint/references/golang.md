@@ -390,6 +390,22 @@ func extractFrames(stack string) map[string]bool {
 }
 ```
 
+## Quick Compile Check
+
+After copying the base library to your project, verify it compiles:
+
+```bash
+cd your-project
+go build ./codepoint/...
+go vet ./codepoint/...
+```
+
+Expected: zero errors.
+
+This catches type mismatches (e.g., `Frame` not being package-level) before you start adding probes.
+
+> **Note:** The base library requires **Go 1.22+** (uses `http.NewServeMux` routing patterns). Verify your `go.mod` declares at least `go 1.22`.
+
 ## Placement Patterns
 
 ### 1. HTTP Handler Chain

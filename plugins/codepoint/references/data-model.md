@@ -54,6 +54,53 @@ Each probe outputs JSON with point_id and flow_id:
 }
 ```
 
+## Per-Flow File Output (V2)
+
+When V2 probes include `flow_id` in metadata, entries are routed to **flow-specific log files** instead of a single mixed file. This makes per-flow analysis immediate — the filename tells you which flow the data belongs to.
+
+### Routing Rules
+
+| Call | flow_id | Target File |
+|------|---------|-------------|
+| `Point(name)` | N/A | General file |
+| `PointJSON(name)` | N/A | General file |
+| `PointWithMeta(name, meta)` | non-empty string | Flow-specific file |
+| `PointWithMeta(name, meta)` | empty / missing / non-string | General file |
+
+### File Naming
+
+All files in the same session share a timestamp for correlation:
+
+```
+~/.codepoint/<project>/
+├── cp-go-2026-04-18_17-22-46_982.log                        ← general (no flow_id)
+├── cp-go-flow-api-calculate-2026-04-18_17-22-46_982.log     ← flow-api-calculate
+├── cp-go-flow-batch-process-2026-04-18_17-22-46_982.log     ← flow-batch-process
+└── cp-go-flow-history-query-2026-04-18_17-22-46_982.log     ← flow-history-query
+```
+
+- General: `cp-{lang}-{timestamp}.log`
+- Per-flow: `cp-{lang}-{sanitized-flow-id}-{timestamp}.log`
+
+### Directory Naming
+
+Output directory uses the **project module name** (e.g., from `go.mod`), not the CWD basename. Falls back to CWD basename if no module file found.
+
+### Flow ID Sanitization
+
+Flow IDs are sanitized for filesystem safety: only `[a-zA-Z0-9._-]` preserved, all other characters replaced with `-`, consecutive dashes collapsed.
+
+### Flow File Headers
+
+Each flow file includes a header identifying the flow:
+
+```
+# Code Point Log (Go) — Flow: flow-api-calculate
+# Project: my-api
+# Session: 2026-04-18T17:22:46.982+08:00
+# Flow ID: flow-api-calculate
+```
+
 ## Density Validation
 
 - Too dense (overlap > 80%): Remove points

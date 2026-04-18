@@ -14,9 +14,21 @@
 
 **Enable**: `touch ~/.codepoint/.codepoint-go`
 **Disable**: `rm ~/.codepoint/.codepoint-go`
-**Output**: `~/.codepoint/<project-dir-name>/cp-go-YYYY-MM-DD_HH-MM-SS_mmm.log`
 
-The base library detects the toggle file at startup and auto-creates the output directory + log file. All code point output goes to the log file automatically — no stderr redirection needed.
+**Output structure** (per-flow file separation):
+
+```
+~/.codepoint/<project>/
+├── cp-go-2026-04-18_17-22-46_982.log                        ← general (no flow_id)
+├── cp-go-flow-api-calculate-2026-04-18_17-22-46_982.log     ← flow-api-calculate
+├── cp-go-flow-batch-process-2026-04-18_17-22-46_982.log     ← flow-batch-process
+└── cp-go-flow-history-query-2026-04-18_17-22-46_982.log     ← flow-history-query
+```
+
+- Directory name: derived from `go.mod` module name (falls back to CWD basename)
+- General file: entries without `flow_id` (`Point()`, `PointJSON()`, `PointWithMeta` without flow_id)
+- Flow file: entries with matching `flow_id`, created lazily on first occurrence
+- All files in same session share the same timestamp for correlation
 
 ## Base Library
 
@@ -37,10 +49,21 @@ import (
 	"time"
 )
 
+type sessionState struct {
+	mu        sync.Mutex
+	outDir    string
+	timestamp string
+	millis    int
+	startTime time.Time
+	project   string
+
+	general   *os.File
+	flowFiles map[string]*os.File
+}
+
 var (
 	enabled  bool
-	outFile  io.Writer
-	closeFn  func()
+	session  *sessionState
 	initOnce sync.Once
 )
 
@@ -51,19 +74,15 @@ func init() {
 	}
 	togglePath := filepath.Join(home, ".codepoint", ".codepoint-go")
 	if _, err := os.Stat(togglePath); err != nil {
-		return // file doesn't exist → disabled
+		return // file doesn't exist -> disabled
 	}
 	enabled = true
 
-	// Project name = current working directory basename
-	cwd, _ := os.Getwd()
-	projectName := filepath.Base(cwd)
+	projectName := detectModuleName()
 
-	// Output directory: ~/.codepoint/<project>/
 	outDir := filepath.Join(home, ".codepoint", projectName)
 	os.MkdirAll(outDir, 0755)
 
-	// Output file: cp-go-YYYY-MM-DD_HH-MM-SS_mmm.log
 	now := time.Now()
 	ts := now.Format("2006-01-02_15-04-05")
 	ms := now.Nanosecond() / 1e6
@@ -71,22 +90,66 @@ func init() {
 
 	f, err := os.OpenFile(filepath.Join(outDir, filename), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
-		// Fallback to stderr if file creation fails
-		outFile = os.Stderr
+		// Fallback: disable if file creation fails
 		return
 	}
-	outFile = f
-	closeFn = func() { f.Close() }
 
-	// Write header
-	fmt.Fprintf(outFile, "# Code Point Log (Go)\n# Project: %s\n# Started: %s\n# Toggle: %s\n\n",
+	session = &sessionState{
+		outDir:    outDir,
+		timestamp: ts,
+		millis:    ms,
+		startTime: now,
+		project:   projectName,
+		general:   f,
+		flowFiles: make(map[string]*os.File),
+	}
+
+	fmt.Fprintf(f, "# Code Point Log (Go)\n# Project: %s\n# Session: %s\n# Toggle: %s\n\n",
 		projectName, now.Format(time.RFC3339Nano), togglePath)
 }
 
-// Close flushes and closes the output file. Call on graceful shutdown.
+// detectModuleName walks up from CWD to find go.mod and extract the module name.
+// Falls back to CWD basename if go.mod not found.
+func detectModuleName() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return "unknown"
+	}
+	for {
+		modPath := filepath.Join(dir, "go.mod")
+		data, err := os.ReadFile(modPath)
+		if err == nil {
+			for _, line := range strings.Split(string(data), "\n") {
+				line = strings.TrimSpace(line)
+				if strings.HasPrefix(line, "module ") {
+					return strings.TrimSpace(strings.TrimPrefix(line, "module"))
+				}
+			}
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break // filesystem root
+		}
+		dir = parent
+	}
+	return filepath.Base(dir)
+}
+
+// Close flushes and closes all output files. Call on graceful shutdown.
 func Close() {
-	if closeFn != nil {
-		closeFn()
+	if session == nil {
+		return
+	}
+	session.mu.Lock()
+	defer session.mu.Unlock()
+
+	if session.general != nil {
+		session.general.Close()
+		session.general = nil
+	}
+	for id, f := range session.flowFiles {
+		f.Close()
+		delete(session.flowFiles, id)
 	}
 }
 
@@ -95,25 +158,50 @@ func IsEnabled() bool {
 	return enabled
 }
 
-// OutputPath returns the log file path, or "" if disabled.
+// OutputPath returns the general log file path, or "" if disabled.
 func OutputPath() string {
-	if !enabled {
+	if !enabled || session == nil {
 		return ""
 	}
-	if f, ok := outFile.(*os.File); ok {
-		return f.Name()
+	session.mu.Lock()
+	defer session.mu.Unlock()
+	if session.general == nil {
+		return ""
 	}
-	return ""
+	return session.general.Name()
+}
+
+// OutputPaths returns all log file paths (general + all flow files).
+func OutputPaths() []string {
+	if !enabled || session == nil {
+		return nil
+	}
+	session.mu.Lock()
+	defer session.mu.Unlock()
+
+	var paths []string
+	if session.general != nil {
+		paths = append(paths, session.general.Name())
+	}
+	for _, f := range session.flowFiles {
+		paths = append(paths, f.Name())
+	}
+	return paths
 }
 
 // Point captures a stack trace at the call site. Zero cost when disabled.
 func Point(name string) {
-	if !enabled {
+	if !enabled || session == nil {
 		return
 	}
 	buf := make([]byte, 8192)
 	n := runtime.Stack(buf, false)
-	fmt.Fprintf(outFile, "[CODEPOINT] %s\n%s\n", name, string(buf[:n]))
+
+	session.mu.Lock()
+	defer session.mu.Unlock()
+	if session.general != nil {
+		fmt.Fprintf(session.general, "[CODEPOINT] %s\n%s\n", name, string(buf[:n]))
+	}
 }
 
 // CollectStack returns the stack as a string for programmatic use.
@@ -126,15 +214,17 @@ func CollectStack(name string) string {
 	return fmt.Sprintf("[CODEPOINT] %s\n%s", name, string(buf[:n]))
 }
 
+// Frame represents a single stack frame.
+type Frame struct {
+	Function string `json:"function"`
+	File     string `json:"file"`
+	Line     int    `json:"line"`
+}
+
 // PointJSON emits a structured JSON code point entry.
 func PointJSON(name string) {
-	if !enabled {
+	if !enabled || session == nil {
 		return
-	}
-	type Frame struct {
-		Function string `json:"function"`
-		File     string `json:"file"`
-		Line     int    `json:"line"`
 	}
 	type Entry struct {
 		Name      string  `json:"name"`
@@ -154,14 +244,33 @@ func PointJSON(name string) {
 	}
 
 	data, _ := json.Marshal(entry)
-	fmt.Fprintf(outFile, "%s\n", data)
+
+	session.mu.Lock()
+	defer session.mu.Unlock()
+	if session.general != nil {
+		fmt.Fprintf(session.general, "%s\n", data)
+	}
 }
 
 // PointWithMeta captures stack + custom metadata.
+// If meta contains a non-empty "flow_id" string, the entry is routed to a
+// flow-specific log file. Otherwise it goes to the general file.
 func PointWithMeta(name string, meta map[string]any) {
-	if !enabled {
+	if !enabled || session == nil {
 		return
 	}
+
+	// Extract flow_id before lock (meta is caller-owned)
+	flowID := ""
+	if meta != nil {
+		if v, ok := meta["flow_id"]; ok {
+			if s, ok := v.(string); ok && s != "" {
+				flowID = s
+			}
+		}
+	}
+
+	// Capture stack outside lock (expensive ~8KB copy)
 	buf := make([]byte, 8192)
 	n := runtime.Stack(buf, false)
 
@@ -178,7 +287,56 @@ func PointWithMeta(name string, meta map[string]any) {
 		Meta:      meta,
 		Stack:     string(buf[:n]),
 	})
-	fmt.Fprintf(outFile, "%s\n", data)
+
+	session.mu.Lock()
+	defer session.mu.Unlock()
+
+	if flowID != "" {
+		w := session.getOrCreateFlowFile(flowID)
+		fmt.Fprintf(w, "%s\n", data)
+	} else if session.general != nil {
+		fmt.Fprintf(session.general, "%s\n", data)
+	}
+}
+
+// getOrCreateFlowFile returns the file handle for a flow, creating it lazily.
+// Must be called with session.mu held.
+func (s *sessionState) getOrCreateFlowFile(flowID string) io.Writer {
+	if f, ok := s.flowFiles[flowID]; ok {
+		return f
+	}
+
+	safeName := sanitizeFlowID(flowID)
+	filename := fmt.Sprintf("cp-go-%s-%s_%03d.log", safeName, s.timestamp, s.millis)
+	f, err := os.OpenFile(filepath.Join(s.outDir, filename), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		// Fallback to general file on error
+		if s.general != nil {
+			return s.general
+		}
+		return io.Discard
+	}
+
+	fmt.Fprintf(f, "# Code Point Log (Go) - Flow: %s\n# Project: %s\n# Session: %s\n# Flow ID: %s\n\n",
+		safeName, s.project, s.startTime.Format(time.RFC3339Nano), flowID)
+
+	s.flowFiles[flowID] = f
+	return f
+}
+
+// sanitizeFlowID replaces characters unsafe for filenames with '-'.
+func sanitizeFlowID(flowID string) string {
+	safe := strings.Map(func(r rune) rune {
+		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') ||
+			(r >= '0' && r <= '9') || r == '.' || r == '-' || r == '_' {
+			return r
+		}
+		return '-'
+	}, flowID)
+	for strings.Contains(safe, "--") {
+		safe = strings.ReplaceAll(safe, "--", "-")
+	}
+	return safe
 }
 
 // AnalyzeOverlap computes stack frame overlap between two captured stacks.
@@ -200,16 +358,8 @@ func AnalyzeOverlap(stack1, stack2 string) float64 {
 
 // --- internal ---
 
-func parseGoStack(stack string) []struct {
-	Function string `json:"function"`
-	File     string `json:"file"`
-	Line     int    `json:"line"`
-} {
-	var frames []struct {
-		Function string `json:"function"`
-		File     string `json:"file"`
-		Line     int    `json:"line"`
-	}
+func parseGoStack(stack string) []Frame {
+	var frames []Frame
 	lines := strings.Split(stack, "\n")
 	for i := 0; i < len(lines)-1; i++ {
 		fn := strings.TrimSpace(lines[i])
@@ -220,11 +370,7 @@ func parseGoStack(stack string) []struct {
 		if !strings.HasPrefix(loc, "\t") && !strings.HasPrefix(loc, "/") {
 			continue
 		}
-		frames = append(frames, struct {
-			Function string `json:"function"`
-			File     string `json:"file"`
-			Line     int    `json:"line"`
-		}{Function: fn, File: loc})
+		frames = append(frames, Frame{Function: fn, File: loc})
 		i++ // skip the file:line pair
 	}
 	return frames
@@ -468,12 +614,11 @@ func initCollector() {
 	}
 	togglePath := filepath.Join(home, ".codepoint", ".codepoint-ts")
 	if _, err := os.Stat(togglePath); err != nil {
-		return // no toggle file → frontend code points disabled
+		return // no toggle file -> frontend code points disabled
 	}
 	tsEnabled = true
 
-	cwd, _ := os.Getwd()
-	projectName := filepath.Base(cwd)
+	projectName := detectModuleName()
 	outDir := filepath.Join(home, ".codepoint", projectName)
 	os.MkdirAll(outDir, 0755)
 
@@ -489,7 +634,7 @@ func initCollector() {
 	tsOutFile = f
 	tsCloseFn = func() { f.Close() }
 
-	fmt.Fprintf(f, "# Code Point Log (TypeScript via Go Collector)\n# Project: %s\n# Started: %s\n# Toggle: %s\n\n",
+	fmt.Fprintf(f, "# Code Point Log (TypeScript via Go Collector)\n# Project: %s\n# Session: %s\n# Toggle: %s\n\n",
 		projectName, now.Format(time.RFC3339Nano), togglePath)
 }
 
@@ -571,17 +716,18 @@ func main() {
 ### How It Works
 
 1. **Go starts**, checks `~/.codepoint/.codepoint-ts`:
-   - Exists → opens `cp-ts-*.log`, enables `/__codepoint__` endpoint
-   - Absent → `/__codepoint__` returns 404
+   - Exists -> opens `cp-ts-*.log`, enables `/__codepoint__` endpoint
+   - Absent -> `/__codepoint__` returns 404
 2. **Browser loads frontend**, calls `point("some_name")`:
    - POSTs to `/__codepoint__`
-   - If 2xx → stack trace written to `cp-ts-*.log`
-   - If 404 → stops sending (production or toggle off)
+   - If 2xx -> stack trace written to `cp-ts-*.log`
+   - If 404 -> stops sending (production or toggle off)
 3. **Result**: Both Go and frontend code points in `~/.codepoint/<project>/`:
    ```
-   ~/.codepoint/my-project/
-   ├── cp-go-2026-04-17_15-30-45_123.log   ← Go backend
-   └── cp-ts-2026-04-17_15-30-45_456.log   ← Frontend (via collector)
+   ~/.codepoint/my-api/
+   ├── cp-go-2026-04-17_15-30-45_123.log                        <- Go backend (general)
+   ├── cp-go-flow-user-login-2026-04-17_15-30-45_123.log        <- Go flow-specific
+   └── cp-ts-2026-04-17_15-30-45_456.log                        <- Frontend (via collector)
    ```
 
 ## Density Validation
@@ -643,7 +789,7 @@ rm ~/.codepoint/.codepoint-go
 # 1. Enable (one-time setup)
 touch ~/.codepoint/.codepoint-go
 
-# 2. Run your service — output goes to ~/.codepoint/<project>/cp-go-*.log automatically
+# 2. Run your service — output goes to ~/.codepoint/<project>/ per-flow files
 go run ./...
 
 # 3. Trigger the business scenario
@@ -652,37 +798,35 @@ curl http://localhost:8080/api/users
 # 4. Check where the output went
 ls ~/.codepoint/<project-name>/
 
-# 5. In Claude Code session, feed the log to AI:
-#   "Read ~/.codepoint/my-api/cp-go-2026-04-17_15-30-45_123.log and analyze the execution paths"
+# 5. Read a specific flow's log:
+#   cat ~/.codepoint/my-api/cp-go-flow-user-login-2026-04-17_15-30-45_123.log
+
+# 6. Or read all flows combined:
+#   cat ~/.codepoint/my-api/cp-go-*.log
 ```
 
 ### Output File Location
 
 ```
 ~/.codepoint/
-├── .codepoint-go                          # toggle file (exists = enabled)
-├── my-api/                                # Go project
-│   ├── cp-go-2026-04-17_15-30-45_123.log  # first debug session
-│   └── cp-go-2026-04-17_16-22-10_456.log  # second debug session
+├── .codepoint-go                                               # toggle file (exists = enabled)
+├── my-api/                                                     # Go project (from go.mod module name)
+│   ├── cp-go-2026-04-17_15-30-45_123.log                      # general (no flow_id)
+│   ├── cp-go-flow-user-login-2026-04-17_15-30-45_123.log      # user login flow
+│   ├── cp-go-flow-user-register-2026-04-17_15-30-45_123.log   # user register flow
+│   └── cp-go-flow-order-create-2026-04-17_15-30-45_123.log    # order create flow
 ```
 
-### Output Format
+### Flow File Format
 
 ```
-# Code Point Log (Go)
+# Code Point Log (Go) - Flow: flow-user-login
 # Project: my-api
-# Started: 2026-04-17T15:30:45.123456789+08:00
-# Toggle: /home/user/.codepoint/.codepoint-go
+# Session: 2026-04-17T15:30:45.123456789+08:00
+# Flow ID: flow-user-login
 
-[CODEPOINT] users_handler_entry
-goroutine 1 [running]:
-main.handleUsers(...)
-        /app/main.go:15 +0x3a
-net/http.HandlerFunc.ServeHTTP(...)
-        /usr/local/go/src/net/http/server.go:2136 +0x37
-net/http.(*ServeMux).ServeHTTP(...)
-        /usr/local/go/src/net/http/server.go:2514 +0x194
-...
+{"name":"cp-login-entry","timestamp":"2026-04-17T15:30:45.2Z","meta":{"point_id":"cp-login-entry","flow_id":"flow-user-login"},"stack":"..."}
+{"name":"cp-auth-check","timestamp":"2026-04-17T15:30:45.3Z","meta":{"point_id":"cp-auth-check","flow_id":"flow-user-login"},"stack":"..."}
 ```
 
 ### Graceful Shutdown

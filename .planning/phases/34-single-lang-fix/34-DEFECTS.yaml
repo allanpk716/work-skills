@@ -1,0 +1,114 @@
+# Phase 34: Single-Language Defects Record
+# Generated: 2026-04-18
+# Source: Phase 32 (Go) E2E test deviations
+# Phase 33 (Python): 0 defects found - not included
+
+phase: "34-single-lang-fix"
+source_phases:
+  - "32-go-single-lang-calc"
+  - "33-python-single-lang-calc"
+
+defects:
+  - id: DEV-01
+    category: template
+    severity: high
+    template: golang.md
+    discovered_in: "Phase 32, Plan 01"
+    description: |
+      golang.md template: parseGoStack returns anonymous struct incompatible with PointJSON internal Frame type.
+      Frame was defined inside PointJSON as a local type, while parseGoStack returned a separate anonymous struct.
+      This caused template code to fail compilation: parseGoStack return value could not be assigned to Entry.Frames ([]Frame).
+    steps_to_reproduce: |
+      1. Copy Base Library code from golang.md to new project codepoint/codepoint.go
+      2. Create go.mod (module template-test)
+      3. Run go build ./codepoint/...
+      4. Compilation fails: undefined: Frame
+    expected: "Frame is package-level type, parseGoStack returns []Frame, entire Base Library compiles independently"
+    actual: "Frame defined inside PointJSON, parseGoStack returns anonymous struct, compilation fails"
+    status: fixed
+    fixed_in: "commit 088f086"
+    fixed_by: "Phase 32 Plan 01"
+    verification: |
+      golang.md template independent compilation:
+      cd tmp/template-test/go && go build ./...
+      Expected: zero errors
+      [VERIFIED: 2026-04-18]
+
+  - id: DEV-02
+    category: test_project
+    severity: low
+    template: null
+    discovered_in: "Phase 32, Plan 01"
+    description: |
+      go-calculator/internal/history/store.go contains unused fmt import.
+      The file imported fmt during implementation but never used it, causing go vet to report unused import error.
+    steps_to_reproduce: |
+      1. Enter go-calculator project
+      2. Run go vet ./internal/history/...
+      3. Error: imported and not used: "fmt"
+    expected: "All imports are used, go vet zero warnings"
+    actual: "store.go contains unused fmt import"
+    status: fixed
+    fixed_in: "Phase 32 Plan 01 (code fix)"
+    fixed_by: "Phase 32 Plan 01"
+    verification: |
+      cd tmp/go-calculator && go vet ./...
+      Expected: zero warnings
+      [VERIFIED: 2026-04-18 - go vet no output]
+
+  - id: DEV-03
+    category: test_project
+    severity: medium
+    template: null
+    discovered_in: "Phase 32, Plan 01"
+    description: |
+      go-calculator test expectation for (2+3)*4-10/2 is incorrect.
+      Correct answer is 15.0 ((2+3)*4=20, 20-10/2=20-5=15), but test expected 10.0.
+      This is a test assertion error, not a business logic defect.
+    steps_to_reproduce: |
+      1. Enter go-calculator project
+      2. Run go test ./internal/calculator/... -run TestEvaluate -v
+      3. Observe: expected value 10.0 does not match actual 15.0
+    expected: "Test expects (2+3)*4-10/2 = 15.0, matching calculator.Evaluate actual result"
+    actual: "Test expected 10.0, causing test failure (actual result is 15.0)"
+    status: fixed
+    fixed_in: "Phase 32 Plan 01 (test fix)"
+    fixed_by: "Phase 32 Plan 01"
+    verification: |
+      cd tmp/go-calculator && go test ./internal/calculator/... -run TestEvaluate -v
+      Expected: PASS
+      [VERIFIED: 2026-04-18 - 31 tests PASS]
+
+  - id: DEV-04
+    category: test_project
+    severity: medium
+    template: null
+    discovered_in: "Phase 32, Plan 01"
+    description: |
+      go-calculator History test calls handler directly, bypassing HTTP mux PathValue extraction.
+      Direct http.Request calls do not go through http.NewServeMux route matching,
+      causing r.PathValue("id") to return empty string, preventing correct history query testing.
+    steps_to_reproduce: |
+      1. Enter go-calculator project
+      2. Run go test ./internal/api/... -run TestHistory -v
+      3. Observe: test calls HandleHistoryGet directly, r.PathValue("id") returns ""
+    expected: "Test routes through mux (srv.ServeHTTP), correctly extracting URL path parameters"
+    actual: "Test calls handler function directly, PathValue cannot extract parameters"
+    status: fixed
+    fixed_in: "Phase 32 Plan 01 (test fix)"
+    fixed_by: "Phase 32 Plan 01"
+    verification: |
+      cd tmp/go-calculator && go test ./internal/api/... -run TestHistory -v
+      Expected: PASS - test routes via srv.ServeHTTP
+      [VERIFIED: 2026-04-18 - API tests all PASS]
+
+summary:
+  total_defects: 4
+  template_defects: 1
+  test_project_defects: 3
+  all_fixed: true
+  python_defects: 0
+  notes: |
+    Phase 33 (Python) E2E testing found no defects.
+    All 4 Go defects were fixed during Phase 32 execution and verified.
+    Phase 34 core work: formalize fix records and verify template compilation.

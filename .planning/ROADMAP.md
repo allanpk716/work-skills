@@ -28,12 +28,13 @@
 - [x] Phase 39: 调研文档归档与整理 (2/2 plans) — completed 2026-04-19
   - [x] 39-01-PLAN.md -- 创建目录结构并归档主调研文档和配图
   - [x] 39-02-PLAN.md -- 归档 workspace 和后续分享，更新项目文档
-- [ ] Phase 40: Codepoint 设计反省与改进评估 (2 plans)
+- [ ] Phase 40: Codepoint 设计反省与改进评估 (1 plan)
+  - [ ] 40-01-PLAN.md -- 方法论对照审查与设计反省文档
 
 </details>
 
 <details>
-<summary>✅ v1.9.1 Codepoint V2 E2E 测试 (Phases 32-37) — SHIPPED 2026-04-19</summary>
+<summary>v1.9.1 Codepoint V2 E2E 测试 (Phases 32-37) — SHIPPED 2026-04-19</summary>
 
 - [x] Phase 32: Go 单语言计算器验证 (5/5 plans) — completed 2026-04-18
 - [x] Phase 33: Python 单语言计算器验证 (3/3 plans) — completed 2026-04-18
@@ -143,4 +144,4 @@
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-19 — Phase 38 complete*
+*Last updated: 2026-04-19 — Phase 40 planned*

@@ -209,9 +209,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 37-01-PLAN.md — 创建 37-DEFECTS.yaml 结构化缺陷记录（8 defects: 3 template + 5 test_project）
-- [ ] 37-02-PLAN.md — 更新 golang.md 和 python.md 技能模板（enhanced collector + meta writing + Windows SPA fix）
-- [ ] 37-03-PLAN.md — 重新验证 gojs-calculator 和 pyts-calculator 所有修复（编译 + 测试 + 定向检查）
+- [ ] 37-01-PLAN.md — 创建 37-DEFECTS.yaml 结构化缺陷记录（8 defects with root_cause: 3 template + 5 test_project）
+- [ ] 37-02-PLAN.md — 更新 golang.md 和 python.md 技能模板（enhanced collector + inline comments + separated SPA fix + integration notes）
+- [ ] 37-03-PLAN.md — 重新验证所有修复 + 模板模式验证 + Windows 特定检查（3 tasks: test projects + template grep + Windows checks）
 
 ## Progress
 

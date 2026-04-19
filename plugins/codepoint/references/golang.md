@@ -614,13 +614,20 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
 var (
-	tsEnabled bool
-	tsOutFile *os.File
-	tsCloseFn func()
+	tsEnabled   bool
+	tsOutFile   *os.File
+	tsOutDir    string
+	tsTimestamp string
+	tsMillis    int
+	tsProject   string
+	tsFlowFiles map[string]*os.File // Per-flow file routing — maps flow_id to dedicated log file
+	tsMu        sync.Mutex          // Protects concurrent browser requests from corrupting the tsFlowFiles map and file writes
+	tsCloseFns  []func()
 )
 
 func initCollector() {
@@ -647,22 +654,42 @@ func initCollector() {
 	if err != nil {
 		return
 	}
+
 	tsOutFile = f
-	tsCloseFn = func() { f.Close() }
+	tsOutDir = outDir
+	tsTimestamp = ts
+	tsMillis = ms
+	tsProject = projectName
+	tsFlowFiles = make(map[string]*os.File)
 
 	fmt.Fprintf(f, "# Code Point Log (TypeScript via Go Collector)\n# Project: %s\n# Session: %s\n# Toggle: %s\n\n",
 		projectName, now.Format(time.RFC3339Nano), togglePath)
+
+	tsCloseFns = append(tsCloseFns, func() { f.Close() })
 }
 
 func init() {
 	initCollector()
 }
 
-// CloseCollector flushes and closes the frontend collector output file.
+// CloseCollector flushes and closes the frontend collector output file and all flow files.
+// Must be called on server shutdown to flush all file handles.
 func CloseCollector() {
-	if tsCloseFn != nil {
-		tsCloseFn()
+	tsMu.Lock()
+	defer tsMu.Unlock()
+
+	if tsOutFile != nil {
+		tsOutFile.Close()
+		tsOutFile = nil
 	}
+	for id, f := range tsFlowFiles {
+		f.Close()
+		delete(tsFlowFiles, id)
+	}
+	for _, fn := range tsCloseFns {
+		fn()
+	}
+	tsCloseFns = nil
 }
 
 // FrontendEntry is the JSON payload sent from the browser.
@@ -677,7 +704,10 @@ type FrontendEntry struct {
 // Register it at POST /__codepoint__.
 //
 // When the toggle file (~/.codepoint/.codepoint-ts) is absent, returns 404.
-// The frontend library stops sending after one 404 — zero overhead in production.
+// The frontend library stops sending after one 404 -- zero overhead in production.
+//
+// Routes entries containing flow_id (from PointWithMeta) to separate per-flow log
+// files for cross-language correlation.
 func CollectorHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !tsEnabled || tsOutFile == nil {
@@ -689,11 +719,114 @@ func CollectorHandler() http.HandlerFunc {
 			http.Error(w, "bad request", http.StatusBadRequest)
 			return
 		}
-		fmt.Fprintf(tsOutFile, "[CODEPOINT] %s\n%s\n", entry.Name, entry.Stack)
+
+		// Extract flow_id from meta
+		flowID := ""
+		if entry.Meta != nil {
+			if v, ok := entry.Meta["flow_id"]; ok {
+				if s, ok := v.(string); ok && s != "" {
+					flowID = s
+				}
+			}
+		}
+
+		tsMu.Lock()
+		defer tsMu.Unlock()
+
+		if flowID != "" {
+			// Route to flow-specific file (matching Go side behavior)
+			fw := getOrCreateTsFlowFile(flowID)
+			// Meta-bearing entries written as JSON for parseable output
+			data, _ := json.Marshal(map[string]any{
+				"name":      entry.Name,
+				"timestamp": entry.Timestamp,
+				"meta":      entry.Meta,
+				"stack":     entry.Stack,
+			})
+			fmt.Fprintf(fw, "%s\n", data)
+		} else if entry.Meta != nil && len(entry.Meta) > 0 {
+			// Has meta but no flow_id -> general file, JSON format
+			data, _ := json.Marshal(map[string]any{
+				"name":      entry.Name,
+				"timestamp": entry.Timestamp,
+				"meta":      entry.Meta,
+				"stack":     entry.Stack,
+			})
+			fmt.Fprintf(tsOutFile, "%s\n", data)
+		} else {
+			// No meta -- use legacy plain-text format for backward compatibility
+			fmt.Fprintf(tsOutFile, "[CODEPOINT] %s\n%s\n", entry.Name, entry.Stack)
+		}
+
 		w.WriteHeader(http.StatusNoContent)
 	}
 }
+
+// getOrCreateTsFlowFile returns (or creates) the flow-specific log file for the given flowID.
+// Caller MUST hold tsMu before calling this function.
+func getOrCreateTsFlowFile(flowID string) *os.File {
+	if f, ok := tsFlowFiles[flowID]; ok {
+		return f
+	}
+
+	// sanitizeFlowID replaces unsafe filename characters
+	safeName := sanitizeFlowID(flowID)
+	filename := fmt.Sprintf("cp-ts-%s-%s_%03d.log", safeName, tsTimestamp, tsMillis)
+	f, err := os.OpenFile(filepath.Join(tsOutDir, filename), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		if tsOutFile != nil {
+			return tsOutFile
+		}
+		return nil
+	}
+
+	fmt.Fprintf(f, "# Code Point Log (TypeScript via Go Collector) - Flow: %s\n# Project: %s\n# Session: %s\n# Flow ID: %s\n\n",
+		safeName, tsProject, time.Now().Format(time.RFC3339Nano), flowID)
+
+	tsFlowFiles[flowID] = f
+	return f
+}
 ```
+
+### Windows SPA Fallback Fix
+
+When using `embed.FS` to serve a Single-Page Application, Windows developers may encounter a pitfall: `embed.FS` uses **forward slashes** internally (even on Windows), but `filepath.Clean` converts paths to backslashes. This causes embedded file lookups to fail silently.
+
+Use `path.Clean` (NOT `filepath.Clean`) when working with `embed.FS` paths:
+
+```go
+import (
+	"io/fs"
+	"net/http"
+	"path" // NOT "path/filepath" — embed.FS uses forward slashes
+)
+
+// SPA fallback handler for embedded frontend
+mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	cleanPath := path.Clean(r.URL.Path)
+	if f, err := frontend.Open(cleanPath[1:]); err == nil {
+		f.Close()
+		fileServer.ServeHTTP(w, r)
+		return
+	}
+	// File not found in embed.FS — serve index.html for client-side routing
+	http.ServeFileFS(w, r, frontend, "index.html")
+})
+```
+
+> **Note:** This is a web framework concern, not a codepoint instrumentation concern. It is documented here because Go+Frontend projects commonly encounter it during setup.
+
+### Integration Notes
+
+The enhanced collector coordinates with the base library's `PointWithMeta` to provide end-to-end flow tracing:
+
+- **Backend** probes using `codepoint.PointWithMeta("name", map[string]any{"flow_id": "flow-user-login"})` write to `cp-go-flow-user-login-*.log`
+- **Frontend** probes sending `meta: { flow_id: "flow-user-login" }` via POST to `/__codepoint__` write to `cp-ts-flow-user-login-*.log`
+- Both files share the same `flow_id` value, enabling cross-language correlation: match entries by `flow_id` to trace a request from button click through backend processing
+
+File naming convention:
+- Backend flow files: `cp-go-flow-<sanitized-flow-id>-<timestamp>.log`
+- Frontend flow files: `cp-ts-flow-<sanitized-flow-id>-<timestamp>.log`
 
 ### Integration with Go Server
 
@@ -704,26 +837,39 @@ package main
 import (
 	"codepoint"
 	"embed"
+	"io/fs"
 	"net/http"
+	"path"
 )
 
 //go:embed dist/*
 var frontendDist embed.FS
 
 func main() {
-	defer codepoint.Close()        // flush Go code points
+	defer codepoint.Close()          // flush Go code points
 	defer codepoint.CloseCollector() // flush frontend code points
 
 	mux := http.NewServeMux()
 
 	// Register the frontend collector endpoint
-	mux.HandleFunc("/__codepoint__", codepoint.CollectorHandler())
+	mux.HandleFunc("POST /__codepoint__", codepoint.CollectorHandler())
 
 	// API routes
 	mux.HandleFunc("/api/users", handleUsers)
 
-	// Serve embedded frontend (must be last — catches all other routes)
-	mux.Handle("/", http.FileServer(http.FS(frontendDist)))
+	// SPA fallback: serve embedded frontend (must be last — catches all other routes)
+	// Use path.Clean (NOT filepath.Clean) — embed.FS requires forward slashes
+	frontend, _ := fs.Sub(frontendDist, "dist")
+	fileServer := http.FileServer(http.FS(frontend))
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		cleanPath := path.Clean(r.URL.Path)
+		if f, err := frontend.Open(cleanPath[1:]); err == nil {
+			f.Close()
+			fileServer.ServeHTTP(w, r)
+			return
+		}
+		http.ServeFileFS(w, r, frontend, "index.html")
+	})
 
 	http.ListenAndServe(":8080", mux)
 }
@@ -736,14 +882,16 @@ func main() {
    - Absent -> `/__codepoint__` returns 404
 2. **Browser loads frontend**, calls `point("some_name")`:
    - POSTs to `/__codepoint__`
-   - If 2xx -> stack trace written to `cp-ts-*.log`
+   - If 2xx -> stack trace written to `cp-ts-*.log` (general or flow-specific)
    - If 404 -> stops sending (production or toggle off)
 3. **Result**: Both Go and frontend code points in `~/.codepoint/<project>/`:
    ```
    ~/.codepoint/my-api/
    ├── cp-go-2026-04-17_15-30-45_123.log                        <- Go backend (general)
    ├── cp-go-flow-user-login-2026-04-17_15-30-45_123.log        <- Go flow-specific
-   └── cp-ts-2026-04-17_15-30-45_456.log                        <- Frontend (via collector)
+   ├── cp-ts-2026-04-17_15-30-45_456.log                        <- Frontend (general)
+   ├── cp-ts-flow-api-calculate-2026-04-17_15-30-45_456.log     <- Frontend flow-specific
+   └── cp-ts-flow-user-login-2026-04-17_15-30-45_456.log        <- Frontend flow-specific
    ```
 
 ## Density Validation

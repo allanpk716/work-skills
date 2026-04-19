@@ -106,7 +106,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ## Current Milestone: v1.9.2 — Codepoint 测试归档与调研文档整理
 
-**Status:** Planning complete. Execute via `/gsd-plan-phase 38`.
+**Status:** Phase 38-39 complete. Phase 40 (Codepoint 设计反省与改进评估) next.
 
 ### Active
 

@@ -22,9 +22,9 @@
 <details>
 <summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — IN PROGRESS</summary>
 
-- [ ] Phase 38: E2E 测试项目迁移 (2 plans)
-  - [ ] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
-  - [ ] 38-02-PLAN.md -- 清理 tmp/ 并更新文档引用
+- [x] Phase 38: E2E 测试项目迁移 (2/2 plans) — completed 2026-04-19
+  - [x] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
+  - [x] 38-02-PLAN.md -- 清理 tmp/ 并更新文档引用
 - [ ] Phase 39: 调研文档归档与整理 (2 plans)
 - [ ] Phase 40: Codepoint 设计反省与改进评估 (2 plans)
 
@@ -131,6 +131,7 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
+| 38. E2E 测试项目迁移 | v1.9.2 | 2/2 | Complete | 2026-04-19 |
 | 32. Go 单语言计算器验证 | v1.9.1 | 5/5 | Complete | 2026-04-18 |
 | 33. Python 单语言计算器验证 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
 | 34. 单语言问题修复 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
@@ -140,4 +141,4 @@
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-19 — v1.9.1 shipped*
+*Last updated: 2026-04-19 — Phase 38 complete*

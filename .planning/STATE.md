@@ -1,22 +1,22 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.9.1
-milestone_name: shipped
-status: planning_next
-last_updated: "2026-04-19T06:00:00.000Z"
+milestone: v1.9.2
+milestone_name: Codepoint 测试归档与调研文档整理
+status: planning_complete
+last_updated: "2026-04-19T14:10:00.000Z"
 last_activity: 2026-04-19
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 18
-  completed_plans: 21
-  percent: 100
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 6
+  completed_plans: 0
+  percent: 0
 ---
 
-# STATE: Work Skills — Ready to Execute
+# STATE: Work Skills — v1.9.2 Ready to Execute
 
 **Last Updated:** 2026-04-19
-**Milestone:** v1.9.1 shipped — ready for next milestone
+**Milestone:** v1.9.2 — Codepoint 测试归档与调研文档整理
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -25,15 +25,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-19)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** v1.9.1 shipped — planning next milestone via /gsd-new-milestone
+**Current focus:** v1.9.2 — E2E 测试项目迁移 + 调研文档归档
 
 ## Current Position
 
-Phase: 6 of 6 (全栈问题修复) — COMPLETE
-Status: All 6 phases executed, 21 plans completed
-Last activity: 2026-04-19 — Phase 37 executed and verified
+Phase: 0 of 3 — READY
+Status: Phase 38 planned (2 plans, 2 waves)
+Last activity: 2026-04-19 — Phase 38 planned
 
-Progress: [████████████] 100% (3/3 plans, Phase 37; 4/4 plans, Phase 35; 2/2 plans, Phase 36)
+Progress: [          ] 0%
+
+## Next Actions
+
+1. `/gsd-plan-phase 38` — E2E 测试项目迁移
+2. `/gsd-plan-phase 39` — 调研文档归档与整理
+3. `/gsd-plan-phase 40` — Codepoint 设计反省与改进评估
 
 ## Shipped Milestones Summary
 
@@ -47,28 +53,26 @@ Progress: [████████████] 100% (3/3 plans, Phase 37; 4/4 
 **Velocity:**
 
 - Total plans completed (all milestones): 82
-- v1.9.1: 6 phases, 20 plans (Phases 32-37) — shipped 2026-04-19
+- v1.9.2: 3 phases, 6 plans (estimated)
 
 ## Accumulated Context
 
 ### Decisions
 
+v1.9.2 decisions:
+
+- E2E 测试项目迁移到 `tests/e2e/codepoint-v2/` 保持独立完整性
+- 调研文档归档到 `docs/research/codepoint/` 便于后续追加
+- tmp/ 目录迁移完成后清空
+- Phase 40 新增：根据原作者最新经验反省 Codepoint 技能设计
+
+### Roadmap Evolution
+
+- Phase 38 added: E2E 测试项目迁移
+- Phase 39 added: 调研文档归档与整理
+- Phase 40 added: Codepoint 设计反省与改进评估
+
 See PROJECT.md Key Decisions table for full history.
-
-v1.9.1 decisions:
-
-- Test project methodology: progressive validation -> fix -> deeper validation -> fix (SING -> FIX1 -> FULL -> FIX2 interleaved pattern)
-- Calculator test projects must have 3+ business flows sharing core computation code points (parse -> validate -> compute -> format) to verify probe captures different stack traces across flows
-- Test projects located in tmp/ directory within work-skills project
-- Enhanced collector with sync.Mutex for thread safety, flow_id routing to per-flow files, JSON output for meta-bearing entries
-- Module name gojs-calculator ensures output directory ~/.codepoint/gojs-calculator/ does not collide with ~/.codepoint/go-calculator/
-- All frontend probes in event handlers only (onClick, onKeyDown), not useEffect -- prevents React strict mode double-invocation
-- codepoint.ts copied verbatim from frontend.md template for dual-mode (browser POST + Node.js file write) compatibility
-- [Phase 36]: Python+TS 全栈使用 FastAPI 后端 + React TS 前端，StaticFiles 集成，完整 Toggle 四组合验证
-- [Phase 36]: 项目命名 pyts-calculator，结构与 gojs-calculator 一致
-
-- [Phase 36]: collector.py receive() must write meta field to cp-ts log for flow_id correlation
-- [Phase 36]: _kill_port_holder() pattern prevents orphaned server processes on Windows
 
 ### Pending Todos
 
@@ -76,7 +80,7 @@ None.
 
 ### Blockers/Concerns
 
-- `-race` flag crashes on this Windows CGO environment (DLL entry point 0xc0000139). Thread safety validated by concurrent test design but race detector unavailable.
+None.
 
 ## Deferred Items
 
@@ -95,4 +99,4 @@ Items acknowledged and deferred at v1.9.1 milestone close on 2026-04-19:
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-19 — v1.9.1 shipped, ready for next milestone*
+*Last updated: 2026-04-19 — v1.9.2 planned*

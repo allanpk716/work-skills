@@ -168,7 +168,7 @@ git add tests/e2e/codepoint-v2/go-calculator/
 ## Runtime State Inventory
 
 | Category | Items Found | Action Required |
-|----------|-------------|------------------|
+|----------|-------------|-----------------|
 | Stored data | None -- test projects are stateless (no databases, no persistent stores) | None |
 | Live service config | None -- no external services depend on tmp/ paths | None |
 | OS-registered state | None -- no OS-level registrations (no Task Scheduler, no systemd, no pm2) | None |
@@ -280,27 +280,31 @@ cd tests/e2e/codepoint-v2/pyts-calculator && python -m pytest tests/test_calcula
 
 **If this table is empty:** Not applicable -- 4 assumptions documented.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should gojs-calculator.exe be committed to the new location?**
    - What we know: It exists on disk (8.9MB) but is not tracked by git
    - What's unclear: Whether it should be tracked at the new location
    - Recommendation: No -- binaries should not be in git. Users can `go build` if needed.
+   - RESOLVED: Plan 01 Task 1 Step 4 deletes the .exe before migration. Plan adds .gitignore with `*.exe` pattern to prevent future commits.
 
 2. **Should .playwright-cli/ logs be preserved?**
    - What we know: Contains test execution logs from E2E verification (39KB, not tracked)
    - What's unclear: Whether these logs have diagnostic value worth preserving
    - Recommendation: No -- they are ephemeral test artifacts, not source code.
+   - RESOLVED: Plan 01 Task 1 Step 4 deletes .playwright-cli/ before migration. Plan adds .gitignore with `.playwright-cli/` pattern.
 
 3. **Should node_modules/ be restored after migration?**
    - What we know: ~240MB total across gojs-calculator and pyts-calculator frontends
    - What's unclear: Whether frontend testing will be run from the new location
    - Recommendation: No -- restore only if/when needed via `npm install`.
+   - RESOLVED: Plan 01 Task 1 Step 4 deletes node_modules/ before migration. Plan adds .gitignore with `node_modules/` pattern. No `npm install` in plan -- restore on demand only.
 
 4. **Should the archived milestone docs (926 references to tmp/) be updated?**
    - What we know: `.planning/milestones/` contains 926 references to tmp/ paths
    - What's unclear: Whether historical phase documents should be updated
    - Recommendation: No -- they are archived historical records. Updating them would destroy their accuracy as historical artifacts. Only active docs (PROJECT.md, STATE.md) need updating.
+   - RESOLVED: Plan 02 Task 2 explicitly excludes .planning/milestones/ from updates (Step 1 grep excludes milestones/, Step 6 final verification excludes milestones/).
 
 ## Environment Availability
 
@@ -422,7 +426,7 @@ Untracked artifacts to NOT migrate:
 - `frontend/public/` (favicon.svg, icons.svg -- only on disk, not tracked)
 
 ### pyts-calculator (TRACKED - 30 files in git, 34 on disk)
-Tracked files to `git mv`:
+Tracked files to migrate:
 ```
 api/__init__.py, server.py
 batch/__init__.py, processor.py

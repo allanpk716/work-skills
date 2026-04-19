@@ -52,8 +52,13 @@ def receive(entry: dict[str, Any]) -> bool:
         return False
     name = entry.get("name", "unknown")
     stack = entry.get("stack", "")
+    meta = entry.get("meta")
     with _ts_lock:
-        _ts_out.write(f"[CODEPOINT] {name}\n{stack}\n")
+        if meta:
+            import json as _json
+            _ts_out.write(f"[CODEPOINT] {name}\n{stack}\nmeta: {_json.dumps(meta)}\n")
+        else:
+            _ts_out.write(f"[CODEPOINT] {name}\n{stack}\n")
         _ts_out.flush()
     return True
 

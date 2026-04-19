@@ -25,7 +25,7 @@
 - [ ] **Phase 32: Go 单语言计算器验证** - 创建 Go 计算器项目并完成 scan/plan/implement 全流程验证
 - [ ] **Phase 33: Python 单语言计算器验证** - 创建 Python 计算器项目并完成 scan/plan/implement 全流程验证
 - [x] **Phase 34: 单语言问题修复** - 记录并修复单语言 E2E 测试中发现的所有技能缺陷 (3/3 plans, completed 2026-04-18)
-- [ ] **Phase 35: Go+JS 全栈跨语言集成** - 创建 Go+JS 全栈计算器并验证跨语言探针联动
+- [x] **Phase 35: Go+JS 全栈跨语言集成** - 创建 Go+JS 全栈计算器并验证跨语言探针联动 (4/4 plans, completed 2026-04-19)
 - [ ] **Phase 36: Python+TS 全栈跨语言集成** - 创建 Python+TS 全栈计算器并验证跨语言探针联动
 - [ ] **Phase 37: 全栈问题修复** - 记录并修复全栈 E2E 测试中发现的所有技能缺陷
 
@@ -176,13 +176,13 @@ Plans:
   2. `/codepoint:scan` 识别前后端各自的业务流及跨语言调用链路，输出包含完整的调用链信息
   3. Go 后端 `/__codepoint__/` collector 端点正确收集前端 JS 探针数据，跨语言探针联动正常
   4. 运行全栈业务流程时，同一跨语言代码点在不同流程下输出完整的调用链堆栈信息，包含前端和后端部分
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 35-01: 创建 Go 后端项目（calculator + API + 增强 collector + go:embed + 测试）— FULL-01
 - [x] 35-02: 创建 React 前端（Vite 构建 + codepoint.ts + 三组件 + 构建+集成验证）— FULL-01 (completed 2026-04-18)
 - [x] 35-03: 运行 codepoint scan 验证跨语言业务流识别 — FULL-02
-- [ ] 35-04: 验证 collector 联动 + 多流程跨语言堆栈完整性 — FULL-03, FULL-04
+- [x] 35-04: 验证 collector 联动 + 多流程跨语言堆栈完整性 — FULL-03, FULL-04
 
 ### Phase 36: Python+TS 全栈跨语言集成
 **Goal**: 用户可以在 Python+TS 全栈计算器上验证跨语言探针联动和 Toggle 机制，确认技能对 Python+TS 技术栈的完整支持
@@ -224,10 +224,10 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 | 32. Go 单语言计算器验证 | v1.9.1 | 0/5 | Not started | - |
 | 33. Python 单语言计算器验证 | v1.9.1 | 0/3 | Not started | - |
 | 34. 单语言问题修复 | v1.9.1 | 0/3 | Not started | - |
-| 35. Go+JS 全栈跨语言集成 | v1.9.1 | 3/4 | In Progress|  |
+| 35. Go+JS 全栈跨语言集成 | v1.9.1 | 4/4 | Complete | 2026-04-19 |
 | 36. Python+TS 全栈跨语言集成 | v1.9.1 | 0/3 | Not started | - |
 | 37. 全栈问题修复 | v1.9.1 | 0/3 | Not started | - |
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-18 — Phase 35 Plan 02 complete (2/4 plans)*
+*Last updated: 2026-04-19 — Phase 35 complete (4/4 plans)*

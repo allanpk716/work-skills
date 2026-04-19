@@ -26,6 +26,8 @@
   - [x] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
   - [x] 38-02-PLAN.md -- 清理 tmp/ 并更新文档引用
 - [ ] Phase 39: 调研文档归档与整理 (2 plans)
+  - [ ] 39-01-PLAN.md -- 创建目录结构并归档主调研文档和配图
+  - [ ] 39-02-PLAN.md -- 归档 workspace 和后续分享，更新项目文档
 - [ ] Phase 40: Codepoint 设计反省与改进评估 (2 plans)
 
 </details>

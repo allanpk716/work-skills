@@ -29,10 +29,10 @@
 **Priority:** P0
 **Rationale:** 代码点方法论原作者的分享是技能设计的核心参考，需要持久化归档以便未来查阅和讨论。
 
-- [ ] 创建 `docs/research/codepoint/` 目录
-- [ ] 归档原始调研文档（来自 `C:\WorkSpace\agent\researche\代码点调研.md`）
-- [ ] 追加作者后续分享内容（2026-04-19 关于全局思维埋点的补充）
-- [ ] 建立文档结构便于后续追加作者的新分享
+- [x] 创建 `docs/research/codepoint/` 目录
+- [x] 归档原始调研文档（来自 `C:\WorkSpace\agent\researche\代码点调研.md`）
+- [x] 追加作者后续分享内容（2026-04-19 关于全局思维埋点的补充）
+- [x] 建立文档结构便于后续追加作者的新分享
 
 ### R3: 目录结构标准化
 
@@ -41,7 +41,7 @@
 
 - [x] `tests/e2e/codepoint-v2/` 目录命名与版本对应
 - [x] 每个测试项目保持独立完整性（可独立运行）
-- [ ] `docs/research/codepoint/` 目录以日期命名追加文档
+- [x] `docs/research/codepoint/` 目录以日期命名追加文档
 
 ### R4: Codepoint 设计反省与改进评估
 

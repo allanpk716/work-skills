@@ -111,7 +111,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 ### Active
 
 - [x] R1: E2E 测试项目已从 `tmp/` 迁移到 `tests/e2e/codepoint-v2/` (Phase 38)
-- [ ] R2: 调研文档归档到 `docs/research/codepoint/` (Phase 39)
+- [x] R2: 调研文档归档到 `docs/research/codepoint/` (Phase 39)
 - [x] R3: 目录结构标准化 (Phase 38)
 
 ### Out of Scope
@@ -138,7 +138,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - 测试覆盖: 105 个 Python 测试 + E2E 验证项目
 - Codepoint V2 技能已通过 E2E 验证（Go/Python 单语言 + Go+JS/Python+TS 全栈）
 - E2E 测试项目已迁移到 tests/e2e/codepoint-v2/（5 个项目：go-calculator, python-calculator, gojs-calculator, pyts-calculator, template-test）
-- 代码点方法论调研文档待归档到 docs/research/codepoint/
+- 代码点方法论调研文档已归档到 docs/research/codepoint/（含主文档、配图、workspace 开发记录）
 - 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
 
 ## Key Decisions

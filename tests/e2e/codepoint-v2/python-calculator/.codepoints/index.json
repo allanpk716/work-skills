@@ -1,0 +1,111 @@
+{
+  "version": 2,
+  "project": "python-calculator",
+  "language": "python",
+  "collections": [
+    {
+      "id": "col-calculator",
+      "name": "Python Calculator",
+      "description": "Multi-flow calculator with shared core pipeline"
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow-api-calculate",
+      "name": "REST API Calculate",
+      "entry": "api/server.py::CalculatorHandler._handle_calculate",
+      "shared_path": true
+    },
+    {
+      "id": "flow-batch-process",
+      "name": "Batch Processing",
+      "entry": "batch/processor.py::process_expressions",
+      "shared_path": true
+    },
+    {
+      "id": "flow-history-query",
+      "name": "History Query (Recompute)",
+      "entry": "api/server.py::CalculatorHandler._handle_history_get",
+      "shared_path": true
+    }
+  ],
+  "points": [
+    {
+      "id": "cp-api-calc-entry",
+      "file": "api/server.py",
+      "function": "_handle_calculate",
+      "type": "entry",
+      "flows": ["flow-api-calculate"]
+    },
+    {
+      "id": "cp-api-calc-done",
+      "file": "api/server.py",
+      "function": "_handle_calculate",
+      "type": "exit",
+      "flows": ["flow-api-calculate"]
+    },
+    {
+      "id": "cp-batch-entry",
+      "file": "batch/processor.py",
+      "function": "process_expressions",
+      "type": "entry",
+      "flows": ["flow-batch-process"]
+    },
+    {
+      "id": "cp-batch-done",
+      "file": "batch/processor.py",
+      "function": "process_expressions",
+      "type": "exit",
+      "flows": ["flow-batch-process"]
+    },
+    {
+      "id": "cp-history-entry",
+      "file": "api/server.py",
+      "function": "_handle_history_get",
+      "type": "entry",
+      "flows": ["flow-history-query"]
+    },
+    {
+      "id": "cp-history-lookup",
+      "file": "api/server.py",
+      "function": "_handle_history_get",
+      "type": "state-change",
+      "flows": ["flow-history-query"]
+    },
+    {
+      "id": "cp-history-done",
+      "file": "api/server.py",
+      "function": "_handle_history_get",
+      "type": "exit",
+      "flows": ["flow-history-query"]
+    },
+    {
+      "id": "cp-calc-parse",
+      "file": "calculator/core.py",
+      "function": "evaluate",
+      "type": "boundary",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"]
+    },
+    {
+      "id": "cp-calc-validate",
+      "file": "calculator/core.py",
+      "function": "evaluate",
+      "type": "boundary",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"]
+    },
+    {
+      "id": "cp-calc-compute",
+      "file": "calculator/core.py",
+      "function": "evaluate",
+      "type": "boundary",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"]
+    },
+    {
+      "id": "cp-calc-format",
+      "file": "calculator/core.py",
+      "function": "evaluate",
+      "type": "boundary",
+      "flows": ["flow-api-calculate", "flow-batch-process", "flow-history-query"]
+    }
+  ]
+}

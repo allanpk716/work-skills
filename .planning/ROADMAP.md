@@ -127,7 +127,7 @@
   4. `/codepoint:plan` 规划的探针位于关键业务路径上，plan 输出被 implement 直接消费
   5. `/codepoint:implement` 生成的探针代码编译通过，flow_id 通过 context.Context 传播，TDD 验证循环正常执行
   6. 运行不同业务流程时，同一代码点的探针输出不同的堆栈信息和调试数据，可区分调用来源
-**Plans:** 2 plans (revised) (revised per 32-REVIEWS.md)
+**Plans:** 3 plans (revised per 32-REVIEWS.md)
 
 Plans:
 - [ ] 32-01: 创建 Go 计算器项目（多流程共享核心计算架构，history 显式重新计算，context.Context for flow_id）
@@ -145,7 +145,7 @@ Plans:
   2. `/codepoint:scan` 正确识别 Python 项目中的共享代码点和业务流
   3. `/codepoint:plan` 和 `/codepoint:implement` 在 Python 项目上正常工作，生成的探针代码可运行
   4. 多流程运行时，同一 Python 代码点的探针输出不同的堆栈信息和调试数据
-**Plans:** 2 plans (revised)
+**Plans:** 3 plans
 
 Plans:
 - [ ] 33-01: 创建 Python 计算器项目（多流程共享核心计算架构）
@@ -192,7 +192,7 @@ Plans:
   1. Python+TS 全栈计算器项目存在，具备与 Go+JS 项目相同的跨语言共享代码点架构
   2. `/codepoint:scan`、跨语言联动、多流程堆栈验证在 Python+TS 项目上完整通过
   3. Toggle 机制正常工作：通过文件 toggle 可独立启用/禁用前端和后端的探针，切换后立即生效
-**Plans:** 2 plans (revised)
+**Plans:** 3 plans
 
 Plans:
 - [x] 36-01-PLAN.md — 创建 Python+TS 全栈计算器项目（FastAPI 后端 + React TS 前端 + collector + 构建集成）(completed 2026-04-19)
@@ -206,12 +206,12 @@ Plans:
   1. 所有在 Go+JS 和 Python+TS 全栈测试中发现的问题被完整记录，包含跨语言联动、前端探针模板、collector 等类别
   2. 记录的所有问题已修复，在全栈测试项目中重新验证通过
   3. JS/TS 前端探针模板生成的代码在浏览器中可运行，且与后端 collector 正确联动，调试数据完整
-**Plans:** 2 plans (revised)
+**Plans:** 3 plans
 
 Plans:
-- [ ] 37-01: 汇总记录全栈测试中发现的所有缺陷
-- [ ] 37-02: 修复缺陷并在全栈测试项目中重新验证
-- [ ] 37-03: 确认前端探针模板（JS/TS）生成代码的运行质量和 collector 联动正确性
+- [ ] 37-01-PLAN.md — 创建 37-DEFECTS.yaml 结构化缺陷记录（8 defects: 3 template + 5 test_project）
+- [ ] 37-02-PLAN.md — 更新 golang.md 和 python.md 技能模板（enhanced collector + meta writing + Windows SPA fix）
+- [ ] 37-03-PLAN.md — 重新验证 gojs-calculator 和 pyts-calculator 所有修复（编译 + 测试 + 定向检查）
 
 ## Progress
 

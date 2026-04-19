@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-04-18
+**Last Updated:** 2026-04-19
 
 ## Milestones
 
@@ -27,7 +27,7 @@
 - [x] **Phase 34: 单语言问题修复** - 记录并修复单语言 E2E 测试中发现的所有技能缺陷 (3/3 plans, completed 2026-04-18)
 - [x] **Phase 35: Go+JS 全栈跨语言集成** - 创建 Go+JS 全栈计算器并验证跨语言探针联动 (4/4 plans, completed 2026-04-19)
 - [x] **Phase 36: Python+TS 全栈跨语言集成** - 创建 Python+TS 全栈计算器并验证跨语言探针联动 (2/2 plans, completed 2026-04-19)
-- [ ] **Phase 37: 全栈问题修复** - 记录并修复全栈 E2E 测试中发现的所有技能缺陷
+- [x] **Phase 37: 全栈问题修复** - 记录并修复全栈 E2E 测试中发现的所有技能缺陷 (3/3 plans, completed 2026-04-19)
 
 <details>
 <summary>v1.8 - Worktree 区分 (Phase 31) — SHIPPED 2026-04-09</summary>
@@ -209,9 +209,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 37-01-PLAN.md — 创建 37-DEFECTS.yaml 结构化缺陷记录（8 defects with root_cause: 3 template + 5 test_project）
-- [ ] 37-02-PLAN.md — 更新 golang.md 和 python.md 技能模板（enhanced collector + inline comments + separated SPA fix + integration notes）
-- [ ] 37-03-PLAN.md — 重新验证所有修复 + 模板模式验证 + Windows 特定检查（3 tasks: test projects + template grep + Windows checks）
+- [x] 37-01-PLAN.md — 创建 37-DEFECTS.yaml 结构化缺陷记录（8 defects with root_cause: 3 template + 5 test_project）
+- [x] 37-02-PLAN.md — 更新 golang.md 和 python.md 技能模板（enhanced collector + inline comments + separated SPA fix + integration notes）
+- [x] 37-03-PLAN.md — 重新验证所有修复 + 模板模式验证 + Windows 特定检查（3 tasks: test projects + template grep + Windows checks）
 
 ## Progress
 
@@ -225,8 +225,8 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 | 34. 单语言问题修复 | v1.9.1 | 0/3 | Not started | - |
 | 35. Go+JS 全栈跨语言集成 | v1.9.1 | 4/4 | Complete | 2026-04-19 |
 | 36. Python+TS 全栈跨语言集成 | v1.9.1 | 2/2 | Complete | 2026-04-19 |
-| 37. 全栈问题修复 | v1.9.1 | 0/3 | Not started | - |
+| 37. 全栈问题修复 | v1.9.1 | 3/3 | Complete | 2026-04-19 |
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-19 — Phase 36 complete (2/2 plans)*
+*Last updated: 2026-04-19 — Phase 37 complete (3/3 plans)*

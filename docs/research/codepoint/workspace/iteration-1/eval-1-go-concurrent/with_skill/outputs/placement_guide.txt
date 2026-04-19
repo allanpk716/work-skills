@@ -1,0 +1,39 @@
+// ==========================================================================
+// Code Point Placement Guide: Go Concurrent HTTP Microservice
+// Architecture: Handler -> Service -> Repository
+// Concurrency: sync.Mutex, goroutine pool
+// Problem: Intermittent data inconsistency under concurrency
+// ==========================================================================
+//
+// PROBE PLACEMENT STRATEGY
+//
+// For a concurrent HTTP microservice with intermittent data inconsistency,
+// code points should focus on:
+//
+// 1. CONCURRENCY JUNCTIONS (highest priority)
+//    - Before/after mutex acquire & release
+//    - Before/after goroutine pool submission
+//    - Goroutine start & completion
+//
+// 2. STATE TRANSITIONS (high priority)
+//    - Before/after any state mutation in shared data
+//    - Before/after database writes
+//    - Cache invalidation points
+//
+// 3. MODULE BOUNDARIES (medium priority)
+//    - Handler -> Service handoff
+//    - Service -> Repository handoff
+//    - Repository -> Database handoff
+//
+// 4. ERROR PATHS (medium priority)
+//    - Error returns from repository
+//    - Rollback / compensating action paths
+//
+// Expected total: 25-35 code points for a medium service.
+//
+// Usage:
+//   CODEPOINT_ENABLED=true go run ./cmd/server 2> codepoints.log
+//   curl http://localhost:8080/api/orders -X POST -d '{"user_id":1,"items":...}'
+//   # Feed codepoints.log to AI for execution path analysis
+//
+// ==========================================================================

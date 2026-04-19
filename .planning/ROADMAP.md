@@ -195,7 +195,7 @@ Plans:
 **Plans:** 2 plans (revised)
 
 Plans:
-- [ ] 36-01-PLAN.md — 创建 Python+TS 全栈计算器项目（FastAPI 后端 + React TS 前端 + collector + 构建集成）
+- [x] 36-01-PLAN.md — 创建 Python+TS 全栈计算器项目（FastAPI 后端 + React TS 前端 + collector + 构建集成）(completed 2026-04-19)
 - [ ] 36-02-PLAN.md — 跨语言联动验证（collector + 多流程堆栈 + Toggle 四组合）
 
 ### Phase 37: 全栈问题修复
@@ -224,9 +224,9 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 | 33. Python 单语言计算器验证 | v1.9.1 | 0/3 | Not started | - |
 | 34. 单语言问题修复 | v1.9.1 | 0/3 | Not started | - |
 | 35. Go+JS 全栈跨语言集成 | v1.9.1 | 4/4 | Complete | 2026-04-19 |
-| 36. Python+TS 全栈跨语言集成 | v1.9.1 | 0/2 | Planned | - |
+| 36. Python+TS 全栈跨语言集成 | v1.9.1 | 1/2 | In progress | - |
 | 37. 全栈问题修复 | v1.9.1 | 0/3 | Not started | - |
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-19 — Phase 35 complete (4/4 plans)*
+*Last updated: 2026-04-19 — Phase 36 plan 01 complete (1/2 plans)*

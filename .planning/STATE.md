@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.9.1
 milestone_name: - Codepoint V2 E2E 测试
 status: executing
-last_updated: "2026-04-19T11:00:00.000Z"
+last_updated: "2026-04-19T02:30:00.000Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 15
-  completed_plans: 15
+  completed_plans: 16
   percent: 100
 ---
 
@@ -25,15 +25,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-19)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Phase 36 context gathered — Python+TS 全栈跨语言集成准备规划
+**Current focus:** Phase 36 plan 01 complete — Python+TS fullstack calculator created
 
 ## Current Position
 
-Phase: 5 of 6 (Python+TS 全栈跨语言集成) — CONTEXT GATHERED
-Status: Phase 36 context captured, ready for planning
-Last activity: 2026-04-19 — Phase 36 context gathered
+Phase: 5 of 6 (Python+TS 全栈跨语言集成) — PLAN 01 COMPLETE
+Status: 36-01 complete, 36-02 next
+Last activity: 2026-04-19 — Phase 36 plan 01 executed
 
-Progress: [████████████] 100% (4/4 plans, Phase 35)
+Progress: [████████████] 100% (4/4 plans, Phase 35; 1/2 plans, Phase 36)
 
 ## Shipped Milestones Summary
 
@@ -46,8 +46,8 @@ Progress: [████████████] 100% (4/4 plans, Phase 35)
 **Velocity:**
 
 - Total plans completed (all milestones): 54
-- v1.9.1: 4 of 4 plans executed in Phase 35 (all complete)
-- Trend: Phase 35 complete — UAT 10/10 passed, cross-language probe correlation verified
+- v1.9.1: 5 of 6 plans executed (Phase 35 complete + Phase 36 plan 01)
+- Trend: Phase 36 plan 01 complete — FastAPI + React TS fullstack calculator created, smoke test passed
 
 ## Accumulated Context
 
@@ -85,4 +85,4 @@ Items acknowledged and carried forward from previous milestone close:
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-19 — Phase 36 context gathered*
+*Last updated: 2026-04-19 — Phase 36 plan 01 complete*

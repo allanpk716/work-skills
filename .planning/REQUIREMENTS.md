@@ -32,7 +32,7 @@
 - [x] **FULL-02**: 在 Go+JS 项目上运行 `/codepoint:scan`，识别前后端各自的业务流及跨语言调用链路
 - [ ] **FULL-03**: Go 后端 collector 通过 `/__codepoint__/` 端点收集前端 JS 探针数据，验证跨语言探针联动
 - [ ] **FULL-04**: 运行全栈业务流程，验证同一跨语言代码点在不同流程下的完整调用链堆栈信息
-- [ ] **FULL-05**: 创建 Python+TS 全栈计算器项目，同样具备跨语言共享代码点的架构
+- [x] **FULL-05**: 创建 Python+TS 全栈计算器项目，同样具备跨语言共享代码点的架构
 - [ ] **FULL-06**: 在 Python+TS 项目上完成 scan/跨语言联动/多流程堆栈验证全流程
 - [ ] **FULL-07**: Toggle 机制在全栈项目中正常工作（文件 toggle 启用/禁用探针，前后端独立控制）
 
@@ -70,7 +70,7 @@
 | FULL-02 | Phase 35 | Complete |
 | FULL-03 | Phase 35 | Pending |
 | FULL-04 | Phase 35 | Pending |
-| FULL-05 | Phase 36 | Pending |
+| FULL-05 | Phase 36 | Done (36-01) |
 | FULL-06 | Phase 36 | Pending |
 | FULL-07 | Phase 36 | Pending |
 | FIX2-01 | Phase 37 | Pending |
@@ -84,4 +84,4 @@
 
 ---
 *Requirements defined: 2026-04-18*
-*Last updated: 2026-04-18 — roadmap traceability added*
+*Last updated: 2026-04-19 — FULL-05 marked complete (36-01)*

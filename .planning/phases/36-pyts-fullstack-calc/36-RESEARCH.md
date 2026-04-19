@@ -558,17 +558,19 @@ _init_ts_collector()
 | A2 | uvicorn 0.37.0 与 FastAPI 0.136.0 兼容 | Standard Stack | 需要降级或升级 uvicorn |
 | A3 | Python 3.11.9 支持 FastAPI 0.136.0 的所有特性 | Standard Stack | 可能需要更高 Python 版本 |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **FastAPI 0.136.0 是否需要更高 Python 版本?**
    - What we know: 当前 Python 3.11.9，FastAPI 最新 0.136.0
    - What's unclear: FastAPI 0.136.0 的最低 Python 版本要求
    - Recommendation: 安装时检查；如果需要，固定到兼容版本
+   - **RESOLVED:** Plan 36-01 Task 1 步骤 7 安装 FastAPI，步骤 8 验证安装成功。如果版本不兼容，安装步骤会失败。
 
 2. **BatchResult 接口字段差异**
    - What we know: gojs-calculator 的 BatchResult 有 lineNumber/duration 字段，但 python-calculator 没有
    - What's unclear: 前端是否依赖这些字段
    - Recommendation: 前端 client.ts 从 gojs-calculator 复制时需要调整 BatchResult 类型以匹配 Python 后端输出
+   - **RESOLVED:** Plan 36-01 Task 2 步骤 6 明确调整 client.ts 中 BatchResult 类型，移除 lineNumber/duration 字段，匹配 Python 后端输出。
 
 ## Environment Availability
 

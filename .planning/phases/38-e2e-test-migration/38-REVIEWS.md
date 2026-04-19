@@ -1,93 +1,138 @@
 ---
 phase: 38
 reviewers: [opencode]
-reviewed_at: "2026-04-19T09:00:00.000Z"
+reviewed_at: "2026-04-19T12:00:00.000Z"
 plans_reviewed: [38-01-PLAN.md, 38-02-PLAN.md]
+review_round: 2
 ---
 
-# Cross-AI Plan Review — Phase 38
+# Cross-AI Plan Review — Phase 38 (Round 2)
+
+> 第二轮评审，基于已纳入第一轮反馈的修订版计划。
 
 ## OpenCode Review
 
 ### Plan 38-01: Migrate Test Projects
 
 #### Summary
-Well-structured migration plan that correctly distinguishes between git-tracked and untracked files, applies appropriate strategies for each, and includes build verification. The task breakdown is logical and the artifact exclusion list is comprehensive. A few edge cases around the `frontend/dist/` tracking and Go build path sensitivity warrant attention.
+
+Plan 01 is well-structured with clear separation between tracked (git mv) and untracked (cp) project migration strategies. The inclusion of build artifact cleanup before migration and the critical safeguard around `gojs-calculator/frontend/dist/` demonstrates good awareness of the codebase's specific needs. However, the plan would benefit from explicit rollback procedures and more precise handling of the `.gitkeep` file placement.
 
 #### Strengths
-- **Correct git strategy split**: `git mv` for tracked files preserves history; `cp + git add` for untracked is appropriate since there's no history to preserve
-- **Artifact cleanup before migration**: Cleaning `node_modules/`, `__pycache__/`, `.exe` before `git mv` avoids bloating the repo
-- **Explicit "do NOT commit yet"** in Task 1 prevents premature partial commits
-- **Build verification as part of migration** catches path-related breakage immediately
-- **Threat model correctly scoped** — pure file migration, no code changes
+
+- Correctly differentiates git-tracked vs untracked projects and uses appropriate migration commands for each
+- Explicit assertion on `frontend/dist/` preservation addresses the highest-risk data loss scenario
+- Pre-migration artifact cleanup (240MB+ node_modules) keeps the git history clean
+- `.gitignore` established first prevents accidental artifact commits during/after migration
+- Go build verification runs from within module directories, correctly simulating real usage
+- Commit checkpoint before Plan 02's irreversible deletion creates a safe recovery point
 
 #### Concerns
-- **MEDIUM — frontend/dist/ handling ambiguity**: Research notes say `gojs-calculator/frontend/dist/` is tracked and required for Go's `//go:embed`, but Task 1 says "Clean... frontend/dist/" from `pyts-calculator`. The plan should explicitly confirm `gojs-calculator/frontend/dist/` is preserved, not just implicitly omitted. A careless operator could misread and delete it.
-- **MEDIUM — Go build verification path assumption**: `go build ./...` works from within the module directory. The plan doesn't specify `workdir` — running from project root would fail. Need explicit `cd tests/e2e/codepoint-v2/gojs-calculator && go build ./...` or equivalent.
-- **LOW — No disk space consideration**: `node_modules/` cleanup is ~240MB but the plan doesn't check if remaining disk space is adequate for the copy operations in Task 2 (copying before cleaning untracked projects).
-- **LOW — Missing `.gitignore` consideration**: After migration, the new `tests/e2e/codepoint-v2/` location may need a `.gitignore` to prevent future build artifacts from being accidentally committed again.
+
+- **MEDIUM**: No explicit rollback plan if `git mv` partially fails or if verification fails post-migration. While the checkpoint commit helps, the plan should state what happens if `go build` fails in Task 2 — does the executor revert the `git mv`, or attempt an in-place fix?
+- **LOW**: Task 1 mentions staging `.gitkeep` — but no directory is specified as needing a `.gitkeep`. The `.gitignore` plus the migrated project directories themselves would keep `tests/e2e/codepoint-v2/` tracked. This is a minor unnecessary step.
+- **LOW**: "Clean build artifacts from gojs-calculator and pyts-calculator BEFORE git mv" — the plan doesn't specify whether to clean from the working tree only or also from git tracking. If `node_modules/` or `*.exe` files were previously committed (which they shouldn't be, but might be), `git mv` would carry them along.
+- **LOW**: The `cp -r` command for untracked projects on Windows should be verified — Git Bash supports it, but if execution uses PowerShell, `Copy-Item -Recurse` would be needed. No explicit shell assumption is stated.
 
 #### Suggestions
-- Add an explicit assertion step: "Verify `gojs-calculator/frontend/dist/` still exists and contains files after cleanup"
-- Specify working directory for `go build` commands — e.g., `workdir="tests/e2e/codepoint-v2/gojs-calculator"`
-- Add a `.gitignore` to `tests/e2e/codepoint-v2/` with patterns: `node_modules/`, `__pycache__/`, `*.exe`, `.playwright-cli/`
-- Consider running `git status` between Task 1 and Task 2 to confirm renames are staged correctly before adding new files
+
+- Add an explicit failure mode: "If go build fails post-migration, revert with `git reset HEAD~1` and investigate before proceeding"
+- Verify whether any build artifacts are actually git-tracked in gojs-calculator/pyts-calculator before migration — `git ls-files tmp/gojs-calculator | grep -E '(node_modules|\.exe)'` would confirm
+- Drop the `.gitkeep` reference unless there's a specific empty subdirectory that needs it
+- Specify the shell environment assumption (Git Bash vs PowerShell) for Windows compatibility
+
+#### Risk Assessment: **LOW**
+
+The plan is methodical and the most critical risk (`frontend/dist/` loss) is explicitly guarded. The checkpoint commit before deletion in Plan 02 provides a safety net. Primary remaining risk is a silent migration failure that passes verification, which is unlikely given the explicit build checks.
 
 ---
 
 ### Plan 38-02: Clean tmp/ and Update Documentation
 
 #### Summary
-Clean follow-up plan that correctly identifies the dependency on 38-01, explicitly protects archived milestone docs from modification, and targets only active documentation. The selective cleanup approach (5 specific directories, not `rm -rf tmp/*`) is good practice.
+
+Plan 02 adds a valuable second verification gate before the irreversible `tmp/` deletion, and the targeted per-project deletion approach (vs `rm -rf tmp/*`) shows good discipline. The documentation update scope is well-defined with the explicit milestone exclusion. The dependency on reading Plan 01's summary file is a clean handoff pattern, though the plan could be more specific about which documentation files to verify exist.
 
 #### Strengths
-- **Selective rm**: Only removes the 5 migrated directories, not `rm -rf tmp/*` — avoids deleting any unrelated tmp content
-- **Milestone protection**: Explicit "Do NOT touch .planning/milestones/" prevents contaminating historical records (926 references)
-- **Reads 38-01-SUMMARY.md first**: Proper dependency gate — confirms migration succeeded before cleaning source
-- **Documentation cross-references**: Updates PROJECT.md, STATE.md, REQUIREMENTS.md, and ROADMAP.md comprehensively
+
+- Re-verification of builds AFTER migration but BEFORE deletion is the correct safety gate for irreversible operations
+- Targeted `rm -rf` per project directory (not `rm -rf tmp/*`) prevents accidental deletion of any other `tmp/` content that may exist
+- Explicit exclusion of `.planning/milestones/` from documentation updates prevents historical record corruption
+- Comprehensive grep search ensures completeness of reference updates
+- Sequential commit (cleanup first, then docs) keeps git history clean and bisectable
 
 #### Concerns
-- **MEDIUM — Missing verification of project functionality post-cleanup**: After deleting from `tmp/`, the plan doesn't re-verify that `tests/e2e/codepoint-v2/` projects still build. If something went wrong with the migration, the originals are now gone.
-- **MEDIUM — Task 2 scope may miss references**: The plan lists 4 specific files to update, but doesn't mention searching for all `tmp/` references in active (non-milestone) `.planning/` files. Research found 926 references total — some may exist in `todos/`, `phases/`, or `STATE.md` beyond the 4 listed files.
-- **LOW — No checkpoint before deletion**: Deleting `tmp/` directories is irreversible. A `git commit` after 38-01 but before 38-02's cleanup would provide a recovery point. The plan doesn't mention committing 38-01's work first.
+
+- **MEDIUM**: The plan says "Remove only the 5 migrated test project dirs from tmp/" but doesn't address what happens if `tmp/` still contains other files or if the 5 directories don't match expected names exactly. A pre-deletion `ls tmp/` to confirm contents would be prudent.
+- **MEDIUM**: The documentation update task updates 4+ files (PROJECT.md, STATE.md, REQUIREMENTS.md, ROADMAP.md) in a single task without specifying the order or what exact changes to make in each. This is a broad scope that could miss files or make inconsistent edits.
+- **LOW**: "Read 38-01-SUMMARY.md to confirm Plan 01 completed" — there's no handling if the summary file indicates partial failure. The plan should state "proceed only if summary confirms full success; halt otherwise."
+- **LOW**: The final verification grep only checks that no stale references remain, but doesn't verify that the NEW paths (`tests/e2e/codepoint-v2/`) are correctly referenced. A positive assertion would be stronger.
 
 #### Suggestions
-- Run a `grep` for `tmp/` references across `.planning/` (excluding `milestones/`) before starting Task 2 to ensure complete coverage
-- Add a "re-verify builds" step in Task 1 after confirming migration but before any deletion
-- Commit 38-01 results before starting 38-02 — this creates a natural rollback point
-- Consider whether `docs/research/codepoint/` references need updating (per R3 requirements)
+
+- Add a pre-deletion listing step: `ls tmp/` to confirm only expected directories exist and match the 5 project names
+- Split documentation updates into clearer sub-steps or list the specific fields/sections to change in each file (e.g., "PROJECT.md: change R1 status from pending → complete, update path column")
+- Add a guard clause: "If 38-01-SUMMARY.md indicates any failure or partial completion, STOP and report"
+- After the final grep for stale references, add a positive check: `grep -r "tests/e2e/codepoint-v2/" .planning/ --include="*.md"` to confirm new references are in place
+
+#### Risk Assessment: **LOW**
+
+The plan's two-gate verification (read summary + re-verify builds) and targeted deletion approach minimize the risk of data loss. Documentation updates carry only low risk of inconsistency. Overall execution is straightforward with well-defined safety boundaries.
 
 ---
 
-### Overall Risk Assessment: LOW-MEDIUM
+### Overall Phase Assessment
 
-**Justification**: The plans are well-scoped with clear boundaries. The primary risk is the **`frontend/dist/` deletion ambiguity** in 38-01 Task 1 — if misread, it breaks `gojs-calculator` builds. The secondary risk is **incomplete documentation reference updates** in 38-02, which could leave stale `tmp/` paths in planning files. Both are mitigable with the suggestions above. The migration itself is straightforward file operations with no code changes, no network calls, and no trust boundary concerns.
+#### Strengths
+
+- Clear separation of concerns: migration (Plan 01) → cleanup + documentation (Plan 02)
+- Wave ordering with explicit dependency prevents premature deletion
+- Research findings are thoroughly integrated into plan safeguards
+- The checkpoint commit between plans is an excellent practice for irreversible operations
+
+#### Cross-Plan Concerns
+
+- **MEDIUM**: Neither plan addresses what happens to `tmp/` itself after the 5 project directories are removed. If `tmp/` becomes empty, should it be removed? Should it retain its `.gitignore`?
+- **LOW**: No mention of whether the migrated test projects have any path-sensitive configuration (e.g., hardcoded `tmp/` paths in test files themselves, go.mod module paths, or fixture references).
+
+#### Overall Risk: **LOW**
+
+These are well-designed plans with appropriate safeguards for the risk level involved. The primary data loss scenario (Go embed directory) is explicitly guarded, irreversible operations have verification gates, and the commit checkpoint provides rollback capability.
+
+**Recommendation: Approve with minor improvements** — address the rollback/failure-mode gap in Plan 01 and the pre-deletion confirmation in Plan 02.
 
 ---
 
 ## Consensus Summary
 
-> 基于单一外部评审者 (OpenCode) 的反馈综合
+> 基于 1 个外部评审者 (OpenCode) 的反馈。运行环境为 Claude Code — 跳过自评审以保证独立性。
 
-### Agreed Strengths (评审者共识)
-- Git 策略正确区分了 tracked/untracked 文件
-- 清理构建产物在迁移之前执行是好的设计
-- 选择性删除（仅删 5 个目录，非 `rm -rf tmp/*`）
-- 明确保护归档里程碑文档不被修改
-- 依赖门控：Plan 02 读取 Plan 01 的 SUMMARY.md 确认完成后再清理
+### 第一轮 vs 第二轮对比
 
-### Key Concerns (需关注)
-1. **MEDIUM — `frontend/dist/` 删除歧义**: Plan 01 Task 1 清理说明中 `pyts-calculator/frontend/dist/` 的删除可能被误读为也删除 `gojs-calculator/frontend/dist/`（后者是 Go embed 必需的）
-2. **MEDIUM — Go build 命令缺少工作目录指定**: `go build ./...` 必须在模块目录内执行，计划中虽有 `cd` 命令但应更明确
-3. **MEDIUM — 清理后缺少重新验证**: Plan 02 删除 tmp/ 前未重新确认 tests/e2e/ 中的项目功能正常
-4. **MEDIUM — 文档引用可能遗漏**: Plan 02 仅列出 4 个文件需更新，未全面搜索 .planning/ 下所有活跃文档
+| 关注点 | 第一轮状态 | 第二轮状态 |
+|--------|-----------|-----------|
+| `frontend/dist/` 保留断言 | 未提及 | **已解决** — Plan 01 Task 1 Step 7 增加显式断言 |
+| Go build 工作目录 | 未明确 | **已解决** — 使用 `cd C:/WorkSpace/... && go build` |
+| `.gitignore` 防护 | 未提及 | **已解决** — Plan 01 Task 1 Step 2 创建 |
+| 清理后重新验证 | 未提及 | **已解决** — Plan 02 Task 1 增加构建重验证 |
+| 文档引用全面搜索 | 仅列 4 文件 | **已解决** — Plan 02 Task 2 Step 1 全面 grep |
+| Commit 检查点 | 未提及 | **已解决** — Plan 01 Task 2 Step 6 提交 |
 
-### Divergent Views
-- 单一评审者，无分歧观点
+### 第二轮新发现
 
-### Suggested Actions (优先级排序)
-1. 在 Plan 01 Task 1 中增加明确断言：验证 `gojs-calculator/frontend/dist/` 保留且非空
-2. 考虑在 `tests/e2e/codepoint-v2/` 添加 `.gitignore` 防止未来构建产物被提交
-3. 在 Plan 02 Task 1 删除 tmp/ 前增加构建验证步骤
-4. 在 Plan 02 开始前 grep 搜索 .planning/ 下所有 tmp/ 引用（排除 milestones/）
-5. 考虑在 Plan 01 和 Plan 02 之间增加 commit 检查点
+| 优先级 | 关注点 | 建议 |
+|--------|--------|------|
+| MEDIUM | 无显式回滚计划（git mv 失败时） | 添加失败模式：`git reset HEAD~1` |
+| MEDIUM | 删除前未列出 tmp/ 内容确认 | 添加 `ls tmp/` 预检步骤 |
+| MEDIUM | 文档更新单任务覆盖 4+ 文件 | 拆分为更清晰的子步骤 |
+| MEDIUM | tmp/ 目录最终状态未明确 | 说明保留空 tmp/ 还是移除 |
+| LOW | `.gitkeep` 放置无充分理由 | 除非有空子目录需要，否则移除 |
+| LOW | Shell 环境假设未显式说明 | 标注 Git Bash 要求 |
+| LOW | Plan 01 部分失败无处理 | 添加：summary 显示部分失败时终止 |
+| LOW | 新路径引用缺少正面断言 | 添加 grep 确认 `tests/e2e/codepoint-v2/` |
+
+### 整体评价
+
+第二轮评审中，第一轮的 5 个主要关注点已全部在修订版计划中解决。第二轮发现的关注点多为操作细节优化（回滚计划、预检步骤、文档拆分），不影响计划的核心安全性。
+
+**最终建议：批准并执行** — 可选择性采纳第二轮建议以进一步提升操作健壮性。

@@ -127,7 +127,7 @@
   4. `/codepoint:plan` 规划的探针位于关键业务路径上，plan 输出被 implement 直接消费
   5. `/codepoint:implement` 生成的探针代码编译通过，flow_id 通过 context.Context 传播，TDD 验证循环正常执行
   6. 运行不同业务流程时，同一代码点的探针输出不同的堆栈信息和调试数据，可区分调用来源
-**Plans:** 5 plans (revised per 32-REVIEWS.md)
+**Plans:** 2 plans (revised) (revised per 32-REVIEWS.md)
 
 Plans:
 - [ ] 32-01: 创建 Go 计算器项目（多流程共享核心计算架构，history 显式重新计算，context.Context for flow_id）
@@ -145,7 +145,7 @@ Plans:
   2. `/codepoint:scan` 正确识别 Python 项目中的共享代码点和业务流
   3. `/codepoint:plan` 和 `/codepoint:implement` 在 Python 项目上正常工作，生成的探针代码可运行
   4. 多流程运行时，同一 Python 代码点的探针输出不同的堆栈信息和调试数据
-**Plans:** 5 plans
+**Plans:** 2 plans (revised)
 
 Plans:
 - [ ] 33-01: 创建 Python 计算器项目（多流程共享核心计算架构）
@@ -192,12 +192,11 @@ Plans:
   1. Python+TS 全栈计算器项目存在，具备与 Go+JS 项目相同的跨语言共享代码点架构
   2. `/codepoint:scan`、跨语言联动、多流程堆栈验证在 Python+TS 项目上完整通过
   3. Toggle 机制正常工作：通过文件 toggle 可独立启用/禁用前端和后端的探针，切换后立即生效
-**Plans:** 5 plans
+**Plans:** 2 plans (revised)
 
 Plans:
-- [ ] 36-01: 创建 Python+TS 全栈计算器项目（跨语言共享代码点架构）
-- [ ] 36-02: 运行 scan/跨语言联动/多流程堆栈验证全流程
-- [ ] 36-03: 验证 Toggle 机制（前端/后端独立控制）
+- [ ] 36-01-PLAN.md — 创建 Python+TS 全栈计算器项目（FastAPI 后端 + React TS 前端 + collector + 构建集成）
+- [ ] 36-02-PLAN.md — 跨语言联动验证（collector + 多流程堆栈 + Toggle 四组合）
 
 ### Phase 37: 全栈问题修复
 **Goal**: 全栈 E2E 测试中发现的所有技能缺陷被记录、修复，前端探针模板生成的代码可运行且与后端 collector 正确联动
@@ -207,7 +206,7 @@ Plans:
   1. 所有在 Go+JS 和 Python+TS 全栈测试中发现的问题被完整记录，包含跨语言联动、前端探针模板、collector 等类别
   2. 记录的所有问题已修复，在全栈测试项目中重新验证通过
   3. JS/TS 前端探针模板生成的代码在浏览器中可运行，且与后端 collector 正确联动，调试数据完整
-**Plans:** 5 plans
+**Plans:** 2 plans (revised)
 
 Plans:
 - [ ] 37-01: 汇总记录全栈测试中发现的所有缺陷
@@ -225,7 +224,7 @@ Phases execute in numeric order: 32 -> 33 -> 34 -> 35 -> 36 -> 37
 | 33. Python 单语言计算器验证 | v1.9.1 | 0/3 | Not started | - |
 | 34. 单语言问题修复 | v1.9.1 | 0/3 | Not started | - |
 | 35. Go+JS 全栈跨语言集成 | v1.9.1 | 4/4 | Complete | 2026-04-19 |
-| 36. Python+TS 全栈跨语言集成 | v1.9.1 | 0/3 | Not started | - |
+| 36. Python+TS 全栈跨语言集成 | v1.9.1 | 0/2 | Planned | - |
 | 37. 全栈问题修复 | v1.9.1 | 0/3 | Not started | - |
 
 ---

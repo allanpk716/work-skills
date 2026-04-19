@@ -96,24 +96,21 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ Attention 通知包含 session_id 用于会话追溯 - Phase 31
 - ✓ 14 new tests (105 total, all passing) - Phase 31
 
-## Current Milestone: v1.9.1 Codepoint V2 E2E 测试
+**v1.9.1 - Codepoint V2 E2E 测试 (shipped 2026-04-19):**
+- ✓ Go 单语言计算器 E2E — scan/plan/implement 全流程，多业务流堆栈差异验证
+- ✓ Python 单语言计算器 E2E — scan/plan/implement 全流程，探针模板双语言验证
+- ✓ Go+JS 全栈跨语言集成 — collector 联动验证，20 codepoints，3 flows，SPA fallback 修复
+- ✓ Python+TS 全栈跨语言集成 — FastAPI + React TS，Toggle 四组合独立验证
+- ✓ 单语言缺陷修复 — 4 个缺陷记录并修复，模板编译验证
+- ✓ 全栈缺陷修复 — 8 个缺陷记录并修复，golang.md/python.md 模板更新
 
-**Goal:** 通过创建实际测试项目验证代码点 V2 技能的完整流程（scan/plan/implement/跨语言集成），发现问题并改进
+## Current Milestone: Planning Next
 
-**Target features:**
-- 纯 Go 计算器项目 — 验证 scan/plan/implement 基础流程
-- 纯 Python 计算器项目 — 验证 scan/plan/implement 基础流程
-- Go+JS 全栈计算器 — 验证跨语言探针联动
-- Python+TS 全栈计算器 — 验证跨语言探针联动
-- 问题修复 — 根据测试结果改进技能
+**Status:** v1.9.1 shipped. Ready for next milestone planning via `/gsd-new-milestone`.
 
 ### Active
 
-- [ ] Go 单语言计算器 — codepoint scan/plan/implement E2E 验证
-- [ ] Python 单语言计算器 — codepoint scan/plan/implement E2E 验证
-- [ ] Go+JS 全栈计算器 — 跨语言探针联动验证
-- [ ] Python+TS 全栈计算器 — 跨语言探针联动验证
-- [ ] 发现的问题修复 — 技能改进
+*(To be defined by next milestone)*
 
 ### Out of Scope
 
@@ -132,12 +129,13 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ## Context
 
-**当前状态 (v1.9.1 开始 2026-04-18):**
-- 9 个里程碑已交付 (v1.0 - v1.8)
-- 52 个计划全部完成
+**当前状态 (v1.9.1 shipped 2026-04-19):**
+- 10 个里程碑已交付 (v1.0 - v1.9.1)
+- 72 个计划全部完成
 - 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
-- 测试覆盖: 105 个 Python 测试全部通过
-- Codepoint V2 技能待 E2E 验证（scan/plan/implement/跨语言集成）
+- 测试覆盖: 105 个 Python 测试 + E2E 验证项目
+- Codepoint V2 技能已通过 E2E 验证（Go/Python 单语言 + Go+JS/Python+TS 全栈）
+- 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
 
 ## Key Decisions
 
@@ -177,6 +175,11 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 诊断模式使用 check_notification_flags() | 统一数据源,显示来源标注 | ✓ Validated (v1.6) |
 | Dual marker detection (.git + CLAUDE.md) | 向上遍历时同时检测两种标记,覆盖无 Git 的项目 | ✓ Validated (v1.7) |
 | flags.py 作为项目名称 single source of truth | 消除通知脚本中的重复实现,DRY 原则 | ✓ Validated (v1.7) |
+| Test project methodology: progressive validate → fix cycle | SING → FIX1 → FULL → FIX2 交错模式更高效 | ✓ Validated (v1.9.1) |
+| Calculator 3+ business flows sharing core codepoints | 验证探针在不同流程下的堆栈差异 | ✓ Validated (v1.9.1) |
+| Enhanced collector with sync.Mutex + flow_id routing | 线程安全 + 每个流程独立文件 | ✓ Validated (v1.9.1) |
+| Frontend probes in event handlers only (not useEffect) | 避免 React strict mode double-invocation | ✓ Validated (v1.9.1) |
+| Dual-mode codepoint.ts (browser POST + Node.js file) | 浏览器和 Node.js 环境兼容 | ✓ Validated (v1.9.1) |
 | TDD RED→GREEN for find_project_root | 先定义测试契约,再实现功能 | ✓ Validated (v1.7) |
 
 ## Evolution
@@ -197,4 +200,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-18 — v1.9.1 milestone started*
+*Last updated: 2026-04-19 — v1.9.1 shipped*

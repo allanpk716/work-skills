@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.9.1
-milestone_name: - Codepoint V2 E2E 测试
-status: milestone_complete
-last_updated: "2026-04-19T05:00:00.000Z"
+milestone_name: shipped
+status: planning_next
+last_updated: "2026-04-19T06:00:00.000Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 6
@@ -16,7 +16,7 @@ progress:
 # STATE: Work Skills — Ready to Execute
 
 **Last Updated:** 2026-04-19
-**Milestone:** v1.9.1 - Codepoint V2 E2E 测试
+**Milestone:** v1.9.1 shipped — ready for next milestone
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -25,7 +25,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-19)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** v1.9.1 milestone complete — all 6 phases done, Phase 37 fullstack fix verified
+**Current focus:** v1.9.1 shipped — planning next milestone via /gsd-new-milestone
 
 ## Current Position
 
@@ -37,6 +37,7 @@ Progress: [████████████] 100% (3/3 plans, Phase 37; 4/4 
 
 ## Shipped Milestones Summary
 
+**v1.9.1 shipped:** 6 phases, 20 plans (Phases 32-37) — Codepoint V2 E2E 测试
 **v1.8 shipped:** 1 phase, 2 plans (Phase 31) — Worktree 区分
 **v1.7 shipped:** 2 phases, 3 plans (Phases 29-30) — 通知项目名称智能识别
 **v1.6 shipped:** 3 phases, 5 plans (Phases 26-28) — 通知标志文件向上查找 + 全局控制
@@ -45,9 +46,8 @@ Progress: [████████████] 100% (3/3 plans, Phase 37; 4/4 
 
 **Velocity:**
 
-- Total plans completed (all milestones): 62
-- v1.9.1: 6 of 6 phases complete (Phases 32-37), 21 plans executed
-- Trend: Phase 37 complete — all 8 fullstack defects documented and verified
+- Total plans completed (all milestones): 82
+- v1.9.1: 6 phases, 20 plans (Phases 32-37) — shipped 2026-04-19
 
 ## Accumulated Context
 
@@ -80,12 +80,19 @@ None.
 
 ## Deferred Items
 
-Items acknowledged and carried forward from previous milestone close:
+Items acknowledged and deferred at v1.9.1 milestone close on 2026-04-19:
 
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
+| Category | Item | Status |
+|----------|------|--------|
+| debug | claude-notify-investigation | investigating |
+| debug | git-scan-skill-missing-after-update | awaiting_human_verify |
+| debug | happy-pushover-conflict | diagnosed |
+| debug | no-windows-not-detected-in-work-me-around | awaiting_human_verify |
+| debug | notification-wait-hook-not-working | awaiting_human_verify |
+| debug | slash-command-conflict-COMPLETED | unknown |
+| debug | work-skills-no-notifications | investigating |
+| verification | Phase 36: 36-VERIFICATION.md | human_needed |
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-19 — v1.9.1 milestone complete (Phases 32-37, 21 plans)*
+*Last updated: 2026-04-19 — v1.9.1 shipped, ready for next milestone*

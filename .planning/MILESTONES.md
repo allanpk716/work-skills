@@ -1,5 +1,20 @@
 # Milestones
 
+## v1.9.1 Codepoint V2 E2E Tests (Shipped: 2026-04-19)
+
+**Phases completed:** 6 phases, 20 plans
+**Known deferred items at close:** 8 (see STATE.md Deferred Items)
+
+**Key accomplishments:**
+
+- Go 单语言 E2E: 3 业务流计算器 + scan/plan/implement 全流程验证, 多流程堆栈差异确认
+- Python 单语言 E2E: 同架构验证通过, 探针模板双语言可编译运行
+- Go+JS 全栈跨语言集成: 20 codepoints 识别, 3 flows 文档化, collector 联动验证, SPA fallback + batch unwrap 修复
+- Python+TS 全栈跨语言集成: FastAPI + React TS, Toggle 四组合独立验证, Windows 进程管理
+- 全栈缺陷修复: 12 个 E2E 缺陷记录并修复 (4 单语言 + 8 全栈), golang.md/python.md 模板更新
+
+---
+
 ## v1.8 Worktree 区分 (Shipped: 2026-04-08)
 
 **Phases completed:** 1 phases, 2 plans, 2 tasks

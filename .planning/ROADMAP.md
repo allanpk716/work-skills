@@ -15,8 +15,20 @@
 - [x] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (shipped 2026-04-04)
 - [x] **v1.8 - Worktree 区分** - Phase 31 (shipped 2026-04-09)
 - [x] **v1.9.1 - Codepoint V2 E2E 测试** - Phases 32-37 (shipped 2026-04-19)
+- [ ] **v1.9.2 - Codepoint 测试归档与调研文档整理** - Phases 38-40
 
 ## Phases
+
+<details>
+<summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — IN PROGRESS</summary>
+
+- [ ] Phase 38: E2E 测试项目迁移 (2 plans)
+  - [ ] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
+  - [ ] 38-02-PLAN.md -- 清理 tmp/ 并更新文档引用
+- [ ] Phase 39: 调研文档归档与整理 (2 plans)
+- [ ] Phase 40: Codepoint 设计反省与改进评估 (2 plans)
+
+</details>
 
 <details>
 <summary>✅ v1.9.1 Codepoint V2 E2E 测试 (Phases 32-37) — SHIPPED 2026-04-19</summary>

@@ -1,0 +1,211 @@
+# Phase 37: Fullstack E2E Defects Record
+# Generated: 2026-04-19
+# Source: Phase 35 (Go+JS) and Phase 36 (Python+TS) fullstack E2E testing
+
+phase: "37-fullstack-fix"
+source_phases:
+  - "35-gojs-fullstack-calc"
+  - "36-pyts-fullstack-calc"
+
+defects:
+  - id: DEV-FS-01
+    category: template
+    severity: high
+    template: golang.md
+    discovered_in: "Phase 35, Plan 01"
+    description: |
+      golang.md collector template (Frontend Collector section) is a simplified version that lacks sync.Mutex
+      for thread safety, flow_id routing to per-flow log files, and JSON output for meta-bearing entries.
+      The template's CollectorHandler only does fmt.Fprintf(tsOutFile, "[CODEPOINT] %s\n%s\n", entry.Name, entry.Stack),
+      discarding the meta field entirely and providing no flow-specific file routing. The actual gojs-calculator
+      project required an enhanced collector with all three features to support cross-language flow_id correlation.
+    steps_to_reproduce: |
+      1. Copy collector code from golang.md Frontend Collector section to new project
+      2. Start Go server with concurrent browser requests
+      3. Observe: no mutex protecting file writes, no flow_id-based file routing, meta (containing flow_id) is silently discarded
+      4. Cross-language flow_id correlation fails
+    expected: "Collector has sync.Mutex for concurrent writes, routes entries with flow_id in meta to per-flow files, writes JSON for meta-bearing entries"
+    actual: "Collector has no mutex, no flow routing, meta discarded -- only plain text [CODEPOINT] output to single file"
+    root_cause: "Single-language E2E testing (Phase 32/33) does not exercise cross-language collector integration paths. The collector was tested in single-language mode where flow_id routing and meta serialization are not needed. Only fullstack testing (Phase 35) revealed that the collector must handle meta-bearing entries from frontend probes."
+    status: fixed
+    fixed_in: "gojs-calculator project code"
+    fixed_by: "Phase 35 execution"
+    verification: "Template update pending (Plan 37-02)"
+
+  - id: DEV-FS-02
+    category: template
+    severity: high
+    template: python.md
+    discovered_in: "Phase 36, Plan 02"
+    description: |
+      python.md collector template receive() function only writes name and stack to cp-ts log,
+      discarding the meta dict which contains flow_id. This means cross-language flow_id correlation
+      is impossible when using the template code directly. The actual pyts-calculator project required
+      fixing receive() to extract meta and write it as JSON alongside the stack.
+    steps_to_reproduce: |
+      1. Copy collector.py from python.md template to new project
+      2. POST {"name":"test","stack":"Error","meta":{"flow_id":"flow-test"}} to /__codepoint__
+      3. Read cp-ts log
+      4. Observe: meta field (flow_id) is not present in output
+    expected: "receive() writes meta JSON to cp-ts log so flow_id is available for cross-language correlation"
+    actual: "receive() only writes [CODEPOINT] {name}\n{stack}, meta dict is silently discarded"
+    root_cause: "Same as DEV-FS-01: single-language testing does not exercise the collector's role in cross-language flow_id correlation. The receive() function was only tested with single-language probes that never include meta. Fullstack testing (Phase 36) revealed meta must be written to the cp-ts log for flow_id matching across language boundaries."
+    status: fixed
+    fixed_in: "pyts-calculator project code"
+    fixed_by: "Phase 36 execution"
+    verification: "Template update pending (Plan 37-02)"
+
+  - id: DEV-FS-03
+    category: template
+    severity: medium
+    template: golang.md
+    discovered_in: "Phase 35, Plan 04"
+    description: |
+      golang.md integration example in Frontend Collector section uses http.FileServer(http.FS(frontendDist))
+      for SPA fallback. On Windows, when embed.FS.Open receives a path with backslashes (from filepath.Clean
+      or browser URL normalization), it fails to find files. The fix is to use path.Clean (which preserves
+      forward slashes) instead of filepath.Clean (which converts to backslashes on Windows).
+    steps_to_reproduce: |
+      1. Copy main.go SPA fallback code from golang.md integration example
+      2. Build and run on Windows
+      3. Open browser to http://localhost:8080/
+      4. Observe: SPA fallback fails because embed.FS.Open receives backslash path
+    expected: "SPA fallback works on Windows using path.Clean to preserve forward slashes for embed.FS"
+    actual: "SPA fallback may fail on Windows if filepath.Clean is used, as embed.FS requires forward-slash paths"
+    root_cause: "E2E testing was done on Windows but the SPA fallback code path was not exercised in single-language phases. Only fullstack testing with go:embed frontend serving (Phase 35 Plan 04 browser automation) triggered the Windows-specific path separator issue. Unit tests mock the file system and never hit embed.FS.Open with real paths."
+    status: fixed
+    fixed_in: "gojs-calculator main.go using path.Clean"
+    fixed_by: "Phase 35 execution"
+    verification: "Template update pending (Plan 37-02)"
+
+  - id: DEV-FS-04
+    category: test_project
+    severity: medium
+    template: null
+    discovered_in: "Phase 35, Plan 04"
+    description: |
+      gojs-calculator/internal/history/store.go: history.Record struct fields (ID, Expression, Result)
+      lacked JSON tags. Go's encoding/json defaults to field names with uppercase first letter, but the
+      frontend client expected lowercase (id, expression, result). Adding json:"id", json:"expression",
+      json:"result" tags fixed the field mapping.
+    steps_to_reproduce: |
+      1. Start gojs-calculator server
+      2. POST /api/calculate with expression
+      3. GET /api/history
+      4. Observe: JSON response has uppercase field names (ID, Expression, Result)
+    expected: "JSON response uses lowercase field names: {\"id\": 1, \"expression\": \"2+3\", \"result\": \"5.0\"}"
+    actual: "JSON response used uppercase field names: {\"ID\": 1, \"Expression\": \"2+3\", \"Result\": \"5.0\"}"
+    root_cause: "Go struct JSON tags were not checked during Phase 35 Plan 01 project creation. The frontend was not yet built when the backend was created, so there was no end-to-end test verifying JSON field name alignment between Go backend and JavaScript frontend."
+    status: fixed
+    fixed_in: "gojs-calculator/internal/history/store.go"
+    fixed_by: "Phase 35 Plan 04"
+    verification: |
+      grep 'json:"id"' tmp/gojs-calculator/internal/history/store.go
+      Expected: match found
+      [VERIFIED: Phase 35 execution]
+
+  - id: DEV-FS-05
+    category: test_project
+    severity: low
+    template: null
+    discovered_in: "Phase 35, Plan 04"
+    description: |
+      gojs-calculator/frontend/src/api/client.ts batchCalculate() received {"results":[...]} from Go
+      backend but expected a plain array. The Go batch endpoint wraps results in a struct {Results []Result},
+      but the frontend client .map()d the response directly. Fixed with data.results || data fallback pattern.
+    steps_to_reproduce: |
+      1. Start gojs-calculator server
+      2. Use batch calculation in UI
+      3. Observe: batch results not rendering because client tried to .map() on {results:[...]} object instead of array
+    expected: "batch response correctly unwrapped: data.results if present, otherwise data directly"
+    actual: "batch response not unwrapped: client expected array but received {results:[...]} object"
+    root_cause: "Go backend batch handler and frontend client were written in separate phases (Plan 01 vs Plan 02) without a shared API contract. The Go handler wraps results in a struct for extensibility, but the frontend was written expecting a bare array. No integration test existed between the two phases."
+    status: fixed
+    fixed_in: "gojs-calculator/frontend/src/api/client.ts with data.results || data"
+    fixed_by: "Phase 35 Plan 04"
+    verification: |
+      grep "data.results || data" tmp/gojs-calculator/frontend/src/api/client.ts
+      Expected: match found
+      [VERIFIED: Phase 35 execution]
+
+  - id: DEV-FS-06
+    category: test_project
+    severity: medium
+    template: null
+    discovered_in: "Phase 36, Plan 02"
+    description: |
+      pyts-calculator/tests/test_linkage.py batch test initially sent {"expressions": ["1+1", "2*3", "10/2"]}
+      as a JSON array, but the Python backend process_expressions() splits on newlines expecting a single string.
+      The correct format is {"expressions": "1+1\n2*3\n10/2"}.
+    steps_to_reproduce: |
+      1. Send {"expressions": ["1+1", "2*3"]} to POST /api/batch
+      2. Observe: backend fails or returns incorrect results because it calls input_text.split(chr(10)) on the array
+    expected: "Batch test sends newline-separated string: {\"expressions\": \"1+1\\n2*3\\n10/2\"}"
+    actual: "Batch test sent JSON array: {\"expressions\": [\"1+1\", \"2*3\", \"10/2\"]}"
+    root_cause: "Test code was written based on the Go+JS batch format (which uses an array) without checking the Python backend's actual API contract. The Python batch endpoint reuses the single-expression handler via newline splitting, unlike Go which has a dedicated batch array endpoint."
+    status: fixed
+    fixed_in: "pyts-calculator/tests/test_linkage.py"
+    fixed_by: "Phase 36 Plan 02"
+    verification: |
+      grep -A5 "batch" tmp/pyts-calculator/tests/test_linkage.py
+      Expected: newline-separated string format
+      [VERIFIED: Phase 36 execution]
+
+  - id: DEV-FS-07
+    category: test_project
+    severity: low
+    template: null
+    discovered_in: "Phase 36, Plan 02"
+    description: |
+      pyts-calculator tests/conftest.py: previous manual server process still held file handles on Windows,
+      causing PermissionError when test tried to delete old log files. Fixed by adding _kill_port_holder()
+      that uses netstat + taskkill to kill processes holding port 18091 before starting new server.
+    steps_to_reproduce: |
+      1. Run a manual pyts-calculator server on port 18091
+      2. Run integration tests
+      3. Observe: PermissionError when trying to clean old log files
+    expected: "Tests gracefully handle orphaned processes by killing port holders before server start"
+    actual: "PermissionError on log file cleanup because previous process still holds file handles"
+    root_cause: "Windows file locking semantics: a process holding a file handle prevents deletion even after the process appears idle. The test framework assumed it could delete old log files between runs, but did not account for orphaned server processes from previous manual testing sessions or crashed test runs."
+    status: fixed
+    fixed_in: "pyts-calculator/tests/conftest.py with _kill_port_holder()"
+    fixed_by: "Phase 36 Plan 02"
+    verification: |
+      grep "_kill_port_holder" tmp/pyts-calculator/tests/conftest.py
+      Expected: match found
+      [VERIFIED: Phase 36 execution]
+
+  - id: DEV-FS-08
+    category: test_project
+    severity: low
+    template: null
+    discovered_in: "Phase 36, Plan 02"
+    description: |
+      pyts-calculator toggle tests (test_toggle.py combination 4) delete both toggle files as the final test.
+      This leaves the project in a disabled state, requiring manual restoration (touch both toggle files)
+      before next server start.
+    steps_to_reproduce: |
+      1. Run test_toggle.py
+      2. After tests, check ~/.codepoint/.codepoint-python and ~/.codepoint/.codepoint-ts
+      3. Observe: both files deleted by last test
+    expected: "Toggle files restored after test completion or test framework handles cleanup"
+    actual: "Toggle files deleted by last test, requiring manual touch before next server start"
+    root_cause: "Toggle tests were designed to test each combination independently, but the final test case (both disabled) deletes toggle files as part of testing the 'disabled' state. No teardown fixture was written to restore toggle files after the test session, leaving the project in a disabled state."
+    status: fixed
+    fixed_in: "pyts-calculator test teardown"
+    fixed_by: "Phase 36 Plan 02"
+    verification: |
+      Toggle files restored in test teardown
+      [VERIFIED: Phase 36 execution]
+
+summary:
+  total_defects: 8
+  template_defects: 3
+  test_project_defects: 5
+  all_fixed_in_code: true
+  templates_updated: false
+  notes: |
+    3 template defects require updating golang.md and python.md reference docs.
+    5 test project defects were fixed during Phase 35/36 execution.
+    Phase 37 Plan 02 will update the template files to match enhanced implementations.
+    Each defect includes root_cause explaining why the defect escaped earlier validation phases.

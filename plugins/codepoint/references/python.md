@@ -550,8 +550,15 @@ def receive(entry: dict[str, Any]) -> bool:
         return False
     name = entry.get("name", "unknown")
     stack = entry.get("stack", "")
+    meta = entry.get("meta")  # Extract meta dict containing flow_id for cross-language correlation
     with _ts_lock:
-        _ts_out.write(f"[CODEPOINT] {name}\n{stack}\n")
+        if meta:
+            import json as _json
+            # Write meta as JSON line so flow_id is available for matching across language boundaries
+            _ts_out.write(f"[CODEPOINT] {name}\n{stack}\nmeta: {_json.dumps(meta)}\n")
+        else:
+            # No meta -- use legacy plain-text format for backward compatibility
+            _ts_out.write(f"[CODEPOINT] {name}\n{stack}\n")
         _ts_out.flush()
     return True
 

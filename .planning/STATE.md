@@ -63,7 +63,7 @@ v1.9.2 decisions:
 
 - E2E 测试项目迁移到 `tests/e2e/codepoint-v2/` 保持独立完整性
 - 调研文档归档到 `docs/research/codepoint/` 便于后续追加
-- tmp/ 目录迁移完成后清空
+- tmp/ 目录迁移已完成（Phase 38）
 - Phase 40 新增：根据原作者最新经验反省 Codepoint 技能设计
 
 ### Roadmap Evolution

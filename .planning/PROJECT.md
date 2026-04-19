@@ -104,13 +104,15 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 单语言缺陷修复 — 4 个缺陷记录并修复，模板编译验证
 - ✓ 全栈缺陷修复 — 8 个缺陷记录并修复，golang.md/python.md 模板更新
 
-## Current Milestone: Planning Next
+## Current Milestone: v1.9.2 — Codepoint 测试归档与调研文档整理
 
-**Status:** v1.9.1 shipped. Ready for next milestone planning via `/gsd-new-milestone`.
+**Status:** Planning complete. Execute via `/gsd-plan-phase 38`.
 
 ### Active
 
-*(To be defined by next milestone)*
+- [x] R1: E2E 测试项目已从 `tmp/` 迁移到 `tests/e2e/codepoint-v2/` (Phase 38)
+- [ ] R2: 调研文档归档到 `docs/research/codepoint/` (Phase 39)
+- [x] R3: 目录结构标准化 (Phase 38)
 
 ### Out of Scope
 
@@ -129,12 +131,14 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ## Context
 
-**当前状态 (v1.9.1 shipped 2026-04-19):**
-- 10 个里程碑已交付 (v1.0 - v1.9.1)
+**当前状态 (v1.9.2 planning 2026-04-19):**
+- 10 个里程碑已交付 (v1.0 - v1.9.1), v1.9.2 规划中
 - 72 个计划全部完成
 - 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
 - 测试覆盖: 105 个 Python 测试 + E2E 验证项目
 - Codepoint V2 技能已通过 E2E 验证（Go/Python 单语言 + Go+JS/Python+TS 全栈）
+- E2E 测试项目已迁移到 tests/e2e/codepoint-v2/（5 个项目：go-calculator, python-calculator, gojs-calculator, pyts-calculator, template-test）
+- 代码点方法论调研文档待归档到 docs/research/codepoint/
 - 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
 
 ## Key Decisions
@@ -200,4 +204,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-19 — v1.9.1 shipped*
+*Last updated: 2026-04-19 — v1.9.2 planned*

@@ -1,418 +1,373 @@
-# Pitfalls Research
+# Domain Pitfalls: Adding Frontend Automated Testing to Codepoint V2
 
-**Domain:** Git Security Scanning Integration
-**Researched:** 2026-02-25
-**Confidence:** HIGH
+**Domain:** Adding frontend test planning + verification features to an existing codepoint instrumentation system
+**Researched:** 2026-04-20
+**Context:** v2.0 milestone — frontend automated testing system built on Codepoint V2 (scan/plan/implement)
+**Confidence:** HIGH (based on analysis of 5 E2E test projects, design review with 5 deviations, and 12 bugs fixed in v1.9.1)
 
-> **Note:** This document focuses on pitfalls specific to adding security scanning to Git workflow tools (v1.1 milestone). For notification system pitfalls from v1.0, see the archived section at the end.
+---
 
 ## Critical Pitfalls
 
-### Pitfall 1: False Positive Overload
-
-**What goes wrong:**
-Security scanner generates excessive false positives (>50% of alerts), causing developers to ignore all warnings or disable the tool entirely. Common with aggressive regex patterns that match strings like "AKIAXXXEXAMPLEKEYXXX" that aren't real credentials.
-
-**Why it happens:**
-- Regex patterns are too broad (e.g., `password.*=.*"`)
-- No context awareness (can't distinguish test data from real secrets)
-- Entropy thresholds set too low
-- No verification of detected patterns
-- Missing allowlist/whitelist mechanisms
-
-**How to avoid:**
-- Use multi-stage detection: regex → entropy → verification
-- Implement confidence scoring for findings
-- Provide allowlist mechanism via .gitignore comments (e.g., `# gitcheck: allow`)
-- Set appropriate entropy thresholds (recommended: 4.5-5.0 for Shannon entropy)
-- Show context around detected issues for user judgment
-- Distinguish between ERROR (high confidence) and WARNING (low confidence)
-
-**Warning signs:**
-- Developers frequently use `--no-verify` to bypass hooks
-- Complaints about "too many false alarms"
-- Scanning takes excessive time due to overly broad patterns
-- Users suggest removing the security check entirely
-
-**Phase to address:**
-Phase 1 (Core Scanning) - Establish detection rules and validation logic
+Mistakes that cause rewrites, lost work, or fundamental architecture problems.
 
 ---
 
-### Pitfall 2: Performance Bottleneck on Large Staged Areas
+### Pitfall 1: Test Specification vs Execution Gap
 
-**What goes wrong:**
-Scanning takes >2 seconds on medium-sized repositories, or scales linearly with repository size, making commits feel sluggish. Developers avoid committing frequently due to wait times.
+**What goes wrong:** The frontend test plan describes "click button X, verify response Y" in structured markdown, but when the test skill tries to execute it, the specification lacks the concrete selectors, API endpoints, or state assertions needed to actually run. The plan becomes documentation that cannot be converted into executable verification.
 
-**Why it happens:**
-- Scanning entire repository instead of staged files only
-- Not filtering binary files before content scanning
-- Running expensive regex patterns on all file types
-- Missing early-exit conditions
-- Python startup overhead on Windows (3-5x slower than Unix)
+**Why it happens:** The Codepoint V2 system already has this exact problem at a smaller scale. The design review deviation CP-03 identified that the implement skill's Verify phase generates complex test matrices (normal flow, boundary conditions, failure modes) that in practice reduce to "did the probe fire and output valid JSON?" The gap between "describe what should be tested" and "automatically verify it" is the central tension of this entire milestone.
 
-**How to avoid:**
-- Use `git diff --cached --name-only --diff-filter=ACM` to get only staged files
-- Detect and skip binary files using `file` command or magic bytes
-- Filter by file extension before applying regex (e.g., skip `.png`, `.exe`)
-- Cache .gitignore parsing results
-- Use efficient regex patterns (avoid catastrophic backtracking)
-- Consider Rust-based scanner for critical performance scenarios
-- Set performance budget: <2 seconds for typical commits
+**Consequences:**
+- Test plans become shelfware — written but never executed
+- Manual verification steps creep in, defeating the purpose of automation
+- The skill generates impressive-looking verification reports that are actually just reformatted specs
+- Users lose trust in the system and revert to manual testing
 
-**Warning signs:**
-- Commit times exceeding 2 seconds consistently
-- Developers batching commits to "get it over with"
-- complaints about "slow git"
-- Performance degrades as repository grows
+**Prevention:**
+1. Define the test specification format to be directly executable — every "verify" step must have a concrete assertion mechanism (probe output check, DOM query, API response match)
+2. Build the execution engine FIRST, then design the specification format to match what the engine can actually verify
+3. Keep the spec-to-execution mapping 1:1 — avoid any specification element that requires "interpretation" by the AI
+4. Use the existing probe output format (point_id + flow_id + timestamp + stack + metadata) as the assertion vocabulary
 
-**Phase to address:**
-Phase 1 (Core Scanning) - Build performance into architecture from start
+**Detection:**
+- If a test plan has any step that says "verify that..." without specifying HOW (which probe, what output, what match condition), it has the gap
+- If verification requires the AI to "check" or "analyze" output rather than mechanically compare it, the gap exists
+
+**Phase assignment:** Phase 1 (design/spec) — this is a foundational design decision that affects everything downstream
 
 ---
 
-### Pitfall 3: Breaking Existing Git Workflows
+### Pitfall 2: Frontend Probe Instrumentation Overhead in Test Mode
 
-**What goes wrong:**
-Security scanner introduces friction that breaks established workflows. Examples: blocking all commits during emergencies, not handling merge commits properly, incompatible with existing hooks.
+**What goes wrong:** Adding test-specific probe instrumentation (extra metadata, assertion markers, test case identifiers) bloats the lightweight codepoint.ts library beyond its "zero overhead when disabled" contract. Or worse, the test instrumentation only works when codepoints are "enabled," forcing developers to run with probes active during testing.
 
-**Why it happens:**
-- Overly strict blocking (no bypass option)
-- Not considering special commit types (merges, squashes, amends)
-- Conflicting with other pre-commit hooks
-- No way to skip for specific files or situations
-- Poor error messages that don't explain how to fix
+**Why it happens:** The current codepoint.ts is carefully designed for zero overhead:
+- Node.js: one boolean check (`enabled`)
+- Browser: one failed fetch, then stops (`_endpointAlive = false`)
 
-**How to avoid:**
-- Provide `--no-verify` bypass with clear warning message
-- Support `.gitignore` patterns for excluding files from scanning
-- Handle edge cases: merge commits, amend commits, empty commits
-- Test with existing hook frameworks (pre-commit, Husky)
-- Show actionable error messages with fix suggestions
-- Implement severity levels: ERROR (block) vs WARNING (allow with warning)
+Adding test-specific features (like assertion tracking, test case correlation, step counters) creates a second dimension of toggle state. The existing toggle file mechanism (`~/.codepoint/.codepoint-ts`) is binary — probes are either on or off. Test mode needs a third state: "probes are on AND collecting test-specific data."
 
-**Warning signs:**
-- Developers frustrated with "rigid" tool
-- Workarounds being invented (like temporarily disabling hooks)
-- Requests to remove the scanner
-- Conflicts reported with other Git tools
+**Consequences:**
+- The probe library becomes complex with multiple code paths (disabled / normal / test)
+- Performance regression in development mode when test instrumentation is active
+- The clean separation between "probe code" and "business code" blurs
+- Test infrastructure leaks into production builds
 
-**Phase to address:**
-Phase 1 (Core Scanning) - Design for integration and flexibility
+**Prevention:**
+1. Keep test instrumentation OUT of codepoint.ts entirely — the probe library should not know about tests
+2. Use the existing probe output as the test data source — read the log files, don't modify the probes
+3. Test orchestration happens at the skill level (Claude Code reads probe output and compares to expected), not at the library level
+4. If additional metadata is needed, add it as fields in `pointWithMeta()` calls that are already part of the probe pattern — no new API surface
 
----
+**Detection:**
+- If codepoint.ts gains a new export function or a new conditional branch for "test mode," this pitfall has been hit
+- If the probe output format changes between "normal" and "test" runs, the separation has been violated
 
-### Pitfall 4: Binary File Content Scanning Failures
-
-**What goes wrong:**
-Scanner attempts to read binary files (images, executables, PDFs) as text, causing crashes, garbled output, or false positives from random byte sequences that happen to match patterns.
-
-**Why it happens:**
-- Not checking file type before reading content
-- Using `grep` or `cat` on binary files without `-I` flag
-- Python `open()` in text mode on binary files
-- Relying solely on file extension (some binaries lack proper extensions)
-
-**How to avoid:**
-- Detect binary files before content scanning:
-  - Use `file` command: `file "$file" | grep -q "text"`
-  - Check magic bytes (first few bytes of file)
-  - Use `git diff --numstat` (shows `-` for binary files)
-- Skip binary files from content-based secret detection
-- Still check binary file paths against filename patterns (e.g., `.env.backup`)
-- Document which file types are skipped
-
-**Warning signs:**
-- Scanning crashes on certain files
-- Garbled terminal output during scan
-- False positives from binary files
-- Performance issues when scanning large binaries
-
-**Phase to address:**
-Phase 1 (Core Scanning) - Implement file type detection early
+**Phase assignment:** Phase 2 (implementation) — architecture decision during probe template design
 
 ---
 
-### Pitfall 5: .gitignore Parsing Edge Cases
+### Pitfall 3: SPA Route Mismatch Between Test Plan and Runtime
 
-**What goes wrong:**
-Scanner doesn't properly handle .gitignore syntax, leading to incorrect exclusions. Examples: not handling `!` negation, ignoring comments, mishandling directory patterns.
+**What goes wrong:** The test plan specifies interactions with frontend routes (e.g., "navigate to /dashboard, click settings"), but the SPA serves `index.html` for all routes via fallback. The test execution hits the route before the SPA has hydrated, or the route doesn't exist as a real endpoint. This was already discovered and fixed as a bug in v1.9.1 — the SPA fallback handler in `main.go` had to be registered AFTER the API routes and codepoint collector endpoint.
 
-**Why it happens:**
-- Implementing custom .gitignore parser instead of using Git's built-in
-- Not handling all .gitignore syntax: `#` comments, `!` negation, `/` anchoring, `**` glob
-- Parsing order issues (negation must come after ignore pattern)
-- Not respecting multiple .gitignore files at different levels
+**Why it happens:** The gojs-calculator E2E project already demonstrated this exact bug (v1.9.1 bug: "SPA fallback catches /__codepoint__ POST requests, preventing frontend probes from reaching the collector"). The fix required careful route registration order:
 
-**How to avoid:**
-- Use `git check-ignore` command instead of custom parsing: `git check-ignore -q "$file"`
-- If custom parsing needed, handle all syntax:
-  - Lines starting with `#` are comments
-  - `!` prefix negates previous ignore
-  - `/` prefix anchors to root
-  - `/` suffix means directory only
-  - `**` for recursive matching
-- Test parser against Git's behavior for consistency
-- Support both project and global .gitignore
+```
+// CRITICAL: Register collector and API BEFORE SPA fallback
+mux.HandleFunc("POST /__codepoint__", codepoint.CollectorHandler())
+mux.Handle("/api/", server)
+// SPA fallback LAST
+```
 
-**Warning signs:**
-- Files incorrectly included/excluded from scanning
-- Discrepancy between Git's behavior and scanner's behavior
-- Complex .gitignore patterns not working
+When adding test execution that navigates routes and triggers probes, the same ordering problem recurs at a higher level: test actions must complete before the SPA route handler redirects them.
 
-**Phase to address:**
-Phase 1 (Core Scanning) - Use Git's native ignore checking
+**Consequences:**
+- Test execution silently fails — probes never fire because requests are caught by SPA fallback
+- Flaky tests that pass when the server is fast (SPA hydrates quickly) and fail when it's slow
+- Debugging nightmare — the probe output file is empty, but there's no error message explaining why
 
----
+**Prevention:**
+1. Include route registration order validation as a mandatory step in the test setup checklist
+2. The test skill should verify `/__codepoint__` endpoint is reachable BEFORE running any test cases
+3. Add a health-check probe (a test-only probe that fires once at startup to confirm the collector is working)
+4. Document the SPA fallback ordering as a "MUST CHECK" item in the test execution skill
 
-### Pitfall 6: Windows-Specific Path and Execution Issues
+**Detection:**
+- If a test runs but produces zero probe output, immediately check route registration order
+- If probe output is missing for frontend probes but present for backend probes, SPA fallback is intercepting
 
-**What goes wrong:**
-Scanner works in development but fails in production due to Windows-specific issues: path separator confusion, Python version conflicts, line ending issues, slow startup times.
-
-**Why it happens:**
-- Path separators: `\` vs `/` inconsistency
-- Git Bash vs WSL vs CMD environment differences
-- CRLF vs LF line ending issues in scripts
-- Windows Python vs WSL Python path conflicts
-- Windows file system operations 3-5x slower than Unix
-
-**How to avoid:**
-- Always use forward slashes `/` in paths (Git handles conversion)
-- Use `#!/usr/bin/env python3` shebang for portability
-- Convert scripts to LF line endings before deployment
-- Test on actual Windows systems, not just WSL
-- Use absolute paths for Python interpreter if needed
-- Minimize Python startup overhead (consider single script vs multiple modules)
-- Use `os.path.join()` for path construction
-
-**Warning signs:**
-- "Works on my machine" (Linux/Mac) but fails on Windows
-- Path not found errors with backslash/forward slash issues
-- Hook scripts fail to execute (syntax errors from CRLF)
-- Performance significantly worse on Windows
-
-**Phase to address:**
-Phase 2 (Integration & Testing) - Windows-specific testing and optimization
+**Phase assignment:** Phase 2 (implementation) — during test execution skill development
 
 ---
 
-### Pitfall 7: Poor Error Messages and User Guidance
+### Pitfall 4: Windows Process Lifecycle Timing
 
-**What goes wrong:**
-Scanner detects issues but provides unhelpful messages like "Security issue found" without context, leaving users confused about what's wrong and how to fix it.
+**What goes wrong:** Frontend tests require starting both the backend server (Go or Python) AND the frontend dev server (Vite), waiting for both to be ready, then running test actions, then shutting down cleanly. On Windows, process management is fundamentally different from Unix: `Ctrl+C` propagation is unreliable, child processes may outlive parents, and port release after process kill has a delay (TCP TIME_WAIT).
 
-**Why it happens:**
-- Focusing on detection without considering user experience
-- Not including file paths, line numbers, or code snippets
-- Missing fix suggestions or remediation steps
-- Generic error messages that don't explain severity
+**Why it happens:** The pyts-calculator E2E project already encountered this: the v1.9.1 milestone noted "Windows process management" as a key challenge. Python's FastAPI server and Node's Vite dev server both need to be coordinated. On Windows:
 
-**How to avoid:**
-- Always include in error messages:
-  - File path and line number
-  - Type of issue (credential, cache file, config, etc.)
-  - Specific content that triggered detection (with partial masking for secrets)
-  - Severity level (ERROR vs WARNING)
-  - Fix suggestion (e.g., "Add to .gitignore", "Use environment variables")
-- Use color coding for readability (red for errors, yellow for warnings)
-- Provide examples of good vs bad patterns
+- `taskkill /F` is needed because graceful shutdown often doesn't work
+- Port 8080 (or whatever port) may not be immediately available after killing the previous process
+- Background process spawning in bash-on-Windows (Git Bash) behaves differently from native cmd
+- The `start` command in cmd creates new console windows that are hard to track
 
-**Warning signs:**
-- Users asking "what does this error mean?"
-- Users pasting entire error logs in issues/chats
-- Repeated questions about the same error type
+**Consequences:**
+- Tests fail because the server from the previous run is still listening on the port
+- Zombie processes accumulate, consuming memory and ports
+- Test flakiness — sometimes passes, sometimes fails, depending on port availability
+- CI-like automation becomes impossible without reliable process cleanup
 
-**Phase to address:**
-Phase 1 (Core Scanning) - UX design for error reporting
+**Prevention:**
+1. Always kill existing processes on the target port BEFORE starting a new server
+2. Use port auto-detection (`netstat -ano | findstr :PORT`) rather than assuming the port is free
+3. Implement a "wait for ready" health check (HTTP GET to `/api/health` or similar) with timeout rather than fixed sleep
+4. Use Go's `embed.FS` approach (compile frontend into backend binary) to eliminate the need for a separate frontend dev server in test mode
+5. For the separate dev server case, use a PID file and explicit cleanup in the test skill
 
----
+**Detection:**
+- "Address already in use" errors during test setup
+- Test output from a previous run appearing in the current probe log files
+- Processes remaining after test completion (`tasklist | findstr node` or `tasklist | findstr python`)
 
-### Pitfall 8: Regex Pattern False Negatives
-
-**What goes wrong:**
-Scanner fails to detect real secrets because regex patterns are too narrow or don't account for variations in secret formats. Examples: missing environment variable assignments, non-standard key formats, obfuscated secrets.
-
-**Why it happens:**
-- Relying solely on exact pattern matching
-- Not covering all secret format variations
-- Missing context-based detection (variable names like `api_key`, `secret`)
-- No entropy-based detection for non-standard formats
-- Easy to evade with simple formatting changes
-
-**How to avoid:**
-- Use multi-layer detection strategy:
-  1. **Regex patterns** for known formats (AWS keys, GitHub tokens)
-  2. **Keyword detection** for variable names (`password`, `secret`, `api_key`)
-  3. **Entropy analysis** for high-randomness strings (threshold: 4.5-5.0)
-- Combine multiple signals for confidence scoring
-- Test against known secret datasets
-- Keep pattern library updated with new secret formats
-- Consider LLM-based verification for edge cases (future enhancement)
-
-**Warning signs:**
-- Real secrets slip through to repository
-- Pattern library requires frequent manual updates
-- Detection misses obvious secrets during testing
-
-**Phase to address:**
-Phase 1 (Core Scanning) - Implement comprehensive detection strategy
+**Phase assignment:** Phase 1 (design) for architecture decision (embedded vs separate), Phase 2 for implementation
 
 ---
 
-## Technical Debt Patterns
+### Pitfall 5: Toggle State Chaos in Multi-Project Testing
 
-Shortcuts that seem reasonable but create long-term problems.
+**What goes wrong:** The codepoint system uses file-based toggles (`~/.codepoint/.codepoint-ts`, `~/.codepoint/.codepoint-go`, `~/.codepoint/.codepoint-python`). When running tests across multiple E2E projects (gojs-calculator, pyts-calculator), the toggle state is GLOBAL — enabling codepoints for one project enables them for ALL projects that share the same home directory. Test execution order affects results.
 
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Single regex for all secrets | Quick implementation | High false positives, misses edge cases | Never - always use multi-layer detection |
-| Skip .gitignore integration | Simpler code | Users can't customize, rigid behavior | Never - always respect .gitignore |
-| No severity levels | Simpler logic | Users overwhelmed by warnings, ignore all alerts | Never - always distinguish ERROR vs WARNING |
-| Scan all file types equally | Easier implementation | Performance issues, false positives from binaries | Never - always detect and skip binaries |
-| Global hardcoded patterns only | Fast to implement | Can't adapt to project needs | MVP only, add customization immediately after |
-| No performance monitoring | Faster initial dev | Performance degrades unnoticed | Never - always measure and log scan times |
+**Why it happens:** The toggle mechanism was designed for "enable once, use across the session" — not for sequential test execution across multiple projects. The pyts-calculator E2E tests validated "Toggle four-combination independent verification" (on/off for both Go and TS toggles), which proves the toggles work individually but also proves that cross-project interference is possible.
 
-## Integration Gotchas
+In v2.0, the test skill needs to:
+1. Enable toggles
+2. Run the application
+3. Execute test actions
+4. Collect probe output
+5. Disable toggles
 
-Common mistakes when connecting Git hooks and external tools.
+If step 5 fails (process crash, Windows kill issue from Pitfall 4), toggles remain enabled globally. The next test project starts with stale state.
 
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| Git pre-commit hook | Forgetting to remove `.sample` extension | Ensure hook file is named `pre-commit` not `pre-commit.sample` |
-| Git pre-commit hook | Using wrong shebang for Windows | Use `#!/usr/bin/env python3` for portability across Git Bash/WSL |
-| Python execution | Assuming Python in PATH on Windows | Use full path or `py -3` launcher for reliability |
-| .gitignore reading | Custom parsing instead of Git's | Use `git check-ignore` command for accuracy |
-| File type detection | Relying only on extension | Use `file` command or magic bytes for accuracy |
-| Staged file retrieval | Using `git diff` instead of `git diff --cached` | Use `--cached` flag to get staged changes only |
-| Binary file handling | Using `cat` or `grep` without `-I` | Use `grep -I` or check file type first |
+**Consequences:**
+- Test pollution — project A's test data contaminates project B's probe output
+- False positives — probes fire in projects where they shouldn't be active
+- Probe output directory confusion — `~/.codepoint/gojs-calculator/` gets data meant for `~/.codepoint/pyts-calculator/`
 
-## Performance Traps
+**Prevention:**
+1. The test skill should explicitly manage toggle state: enable before test, verify enabled, then disable after test (with error handling)
+2. Use project-specific output directories (already implemented via `path.basename(process.cwd())`) as a safety net
+3. Before collecting probe output, verify the output file's timestamp matches the current test run
+4. Consider a "test session ID" in probe output to disambiguate runs
 
-Patterns that work at small scale but fail as usage grows.
+**Detection:**
+- Probe output files with timestamps from before the current test started
+- More probe entries than expected (data from multiple projects mixed together)
+- Toggle files present when they shouldn't be after a test run fails
 
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Scanning entire repo | Commit times grow with repo size | Only scan staged files: `git diff --cached` | >100 files in repo |
-| Complex regex patterns | CPU spikes, long scan times | Use simple patterns + entropy, test regex performance | >10 files per commit |
-| No binary detection | Crashes, false positives on images | Detect and skip binary files early | Any binary in repo |
-| Recompiling patterns every run | Slow startup | Compile regex patterns once, cache in memory | Any Python startup |
-| Not filtering by extension | Scans PNGs, PDFs, binaries | Whitelist text file extensions | Mixed file types in repo |
-| Windows Python startup | 1-2 second overhead per commit | Minimize imports, use efficient structure | Every commit on Windows |
+**Phase assignment:** Phase 2 (implementation) — test execution skill must include toggle management
 
-## Security Mistakes
+---
 
-Domain-specific security issues beyond general web security.
+## Moderate Pitfalls
 
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Logging detected secrets | Secrets in log files | Mask secrets in output, never log full values |
-| Storing scan results | Secrets persisted to disk | Only scan, never store results |
-| Overly permissive allowlist | Real secrets whitelisted | Require explicit comments for allowlist entries |
-| Not updating patterns | New secret formats missed | Regular pattern library updates, subscribe to secret format feeds |
-| Entropy threshold too low | Too many false positives | Set entropy to 4.5-5.0, validate against real data |
-| Only pattern matching | Misses non-standard secrets | Combine regex + keyword + entropy detection |
-| No verification step | High false positive rate | Verify detected secrets when possible (e.g., test AWS key format) |
+---
 
-## UX Pitfalls
+### Pitfall 6: Design Review Deviations Carried Forward Unexamined
 
-Common user experience mistakes in security scanning tools.
+**What goes wrong:** The v2.0 milestone is built on Codepoint V2 which has 5 known design deviations (CP-01 through CP-05). If the frontend testing feature is built ON TOP of the current (deviated) scan/plan/implement structure, then fixing those deviations later may require reworking the test features too. Specifically:
+- CP-01 (scan is file-by-file instead of link-oriented) means the test planning skill may inherit the wrong mental model
+- CP-03 (implement is TDD-style instead of one-shot) means test verification may be conflated with probe verification
 
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| Blocking without bypass | Developers frustrated, can't commit during emergencies | Provide `--no-verify` with clear warning |
-| Generic error messages | Users don't know how to fix issues | Show file, line, content, and fix suggestion |
-| No severity distinction | Users treat all alerts as noise | Use ERROR (block) vs WARNING (allow with warning) |
-| No color coding | Hard to scan output quickly | Use red for errors, yellow for warnings, green for success |
-| Overwhelming output | Users ignore long reports | Group by severity, show summary first, details on request |
-| No i18n support | Non-English users struggle | Support multiple languages, detect system locale |
-| No skip documentation | Users don't know how to exclude files | Document .gitignore integration clearly |
+**Why it happens:** The design review (docs/research/codepoint/2026-04-19-design-review.md) identified improvement priorities (P0: CP-01, CP-05; P1: CP-02, CP-04; P2: CP-03) but v2.0 starts WITHOUT these fixes applied. The frontend test features will be designed against the current, imperfect skill structure.
 
-## "Looks Done But Isn't" Checklist
+**Prevention:**
+1. Acknowledge which deviations the test feature depends on and design accordingly
+2. If CP-01 changes the scan output format, the test planning skill should consume the format-agnostic "flow + point" abstraction rather than parsing scan output directly
+3. If CP-03 simplifies the implement phase, the test verification should be designed to work with both TDD-style and simplified implement flows
+4. Document the coupling points so that when deviations are fixed, the test feature can be updated predictably
 
-Things that appear complete but are missing critical pieces.
+**Phase assignment:** Phase 1 (design) — make coupling to existing deviations explicit
 
-- [ ] **Binary file handling:** Often missing proper detection — verify with images, PDFs, executables
-- [ ] **.gitignore integration:** Often missing negation patterns — verify `!` patterns work
-- [ ] **Performance:** Often slow on large repos — verify with >100 staged files
-- [ ] **Windows compatibility:** Often broken paths or execution — verify on actual Windows (not WSL)
-- [ ] **Error messages:** Often missing line numbers — verify errors show file:line format
-- [ ] **Bypass mechanism:** Often missing `--no-verify` — verify emergency bypass works
-- [ ] **False positive handling:** Often no allowlist — verify users can exclude patterns
-- [ ] **Merge commits:** Often fails on merges — verify with merge commit scenarios
-- [ ] **Empty commits:** Often crashes on empty — verify with `git commit --allow-empty`
-- [ ] **Deleted files:** Often tries to scan deleted files — verify with `git rm` scenarios
+---
 
-## Recovery Strategies
+### Pitfall 7: Probe Output Parsing Assumptions
 
-When pitfalls occur despite prevention, how to recover.
+**What goes wrong:** The test verification logic assumes a specific probe output format (JSON with point_id, flow_id, timestamp, stack, metadata) but the actual output varies across modes:
+- Browser probes via collector: JSON with `name`, `stack`, `timestamp`, `meta` (note: `name` not `point_id`)
+- Node.js probes: JSON with `name`, `timestamp`, `stack`, `frames`, `meta`
+- Plain text probes: `[CODEPOINT] name\nstack\n`
+- Flow-routed probes: per-flow log files with different naming patterns
 
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| False positive overload | MEDIUM | Tune patterns, add allowlist entries, adjust entropy threshold |
-| Performance bottleneck | MEDIUM | Optimize regex, add binary detection, implement caching |
-| Workflow breakage | LOW | Add bypass option, improve error messages, adjust severity levels |
-| Binary scanning crash | LOW | Add file type detection before content scanning |
-| .gitignore parsing bug | LOW | Switch to `git check-ignore` command |
-| Windows path issues | LOW | Normalize path separators, test on actual Windows |
-| Poor error messages | LOW | Add context, line numbers, fix suggestions |
-| False negatives | HIGH | Audit pattern library, add keyword detection, implement entropy analysis |
+The v1.9.1 E2E tests already revealed format inconsistencies that required fixes. Building test verification on format assumptions that work in one mode but not another creates fragile tests.
 
-## Pitfall-to-Phase Mapping
+**Why it happens:** The frontend probe has dual mode (browser + Node.js), and the Go collector reformats the data slightly when writing to files. The test verification skill needs to parse these files, and any assumption about field names or structure that doesn't match the actual output causes verification failures.
 
-How roadmap phases should address these pitfalls.
+**Prevention:**
+1. Normalize probe output to a canonical format BEFORE verification, don't parse raw logs
+2. Use the collector's output format (the Go-side `CollectorHandler` output) as the canonical format for test verification
+3. Add a "probe output schema" to the test verification skill that documents the exact fields and types expected
+4. Test the parser against all existing E2E project outputs before relying on it
 
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| False positive overload | Phase 1: Core Scanning | Test with real codebases, measure false positive rate |
-| Performance bottleneck | Phase 1: Core Scanning | Benchmark with large staged areas, measure time |
-| Breaking workflows | Phase 1: Core Scanning | Test with existing hooks, verify bypass works |
-| Binary file scanning | Phase 1: Core Scanning | Test with various binary file types |
-| .gitignore parsing | Phase 1: Core Scanning | Test against Git's behavior, verify edge cases |
-| Windows issues | Phase 2: Integration & Testing | Test on actual Windows systems (not just WSL) |
-| Poor error messages | Phase 1: Core Scanning | User testing of error clarity |
-| Regex false negatives | Phase 1: Core Scanning | Test against known secret datasets |
+**Detection:**
+- Verification reports showing "probe not fired" when the probe actually fired but in a different format
+- JSON parse errors when reading probe log files
+- Missing fields in parsed output that the verification logic expects
+
+**Phase assignment:** Phase 2 (implementation) — probe output parser is a foundational component
+
+---
+
+### Pitfall 8: Skill UX Complexity Explosion
+
+**What goes wrong:** Adding a frontend testing skill creates a fourth command (`/codepoint-test` or similar) on top of the existing three (`/codepoint-scan`, `/codepoint-plan`, `/codepoint-implement`). Users now need to understand when to use which command, and the commands may have overlapping responsibilities. The test skill might duplicate scanning functionality (to understand the frontend), duplicate planning functionality (to generate test cases), and duplicate implementation functionality (to insert test-specific probes).
+
+**Why it happens:** The existing three-command structure already shows signs of overlap — the design review deviation CP-02 identified that "plan" should be "collection building" rather than "feature planning." Adding "test" as a fourth creates a 4x4 matrix of "can I do X with command Y?" confusion.
+
+The v2.0 milestone target says "frontend test specialized skill — Claude Code skill for assisting frontend test planning and verification." If this becomes a separate skill with its own SKILL.md, it fragments the user experience.
+
+**Prevention:**
+1. Do NOT create a fourth independent skill — extend the existing implement skill with a "test verification" phase, or add test planning as a mode within the plan skill
+2. The test feature should be triggered by context (the skill detects it's a frontend project and offers test planning) rather than requiring a separate command
+3. Keep the user's mental model at three commands: scan (understand code), plan (define codepoints), implement (insert + verify + test)
+4. Any test-specific functionality should be integrated INTO the implement skill's verification phase
+
+**Detection:**
+- If the skill tree grows beyond 4 leaf skills (codepoint/scan/plan/implement), complexity has exploded
+- If users ask "which command should I use for X?" more than once per feature, the UX is confused
+- If two skills share more than 30% of their instruction text, they should be merged
+
+**Phase assignment:** Phase 1 (design) — skill structure is a foundational decision
+
+---
+
+### Pitfall 9: Test Plan Template Does Not Match Frontend Interaction Patterns
+
+**What goes wrong:** The test plan template is designed around backend flow patterns (entry -> boundary -> state-change -> error) but frontend interactions have fundamentally different patterns: user action -> state update -> re-render -> side effect. The "click -> response -> verify" sequence described in the v2.0 milestone requires capturing asynchronous state transitions that don't map cleanly to the current flow sequence model.
+
+**Why it happens:** The existing flow model (from data-model.md) defines flows as "ordered sequences of code points" with a trigger like "POST /api/login." Frontend flows are triggered by user actions (click, input, scroll), have asynchronous state transitions (React state updates, API calls), and the "verify" step often needs to check DOM state rather than just probe output.
+
+The E2E test projects use `pointWithMeta` in event handlers (e.g., `handleSubmit` in Calculator.tsx), which works for capturing "user clicked submit" but doesn't capture "the UI updated to show the result" — that's a different moment in the async chain.
+
+**Prevention:**
+1. Add a frontend-specific flow type that captures: trigger (user action) -> intermediate state (loading, error) -> final state (UI updated)
+2. Include DOM query verification as a first-class assertion type alongside probe output verification
+3. The test plan template for frontend should have: action, expected probe sequence, expected DOM state, expected API calls — not just probe sequence
+4. Use the existing `pointWithMeta` pattern to capture both the action trigger and the response handling, verifying both probe entries appear in the correct order
+
+**Detection:**
+- If test plans for frontend features only check "probes fired" without verifying UI state, the template is too backend-oriented
+- If the test execution skill cannot verify "the result display shows '5'" without a probe at that exact point, the model is incomplete
+
+**Phase assignment:** Phase 1 (design) — the frontend test plan template is a core deliverable
+
+---
+
+## Minor Pitfalls
+
+---
+
+### Pitfall 10: GBK Encoding in Probe Output File Names
+
+**What goes wrong:** Windows Chinese locale uses GBK encoding. If the project directory name contains Chinese characters (common in Chinese development teams), the probe output path `~/.codepoint/<project-dir-name>/cp-ts-*.log` may fail or produce garbled filenames. The current codepoint.ts uses `path.basename(process.cwd())` which returns UTF-8 strings on Windows, but `fs.writeFileSync` behavior with non-ASCII paths varies.
+
+**Prevention:** Test the probe output with a Chinese-named project directory. Ensure `fs.mkdirSync` with `recursive: true` handles non-ASCII paths on Windows. The project has already adopted ASCII-only in scripts (CLAUDE.md rule: "don't include Chinese in scripts"), so this is more about documentation than code fix.
+
+**Phase assignment:** Phase 2 (implementation) — quick validation during test execution development
+
+---
+
+### Pitfall 11: Embedded Frontend vs Dev Server Test Modes
+
+**What goes wrong:** The gojs-calculator project uses Go's `embed.FS` to compile the frontend into the binary, while pyts-calculator uses a separate Vite dev server. The test execution skill needs to handle both modes, and the setup/teardown logic is fundamentally different:
+- Embedded: start one binary, everything is available
+- Dev server: start backend + start frontend + wait for both + coordinate shutdown
+
+If the test skill only supports one mode, half the E2E projects become untestable.
+
+**Prevention:** Design the test execution flow with a "server mode" detection step that determines whether one or two processes are needed. The embedded mode should be the primary/recommended approach; dev server mode as fallback.
+
+**Phase assignment:** Phase 1 (design) — affects test execution architecture
+
+---
+
+### Pitfall 12: React Strict Mode Double Invocation
+
+**What goes wrong:** React 18 Strict Mode double-invokes effects and renders in development. If codepoint probes are placed in `useEffect`, they fire twice per mount, producing duplicate entries that confuse test verification (expecting N probes but getting 2N).
+
+**Why it happens:** The E2E projects already addressed this: the frontend reference explicitly notes "Frontend probes in event handlers only (not useEffect)." But the test planning skill may not enforce this constraint, and users following the test plan may place verification probes in `useEffect` without realizing the duplication.
+
+**Prevention:** Include a hardcoded rule in the test planning skill: "NEVER place codepoint probes in useEffect or useLayoutEffect — always use event handlers or explicit function calls." Auto-detect `useEffect` usage in probe placement and flag it.
+
+**Phase assignment:** Phase 1 (design) — rule goes into the test planning skill's guidelines
+
+---
+
+### Pitfall 13: Test Data Cleanup Between Runs
+
+**What goes wrong:** Each test run produces probe output files in `~/.codepoint/<project>/`. These files accumulate across test runs. When the test verification skill reads the "latest" output, it may read stale data from a previous run, producing false positive or false negative results.
+
+**Why it happens:** The probe output file naming includes timestamps (`cp-ts-YYYY-MM-DD_HH-MM-SS_mmm.log`), so files don't overwrite each other. But the test verification skill needs to know WHICH file corresponds to the current test run. If it just reads "the newest file," it might pick up a file from a concurrent run or a previous failed run.
+
+**Prevention:**
+1. Record the probe output filename at test start (before any probes fire)
+2. Delete or move existing probe output files in the project's `.codepoint/` directory before starting a test run
+3. Use the session timestamp as a filter — only read files created AFTER the test session started
+
+**Phase assignment:** Phase 2 (implementation) — test execution cleanup logic
+
+---
+
+## Phase-Specific Warnings
+
+| Phase Topic | Likely Pitfall | Mitigation |
+|-------------|---------------|------------|
+| Test specification design | Pitfall 1: Spec vs execution gap | Build executor first, design spec format to match |
+| Probe template changes | Pitfall 2: Instrumentation overhead | Keep test logic out of codepoint.ts |
+| Test execution skill | Pitfall 3: SPA route mismatch | Add collector health-check before tests |
+| Test execution skill | Pitfall 4: Windows process lifecycle | Use embedded frontend, PID tracking, port cleanup |
+| Toggle management | Pitfall 5: Toggle state chaos | Explicit enable/disable with error recovery |
+| Skill structure | Pitfall 8: UX complexity explosion | Extend existing skills, don't add new ones |
+| Frontend test templates | Pitfall 9: Frontend pattern mismatch | Add DOM verification as first-class assertion |
+| Integration with existing deviations | Pitfall 6: Deviation dependencies | Document coupling points explicitly |
+| Output parsing | Pitfall 7: Format assumptions | Normalize to canonical format before verification |
+| Cross-project testing | Pitfall 13: Data cleanup | Record file timestamps, clean before each run |
+
+---
+
+## Dependency Map
+
+```
+Pitfall 1 (spec-execution gap)
+  <- drives design of: Pitfall 9 (frontend template), Pitfall 8 (skill structure)
+
+Pitfall 4 (Windows process)
+  -> blocks: Pitfall 5 (toggle state)
+  -> blocks: Pitfall 13 (data cleanup)
+
+Pitfall 2 (instrumentation overhead)
+  <- must be decided before: Pitfall 7 (output parsing)
+
+Pitfall 6 (deviation carry-forward)
+  <- affects: All other pitfalls (the foundation has cracks)
+
+Pitfall 3 (SPA route mismatch)
+  -> already encountered in v1.9.1
+  -> regression risk in v2.0
+```
+
+---
 
 ## Sources
 
-- [Large-Scale Analysis of Code Security in Public Repositories (Springer, 2026)](https://link.springer.com/article/10.1007/s10207-025-01187-w) - False positive rates >50%, AI-assisted filtering
-- [GitLab SAST False Positive Detection (2026)](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/) - AI-based confidence scoring
-- [Rusty Hog - Rust Secret Scanner (2026)](https://blog.csdn.net/gitblog_00091/article/details/139163370) - Performance optimization with Rust
-- [Pre-commit Security Scanning UX Mistakes (Web Search, 2026)] - Common UX pitfalls in pre-commit hooks
-- [lint-staged Performance Optimization (npm)](https://www.npmjs.com/package/lint-staged/v/9.5.0) - 45x performance improvement by scanning staged files only
-- [Git Hooks Complete Guide (DataCamp)](https://www.datacamp.com/tutorial/git-hooks-complete-guide) - Windows Git hook execution
-- [Git Performance Optimization on Windows (CSDN)](https://blog.csdn.net/gitblog_00814/article/details/152069989) - Windows-specific performance issues
-- [Secret Detection with Large Language Models (arXiv, 2025)](https://arxiv.org) - False negatives in regex-based detection
-- [Gitleaks Documentation](https://github.com/gitleaks/gitleaks) - Entropy thresholds and allowlist mechanisms
-- [Yelp's detect-secrets](https://github.com/Yelp/detect-secrets) - Multi-layer detection strategy
-- [Git .gitignore Syntax (geek-docs.com)](https://geek-docs.com/git/git-questions/606_git_git_ignore_exception.html) - .gitignore parsing edge cases
-
----
-
-## Archived: v1.0 Notification System Pitfalls
-
-*The following pitfalls were documented for the claude-notify plugin (v1.0) and are retained for reference.*
-
-### Critical Pitfalls (v1.0)
-
-#### Pitfall 1: Hook Timeout Violations
-- **Issue:** Hook scripts exceed 5-second timeout, silently killed
-- **Prevention:** Use ThreadPoolExecutor, explicit timeouts, async execution
-
-#### Pitfall 2: Environment Variable Scope Confusion
-- **Issue:** Global skills can't access project-level .env files
-- **Prevention:** Require system-level environment variables, clear documentation
-
-#### Pitfall 3: Windows Path Encoding Issues
-- **Issue:** Backslashes in paths break JSON parsing
-- **Prevention:** Pre-process stdin data, force UTF-8 encoding
-
-#### Pitfall 4: Multiple Notification Channel Fallback Failures
-- **Issue:** One channel failure blocks all notifications
-- **Prevention:** Independent exception handling per channel, best-effort delivery
-
-*For full v1.0 pitfalls documentation, see project history.*
-
----
-*Pitfalls research for: Git Security Scanning Integration*
-*Researched: 2026-02-25*
+- `docs/research/codepoint/2026-04-19-design-review.md` — 5 deviations (CP-01~05) with E2E evidence
+- `tests/e2e/codepoint-v2/gojs-calculator/main.go` — SPA fallback route ordering bug (v1.9.1 fix)
+- `tests/e2e/codepoint-v2/gojs-calculator/frontend/src/lib/codepoint.ts` — dual-mode probe library
+- `tests/e2e/codepoint-v2/gojs-calculator/frontend/src/components/Calculator.tsx` — event handler probe pattern
+- `tests/e2e/codepoint-v2/gojs-calculator/codepoint/collector.go` — sync.Mutex + flow_id routing
+- `plugins/codepoint/references/frontend.md` — frontend probe implementation guide
+- `.planning/PROJECT.md` — v2.0 milestone definition
+- `.planning/STATE.md` — deferred items (7 debug sessions from previous milestones)
+- `.planning/MILESTONES.md` — v1.9.1 E2E test results (12 bugs fixed, SPA fallback, batch unwrap)

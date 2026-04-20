@@ -1,455 +1,646 @@
-# Architecture Research: Git Security Scanning Integration
+# Architecture Research: Frontend Automated Testing with Codepoint Integration
 
-**Domain:** Git Workflow Security Enhancement
-**Project:** work-skills (windows-git-commit plugin)
-**Researched:** 2026-02-25
-**Confidence:** HIGH
+**Domain:** Frontend test planning and verification integrated with Codepoint V2
+**Project:** work-skills (v2.0 milestone)
+**Researched:** 2026-04-20
+**Confidence:** HIGH (based on direct codebase analysis of all existing components)
 
 ## Executive Summary
 
-本研究专注于如何将**安全扫描功能**集成到现有的 `windows-git-commit` 技能中。核心设计原则是**在 git commit 前扫描暂存区内容**,发现安全问题则阻止提交并显示详细提示。
+This research analyzes how the v2.0 milestone's four target features (test planning templates, source-level instrumentation, frontend test skill, progressive verification) integrate with the existing Codepoint V2 architecture. The key finding is that the new features form a **parallel track** alongside the existing scan/plan/implement pipeline rather than a layer on top. The existing Codepoint skill produces runtime observability data (stack traces, execution sequences). The new frontend testing layer consumes that data to verify UI behavior against a test plan. The integration point is the `.codepoints/` directory structure and the `index.json` probe metadata -- these are the contract between the two systems.
 
-## Current Architecture (windows-git-commit)
+The design review (docs/research/codepoint/2026-04-19-design-review.md) identified five deviations (CP-01 through CP-05) that should be addressed before or alongside the frontend testing build. CP-01 (scan chain-oriented instead of file-by-file) and CP-05 (automated density validation) are P0 and directly affect the quality of frontend test planning. Building frontend testing on top of uncorrected scan would propagate the "file-by-file" bias into test plans.
 
-```
-+---------------------------------------------------------------+
-|                    Claude Code Main Agent                      |
-+---------------------------------------------------------------+
-                              |
-                              | Task tool (subagent launch)
-                              v
-+---------------------------------------------------------------+
-|                  Bash Subagent (Background)                    |
-+---------------------------------------------------------------+
-|  +-------------+  +-------------+  +-------------+            |
-|  | SSH Config  |->| Git Status  |->| Git Diff    |            |
-|  +-------------+  +-------------+  +-------------+            |
-|                                         |                      |
-|                                         v                      |
-|  +-------------+  +-------------+  +-------------+            |
-|  | Git Add     |->| Git Commit  |->| Git Push    |            |
-|  +-------------+  +-------------+  +-------------+            |
-+---------------------------------------------------------------+
-                              |
-                              | Summary Result
-                              v
-+---------------------------------------------------------------+
-|                      User Response                             |
-+---------------------------------------------------------------+
-```
+## Current Architecture (Codepoint V2)
 
-**现有特点:**
-- Bash 子代理执行所有 Git 操作
-- 通过 `run_in_background: true` 保护主上下文
-- 使用 plink + Pageant 进行 SSH 认证
-- 自动生成提交信息
+### Component Inventory
 
-## Enhanced Architecture (with Security Scanning)
+The existing system has these components, all verified by reading source files:
 
 ```
-+---------------------------------------------------------------+
-|                    Claude Code Main Agent                      |
-+---------------------------------------------------------------+
-                              |
-                              | Task tool (subagent launch)
-                              v
-+---------------------------------------------------------------+
-|                  Bash Subagent (Background)                    |
-+---------------------------------------------------------------+
-|  +-------------+  +-------------+  +-------------+            |
-|  | SSH Config  |->| Git Status  |->| Git Diff    |            |
-|  +-------------+  +-------------+  +-------------+            |
-|                                         |                      |
-|                                         v                      |
-|  +--------------------------------------------------------+   |
-|  |              Security Scanner (Python)                  |   |
-|  |  +------------------+  +--------------------------+    |   |
-|  |  | Staged Files     |->| Detection Engine         |    |   |
-|  |  | Collector        |  | - Secret Patterns        |    |   |
-|  |  +------------------+  | - Cache File Detection   |    |   |
-|  |                        | - Config File Detection  |    |   |
-|  |                        | - Internal Info Check    |    |   |
-|  |                        +--------------------------+    |   |
-|  |                               |                        |   |
-|  |                               v                        |   |
-|  |                        +-------------+                 |   |
-|  |                        | Report Gen  |                 |   |
-|  |                        +-------------+                 |   |
-|  +--------------------------------------------------------+   |
-|                    |                                          |
-|          [Issues Found?]                                      |
-|           /          \                                        |
-|         YES           NO                                      |
-|          |            |                                       |
-|          v            v                                       |
-|  +-------------+  +-------------+  +-------------+            |
-|  | Block &     |  | Git Add     |->| Git Commit  |            |
-|  | Report      |  +-------------+  +-------------+            |
-|  +-------------+                           |                  |
-|                                            v                  |
-|                                    +-------------+            |
-|                                    | Git Push    |            |
-|                                    +-------------+            |
-+---------------------------------------------------------------+
+Component                   | Location                                    | Role
+----------------------------|---------------------------------------------|------
+Main skill                  | plugins/codepoint/skills/codepoint/SKILL.md | Entry point, data model definition
+Scan skill                  | plugins/codepoint/skills/scan/SKILL.md      | Two-phase codebase scanning
+Plan skill                  | plugins/codepoint/skills/plan/SKILL.md      | New feature probe planning
+Implement skill             | plugins/codepoint/skills/implement/SKILL.md | TDD-style probe insertion
+Data model spec             | plugins/codepoint/references/data-model.md  | Three-layer model (Collection/Flow/Point)
+Go probe library            | tests/e2e/codepoint-v2/*/codepoint/codepoint.go | Go runtime probes (Point, PointWithMeta, PointJSON)
+Go frontend collector       | tests/e2e/codepoint-v2/gojs-calculator/codepoint/collector.go | HTTP handler receiving browser POSTs
+Python frontend collector   | tests/e2e/codepoint-v2/pyts-calculator/codepoint/collector.py | Same for Python backends
+TS/JS probe library         | tests/e2e/codepoint-v2/*/frontend/src/lib/codepoint.ts | Browser + Node.js dual-mode probes
+Frontend reference          | plugins/codepoint/references/frontend.md    | React/Vue/Node patterns + V2 templates
+Go reference                | plugins/codepoint/references/golang.md      | Go probe patterns
+Python reference            | plugins/codepoint/references/python.md      | Python probe patterns
+Templates                   | plugins/codepoint/templates/*.md, index.json | Document generation templates
+5 E2E test projects         | tests/e2e/codepoint-v2/                     | go-calculator, python-calculator, gojs-calculator, pyts-calculator, template-test
 ```
 
-## Component Responsibilities
-
-| Component | Responsibility | Implementation |
-|-----------|----------------|----------------|
-| **Bash Subagent** | 编排 Git 工作流 | Bash script in SKILL.md (现有) |
-| **Security Scanner** | 执行安全扫描 | Python script (新增) |
-| **Pattern Engine** | 匹配敏感信息模式 | Regex + entropy analysis |
-| **Rule Loader** | 加载 .gitignore 规则 | Python fnmatch |
-| **Report Generator** | 格式化扫描结果 | Python formatted output |
-
-## Recommended Project Structure
+### Data Flow: Current Codepoint V2 Pipeline
 
 ```
-plugins/windows-git-commit/
-+-- skills/
-|   +-- windows-git-commit/
-|       +-- SKILL.md                    # 主技能定义 (修改)
-|       +-- TROUBLESHOOTING.md          # 故障排除指南 (现有)
-+-- scripts/                            # 新增: Python 脚本
-|   +-- security_scan.py               # 主扫描入口
-|   +-- detectors/                      # 检测模块
-|       +-- __init__.py
-|       +-- secrets.py                  # 密钥检测
-|       +-- cache_files.py              # 缓存文件检测
-|       +-- config_files.py             # 配置文件泄露检测
-|       +-- internal_info.py            # 内部信息检测
-|   +-- rules/                          # 规则定义
-|       +-- __init__.py
-|       +-- patterns.py                 # 正则模式库
-|       +-- gitignore_parser.py         # .gitignore 解析器
-+-- tests/                              # 新增: 测试套件
-|   +-- __init__.py
-|   +-- test_secrets.py
-|   +-- test_cache_files.py
-|   +-- test_config_files.py
-+-- .claude-plugin/
-    +-- plugin.json                     # 插件元数据 (现有)
-```
-
-### Structure Rationale
-
-- **scripts/detectors/**: 模块化检测组件,便于扩展
-- **scripts/rules/**: 集中管理检测模式,便于更新
-- **tests/**: 每个检测类别的单元测试
-- SKILL.md 保持编排层,复杂逻辑委托给 Python
-
-## Architectural Patterns
-
-### Pattern 1: Pipeline Detection
-
-**What:** 顺序检测管道,每个检测器独立运行
-**When to use:** 当检测类别相互独立、顺序无关时
-**Trade-offs:** 简单实现,但无法在严重问题时提前退出
-
-**Example:**
-```python
-class SecurityScanner:
-    def __init__(self):
-        self.detectors = [
-            SecretsDetector(),
-            CacheFileDetector(),
-            ConfigFileDetector(),
-            InternalInfoDetector()
-        ]
-
-    def scan(self, staged_files: List[str]) -> List[Finding]:
-        all_findings = []
-        for detector in self.detectors:
-            findings = detector.detect(staged_files)
-            all_findings.extend(findings)
-        return all_findings
-```
-
-### Pattern 2: Git Diff Streaming
-
-**What:** 直接从 git diff 流式读取暂存内容,不写临时文件
-**When to use:** 最小化磁盘 I/O,避免创建临时文件
-**Trade-offs:** 更快,无需清理,但需要仔细处理编码
-
-**Example:**
-```python
-def get_staged_file_content(file_path: str) -> str:
-    """使用 git diff 获取暂存文件内容"""
-    result = subprocess.run(
-        ['git', 'diff', '--cached', '--', file_path],
-        capture_output=True,
-        text=True,
-        encoding='utf-8',
-        errors='replace'
-    )
-    return result.stdout
-```
-
-### Pattern 3: Fail-Fast with Severity
-
-**What:** 发现 CRITICAL 问题时立即停止,较低严重度继续扫描
-**When to use:** 平衡彻底性和性能
-**Trade-offs:** 更快发现阻塞问题,但可能遗漏其他问题
-
-**Example:**
-```python
-def scan_with_early_exit(staged_files: List[str]) -> ScanResult:
-    critical_findings = []
-
-    for detector in self.detectors:
-        findings = detector.detect(staged_files)
-        critical = [f for f in findings if f.severity == Severity.CRITICAL]
-        if critical:
-            critical_findings.extend(critical)
-            break  # 发现严重问题立即停止
-
-    return ScanResult(
-        blocked=len(critical_findings) > 0,
-        findings=critical_findings
-    )
-```
-
-## Data Flow
-
-### Request Flow
-
-```
-[用户: "git commit"]
+User triggers /codepoint-scan
         |
         v
-[Bash 子代理启动]
+  [Phase 1: Overview] --- Detect project type, directory structure, routes
+        |                      Output: candidate Collections and Flows
+        v
+  [User confirms modules to deep-dive]
         |
         v
-[git diff --cached --name-only] --> [暂存文件列表]
+  [Phase 2: Deep Dive] --- Trace execution paths, place code points
+        |                      Output: .codepoints/ directory (index.json + docs)
+        v
+  [Density Validation] --- Check overlap between adjacent points
+        |                      (currently concept-only, not automated -- CP-05)
+        v
+  User triggers /codepoint-plan (for new features)
         |
         v
-[Python security_scan.py] --> [检测结果]
+  [Analyze spec] --- Identify flows, determine code point locations
+        |                     Output: code point plan document
+        v
+  User triggers /codepoint-implement
         |
         v
-[发现问题?]
-    /          \
-  YES           NO
-   |            |
-   v            v
-[阻止]      [继续]
-[报告]     [git commit]
+  [Red: Confirm plan] --- Show insertion plan, get user approval
+        |
+        v
+  [Green: Insert probes] --- Generate probe code, insert into source files
+        |                       Update index.json (enabled: true)
+        v
+  [Verify: Run tests] --- Generate test cases, run, analyze output
+        |                       Output: verification report
+        v
+  [Runtime: Toggle ON] --- touch ~/.codepoint/.codepoint-{go,ts,python}
+        |
+        v
+  [Capture] --- Probes fire during test/manual execution
+        |           Output: ~/.codepoint/<project>/cp-{lang}-*.log
+        v
+  [Log Analysis] --- Sub-agent reads logs, diagnoses issues
+                       (per codepoint-subagent-log-analysis-design.md)
 ```
 
-### Security Scan Flow
+### Probe Runtime Architecture (Frontend)
+
+The frontend probe system has a specific dual-mode design that matters for test integration:
 
 ```
-[暂存文件列表]
-        |
-        v
-+---------------------------+
-| 按 .gitignore 过滤        |
-| (尊重现有规则)            |
-+---------------------------+
-        |
-        v
-+---------------------------+
-| 对每个文件:               |
-| 1. 获取内容 (git diff)    |
-| 2. 运行所有检测器         |
-| 3. 收集发现               |
-+---------------------------+
-        |
-        v
-+---------------------------+
-| 聚合 & 排序结果           |
-| - 按严重度                |
-| - 按文件路径              |
-+---------------------------+
-        |
-        v
-+---------------------------+
-| 生成报告                  |
-| - 颜色编码输出            |
-| - 修复建议                |
-+---------------------------+
+Browser (React/Vue app)
+  |
+  | pointWithMeta('cp-xxx', { point_id, flow_id, ... })
+  |
+  v
+codepoint.ts checks: typeof window !== 'undefined'
+  |
+  +-- Browser mode --> fetch('/__codepoint__', POST, JSON payload)
+  |                      |
+  |                      v
+  |                   Backend Collector (Go: collector.go / Python: collector.py)
+  |                      |
+  |                      v
+  |                   Checks ~/.codepoint/.codepoint-ts toggle
+  |                      |
+  |                      +-- Toggle absent --> 404 --> browser stops trying (zero overhead)
+  |                      |
+  |                      +-- Toggle present --> Extract flow_id from meta
+  |                                              |
+  |                                              +-- Has flow_id --> Route to per-flow log file
+  |                                              +-- No flow_id --> General log file
+  |
+  +-- Node.js mode --> Check toggle file directly
+                        |
+                        +-- Enabled --> Write JSON to ~/.codepoint/<project>/cp-ts-*.log
+                        +-- Disabled --> No-op (one boolean check)
 ```
 
-### Key Data Flows
+Key design constraint: Frontend probes in event handlers only (not useEffect) to avoid React strict mode double-invocation. This is verified in Calculator.tsx where probes are in `handleSubmit`, not in effects.
 
-1. **暂存文件提取**: `git diff --cached --name-only` 提供文件列表
-2. **内容流式读取**: `git diff --cached -- <file>` 提供暂存内容
-3. **模式匹配**: 逐行应用正则模式,带上下文
-4. **结果聚合**: 收集所有发现,按严重度排序,格式化输出
+## Integration Analysis: New Features vs Existing Architecture
 
-## Integration Points
+### Integration Point Map
 
-### Integration with Existing SKILL.md
+Each v2.0 target feature integrates with existing components at specific points:
 
-安全扫描应插入在 **git status 和 git add 之间**:
-
-```bash
-# 当前工作流 (在 SKILL.md agent_configuration):
-git status -> git diff --stat -> git add -A -> git commit -> git push
-
-# 增强工作流:
-git status -> git diff --stat -> [安全扫描] -> git add -A -> git commit -> git push
-                                    |
-                                    v
-                            [发现问题?] -> 阻止 & 报告
+```
+NEW FEATURE                     INTEGRATES WITH                          INTERFACE
+-------------------------------|-----------------------------------------|---------------------------
+1. Test Planning Templates     | /codepoint-plan SKILL.md                | Plan output format
+                               | .codepoints/index.json                  | Flow/Point definitions
+                               | Design review CP-02 (plan repositioned) | Plan is "collection build"
+                               |                                         |
+2. Source-Level Instrumentation | codepoint.ts (frontend probes)          | pointWithMeta() API
+                               | collector.go / collector.py              | POST /__codepoint__
+                               | /codepoint-implement SKILL.md            | Green phase insertion
+                               | references/frontend.md                  | React/Vue patterns
+                               |                                         |
+3. Frontend Test Skill         | /codepoint SKILL.md (main entry)        | New skill registration
+                               | .codepoints/verification/               | Verification reports
+                               | Log analysis sub-agent design           | Phase 7 integration
+                               |                                         |
+4. Progressive Verification    | E2E test projects (5 projects)          | Existing test harness
+                               | Collector flow_id routing               | Per-flow log files
+                               | Toggle mechanism                        | Enable/disable probes
 ```
 
-### Git Command Integration
+### Feature 1: Test Planning Templates
 
-| 命令 | 目的 | 使用的输出 |
-|------|------|-----------|
-| `git diff --cached --name-only` | 获取暂存文件列表 | 文件路径 |
-| `git diff --cached -- <file>` | 获取暂存内容 | 文件内容 |
-| `git check-ignore <file>` | 检查 .gitignore 规则 | 跳过决策 |
+**How it relates to Codepoint's scan/plan/implement flow:**
 
-### Bash-Python Bridge
+Test planning templates are a **new output type** from the plan skill. Currently `/codepoint-plan` produces a "code point plan document" (probes to insert). The new template extends this to also produce a "test plan document" that defines:
 
-```bash
-# 在 Bash 子代理中:
-STAGED_FILES=$(git diff --cached --name-only)
-SCAN_RESULT=$(python3 "$SCRIPT_DIR/scripts/security_scan.py" --files "$STAGED_FILES")
+- What user interactions to test (click, input, navigate)
+- Expected probe firing sequences for each interaction
+- Expected state changes and UI outcomes
+- Verification criteria (probe output + visual state)
 
-if [ $? -ne 0 ]; then
-    echo "$SCAN_RESULT"
-    exit 1  # 阻止提交
-fi
+This is NOT a separate workflow. It is an enrichment of the existing plan skill's output.
+
+**Integration design:**
+
+```
+/codepoint-plan (existing)
+    |
+    +-- Step 5: Generate Plan Document (EXISTING)
+    |       Output: code point plan (probes, locations, flows)
+    |
+    +-- Step 5b: Generate Test Plan (NEW)
+            Input: code point plan + frontend component tree
+            Output: test-plan.md in .codepoints/verification/
+            Format: interaction -> expected probes -> expected state -> pass criteria
 ```
 
-## Detection Categories
+**New files needed:**
+- `plugins/codepoint/templates/test-plan.md` -- Test plan document template
+- Modification to `plugins/codepoint/skills/plan/SKILL.md` -- Add Step 5b
 
-### Category 1: Secret Keys (密钥检测)
+**NOT needed:** Separate skill or command. Test plan generation is a natural extension of the plan skill's existing output.
 
-| 类型 | 模式 | 严重度 |
-|------|------|--------|
-| AWS Access Key | `AKIA[0-9A-Z]{16}` | CRITICAL |
-| AWS Secret Key | `[A-Za-z0-9/+=]{40}` (带上下文) | CRITICAL |
-| Google API Key | `AIza[0-9A-Za-z-_]{35}` | CRITICAL |
-| OpenAI API Key | `sk-[a-zA-Z0-9_-]{32,}` | CRITICAL |
-| Anthropic API Key | `sk-ant-[a-zA-Z0-9_-]{32,}` | CRITICAL |
-| Generic Private Key | `-----BEGIN.*PRIVATE KEY-----` | CRITICAL |
-| JWT Token | `eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*` | HIGH |
+### Feature 2: Source-Level Instrumentation
 
-### Category 2: Cache/Compiled Files (缓存/编译文件)
+**How it extends existing codepoint probe insertion:**
 
-| 模式 | 描述 | 严重度 |
-|------|------|--------|
-| `__pycache__/` | Python 字节码缓存 | MEDIUM |
-| `*.pyc`, `*.pyo` | Python 编译文件 | MEDIUM |
-| `node_modules/` | Node.js 依赖 | MEDIUM |
-| `.venv/`, `venv/` | Python 虚拟环境 | MEDIUM |
-| `*.exe`, `*.dll` | Windows 可执行文件 | HIGH |
-| `dist/`, `build/` | 构建输出 | MEDIUM |
+The current probe insertion (`/codepoint-implement` Green phase) generates probe code from templates and inserts it into source files at specified locations. For frontend, it already generates `pointWithMeta()` calls.
 
-### Category 3: Config Files (配置文件)
+Source-level instrumentation for testing means inserting probes **during feature development** rather than after. This is a workflow change, not a technical change:
 
-| 文件模式 | 风险 | 严重度 |
-|----------|------|--------|
-| `.env` | 环境变量秘密 | CRITICAL |
-| `credentials.*` | 凭证文件 | CRITICAL |
-| `*.pem`, `*.key` | 私钥文件 | CRITICAL |
-| `.htpasswd` | Apache 密码文件 | CRITICAL |
-| `*.ppk` | PuTTY 私钥 | CRITICAL |
+- Current workflow: Write feature code -> Run `/codepoint-plan` -> Run `/codepoint-implement` -> Insert probes
+- New workflow: Write feature code WITH probes from the start -> Probes are part of the feature deliverable
 
-### Category 4: Internal Information (内部信息)
+**Key insight from existing code:** The Calculator.tsx component already demonstrates this pattern. Probes are embedded in the `handleSubmit` event handler alongside the business logic. The codepoint.ts library already supports this via `pointWithMeta()`.
 
-| 模式 | 描述 | 严重度 |
-|------|------|--------|
-| `10\.\d{1,3}\.\d{1,3}\.\d{1,3}` | 私有 IP (A类) | LOW |
-| `172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}` | 私有 IP (B类) | LOW |
-| `192\.168\.\d{1,3}\.\d{1,3}` | 私有 IP (C类) | LOW |
-| `@internal\..*` | 内部邮件域名 | MEDIUM |
-| `@corp\..*` | 企业邮件域名 | MEDIUM |
+**What needs to change:**
 
-## Build Order (Considering Dependencies)
+1. The plan skill should generate a "probe placement guide" that developers can reference while coding, rather than waiting for `/codepoint-implement` to insert probes post-hoc.
+2. The implement skill's Green phase should be able to work in "validate existing probes" mode (check that manually-placed probes match the plan) rather than only "insert new probes" mode.
 
-### Phase 1: Core Infrastructure (无依赖)
-1. `scripts/rules/patterns.py` - 定义所有正则模式
-2. `scripts/rules/gitignore_parser.py` - 解析 .gitignore 规则
+**Integration design:**
 
-### Phase 2: Detection Modules (依赖 Phase 1)
-3. `scripts/detectors/secrets.py` - 密钥检测 (使用 patterns)
-4. `scripts/detectors/cache_files.py` - 缓存文件检测
-5. `scripts/detectors/config_files.py` - 配置文件检测
-6. `scripts/detectors/internal_info.py` - 内部信息检测
+```
+/codepoint-plan (existing, extended)
+    |
+    +-- Step 5b (NEW): Generate Probe Placement Guide
+            Output: For each flow, list expected probe locations with code snippets
+            Format: "In Calculator.tsx handleSubmit, after setState, add: pointWithMeta(...)"
 
-### Phase 3: Main Scanner (依赖 Phase 2)
-7. `scripts/security_scan.py` - 主入口,编排检测器
+/codepoint-implement (existing, extended)
+    |
+    +-- Phase 2 Green: NEW MODE "Validate existing"
+            Input: Source files with manually-placed probes
+            Action: Compare actual probe locations against plan
+            Output: Match report (which probes are correctly placed, which are missing/misplaced)
+```
 
-### Phase 4: Integration (依赖 Phase 3)
-8. 修改 `SKILL.md` - 添加安全扫描步骤到工作流
-9. 添加 `TROUBLESHOOTING.md` 章节 - 安全扫描错误处理
+### Feature 3: Frontend Test Skill
 
-### Phase 5: Testing (与 Phase 2-4 并行)
-10. `tests/test_secrets.py`
-11. `tests/test_cache_files.py`
-12. `tests/test_config_files.py`
+**How it composes with existing codepoint skill:**
+
+The frontend test skill is a **new skill** under the codepoint plugin, not a modification of existing skills. It consumes the output of scan/plan/implement and the runtime probe data to execute and verify frontend tests.
+
+**Composition pattern:**
+
+```
+Existing skills (unchanged):     New skill:
+  /codepoint-scan                  /codepoint-test (NEW)
+  /codepoint-plan                      |
+  /codepoint-implement                 | Reads from:
+                                       | - .codepoints/index.json (probe definitions)
+                                       | - .codepoints/verification/test-plan.md (test plan)
+                                       | - ~/.codepoint/<project>/cp-ts-*.log (probe output)
+                                       | - Source files (to verify probe placement)
+                                       |
+                                       | Outputs to:
+                                       | - .codepoints/verification/test-result.md
+                                       |
+                                       | Depends on:
+                                       | - scan/plan/implement must have been run first
+                                       | - Probes must be inserted and toggle enabled
+```
+
+**New files needed:**
+- `plugins/codepoint/skills/test/SKILL.md` -- Frontend test execution skill
+- `plugins/codepoint/templates/test-result.md` -- Test result report template
+- Update `plugins/codepoint/.claude-plugin/plugin.json` -- Register new skill
+
+**Critical dependency:** This skill requires the codepoint probe infrastructure to be fully operational:
+1. Probes must be inserted in frontend source files
+2. Backend collector must be running (Go or Python)
+3. Toggle must be enabled (`~/.codepoint/.codepoint-ts`)
+4. Probe output must be flowing to `~/.codepoint/<project>/cp-ts-*.log`
+
+### Feature 4: Progressive Verification
+
+**How existing test projects support progressive rollout:**
+
+The 5 existing E2E test projects provide a natural progression path:
+
+```
+Stage 1: Single-language backend (existing, already verified)
+  tests/e2e/codepoint-v2/go-calculator/       -- Go only, 12 codepoints, 3 flows
+  tests/e2e/codepoint-v2/python-calculator/    -- Python only
+
+Stage 2: Full-stack cross-language (existing, already verified)
+  tests/e2e/codepoint-v2/gojs-calculator/      -- Go + React/TS, 18 codepoints, collector
+  tests/e2e/codepoint-v2/pyts-calculator/      -- Python + React/TS, collector
+
+Stage 3: Frontend test planning (NEW, to be built)
+  Use gojs-calculator as pilot project:
+    1. Run /codepoint-plan to generate test plan for Calculator/BatchCalc/History components
+    2. Verify probe placement is correct (Feature 2)
+    3. Run /codepoint-test to execute frontend tests against probe output
+    4. Validate test results match expected behavior
+
+Stage 4: Generalize to other projects (after Stage 3 validates the approach)
+  Apply same pattern to pyts-calculator
+  Create template for new projects
+```
+
+## Recommended Architecture
+
+### Component Boundaries
+
+```
++------------------------------------------------------------------+
+|                    Codepoint Plugin (V2.1)                         |
+|                                                                    |
+|  +------------------+    +------------------+    +---------------+ |
+|  |    scan skill    |    |    plan skill    |    | implement     | |
+|  |                  |    |                  |    | skill         | |
+|  | Phase 1: Overview|    | Step 1-4: exists |    | Red: confirm  | |
+|  | Phase 2: Deep    |    | Step 5: plan doc |    | Green: insert | |
+|  |   Dive (MODIFIED |    | Step 5b: test    |    |   (EXTENDED:  | |
+|  |   per CP-01)     |    |   plan (NEW)     |    |   validate    | |
+|  | Step 6: density  |    | Step 5c: probe   |    |   mode)       | |
+|  |   validation     |    |   placement guide|    | Verify: light | |
+|  |   (NEW per CP-05)|    |   (NEW)          |    |   accept      | |
+|  +------------------+    +------------------+    |   (SIMPLIFIED  | |
+|           |                       |              |   per CP-03)   | |
+|           v                       v              +--------+------+ |
+|     .codepoints/           .codepoints/                   |        |
+|       index.json             verification/                |        |
+|       collections/           test-plan.md                 |        |
+|       flows/                 probe-guide.md               |        |
+|       points/                                              |        |
+|                                                             |        |
+|  +------------------+                                       |        |
+|  |   test skill     | <------------------------------------+        |
+|  |   (NEW)          |                                                |
+|  |                  |                                                |
+|  | Step 1: Read     |                                                |
+|  |   test plan      |                                                |
+|  | Step 2: Enable   |                                                |
+|  |   probes         |                                                |
+|  | Step 3: Execute  |                                                |
+|  |   interactions   |                                                |
+|  | Step 4: Collect  |                                                |
+|  |   probe output   |                                                |
+|  | Step 5: Compare  |                                                |
+|  |   vs expected    |                                                |
+|  | Step 6: Report   |                                                |
+|  +------------------+                                                |
+|           |                                                          |
+|           v                                                          |
+|     .codepoints/                                                     |
+|       verification/                                                  |
+|         test-result.md                                               |
++------------------------------------------------------------------+
+         |
+         | Runtime dependency
+         v
++------------------------------------------------------------------+
+|                    Probe Runtime Layer                              |
+|                                                                    |
+|  +------------------+    +------------------+                      |
+|  | codepoint.ts     |    | codepoint.go     |                      |
+|  | (frontend probes)|    | (backend probes) |                      |
+|  | point()          |    | Point()          |                      |
+|  | pointWithMeta()  |    | PointWithMeta()  |                      |
+|  | pointAsync()     |    | PointJSON()      |                      |
+|  | CodePointCollector|   | AnalyzeOverlap() |                      |
+|  +--------+---------+    +--------+---------+                      |
+|           |                       |                                 |
+|           v                       v                                 |
+|  +------------------+    +------------------+                      |
+|  | collector.go     |    | collector.py     |                      |
+|  | (Go backend      |    | (Python backend  |                      |
+|  |  receives browser|    |  receives browser|                      |
+|  |  POSTs)          |    |  POSTs)          |                      |
+|  +------------------+    +------------------+                      |
+|           |                       |                                 |
+|           +-----------+-----------+                                 |
+|                       v                                             |
+|          ~/.codepoint/<project>/cp-{lang}-*.log                     |
++------------------------------------------------------------------+
+```
+
+### Data Flow: Complete Frontend Test Cycle
+
+```
+1. PLANNING PHASE
+   /codepoint-plan
+     |-- Reads spec/design document
+     |-- Identifies frontend flows (user interactions)
+     |-- Generates test-plan.md:
+     |     For each interaction:
+     |       - Trigger: "Click Calculate button"
+     |       - Expected probes: [cp-fe-calc-submit, cp-api-call-entry, cp-calc-compute, cp-fe-calc-response]
+     |       - Expected state: Result field shows "5"
+     |       - Pass criteria: All probes fire in sequence, state matches
+     |-- Generates probe-guide.md:
+     |     For each component:
+     |       - Where to place probes
+     |       - What metadata to include
+     |       - Code snippets for copy-paste
+
+2. INSTRUMENTATION PHASE
+   Developer writes feature code with probes
+   OR /codepoint-implement inserts probes (existing Green phase)
+   OR /codepoint-implement validates existing probes (new validate mode)
+     |
+     v
+   Source files contain pointWithMeta() calls
+
+3. EXECUTION PHASE
+   /codepoint-test
+     |-- Reads test-plan.md
+     |-- Enables probes: touch ~/.codepoint/.codepoint-ts
+     |-- Starts backend with collector endpoint
+     |-- For each test case in test-plan.md:
+     |     1. Navigate to component
+     |     2. Perform interaction (trigger)
+     |     3. Wait for probe output
+     |     4. Read log file from ~/.codepoint/<project>/
+     |     5. Parse log entries, match by point_id and flow_id
+     |     6. Verify firing sequence matches expected
+     |     7. Verify state change matches expected
+     |
+     |-- Generate test-result.md:
+     |     PASS: All probes fired in sequence for "Click Calculate"
+     |     FAIL: cp-fe-calc-response not triggered for "Click Calculate"
+     |           Expected sequence: [submit, api-entry, compute, response]
+     |           Actual sequence:   [submit, api-entry, compute]
+     |           Missing: cp-fe-calc-response
+     |           Likely cause: Network error or API timeout
+
+4. DIAGNOSIS PHASE (if tests fail)
+   Sub-agent log analysis (existing Phase 7 design)
+     |-- Reads log files
+     |-- Cross-references with source code
+     |-- Produces diagnostic report with fix suggestions
+```
+
+## New vs Modified Components
+
+### New Components
+
+| Component | Location | Purpose | Dependencies |
+|-----------|----------|---------|--------------|
+| test skill | `plugins/codepoint/skills/test/SKILL.md` | Execute frontend test plan, collect probe output, compare vs expected | plan skill output, probe runtime, collector |
+| test-plan template | `plugins/codepoint/templates/test-plan.md` | Template for frontend test plan documents | Existing template format |
+| test-result template | `plugins/codepoint/templates/test-result.md` | Template for test result reports | Existing verification template format |
+| probe-placement template | `plugins/codepoint/templates/probe-guide.md` | Template for probe placement guides (source-level instrumentation reference) | references/frontend.md patterns |
+
+### Modified Components
+
+| Component | Location | Change | Reason |
+|-----------|----------|--------|--------|
+| plan skill | `plugins/codepoint/skills/plan/SKILL.md` | Add Step 5b (test plan generation) and Step 5c (probe placement guide) | Test planning is a natural extension of probe planning |
+| implement skill | `plugins/codepoint/skills/implement/SKILL.md` | Add "validate existing" mode to Green phase; simplify Verify per CP-03 | Support source-level instrumentation workflow |
+| scan skill | `plugins/codepoint/skills/scan/SKILL.md` | Phase 2 chain-oriented per CP-01; auto density validation per CP-05 | Design review fixes that improve frontend test quality |
+| main skill | `plugins/codepoint/skills/codepoint/SKILL.md` | Add `/codepoint-test` to commands table; update Quick Start | Register new skill |
+| data model | `plugins/codepoint/references/data-model.md` | Density validation by project type per CP-04 | More accurate density targets for small frontend projects |
+| plugin config | `plugins/codepoint/.claude-plugin/plugin.json` | Version bump to 2.1.0 | Reflect new skill |
+
+### Unchanged Components (confirmed stable)
+
+| Component | Location | Why unchanged |
+|-----------|----------|---------------|
+| codepoint.ts (frontend probe library) | `tests/e2e/*/frontend/src/lib/codepoint.ts` | API is stable: `point()`, `pointWithMeta()`, `pointAsync()` cover all needed patterns |
+| collector.go | `tests/e2e/gojs-calculator/codepoint/collector.go` | HTTP handler, flow_id routing, JSON output -- all work as-is |
+| collector.py | `tests/e2e/pyts-calculator/codepoint/collector.py` | Same as Go collector, works as-is |
+| codepoint.go | `tests/e2e/*/codepoint/codepoint.go` | Backend probes, PointWithMeta with flow_id -- stable |
+| E2E test projects | `tests/e2e/codepoint-v2/` | Used as validation targets, not modified |
+| Toggle mechanism | `~/.codepoint/.codepoint-{go,ts,python}` | Simple and proven, no change needed |
+
+## Suggested Build Order
+
+The build order follows dependency chains. Each phase produces artifacts that the next phase consumes.
+
+### Phase 1: Fix Design Review Deviations (CP-01, CP-05) -- P0 Prerequisites
+
+These must come first because they directly affect the quality of everything built on top.
+
+**Why first:** The design review (2026-04-19) identified CP-01 (scan file-by-file instead of chain-oriented) and CP-05 (density validation not automated) as P0. Frontend test planning depends on accurate scan output. If scan produces file-level noise instead of clean execution chains, test plans will be noisy too.
+
+**Deliverables:**
+- Modified `plugins/codepoint/skills/scan/SKILL.md` -- Phase 2 rewritten to chain-oriented approach
+- Modified `plugins/codepoint/references/data-model.md` -- Auto density validation procedure added
+- No new runtime code needed -- these are SKILL.md methodology changes that improve AI behavior when the skill is invoked
+
+**Estimated effort:** M (scan rewrite) + L (density validation automation in SKILL.md)
+
+### Phase 2: Test Plan Template + Plan Skill Extension
+
+**Dependencies:** Phase 1 complete (scan produces clean chain data)
+
+**Rationale:** Test plan templates are the most straightforward new artifact. They extend the existing plan skill's output without requiring new runtime infrastructure. The plan skill already has a clear extension point (Step 5 generates plan document; Step 5b generates test plan).
+
+**Deliverables:**
+- New `plugins/codepoint/templates/test-plan.md`
+- New `plugins/codepoint/templates/probe-guide.md`
+- Modified `plugins/codepoint/skills/plan/SKILL.md` -- Add Step 5b, 5c
+
+**Estimated effort:** S (template creation) + S (plan SKILL.md modification)
+
+### Phase 3: Implement Skill Extension (Validate Mode)
+
+**Dependencies:** Phase 2 complete (probe placement guide exists to validate against)
+
+**Rationale:** Source-level instrumentation needs the implement skill to support a "validate existing probes" mode. This is an extension of the existing Green phase, not a new phase. Also includes CP-03 simplification (remove over-engineered Verify, keep lightweight acceptance).
+
+**Deliverables:**
+- Modified `plugins/codepoint/skills/implement/SKILL.md` -- Add validate mode to Green phase; simplify Verify per CP-03
+
+**Estimated effort:** S (implement SKILL.md modification)
+
+### Phase 4: Frontend Test Skill (Core New Component)
+
+**Dependencies:** Phase 2 (test plan template), Phase 3 (probes validated or inserted)
+
+**Rationale:** This is the main new component. It reads test plans, executes interactions, collects probe output, and generates test results. It depends on:
+1. Test plan template (Phase 2) to know what to test
+2. Probes being in place (Phase 3 validates this)
+3. Existing collector infrastructure (unchanged, already working)
+4. Existing probe runtime (codepoint.ts, unchanged)
+
+**Deliverables:**
+- New `plugins/codepoint/skills/test/SKILL.md`
+- New `plugins/codepoint/templates/test-result.md`
+- Modified `plugins/codepoint/skills/codepoint/SKILL.md` -- Register new command
+- Modified `plugins/codepoint/.claude-plugin/plugin.json` -- Version bump
+
+**Estimated effort:** L (new skill design, test execution methodology, result comparison logic)
+
+### Phase 5: Progressive Verification on gojs-calculator
+
+**Dependencies:** Phase 4 complete (test skill functional)
+
+**Rationale:** Use the existing gojs-calculator E2E project as the pilot. It has 18 codepoints across 3 flows with both Go backend and React/TS frontend. The collector is already set up. This validates the entire pipeline end-to-end.
+
+**Deliverables:**
+- Test plan for gojs-calculator: `.codepoints/verification/test-plan.md`
+- Probe validation report for gojs-calculator
+- Test results for Calculator, BatchCalc, History components
+- Bug records if any issues found
+
+**Estimated effort:** M (running the pipeline on a real project, iterating on issues)
+
+### Phase 6: Generalize + CP-04 Density Tiers
+
+**Dependencies:** Phase 5 validated successfully
+
+**Rationale:** After validating on gojs-calculator, apply to pyts-calculator and add density tiers per CP-04. This is the "promote to general solution" phase.
+
+**Deliverables:**
+- Test plan for pyts-calculator
+- Modified `plugins/codepoint/references/data-model.md` -- Project type density tiers
+- Updated templates based on pilot learnings
+
+**Estimated effort:** M
+
+### Build Order Diagram
+
+```
+Phase 1: Design Review Fixes (CP-01, CP-05)
+    |
+    v
+Phase 2: Test Plan Template + Plan Extension
+    |
+    v
+Phase 3: Implement Skill Extension (validate mode, CP-03)
+    |
+    v
+Phase 4: Frontend Test Skill (NEW core component)
+    |
+    v
+Phase 5: Progressive Verification (gojs-calculator pilot)
+    |
+    v
+Phase 6: Generalize + Density Tiers (CP-04)
+```
+
+## Patterns to Follow
+
+### Pattern 1: Skill Extension, Not Forking
+
+The test skill is a new skill under the same plugin, not a forked plugin. It shares the same `.codepoints/` directory, same `index.json`, same probe runtime. The pattern is:
+
+```
+Existing skill --> reads/writes .codepoints/
+New skill      --> reads .codepoints/ (never writes independently)
+```
+
+The test skill is a **consumer** of the codepoint data, not a producer. It reads test plans (written by plan skill) and probe output (written by runtime probes). It writes only test results to `.codepoints/verification/`.
+
+### Pattern 2: Template-Driven Output
+
+All new output documents follow the existing template pattern:
+- `templates/test-plan.md` with `{{PLACEHOLDER}}` variables
+- `templates/test-result.md` with `{{PLACEHOLDER}}` variables
+- `templates/probe-guide.md` with `{{PLACEHOLDER}}` variables
+
+This matches the existing templates (collection.md, flow.md, point.md, verification.md).
+
+### Pattern 3: Progressive Validation Pipeline
+
+The test execution follows the same "enable -> execute -> collect -> analyze" pattern that the existing probe system uses:
+
+```
+Existing: touch toggle -> run tests -> read ~/.codepoint/ logs -> analyze
+New:      same toggle  -> run interactions -> same logs -> compare vs test plan
+```
+
+No new runtime infrastructure needed. The toggle mechanism, collector, and log format are all reused.
+
+### Pattern 4: Frontend Probes in Event Handlers Only
+
+From the E2E project (Calculator.tsx line 10-43), probes go in event handlers (`handleSubmit`), not in `useEffect`. This is a verified pattern that avoids React strict mode double-invocation. The test skill must account for this -- test interactions trigger event handlers which trigger probes.
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Writing Temporary Files
+### Anti-Pattern 1: Building a Test Runner
 
-**错误做法:** 将暂存内容写入临时文件进行扫描
-**为什么错:** 安全风险(秘密在临时文件)、清理负担、更慢
-**正确做法:** 直接从 `git diff --cached` 流式读取内容
+The test skill is NOT a general-purpose test runner like Jest or Playwright. It is a **verification orchestrator** that:
+1. Reads a test plan (what to verify)
+2. Tells the developer what interactions to perform (or describes them for AI to execute)
+3. Collects probe output from those interactions
+4. Compares against expected sequences
 
-### Anti-Pattern 2: Scanning Entire Repository
+It does NOT need a browser automation framework. It does NOT need DOM selectors. It does NOT need screenshot comparison.
 
-**错误做法:** 每次提交扫描整个仓库
-**为什么错:** 大仓库慢、与当前更改无关
-**正确做法:** 只扫描暂存文件 (`git diff --cached`)
+**Why:** The probe infrastructure already captures the runtime behavior. The test skill just needs to match probe output against expected sequences. Adding a browser automation layer would be over-engineering for this use case.
 
-### Anti-Pattern 3: Ignoring .gitignore
+### Anti-Pattern 2: Modifying the Probe Runtime API
 
-**错误做法:** 在扫描器配置中重复定义忽略规则
-**为什么错:** git 和扫描器规则可能分歧、用户困惑
-**正确做法:** 复用 .gitignore 模式,添加 `.security-ignore` 扩展
+The `pointWithMeta()` API is stable and proven across 5 E2E projects. Do NOT add test-specific fields to the probe output format. The existing `point_id`, `flow_id`, `timestamp`, `stack`, `metadata` fields are sufficient for test verification.
 
-### Anti-Pattern 4: No Escape from False Positives
+**Why:** Any change to the probe API would cascade to all language implementations (Go, Python, TypeScript) and all collectors. The test skill should work with the existing output format.
 
-**错误做法:** 硬性阻止所有发现,无覆盖机制
-**为什么错:** 阻止合法工作,用户会禁用扫描器
-**正确做法:** 支持 `--skip-security` 标志带警告,或 `.security-baseline` 白名单
+### Anti-Pattern 3: Separate Data Store for Test Results
 
-## Performance Considerations
+Test results should go into `.codepoints/verification/` alongside existing verification reports, NOT into a separate test database or artifact store.
 
-| 指标 | 目标 | 方法 |
-|------|------|------|
-| 扫描时间 | < 2 秒 | 只扫描暂存文件,非仓库 |
-| 内存 | < 50MB | 流式读取,不加载所有文件 |
-| 输出 | 简洁 | 按严重度分组,每文件限制数量 |
+**Why:** The `.codepoints/` directory is the single source of truth for all codepoint-related data. Adding a separate location would violate the existing convention and make it harder to correlate test results with probe definitions.
 
-### Optimization Strategies
+### Anti-Pattern 4: Test Skill That Writes Probes
 
-1. **Early Exit**: 发现 CRITICAL 问题后停止
-2. **File Type Filter**: 跳过二进制文件、图片
-3. **Content Sampling**: 大文件采样前/后 N 行
-4. **Pattern Compilation**: 启动时预编译正则模式
+The test skill should NEVER write probes or modify source files. It is read-only. Probes are written by the implement skill or by the developer manually.
 
-## Comparison: Tool Options
+**Why:** Separation of concerns. The test skill verifies; the implement skill instruments. Mixing these responsibilities would make both harder to reason about.
 
-| 工具 | 优点 | 缺点 | 适用性 |
-|------|------|------|--------|
-| **Gitleaks** | 最快,高召回率(86-88%) | Go 编写,外部依赖 | CI/CD 集成 |
-| **TruffleHog** | 800+ 类型,验证机制 | 较慢 | 全面审计 |
-| **detect-secrets** | 基线管理 | 需要维护基线文件 | 持续监控 |
-| **Custom Python** | 零外部依赖,完全控制 | 需要维护模式 | 本项目 |
+## Scalability Considerations
 
-**推荐:** 使用 Custom Python 实现,因为:
-1. 无外部依赖,与现有架构一致
-2. 可针对项目需求定制
-3. 易于集成到 Bash 子代理
+| Concern | At 1 test project (current) | At 5 test projects | At 20+ projects |
+|---------|----------------------------|-------------------|-----------------|
+| Test plan generation | Manual trigger per project | Batch plan generation for similar components | Template library with common UI patterns (form submit, CRUD, navigation) |
+| Probe output volume | ~20 probes * 3 interactions = ~60 log entries | ~100 probes * 10 interactions = ~1000 entries | Per-flow log routing (already implemented) keeps files manageable |
+| Test result comparison | Manual reading of test-result.md | AI-summarized results across projects | Automated pass/fail tracking across CI runs (future) |
+| Probe density validation | Per-project manual check | Auto-density per CP-05 | Density regression detection (flag when density drops below threshold) |
 
 ## Sources
 
-- [Microsoft Learn - Implement Git Hooks](https://learn.microsoft.com/zh-cn/training/modules/explore-git-hooks/3-implement) - Pre-commit hook 模式
-- [CSDN - Git User Sensitive Information Check](https://m.blog.csdn.net/xinbuq/article/details/136405597) - 凭证检测模式
-- [Gitleaks Rule Development Guide](https://blog.csdn.net/gitblog_01007/article/details/151464186) - 自定义检测规则
-- [Secrets Patterns DB](https://gitcode.com/gh_mirrors/se/secrets-patterns-db) - 开源秘密模式库
-- [TruffleHog Customization](https://blog.csdn.net/gitblog_01113/article/details/151530578) - 检测工具对比
-- [GitPython Documentation](https://deepinout.com/git/git-questions/209_git_how_to_get_staged_files_using_gitpython.html) - 暂存文件访问
-- [OSV-Scanner Git Hooks](https://m.blog.csdn.net/gitblog_00270/article/details/151305927) - 漏洞扫描集成
+All findings are based on direct codebase analysis. No external sources were needed.
 
----
-
-*Architecture research for: Git Security Scanning Integration*
-*Researched: 2026-02-25*
+- `plugins/codepoint/skills/*/SKILL.md` -- Existing skill definitions (read in full)
+- `plugins/codepoint/references/frontend.md` -- Frontend probe patterns (read in full, 630 lines)
+- `plugins/codepoint/references/data-model.md` -- Three-layer data model (referenced)
+- `tests/e2e/codepoint-v2/gojs-calculator/frontend/src/lib/codepoint.ts` -- Frontend probe library (read in full, 195 lines)
+- `tests/e2e/codepoint-v2/gojs-calculator/frontend/src/components/Calculator.tsx` -- Probe placement example (read in full, 61 lines)
+- `tests/e2e/codepoint-v2/gojs-calculator/codepoint/collector.go` -- Go collector (read in full, 179 lines)
+- `tests/e2e/codepoint-v2/gojs-calculator/codepoint/codepoint.go` -- Go probe library (read in full, 330 lines)
+- `tests/e2e/codepoint-v2/pyts-calculator/codepoint/collector.py` -- Python collector (read in full, 73 lines)
+- `docs/research/codepoint/2026-04-19-design-review.md` -- Design review with CP-01 through CP-05 (read in full, 555 lines)
+- `docs/superpowers/specs/2026-04-18-codepoint-subagent-log-analysis-design.md` -- Phase 7 sub-agent design (read in full)
+- `docs/superpowers/specs/2026-04-18-codepoint-v2-redesign.md` -- V2 redesign spec (read in full, 226 lines)
+- `.planning/PROJECT.md` -- Project context (read in full)

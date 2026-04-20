@@ -1,143 +1,249 @@
-# Stack Research
+# Technology Stack
 
-**Domain:** Claude Code 全局技能 - 任务完成通知系统
-**Researched:** 2026-02-24
-**Confidence:** HIGH
+**Project:** Work Skills v2.0 -- Frontend Automated Testing with Codepoint Integration
+**Researched:** 2026-04-20
+**Overall confidence:** HIGH
 
 ## Recommended Stack
 
-### Core Technologies
+### Primary Testing Framework
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Python | 3.6+ | 核心开发语言 | Claude Code hooks 的标准语言,Windows 10+ 预装,无需额外依赖 |
-| pathlib | 内置 | 路径操作 | 现代 Python 推荐方式,跨平台兼容,优于 os.path |
-| urllib.request | 内置 | HTTP 请求 | 无外部依赖,标准库,5 秒超时限制内可完成,不需要 requests 库 |
-| subprocess | 内置 | 调用外部命令 | 调用 Claude CLI 生成摘要,Windows PowerShell 通知 |
-| os.environ | 内置 | 环境变量访问 | 全局技能配置的标准方式,安全存储 API 密钥 |
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| Playwright | 1.59.x | E2E browser testing | Best fit for Codepoint integration: native `page.route()` intercepts `/__codepoint__` POST requests, `waitForRequest`/`page.on('request')` captures probe data in real-time, `route.fulfill()` can mock backend responses for isolated frontend testing. Cross-browser support not needed (Chromium only), but Playwright's network interception API is unmatched. |
 
-### Supporting Libraries
+### Supporting Test Libraries
 
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| json | 内置 | JSON 处理 | 解析 Claude CLI 输出,缓存会话数据 |
-| datetime, timedelta | 内置 | 时间处理 | 日志轮转,缓存过期检测,时间戳生成 |
-| re | 内置 | 正则表达式 | 日志文件名模式匹配,日期提取 |
-| concurrent.futures.ThreadPoolExecutor | 内置 | 并行通知 | 同时发送 Pushover 和 Windows 通知 |
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| `@playwright/test` | 1.59.x | Playwright test runner | Built-in fixtures, auto-wait, web-first assertions. Ships with Playwright, no separate install. |
+| Vitest | 4.1.x | Unit/integration tests for codepoint.ts | Existing E2E projects use Vite 8 + React 19. Vitest reuses Vite config natively -- zero setup for transforming TS/JSX. Use for testing the codepoint base library itself (overlap analysis, collector, toggle detection). |
 
-### Development Tools
+### NOT Adding (Deliberate Exclusions)
 
-| Tool | Purpose | Notes |
-|------|---------|-------|
-| Claude Code CLI | AI 摘要生成 | 使用 `claude --print` 快速生成任务摘要 |
-| PowerShell | Windows 通知 | 使用 BurntToast 或 Windows.UI.Notifications |
-| Pushover API | 移动推送 | 通过 HTTP POST 发送通知 |
+| Excluded Technology | Why NOT Adding |
+|---------------------|---------------|
+| `@testing-library/react` | The testing goal is **user-flow verification via Codepoint probes**, not component-level DOM assertions. Playwright operates at the browser level where codepoint.ts sends real POST requests to `/__codepoint__`. Testing Library renders in jsdom which cannot execute `fetch('/__codepoint__')` -- it would require mocking the entire Codepoint pipeline, defeating the purpose. |
+| `vitest-browser-react` | While vitest-browser-react 2.1.x is stable (Vitest 4.0+), it adds a second browser testing paradigm alongside Playwright. The Codepoint integration requires `page.route()` network interception which is Playwright-specific. No need for two browser testing layers. |
+| Cypress | Playwright's `page.route()` API is more direct for intercepting arbitrary POST endpoints. Cypress's proxy-based interception is less transparent. Also: Playwright test runner has better TypeScript support and built-in trace viewer for debugging. |
+| Jest | Vitest already integrates with the Vite config in E2E projects. Adding Jest would mean duplicating transform configuration. Vitest provides Jest-compatible assertions (`expect`) anyway. |
+| Selenium/WebDriver | Over-engineered for this use case. Requires browser driver management. Playwright bundles browser binaries and provides a single API. |
+
+## Integration with Existing Codepoint V2 Architecture
+
+### How Playwright Connects to Codepoint
+
+The existing Codepoint V2 frontend probes work by POSTing JSON to `/__codepoint__`:
+
+```typescript
+// In codepoint.ts (browser mode)
+fetch('/__codepoint__', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name, stack, timestamp, meta }),
+});
+```
+
+Playwright can intercept, capture, and assert on these requests with three key APIs:
+
+**1. Capture probe data during user interactions:**
+
+```typescript
+// Collect all codepoint POST requests during a test
+const codepointRequests: any[] = [];
+page.on('request', (req) => {
+  if (req.url().includes('/__codepoint__') && req.method() === 'POST') {
+    codepointRequests.push(JSON.parse(req.postData()!));
+  }
+});
+
+// Perform user action
+await page.getByRole('button', { name: 'Calculate' }).click();
+
+// Assert probes fired
+expect(codepointRequests).toHaveLength(3);
+expect(codepointRequests.map(r => r.meta?.point_id))
+  .toEqual(['cp-fe-calc-submit', 'cp-fe-calc-response', 'cp-fe-calc-error']);
+```
+
+**2. Mock backend API while testing frontend-only:**
+
+```typescript
+// Mock the calculate API, let codepoint probes pass through to collector
+await page.route('*/api/calculate*', async (route) => {
+  await route.fulfill({ json: { result: '5', error: '' } });
+});
+// /__codepoint__ requests are NOT intercepted -- they go to the real collector
+```
+
+**3. Wait for specific probes (time-ordered verification):**
+
+```typescript
+const requestPromise = page.waitForRequest(
+  (req) => req.url().includes('/__codepoint__') && req.method() === 'POST'
+);
+await page.getByRole('button', { name: 'Calculate' }).click();
+const probe = await requestPromise;
+const payload = JSON.parse(probe.postData()!);
+expect(payload.meta.point_id).toBe('cp-fe-calc-submit');
+```
+
+### What Does NOT Need to Change
+
+| Component | Status | Why |
+|-----------|--------|-----|
+| `codepoint.ts` (dual-mode library) | Unchanged | Browser POST path works as-is. Playwright intercepts at network level, no code changes. |
+| Go collector (`collector.go`) | Unchanged | Tests run against the real collector. It receives and logs probes normally. |
+| Python collector (`collector.py`) | Unchanged | Same reason as Go collector. |
+| Vite config | Unchanged | Playwright runs against the dev server or built assets. |
+| React components | Unchanged | Probes in event handlers are exactly what Playwright exercises. |
+| `.codepoints/` data model | Unchanged | Test specs reference the same `point_id` and `flow_id` from index.json. |
+
+## Test Specification Format
+
+Frontend test plans should follow this structure, which extends the existing Codepoint flow model:
+
+```markdown
+## Frontend Test Plan: [Flow Name]
+
+### Flow Under Test
+- Flow ID: flow-api-calculate
+- Trigger: User clicks "Calculate" button
+
+### Test Steps (click -> response -> verify)
+
+| Step | Action | Expected Probe | Verify |
+|------|--------|---------------|--------|
+| 1 | Type "2+3" in input | - | Input value updated |
+| 2 | Click "Calculate" button | cp-fe-calc-submit fires | POST to /__codepoint__ with point_id |
+| 3 | Wait for response | cp-fe-calc-response fires | Result shows "5" |
+| 4 | (error path) Click with empty input | cp-fe-calc-error fires | Error message displayed |
+
+### Probe Sequence Assertion
+Expected order: cp-fe-calc-submit -> cp-fe-calc-response
+Error order: cp-fe-calc-submit -> cp-fe-calc-error
+```
+
+This format maps directly to Playwright test code and reuses the existing `.codepoints/` flow definitions.
+
+## Claude Code Skill Integration
+
+The new frontend testing skill should be added under `plugins/codepoint/` alongside existing skills:
+
+```
+plugins/codepoint/skills/
+  codepoint/SKILL.md      # Main entry (existing)
+  scan/SKILL.md            # Codebase scan (existing)
+  plan/SKILL.md            # Plan probes (existing)
+  implement/SKILL.md       # Insert probes (existing)
+  frontend-test/SKILL.md   # NEW: Frontend test planning + execution
+```
+
+The `frontend-test` skill integrates with the existing Codepoint workflow:
+
+```
+1. /codepoint-plan       -- Plan code points for new feature (existing)
+2. /codepoint-implement  -- Insert probes into source (existing)
+3. /codepoint-frontend-test -- Generate and run Playwright tests against probes (NEW)
+```
+
+### Skill Responsibilities
+
+The `frontend-test` skill should:
+1. Read `.codepoints/index.json` to discover flows and their point sequences
+2. Filter for frontend-type points (those using `pointWithMeta` in React components)
+3. Generate Playwright test files following the "click -> response -> verify" template
+4. Execute tests and verify probe firing order matches flow definitions
+5. Output verification results to `.codepoints/verification/` (reusing existing template)
 
 ## Installation
 
 ```bash
-# 无需安装任何外部包
-# 所有依赖都是 Python 标准库
+# In the target frontend project (e.g., tests/e2e/codepoint-v2/gojs-calculator/frontend/)
+npm install -D @playwright/test@^1.59.0
 
-# 可选: 配置环境变量
-# Windows PowerShell
-$env:PUSHOVER_TOKEN="your_api_token_here"
-$env:PUSHOVER_USER="your_user_key_here"
+# Initialize Playwright (creates playwright.config.ts)
+npx playwright install chromium
 
-# Windows CMD
-set PUSHOVER_TOKEN=your_api_token_here
-set PUSHOVER_USER=your_user_key_here
+# For unit testing codepoint.ts itself
+npm install -D vitest@^4.1.0
 ```
+
+Note: Only Chromium is needed -- cross-browser testing is not a goal for Codepoint verification.
 
 ## Alternatives Considered
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| urllib.request | requests | 如果需要复杂的 HTTP 功能(cookie、session、重定向),但增加了外部依赖 |
-| pathlib | os.path | os.path 是旧代码,但 pathlib 提供更清晰的面向对象接口 |
-| subprocess.run() | subprocess.Popen | run() 是推荐的高级 API,Popen 仅在需要实时交互时使用 |
-| 标准库 logging | print() | 仅用于简单调试,生产环境必须使用 logging 模块 |
-| PowerShell 通知 | win10toast | win10toast 需要安装,PowerShell 无需依赖且支持 Windows 10/11 |
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| E2E Framework | Playwright | Cypress | Cypress proxy-based interception is less direct than `page.route()`. Playwright also has better TypeScript integration and trace viewer. |
+| E2E Framework | Playwright | Puppeteer | No built-in test runner, no `page.route()` equivalent for request interception. Would need Jest/Mocha glue. |
+| Component Testing | None (use Playwright E2E) | @testing-library/react | jsdom cannot execute `fetch('/__codepoint__')`. Would need to mock the entire Codepoint pipeline, defeating the integration testing purpose. |
+| Component Testing | None | vitest-browser-react | Adds a second browser testing layer. The Codepoint integration specifically needs Playwright's network interception API. |
+| Unit Testing | Vitest | Jest | E2E projects already use Vite 8. Vitest reuses the Vite config with zero setup. Jest would require separate transform config. |
+| Test Assertion | Playwright built-in expect | Chai/Jest expect | Playwright's `expect()` has auto-retrying web-first assertions. No need for additional assertion libraries. |
 
-## What NOT to Use
+## Version Compatibility Matrix
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| requests 库 | 增加外部依赖,全局技能应保持最小依赖 | urllib.request (标准库) |
-| 第三方通知库 (win10toast, winotify) | 需要安装,可能不兼容新 Windows 版本 | PowerShell BurntToast 或 Windows.UI.Notifications |
-| 硬编码 API 密钥 | 安全风险,不便于多环境部署 | os.environ.get() 读取环境变量 |
-| print() 调试 | 生产环境无日志记录,难以排查问题 | logging 模块 |
-| os.path | 旧式路径操作,跨平台兼容性差 | pathlib.Path |
-| 全局配置文件 | 全局技能无法使用项目级配置 | 环境变量 |
+| Package A | Version | Compatible With | Notes |
+|-----------|---------|-----------------|-------|
+| Playwright | 1.59.x | Vite 8.x | No direct dependency; Playwright connects to dev server via HTTP |
+| Playwright | 1.59.x | React 19.x | Tested and supported per Playwright release notes |
+| Vitest | 4.1.x | Vite 8.x | Vitest is built on Vite; 4.1.x targets Vite 6.x+ |
+| Vitest | 4.1.x | TypeScript 6.x | Full TS support out of box |
+| @playwright/test | 1.59.x | TypeScript 6.x | Ships its own type definitions |
+| codepoint.ts | (existing) | Playwright 1.59.x | No changes needed; Playwright intercepts at network level |
 
-## Stack Patterns by Variant
+## Project-Level Configuration
 
-**如果需要支持 Linux/macOS:**
-- 使用 `notify-send` (Linux) 或 `osascript` (macOS) 代替 PowerShell
-- 使用 platform.system() 检测操作系统
-- 路径分隔符已由 pathlib 自动处理
+### playwright.config.ts (to be created per E2E project)
 
-**如果需要 HTTP/2 或更复杂功能:**
-- 可以使用 httpx 库 (支持 HTTP/2,连接池)
-- 但需要在技能安装时确保依赖安装
-- 当前 urllib.request 足够用于简单的 Pushover API 调用
+```typescript
+import { defineConfig } from '@playwright/test';
 
-**如果 Claude CLI 不可用:**
-- 降级为简单的固定消息模板
-- 例如: "Claude Code task completed"
-- 从 CLAUDE_PROJECT_DIR 提取项目名
-
-## Version Compatibility
-
-| Package A | Compatible With | Notes |
-|-----------|-----------------|-------|
-| Python 3.6+ | Windows 10/11 | Windows 10 预装 Python 3.x |
-| pathlib | Python 3.4+ | Python 3.6+ 已完全支持 |
-| urllib.request | Python 2.x/3.x | Python 3.x 推荐使用 |
-| subprocess.run() | Python 3.5+ | 替代旧的 subprocess.call() |
-| ThreadPoolExecutor | Python 3.2+ | Python 3.x 标准库 |
-
-## Claude Code 技能架构说明
-
-### 技能文件结构
-```
-skills/claude-notify/
-├── SKILL.md           # 技能定义和说明
-├── notify.py          # 主通知脚本 (Python)
-└── VERSION            # 版本信息
+export default defineConfig({
+  testDir: './tests/e2e',
+  use: {
+    baseURL: 'http://localhost:8080',  // Go/Python backend serves frontend
+    trace: 'on-first-retry',           // Trace only on failure
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { browserName: 'chromium' },
+    },
+  ],
+  webServer: {
+    command: 'cd .. && go run .',  // Start backend with embedded frontend
+    port: 8080,
+    reuseExistingServer: true,
+  },
+});
 ```
 
-### Hook 配置位置
-- **全局技能**: `~/.claude/skills/claude-notify/` (所有项目可用)
-- **项目技能**: `.claude/skills/claude-notify/` (仅当前项目)
+### Vitest config (for codepoint.ts unit tests)
 
-### Hook 触发方式
-Claude Code 提供的 Hook 点:
-- **Stop**: 任务完成时触发 (推荐)
-- **Notification**: 需要用户关注时触发 (可选)
-- **SessionStart**: 会话开始时触发 (不适用)
+The existing `vite.config.ts` can be extended:
 
-### 环境变量获取
-Claude Code 提供的环境变量:
-- `CLAUDE_PROJECT_DIR`: 项目根目录路径 (用于提取项目名)
-- 自定义环境变量: `PUSHOVER_TOKEN`, `PUSHOVER_USER`
+```typescript
+// Add to existing vite.config.ts
+import { defineConfig } from 'vitest/config';
 
-### 超时限制
-- Hook 命令必须在 **5 秒内** 完成
-- 使用 ThreadPoolExecutor 并行发送通知
-- Claude CLI 摘要生成通过 subprocess 异步调用
+export default defineConfig({
+  // ... existing config
+  test: {
+    include: ['src/lib/**/*.test.ts'],
+  },
+});
+```
 
 ## Sources
 
-- `/websites/python_3_15` — Python 3.15 标准库文档 (urllib.request, pathlib, subprocess, os.environ)
-- https://www.stuartellis.name/articles/python-modern-practices/ — 现代 Python 开发最佳实践 (HIGH confidence)
-- https://dagster.io/blog/python-environment-variables — Python 环境变量管理最佳实践 (HIGH confidence)
-- https://www.python-httpx.org/advanced/clients/ — HTTPX 客户端连接池说明 (HTTP 优化参考)
-- https://docs.python.org/3.15/library/logging.html — Python logging 模块官方文档 (HIGH confidence)
-- Claude Code 官方文档 — 技能开发和 Hook 配置 (HIGH confidence)
-- 原项目 `C:/WorkSpace/cc-pushover-hook` — 已验证的实现模式 (HIGH confidence)
-
----
-
-*Stack research for: Claude Code 全局技能 - 任务完成通知系统*
-*Researched: 2026-02-24*
+- Playwright 1.59.1 -- verified via [npm](https://www.npmjs.com/package/playwright) and [official release notes](https://playwright.dev/docs/release-notes) (HIGH confidence)
+- Vitest 4.1.4 -- verified via [npm](https://www.npmjs.com/package/vitest) and [official blog](https://vitest.dev/blog/vitest-4-1.html) (HIGH confidence)
+- `@vitest/browser` 4.1.3 -- verified via [npm](https://www.npmjs.com/package/@vitest/browser) (HIGH confidence, decided NOT to use)
+- `@testing-library/react` 16.3.2 -- verified via [npm](https://www.npmjs.com/package/@testing-library/react) (HIGH confidence, decided NOT to use)
+- Playwright network interception -- [official docs](https://playwright.dev/docs/network) and [mock docs](https://playwright.dev/docs/mock) (HIGH confidence)
+- Playwright `waitForRequest` API -- verified via Context7 `/microsoft/playwright.dev` docs (HIGH confidence)
+- Vitest browser mode component testing -- verified via Context7 `/vitest-dev/vitest` docs (HIGH confidence)
+- Codepoint V2 architecture -- verified from project source code `plugins/codepoint/` and E2E test projects (HIGH confidence)
+- Existing E2E project configs -- verified from `tests/e2e/codepoint-v2/gojs-calculator/` and `pyts-calculator/` (HIGH confidence)

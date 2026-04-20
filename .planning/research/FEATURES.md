@@ -1,220 +1,253 @@
-# Feature Research
+# Feature Landscape: Frontend Automated Testing with Codepoint Integration
 
-**Domain:** Git Security Scanning
-**Researched:** 2026-02-25
-**Confidence:** MEDIUM (基于 Web 搜索和行业标准,未使用 Context7 验证)
+**Domain:** Frontend test planning and verification system for Claude Code skills
+**Researched:** 2026-04-20
+**Confidence:** HIGH (based on thorough project codebase analysis, existing E2E test data, Codepoint V2 design review, Playwright best practices, and ecosystem survey)
 
-## Feature Landscape
+---
 
-### Table Stakes (Users Expect These)
+## Context
 
-这些功能是 Git 安全扫描工具的基础配置,缺失会导致产品不完整。
+This milestone adds a frontend automated testing layer on top of the existing Codepoint V2 instrumentation system. The project already has:
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| AWS 凭证检测 | AWS 是最常用的云服务,凭证泄露风险极高 | MEDIUM | 正则表达式: `AKIA[0-9A-Z]{16}`,需要匹配 Access Key ID 和 Secret Key |
-| GitHub Token 检测 | 开发者最常用的 Git 平台,token 泄露会暴露代码仓库 | LOW | 固定前缀模式: `ghp_`, `gho_`, `ghr_`, `ghs_` + 36字符 |
-| .env 文件检测 | 环境配置文件通常包含密钥和敏感配置 | LOW | 检测文件名 `.env`, `.env.local`, `.env.*.local` |
-| 私钥文件检测 | SSH/PGP 私钥泄露会导致严重安全问题 | LOW | 检测 `-----BEGIN RSA/PGP PRIVATE KEY-----` 标记 |
-| 阻止提交功能 | 安全扫描的核心价值 - 防止泄露进入代码库 | LOW | pre-commit hook 返回非零退出码 |
-| 清晰的错误提示 | 用户需要快速定位和修复问题 | MEDIUM | 显示文件路径、行号、问题类型、修复建议 |
-| 彩色输出 | 提高可读性,快速区分错误和警告 | LOW | ANSI 颜色代码: 红色(错误), 黄色(警告), 绿色(信息) |
-| .gitignore 支持 | 用户熟悉的排除规则,无需学习新语法 | MEDIUM | 读取项目级和全局 .gitignore,支持递归模式 |
+- **Codepoint V2 three-layer data model** (Collection/Flow/Point) with `.codepoints/` storage
+- **Three core skills** (`/codepoint-scan`, `/codepoint-plan`, `/codepoint-implement`)
+- **Frontend probe library** (`codepoint.ts`) supporting React, Vue, Node.js, browser+collector dual mode
+- **E2E test projects** validating full-stack flows (Go+JS, Python+TS) with cross-language connections
+- **Design review findings** (CP-01 to CP-05) identifying improvement priorities for V2.1
 
-### Differentiators (Competitive Advantage)
+The four target features for this milestone are:
+1. Standardized test planning templates for frontend (click -> response -> verify flows)
+2. Codepoint source-level instrumentation practice for new feature development
+3. A dedicated Claude Code skill that guides frontend test planning and verification
+4. Progressive validation on existing full-stack projects (Go+JS, Python+TS)
 
-这些功能让产品在同类工具中脱颖而出。
+---
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Windows 原生体验 | 大多数扫描工具专注于 Linux/Mac,Windows 体验欠佳 | MEDIUM | Windows 路径处理、PowerShell 兼容、彩色输出 |
-| Claude Code 集成 | 与现有 windows-git-commit 技能无缝集成,无需额外配置 | LOW | 复用现有 SSH 认证、提交消息生成功能 |
-| 中英文双语提示 | 国内开发者更易理解中文安全提示 | LOW | 基于系统语言自动选择,默认中文 |
-| 内置白名单注释 | 在 .gitignore 中使用注释标记安全例外 | LOW | 例如 `# git-scan:ignore` 标记允许的配置文件 |
-| 详细的修复建议 | 不仅检测问题,还提供具体的修复步骤 | MEDIUM | 针对不同类型问题提供定制化建议 |
-| 检测结果分级 | 区分严重程度,避免"全阻止"的粗暴方式 | MEDIUM | 敏感信息 = 错误(阻止), 缓存文件 = 警告(可选阻止) |
-| 内置常用规则库 | 开箱即用,无需配置即可检测常见问题 | LOW | 参考主流工具(git-secrets, truffleHog, GitLeaks)的规则集 |
-| 扫描速度优化 | 提交前的等待时间影响开发体验 | MEDIUM | 目标 <2 秒,使用文件类型过滤、只扫描暂存区 |
+## Table Stakes
 
-### Anti-Features (Commonly Requested, Often Problematic)
+Features users expect. Missing = the system feels incomplete or unusable.
 
-这些功能看似有用,但会带来问题,应避免实现。
+| # | Feature | Why Expected | Complexity | Dependencies | Notes |
+|---|---------|--------------|------------|--------------|-------|
+| TS-01 | Structured test plan template | Without a template, every test plan is ad-hoc and inconsistent; developers need a repeatable format | LOW | None | Template must support click -> response -> verify flow pattern with preconditions, steps, expected results |
+| TS-02 | Test plan generation from feature spec | The skill must accept a feature spec or design doc and produce a structured test plan | MEDIUM | TS-01 | Reads existing codepoints from `.codepoints/index.json` and correlates spec flows with instrumented flows |
+| TS-03 | Click -> response -> verify test case format | This is the fundamental unit of frontend testing; Playwright best practices center on "test user-visible behavior" via act-assert patterns | LOW | TS-01 | Each test case: action (click/input/navigate), expected response (UI state change), verification (assertion on visible output) |
+| TS-04 | Integration with existing Codepoint data model | The test plan skill must read `.codepoints/` structure (index.json, flow definitions, point definitions) | MEDIUM | Codepoint V2 | Correlate test cases with flows, reuse existing point definitions as verification checkpoints |
+| TS-05 | Instrumentation guidance for new features | When planning a new feature, the skill should suggest where to place codepoints for testability | MEDIUM | Codepoint V2 plan skill | Extend `/codepoint-plan` with frontend-specific probe placement guidance (React event handlers, data fetch hooks, state transitions) |
+| TS-06 | Probe code template for frontend | Pre-built probe code snippets for common frontend patterns (button click, form submit, API call, state change) | LOW | Codepoint V2 frontend.md | Already partially exists in `references/frontend.md`; needs test-planning-oriented templates |
+| TS-07 | Verification execution guidance | After instrumentation, the skill should guide how to run and verify the probes fire correctly | MEDIUM | TS-04 | Leverage existing `/codepoint-implement` Verify phase but simplified per CP-03 finding (lightweight acceptance, not full TDD) |
+| TS-08 | Full-stack flow test planning | Support test plans that span frontend -> API -> backend, not just frontend-only | MEDIUM | TS-04 | Use `cross_language_connections` from index.json to plan end-to-end test flows |
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| 自动修复所有问题 | 用户希望一键解决,减少手动操作 | 可能引入新问题(如错误删除文件),用户失去控制权 | 提供详细的修复建议,让用户手动处理 |
-| 实时文件监控 | 希望在编辑时就发现问题,而不是提交时 | 性能开销大,可能与编辑器冲突,增加复杂度 | 保持提交时扫描,配合编辑器插件实现实时检测 |
-| 独立的配置文件格式 | 希望有专门的配置文件,更灵活 | 增加学习成本,用户需要维护两套规则(.gitignore + 新格式) | 复用 .gitignore 格式,添加注释标记扩展功能 |
-| 集成 CI/CD | 希望在持续集成中扫描,团队级防护 | 超出个人技能范围,需要服务器配置、团队协作 | 专注于本地 pre-commit hook,CI 集成留给专业工具 |
-| AI 智能判断 | 希望用 AI 判断是否真的是敏感信息 | 增加延迟,需要网络连接,成本高,准确率不确定 | 规则引擎足够处理常见场景,用户可自定义规则 |
-| 扫描整个历史记录 | 希望发现历史提交中的问题 | 需要重写 Git 历史,风险高,团队协调复杂 | 只扫描新提交,历史问题留给专门的清理工具 |
-| 加密存储检测结果 | 希望保留扫描记录用于审计 | 增加复杂度,需要密钥管理,超出扫描工具职责 | 输出到控制台,让用户决定是否记录 |
+---
+
+## Differentiators
+
+Features that set the system apart. Not expected by default, but highly valuable.
+
+| # | Feature | Value Proposition | Complexity | Dependencies | Notes |
+|---|---------|-------------------|------------|--------------|-------|
+| D-01 | Auto-correlation of test cases to codepoint flows | Given a test plan, automatically map each test case to the codepoint flow it exercises | HIGH | TS-02, TS-04 | Parses test plan, matches action/verify steps to codepoint sequence in flow definitions; enables "which test cases cover this codepoint?" queries |
+| D-02 | Instrumentation-first test planning | Instead of "write code then test", guide developers to plan instrumentation at the same time as feature design | MEDIUM | TS-05 | Aligns with CP-02 improvement (plan as "collection building" not "feature planning"); instrument during design, not after implementation |
+| D-03 | Progressive validation report across projects | Run the same test plan template against Go+JS and Python+TS projects, output a comparison report showing coverage gaps | HIGH | TS-08, E2E projects | Demonstrates the system works across different tech stacks; identifies stack-specific patterns |
+| D-04 | Test plan density analysis | Analogous to codepoint density validation, analyze test plan coverage density -- are there flows with no test cases? Flows with too many redundant tests? | HIGH | TS-04, CP-05 auto density | Extends density validation concept to test planning; target: every flow has >= 1 normal + 1 boundary + 1 failure test case |
+| D-05 | Regression test suite generation from verification results | After probes are verified, auto-generate a regression test suite that can be re-run on code changes | HIGH | TS-07, D-01 | Not full Playwright test generation, but structured test case documents that a developer can implement in their test framework |
+| D-06 | Frontend-specific probe placement patterns library | Curated patterns for React hooks, form handling, async data loading, error boundaries, routing transitions | MEDIUM | TS-06 | Goes beyond the generic patterns in `references/frontend.md`; provides testability-specific guidance (which locations give the most verification value) |
+
+---
+
+## Anti-Features
+
+Features to explicitly NOT build.
+
+| # | Anti-Feature | Why Avoid | What to Do Instead |
+|---|-------------|-----------|-------------------|
+| AF-01 | Full Playwright test code generation | Generating actual Playwright test files is framework-specific, brittle, and outside the "planning and verification" scope; Playwright already has its own codegen tool (`npx playwright codegen`) | Generate structured test case documents (markdown) that a developer translates into Playwright tests; provide Playwright locator guidance but not executable test files |
+| AF-02 | Browser automation within the skill | Running actual browsers, taking screenshots, or controlling a browser instance adds massive infrastructure complexity and is not what a Claude Code skill should do | Use codepoint probes as the verification mechanism; probes capture runtime state without needing browser control |
+| AF-03 | CI/CD pipeline integration | Hooking into GitHub Actions, Jenkins, etc. is infrastructure-level work, not skill-level work | Keep the skill focused on planning and verification guidance; CI integration is a separate concern |
+| AF-04 | Visual regression testing | Comparing screenshots or DOM snapshots requires specialized tools (Percy, Chromatic) and infrastructure | Focus on behavioral verification (did the codepoint fire? in correct order?) not visual comparison |
+| AF-05 | Replacing the existing Codepoint V2 skill | The test planning skill should extend, not replace, the existing scan/plan/implement workflow | New skill as a peer to existing skills, reading from `.codepoints/` and adding test-planning-specific guidance |
+| AF-06 | Test framework lock-in | Binding to Playwright, Cypress, or any specific test framework limits applicability | Keep test plan templates framework-agnostic; provide "suggested implementation" sections for common frameworks but mark them as optional |
+| AF-07 | Complex TDD verification loops | The design review (CP-03) identified that the existing implement skill's TDD loop is over-engineered | Use lightweight acceptance (confirm probes fire, output format correct), not full test matrix generation |
+
+---
 
 ## Feature Dependencies
 
 ```
-[Git Commit 流程]
-    └──requires──> [Pre-commit Hook 集成]
-                       └──requires──> [暂存区文件访问]
+TS-01 (template)
+  |
+  +--> TS-02 (generation from spec)
+  |      |
+  |      +--> D-01 (auto-correlation)
+  |      +--> D-04 (test plan density)
+  |
+  +--> TS-03 (click/response/verify format)
 
-[敏感信息检测]
-    └──requires──> [正则表达式引擎]
-    └──requires──> [文件内容读取]
+TS-04 (Codepoint integration) -- depends on --> Codepoint V2 .codepoints/ structure
+  |
+  +--> TS-05 (instrumentation guidance)
+  |      |
+  |      +--> D-02 (instrumentation-first planning)
+  |      +--> D-06 (frontend probe patterns)
+  |
+  +--> TS-07 (verification execution)
+  |      |
+  |      +--> D-05 (regression suite generation)
+  |
+  +--> TS-08 (full-stack flow planning)
+         |
+         +--> D-03 (progressive validation report)
 
-[.gitignore 支持]
-    └──requires──> [文件系统访问]
-    └──requires──> [模式匹配引擎]
+TS-06 (probe code templates) -- depends on --> references/frontend.md
 
-[彩色输出]
-    └──requires──> [ANSI 颜色代码支持]
-    └──conflicts──> [非终端环境] (需要检测是否支持颜色)
-
-[阻止提交]
-    └──requires──> [Pre-commit Hook 返回码]
-    └──conflicts──> [跳过扫描选项] (--no-verify 或环境变量)
-
-[扫描速度优化]
-    └──enhances──> [用户体验]
-    └──requires──> [二进制文件检测] (跳过二进制)
-    └──requires──> [文件类型过滤] (只扫描文本文件)
-
-[中英文双语]
-    └──requires──> [语言检测机制]
-    └──conflicts──> [硬编码英文] (需要重构消息系统)
+Existing system:
+  Codepoint V2 skills (scan/plan/implement) -- provides --> .codepoints/ data
+  Design review (CP-01 to CP-05) -- provides --> improvement directions
+  E2E test projects -- provides --> validation targets
 ```
 
-### Dependency Notes
+---
 
-- **Git Commit 流程 requires Pre-commit Hook 集成:** 必须在 Git 调用提交之前拦截,这是扫描功能的基础
-- **敏感信息检测 requires 正则表达式引擎:** Python 的 `re` 模块提供所需功能,无需外部依赖
-- **彩色输出 requires ANSI 颜色代码支持:** Windows Terminal 和 Git Bash 支持,传统 CMD 可能需要特殊处理
-- **阻止提交 conflicts 跳过扫描选项:** 需要平衡安全性和灵活性,紧急情况下允许绕过(但记录警告)
-- **扫描速度优化 enhances 用户体验:** 在暂存区扫描而非全仓库扫描,使用文件类型过滤跳过二进制文件
-- **中英文双语 requires 语言检测机制:** 需要检测系统语言或配置文件设置,增加初始化逻辑
+## Feature Categories
 
-## MVP Definition
+### Category 1: Test Specification (TS-01, TS-03, TS-06)
 
-### Launch With (v1.0)
+The foundation. Defines how test plans are structured and formatted. Without this, nothing else works.
 
-最小可行产品 - 验证核心价值所需的功能。
+**Core output:** A markdown template file (analogous to existing `templates/flow.md`, `templates/point.md`) for frontend test plans.
 
-- [ ] **AWS 凭证检测** — 最常见且危害最大的凭证泄露场景
-- [ ] **GitHub Token 检测** — 开发者最常用的平台,泄露风险高
-- [ ] **.env 文件检测** — 标准的环境配置文件,通常包含密钥
-- [ ] **SSH/PGP 私钥检测** — 严重安全问题,必须检测
-- [ ] **Python 缓存检测** — __pycache__/, *.pyc, 开发者常见疏忽
-- [ ] **Node.js 依赖检测** — node_modules/, 不应进入版本控制
-- [ ] **阻止提交功能** — 扫描的核心价值,防止泄露进入代码库
-- [ ] **清晰错误提示** — 文件路径、行号、问题类型、修复建议
-- [ ] **.gitignore 支持** — 用户熟悉的排除规则,降低学习成本
-- [ ] **彩色输出** — 提高可读性,区分错误/警告/信息
+**Template structure:**
+```
+Test Plan Document:
+  - Feature under test
+  - Preconditions
+  - Test cases (each: action -> expected response -> verification)
+  - Codepoint flow mapping (which flow does each test case exercise)
+  - Boundary cases
+  - Failure scenarios
+```
 
-**Rationale:** 这些功能覆盖了最常见的泄露场景(AWS、GitHub、.env、私钥)和常见的疏忽(缓存文件),提供了基本的用户交互(阻止提交、清晰提示、彩色输出),并复用了用户熟悉的规则系统(.gitignore)。这是验证"Git 提交前安全扫描"这一概念的最小功能集。
+### Category 2: Instrumentation Guidance (TS-05, TS-06, D-02, D-06)
 
-### Add After Validation (v1.1)
+The "how to instrument for testability" layer. Helps developers place codepoints during feature development, not after.
 
-在核心功能稳定后添加的功能。
+**Core output:** Probe placement recommendations that consider testability. Goes beyond the existing plan skill's type-based placement (entry/boundary/state-change/concurrency/error) to include testability-specific locations.
 
-- [ ] **通用 API 密钥检测** — 检测 `api_key`, `secret`, `password` 字段
-- [ ] **内网 IP 检测** — 10.x.x.x, 172.16-31.x.x, 192.168.x.x
-- [ ] **内部域名检测** — *.internal, *.local, *.corp
-- [ ] **邮箱地址检测** — 识别可能的内部邮箱泄露
-- [ ] **中英文双语提示** — 基于系统语言自动选择
-- [ ] **扫描速度优化** — 二进制文件检测、文件类型过滤
-- [ ] **检测结果分级** — 区分严重程度(错误/警告)
+**Testability-specific probe locations (not in current plan skill):**
+- React event handlers (click, submit, change) -- user-visible actions that trigger flows
+- API call boundaries (before fetch, after response) -- verify frontend-backend handoff
+- State transitions visible to user (loading -> success, loading -> error) -- verify UI state machines
+- Form validation points (before submit, after validation) -- verify error handling UX
 
-**Trigger for adding:** 当 v1.0 功能稳定运行,用户反馈积极,且没有严重的误报/漏报问题时,添加这些扩展功能。
+### Category 3: Verification Automation (TS-07, D-01, D-04, D-05)
 
-### Future Consideration (v2+)
+The "did it work" layer. After instrumentation, verify probes fire correctly and test cases pass.
 
-产品市场验证后考虑的功能。
+**Core output:** Verification report comparing expected codepoint sequence vs actual runtime capture.
 
-- [ ] **自动修复简单问题** — 如从暂存区移除缓存文件
-- [ ] **独立配置文件** — .gitcheck.yaml, 支持更复杂的规则
-- [ ] **扫描历史记录** — 趋势分析,识别重复问题
-- [ ] **自定义正则表达式** — 用户定义的检测规则
-- [ ] **数据库连接字符串检测** — MySQL, PostgreSQL 连接字符串
-- [ ] **加密货币钱包私钥检测** — 比特币、以太坊私钥
-- [ ] **集成 pre-commit 框架** — 与 Python pre-commit 包集成
+**Approach:** Leverage existing codepoint probe output (JSON with point_id, flow_id, timestamp, stack). Verification = "did the expected codepoints fire in the expected order for this test case?"
 
-**Why defer:** 这些功能需要更复杂的实现(自动修复、配置文件解析)或针对特定场景(加密货币、数据库),在验证通用场景的价值之前,不应增加复杂度。
+### Category 4: Skill UX (TS-02, TS-08, D-03)
 
-## Feature Prioritization Matrix
+The developer experience layer. How developers interact with the skill.
 
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| AWS 凭证检测 | HIGH | MEDIUM | P1 |
-| GitHub Token 检测 | HIGH | LOW | P1 |
-| .env 文件检测 | HIGH | LOW | P1 |
-| SSH/PGP 私钥检测 | HIGH | LOW | P1 |
-| 阻止提交功能 | HIGH | LOW | P1 |
-| 清晰错误提示 | HIGH | MEDIUM | P1 |
-| Python 缓存检测 | MEDIUM | LOW | P1 |
-| Node.js 依赖检测 | MEDIUM | LOW | P1 |
-| .gitignore 支持 | HIGH | MEDIUM | P1 |
-| 彩色输出 | MEDIUM | LOW | P1 |
-| 通用 API 密钥检测 | HIGH | MEDIUM | P2 |
-| 内网 IP 检测 | MEDIUM | MEDIUM | P2 |
-| 内部域名检测 | MEDIUM | LOW | P2 |
-| 邮箱地址检测 | MEDIUM | LOW | P2 |
-| 中英文双语提示 | MEDIUM | MEDIUM | P2 |
-| 扫描速度优化 | HIGH | MEDIUM | P2 |
-| 检测结果分级 | MEDIUM | MEDIUM | P2 |
-| 自动修复问题 | HIGH | HIGH | P3 |
-| 独立配置文件 | LOW | HIGH | P3 |
-| 扫描历史记录 | LOW | HIGH | P3 |
-| 自定义正则表达式 | MEDIUM | HIGH | P3 |
+**Core output:** A Claude Code skill (`/test-plan` or similar) that orchestrates the above categories.
 
-**Priority key:**
-- P1: Must have for launch (v1.0)
-- P2: Should have, add when possible (v1.1)
-- P3: Nice to have, future consideration (v2+)
+**Workflow:**
+1. Developer provides feature spec or describes the feature
+2. Skill reads existing `.codepoints/index.json` for context
+3. Skill generates structured test plan with codepoint correlations
+4. Skill suggests instrumentation points for untested paths
+5. After implementation, skill guides verification (lightweight acceptance)
 
-## Competitor Feature Analysis
+---
 
-| Feature | git-secrets (AWS) | TruffleHog | GitLeaks | Our Approach |
-|---------|-------------------|------------|----------|--------------|
-| **AWS 凭证检测** | YES (重点) | YES | YES | YES (P1) |
-| **GitHub Token 检测** | NO | YES | YES | YES (P1) |
-| **通用 API 密钥** | NO | YES | YES | YES (P2) |
-| **内置规则数量** | 少(AWS 为主) | 多(100+) | 多(100+) | 中等(聚焦常见场景) |
-| **自定义规则** | YES (正则) | YES (正则) | YES (配置文件) | YES (.gitignore 扩展) |
-| **扫描范围** | Pre-commit | 全历史 + 多源 | Git 历史 | Pre-commit (暂存区) |
-| **扫描速度** | 快 | 慢(深度扫描) | 快 | 快 (P2 优化) |
-| **阻止提交** | YES | NO (扫描工具) | NO (扫描工具) | YES (P1) |
-| **彩色输出** | NO | YES | YES | YES (P1) |
-| **Windows 体验** | 一般 | 一般 | 一般 | 优秀 (原生支持) |
-| **安装复杂度** | 低 (Hook 脚本) | 中 (二进制) | 低 (二进制) | 低 (Python 脚本) |
-| **CI/CD 集成** | NO | YES | YES | NO (专注本地) |
-| **历史扫描** | NO | YES | YES | NO (专注新提交) |
-| **多语言支持** | NO | NO | NO | YES (中英文 P2) |
-| **误报处理** | 用户自行配置 | 验证 + 分类 | 高熵值过滤 | .gitignore 白名单 |
+## MVP Recommendation
 
-**Our Differentiation Strategy:**
-1. **Windows First:** 不再是"能在 Windows 上跑",而是"为 Windows 设计"
-2. **Claude Code Native:** 与现有技能无缝集成,无需额外配置
-3. **Simpler is Better:** 复用 .gitignore,不发明新配置格式
-4. **Chinese Friendly:** 中英文双语,降低国内开发者使用门槛
-5. **Focus on Flow:** 专注提交流程,不做历史扫描、CI 集成等复杂功能
+**Prioritize (Phase 1 -- Foundation):**
+1. **TS-01**: Structured test plan template -- the document format everything else builds on
+2. **TS-03**: Click -> response -> verify test case format -- the core testing primitive
+3. **TS-04**: Integration with Codepoint data model -- read existing `.codepoints/` structure
+4. **TS-06**: Probe code templates for frontend -- extend `references/frontend.md`
+
+**Defer to Phase 2:**
+- **D-01**: Auto-correlation (requires TS-04 working end-to-end first)
+- **D-02**: Instrumentation-first planning (requires TS-05 which requires Phase 1)
+- **D-03**: Progressive validation across projects (requires Phase 1 running on both projects)
+
+**Defer to Phase 3:**
+- **D-04**: Test plan density analysis (requires corpus of test plans to calibrate)
+- **D-05**: Regression suite generation (requires verified test plans as input)
+- **D-06**: Frontend-specific probe patterns library (emerges from Phase 1+2 experience)
+
+---
+
+## Interaction with Existing Codepoint V2 Improvements
+
+The design review identified 5 deviations (CP-01 to CP-05) with improvement priorities. The frontend test planning milestone should account for these:
+
+| Deviation | Impact on Frontend Testing | Recommendation |
+|-----------|---------------------------|----------------|
+| CP-01 (scan: file-by-file -> chain-oriented) | Scan should identify frontend -> backend chains for test planning | Test planning skill benefits from chain-oriented scan; build assuming CP-01 will be fixed |
+| CP-02 (plan: feature-oriented -> collection building) | Test plan should map to collections, not individual features | Align test plan output with collection structure |
+| CP-03 (implement: TDD loop -> lightweight acceptance) | Do NOT build heavy verification loops for test plans | Use lightweight acceptance per CP-03 finding |
+| CP-04 (density: uniform -> per-project-type) | Test plan density targets should also vary by project type | Defer density analysis (D-04) until CP-04 is resolved |
+| CP-05 (density: concept -> automated) | If density becomes automated, test plan density can follow | D-04 depends on CP-05's auto density implementation |
+
+**Key insight:** The frontend test planning system should be built to align with the improved Codepoint V2.1 direction (chain-oriented scan, collection-based plan, lightweight implement), not the current V2 design. This avoids building on top of patterns that are already identified for change.
+
+---
+
+## Existing E2E Validation Targets
+
+Two full-stack projects are available for progressive validation:
+
+### Go+JS Calculator (gojs-calculator)
+- 18 codepoints, 3 flows, cross-language (Go + TypeScript)
+- `cross_language_connections`: 3 frontend -> API -> backend chains
+- Frontend entry points: `cp-fe-calc-submit`, `cp-fe-history-click`, `cp-fe-batch-submit`
+- Already has React components with probe-instrumented event handlers
+
+### Python+TS Calculator (pyts-calculator)
+- Full-stack FastAPI + React TypeScript
+- Toggle four-combination independent verification
+- Available for testing the same template on a different backend stack
+
+**Validation strategy:** Build Phase 1 features, validate on gojs-calculator first (more documented), then extend to pyts-calculator to verify cross-stack applicability.
+
+---
+
+## Complexity Assessment
+
+| Feature | Complexity | Why |
+|---------|-----------|-----|
+| TS-01 (template) | LOW | Markdown template with placeholders, analogous to existing `templates/flow.md` |
+| TS-02 (spec -> test plan) | MEDIUM | Requires parsing feature spec, correlating with codepoints, generating structured output |
+| TS-03 (test case format) | LOW | Standard act-assert pattern, well-documented in Playwright/Cypress best practices |
+| TS-04 (Codepoint integration) | MEDIUM | Read index.json, parse flow/point structures, map to test cases; data format already well-defined |
+| TS-05 (instrumentation guidance) | MEDIUM | Requires frontend-specific knowledge of where probes are most valuable for testing |
+| TS-06 (probe templates) | LOW | Extension of existing `references/frontend.md` with testability-oriented patterns |
+| TS-07 (verification guidance) | MEDIUM | Guide developer through probe activation, trigger flow, check output; simplified from current Verify phase |
+| TS-08 (full-stack planning) | MEDIUM | Use `cross_language_connections` from index.json; data already exists |
+| D-01 (auto-correlation) | HIGH | Requires matching test case descriptions to codepoint metadata; NLP-like matching |
+| D-03 (progressive validation) | HIGH | Requires running on multiple projects, comparing results, generating reports |
+| D-04 (test plan density) | HIGH | New concept, needs calibration data from existing test plans |
+| D-05 (regression suite) | HIGH | Requires verified test plans as input, format translation |
+
+---
 
 ## Sources
 
-- [Git Hooks - Official Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) - Pre-commit hook 机制和工作流程
-- [GitLab Security Scanner Integration](https://docs.gitlab.com/development/integrations/secure/) - 错误报告、彩色输出、日志级别最佳实践
-- [git-secrets (AWS)](https://github.com/awslabs/git-secrets) - AWS 凭证检测、pre-commit hook 实现
-- [TruffleHog](https://github.com/trufflesecurity/trufflehog) - 多源扫描、熵值检测、凭证验证
-- [GitLeaks](https://github.com/gitleaks/gitleaks) - 快速扫描、Git 历史扫描、自定义规则
-- [Git Ignore Patterns](https://git-scm.com/docs/gitignore) - .gitignore 语法和模式匹配
-- [Private IP Address Ranges (RFC 1918)](https://datatracker.ietf.org/doc/html/rfc1918) - 内网 IP 地址范围定义
-- [ANSI Escape Codes](https://en.wikipedia.org/wiki/ANSI_escape_code) - 彩色输出的技术实现
-
-**Confidence Assessment:**
-- Table Stakes: MEDIUM (基于主流工具的功能对比,未使用 Context7 验证)
-- Differentiators: MEDIUM (基于项目定位和竞品分析)
-- Anti-Features: MEDIUM (基于常见的过度设计陷阱)
-- Competitor Analysis: MEDIUM (基于 Web 搜索,未验证最新版本功能)
-- Feature Dependencies: HIGH (基于技术逻辑和 Git 机制)
+- **Project codebase analysis**: Codepoint V2 skills (`plugins/codepoint/skills/`), frontend reference (`references/frontend.md`), data model (`references/data-model.md`), E2E test projects (`tests/e2e/codepoint-v2/`)
+- **Design review**: `docs/research/codepoint/2026-04-19-design-review.md` (CP-01 to CP-05, RD-01 to RD-03)
+- **Playwright best practices**: [playwright.dev/docs/best-practices](https://playwright.dev/docs/best-practices) -- test user-visible behavior, avoid implementation details, use web-first assertions
+- **QA Test Planner skill reference**: [mcpmarket.com/tools/skills/qa-test-planner-1](https://mcpmarket.com/tools/skills/qa-test-planner-1) -- structured test plans, manual test cases, Figma validation
+- **Codepoint methodology**: `docs/research/codepoint/2026-04-17-methodology.md` -- global thinking, set theory, density validation
+- **Global thinking supplement**: `docs/research/codepoint/2026-04-19-global-thinking.md` -- chain-oriented probe placement, not file-by-file
+- **Codepoint V2 redesign spec**: `docs/superpowers/specs/2026-04-18-codepoint-v2-redesign.md`
+- **Project context**: `.planning/PROJECT.md` -- v2.0 milestone target features
 
 ---
-*Feature research for: Git Security Scanning in Windows Environment*
-*Researched: 2026-02-25*
+
+*Last updated: 2026-04-20*

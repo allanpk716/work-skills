@@ -1,8 +1,8 @@
-# 插件版本自动管理系统
+# 技能版本自动管理系统
 
 ## 概述
 
-这个系统通过 Git pre-commit hook 自动管理 Claude Code 插件的版本号，确保每次修改插件代码后，版本号都会自动递增，从而触发 Claude Code 刷新插件缓存。
+这个系统通过 Git pre-commit hook 自动管理 Claude Code 技能的版本号，确保每次修改技能代码后，版本号都会自动递增，从而触发 Claude Code 刷新插件缓存。
 
 ## 工作原理
 
@@ -10,8 +10,8 @@
 
 当你执行 `git commit` 时，pre-commit hook 会自动：
 
-1. 检测 `plugins/` 目录下哪些插件被修改
-2. 对于每个被修改的插件：
+1. 检测哪些技能被修改（在根目录的技能目录下）
+2. 对于每个被修改的技能：
    - 读取当前版本号（从 `.claude-plugin/marketplace.json`）
    - 自动递增 PATCH 版本号（例如：1.0.2 → 1.0.3）
    - 更新 `marketplace.json` 文件
@@ -29,14 +29,14 @@
 
 ### 正常工作流程
 
-1. 修改插件代码
+1. 修改技能代码
    ```bash
-   # 编辑 plugins/claude-notify/SKILL.md 或其他文件
+   # 编辑 claude-notify/SKILL.md 或其他文件
    ```
 
 2. 添加到暂存区
    ```bash
-   git add plugins/claude-notify/
+   git add claude-notify/
    ```
 
 3. 提交（版本号会自动递增）
@@ -52,7 +52,7 @@
    git push
    ```
 
-5. 在 Claude Code 中更新插件
+5. 在 Claude Code 中更新技能
    ```
    /plugins update work-skills
    ```
@@ -73,7 +73,7 @@ git add .claude-plugin/marketplace.json
 git commit -m "release(notify): version 1.1.0"
 ```
 
-注意：即使手动修改了版本号，只要 `plugins/` 目录有修改，hook 仍会再次递增 PATCH 版本。
+注意：即使手动修改了版本号，只要技能目录有修改，hook 仍会再次递增 PATCH 版本。
 
 ## 系统要求
 
@@ -87,7 +87,7 @@ git commit -m "release(notify): version 1.1.0"
 ### scripts/update-plugin-version.sh
 
 核心脚本，负责：
-- 检测修改的插件
+- 检测修改的技能
 - 递增版本号
 - 更新 marketplace.json
 
@@ -100,11 +100,11 @@ Git pre-commit hook，在每次提交前自动执行 `update-plugin-version.sh`
 ### 测试自动版本递增
 
 ```bash
-# 1. 修改任意插件文件
-echo "# test" >> plugins/claude-notify/README.md
+# 1. 修改任意技能文件
+echo "# test" >> claude-notify/README.md
 
 # 2. 添加并提交
-git add plugins/claude-notify/README.md
+git add claude-notify/README.md
 git commit -m "test: 验证自动版本递增"
 
 # 3. 查看版本是否递增
@@ -133,9 +133,9 @@ git reset --hard HEAD~1
 
 ### Hook 没有自动更新版本号
 
-**可能原因 1：没有修改 plugins/ 目录**
+**可能原因 1：没有修改技能目录**
 
-Hook 只在 `plugins/` 目录下的文件被修改时才触发。如果只修改了其他文件（如 `docs/`），版本号不会自动更新。
+Hook 只在技能目录下的文件被修改时才触发。如果只修改了其他文件（如 `docs/`），版本号不会自动更新。
 
 **解决方案**：手动更新版本号
 ```bash
@@ -191,7 +191,7 @@ choco install jq  # Windows (Chocolatey)
 
 ### 跳过 Pre-Commit Hook（不推荐）
 
-如果你确定要跳过自动版本更新（例如：修改文档而不涉及插件代码）：
+如果你确定要跳过自动版本更新（例如：修改文档而不涉及技能代码）：
 
 ```bash
 git commit --no-verify -m "docs: 更新文档"
@@ -203,9 +203,9 @@ git commit --no-verify -m "docs: 更新文档"
 
 ### ✅ 推荐做法
 
-- ✅ 每次修改插件功能时，正常 commit，让 hook 自动更新版本号
+- ✅ 每次修改技能功能时，正常 commit，让 hook 自动更新版本号
 - ✅ 定期推送到远程仓库，确保 Claude Code 可以获取更新
-- ✅ 在 Claude Code 中更新插件后，重启验证新功能
+- ✅ 在 Claude Code 中更新技能后，重启验证新功能
 - ✅ 如果发布重要版本，手动更新 MINOR 或 MAJOR 版本号
 
 ### ❌ 避免的做法
@@ -213,12 +213,12 @@ git commit --no-verify -m "docs: 更新文档"
 - ❌ 频繁使用 `git commit --no-verify` 跳过 hook
 - ❌ 手动编辑 `installed_plugins.json`（由 Claude Code 管理）
 - ❌ 忘记在 Claude Code 中运行 `/plugins update` 后重启
-- ❌ 修改插件代码但不提交到 git（hook 无法检测）
+- ❌ 修改技能代码但不提交到 git（hook 无法检测）
 
 ## 相关文档
 
-- [插件开发最佳实践](../docs/plugin-development-best-practices.md)
-- [插件快速参考](../docs/plugin-quick-reference.md)
+- [技能开发最佳实践](./plugin-development-best-practices.md)
+- [快速参考卡片](./plugin-quick-reference.md)
 
 ## 技术细节
 
@@ -239,7 +239,7 @@ git commit --no-verify -m "docs: 更新文档"
 
 ### 缓存机制工作原理
 
-Claude Code 插件缓存路径：
+Claude Code 揀件缓存路径：
 ```
 %USERPROFILE%\.claude\plugins\cache\work-skills\claude-notify\1.0.2\
 ```

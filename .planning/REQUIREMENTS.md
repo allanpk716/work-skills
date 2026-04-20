@@ -65,25 +65,23 @@
 
 ## Traceability
 
-*Phase mapping will be filled by roadmap.*
-
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| TSPEC-01 | — | — | pending |
-| TSPEC-02 | — | — | pending |
-| TSPEC-03 | — | — | pending |
-| INST-01 | — | — | pending |
-| INST-02 | — | — | pending |
-| INST-03 | — | — | pending |
-| VERF-01 | — | — | pending |
-| VERF-02 | — | — | pending |
-| VERF-03 | — | — | pending |
-| UX-01 | — | — | pending |
-| UX-02 | — | — | pending |
-| UX-03 | — | — | pending |
-| CPT-01 | — | — | pending |
-| CPT-02 | — | — | pending |
+| TSPEC-01 | Phase 41 | — | pending |
+| TSPEC-02 | Phase 41 | — | pending |
+| TSPEC-03 | Phase 41 | — | pending |
+| INST-01 | Phase 43 | — | pending |
+| INST-02 | Phase 43 | — | pending |
+| INST-03 | Phase 43 | — | pending |
+| VERF-01 | Phase 44 | — | pending |
+| VERF-02 | Phase 44 | — | pending |
+| VERF-03 | Phase 44 | — | pending |
+| UX-01 | Phase 45 | — | pending |
+| UX-02 | Phase 45 | — | pending |
+| UX-03 | Phase 46 | — | pending |
+| CPT-01 | Phase 42 | — | pending |
+| CPT-02 | Phase 42 | — | pending |
 
 ---
 
-*Last updated: 2026-04-20 — v2.0 requirements defined*
+*Last updated: 2026-04-20 — v2.0 requirements mapped to phases 41-46*

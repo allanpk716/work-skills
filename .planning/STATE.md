@@ -1,22 +1,22 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.9.2
-milestone_name: Codepoint 测试归档与调研文档整理
-status: milestone_complete
-last_updated: "2026-04-20T12:00:00.000Z"
+milestone: v2.0
+milestone_name: 前端自动化测试体系
+status: defining_requirements
+last_updated: "2026-04-20T13:00:00.000Z"
 last_activity: 2026-04-20
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
-# STATE: Work Skills — v1.9.2 Shipped
+# STATE: Work Skills — v2.0 Defining Requirements
 
 **Last Updated:** 2026-04-20
-**Milestone:** v1.9.2 — Codepoint 测试归档与调研文档整理 (SHIPPED)
+**Milestone:** v2.0 — 前端自动化测试体系 (DEFINING REQUIREMENTS)
 
 **Project Root:** C:\WorkSpace\agent\work-skills
 
@@ -25,18 +25,19 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-20)
 
 **Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务
-**Current focus:** Planning next milestone
+**Current focus:** 前端自动化测试体系 — 埋点规范 + 测试规划 + 专属技能
 
 ## Current Position
 
-Status: v1.9.2 milestone shipped
-Last activity: 2026-04-20 — Milestone completion and archival
-
-Progress: [===========] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-20 — Milestone v2.0 started
 
 ## Next Actions
 
-1. `/gsd-new-milestone` — Start next milestone (questioning → research → requirements → roadmap)
+1. Complete requirements definition
+2. `/gsd-plan-phase [N]` — Plan first phase after roadmap
 
 ## Shipped Milestones Summary
 
@@ -98,4 +99,4 @@ Items acknowledged and deferred at v1.9.1 milestone close on 2026-04-19:
 
 ---
 *State initialized: 2026-03-19*
-*Last updated: 2026-04-20 — v1.9.2 milestone shipped*
+*Last updated: 2026-04-20 — v2.0 milestone started*

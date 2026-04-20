@@ -125,6 +125,16 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | Pushover 双向回复 | Pushover API 不支持用户文本回复 |
 | 非 git 项目的摘要 | git diff 是摘要的核心上下文来源 |
 
+## Current Milestone: v2.0 前端自动化测试体系
+
+**Goal:** 建立前端开发的测试规划+埋点体系，让每个新功能都有可验证的测试流程
+
+**Target features:**
+- 前端测试规划规范 — 埋点+测试流程的标准化模板，开发者按模板规划「点击→响应→验证」
+- Codepoint 源码埋点实践 — 开发新功能时从源头植入 codepoint，输出调试级信息存储
+- 前端测试专属技能 — Claude Code 技能，辅助执行前端测试规划和验证
+- 渐进式验证 — 先在现有全栈项目（Go+JS / Python+TS）验证，再推广为通用方案
+
 ## Context
 
 **当前状态 (2026-04-20):**
@@ -202,4 +212,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-20 — v1.9.2 shipped*
+*Last updated: 2026-04-20 — v2.0 milestone started*

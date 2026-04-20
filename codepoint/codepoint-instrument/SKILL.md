@@ -199,5 +199,5 @@ After running all 6 steps, the following artifacts are produced:
 
 ## References
 
-- **Point types and data model**: `../codepoint/references/data-model.md` — defines the 5 point types, their semantics, and the three-layer structure (Collection → Flow → Point)
-- **V2 probe pattern (pointWithMeta)**: `../codepoint/references/frontend.md` — shows how `pointWithMeta(name, meta)` is used to emit structured probe data with `point_id` and `flow_id` for per-flow file routing
+- **Point types and data model**: `../references/data-model.md` — defines the 5 point types, their semantics, and the three-layer structure (Collection → Flow → Point)
+- **V2 probe pattern (pointWithMeta)**: `../references/frontend.md` — shows how `pointWithMeta(name, meta)` is used to emit structured probe data with `point_id` and `flow_id` for per-flow file routing

@@ -41,17 +41,17 @@
 - **定期清理**: 插件结构变化时清理缓存
 
 ### 目录结构
-- ✅ 使用 `plugins/<name>/skills/<skill>/SKILL.md` 定义技能
+- ✅ 使用 `<name>/<skill>/SKILL.md` 定义技能
 - ❌ 避免使用 `commands/` 目录(会导致命令重复)
 - ❌ 不要同时存在旧的 `skills/` 根目录
 
 ### 开发阶段
-- 在 `plugins/` 目录中开发
+- 在技能根目录中开发
 - **不要**添加到 `marketplace.json`
 - 使用本地路径加载
 
 ### 发布阶段
-- 从 `plugins/` 目录移除
+- 从开发目录移除
 - 添加到 `marketplace.json`
 - 清理缓存后重启
 

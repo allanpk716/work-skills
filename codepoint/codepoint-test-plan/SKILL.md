@@ -15,7 +15,7 @@ description: >
 
 This skill generates structured test plans for frontend features that use codepoint probes.
 Each test case follows the **Action -> Expected Response -> Verify** format and references
-probe snippets from `../codepoint/references/test-probes.md` (D-01 through D-10).
+probe snippets from `../references/test-probes.md` (D-01 through D-10).
 
 ### When to Use
 
@@ -92,7 +92,7 @@ For each scenario, write test cases using this template:
 
 ### Step 4: Assign Probe Snippets
 
-Map each test case to the appropriate probe snippet from `../codepoint/references/test-probes.md`:
+Map each test case to the appropriate probe snippet from `../references/test-probes.md`:
 
 | Scenario | Typical Snippet | Purpose |
 |----------|----------------|---------|
@@ -166,7 +166,7 @@ ls ~/.codepoint/.codepoint-ts
 
 ## Probe Snippet Reference
 
-See `../codepoint/references/test-probes.md` for complete snippet code (D-01 through D-10).
+See `../references/test-probes.md` for complete snippet code (D-01 through D-10).
 
 ## Verification Checklist
 
@@ -198,7 +198,7 @@ The test plan is the bridge between planning and implementation:
 ## Important Notes
 
 - Test plans use `flow_id` and `point_id` terminology from the codepoint data model
-- All probe code snippets come from `../codepoint/references/test-probes.md` — do not invent new patterns
+- All probe code snippets come from `../references/test-probes.md` — do not invent new patterns
 - Test plans are stored in `.codepoints/test-plans/` and should be committed to version control
 - A test plan should cover **every** code point in the flow — no uncovered points
 - Boundary and error scenarios are **required**, not optional — they catch the bugs that matter most

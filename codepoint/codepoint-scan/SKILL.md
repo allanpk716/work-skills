@@ -131,7 +131,7 @@ After scan is complete, user can proceed with `/codepoint-implement` to insert t
 
 After creating the file, commit:
 ```bash
-git add plugins/codepoint/skills/scan/SKILL.md
+git add codepoint/codepoint-scan/SKILL.md
 git commit -m "feat(codepoint): add scan skill for existing codebase analysis
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"

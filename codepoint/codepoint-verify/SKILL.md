@@ -210,7 +210,7 @@ Cross-reference test plan scenarios against actual probe output.
 
 Write the verification report to `.codepoints/verification/{flow-id}-verify.md` using the established template structure.
 
-**Report structure** (following `../codepoint/templates/verification.md`):
+**Report structure** (following `../templates/verification.md`):
 
 ```markdown
 # Verification Report: {Flow Name}

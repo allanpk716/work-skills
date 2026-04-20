@@ -54,9 +54,9 @@ Proceed with insertion? (User confirms)
 ### Steps
 
 1. **Read language template**
-   - Go: `../codepoint/references/golang.md` — use `PointWithMeta()` with point_id and flow_id
-   - Python: `../codepoint/references/python.md` — use `point_json()` with point_id and flow_id
-   - TypeScript: `../codepoint/references/frontend.md` — use `pointWithMeta()` with point_id and flow_id
+   - Go: `../references/golang.md` — use `PointWithMeta()` with point_id and flow_id
+   - Python: `../references/python.md` — use `point_json()` with point_id and flow_id
+   - TypeScript: `../references/frontend.md` — use `pointWithMeta()` with point_id and flow_id
 
 2. **Generate probe code for each code point**
 
@@ -223,7 +223,7 @@ Typical flow after feature implementation:
 
 After creating the file, commit:
 ```bash
-git add plugins/codepoint/skills/implement/SKILL.md
+git add codepoint/codepoint-implement/SKILL.md
 git commit -m "feat(codepoint): add implement skill with TDD-style verification
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"

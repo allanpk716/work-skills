@@ -2,10 +2,12 @@
 name: codepoint
 description: >
   Code point V2 skill — collection-based runtime observability for AI-assisted development.
-  Provides three core capabilities: scan existing code to identify business flows and probe locations,
-  plan code points for new features, and implement probes with TDD-style automated verification.
+  Provides core capabilities: scan existing code to identify business flows and probe locations,
+  plan code points for new features, generate structured test plans, and implement probes
+  with TDD-style automated verification.
   Triggers on: "code point", "代码点", "埋点", "codepoint", "runtime probe", "codepoint scan",
-  "codepoint plan", "codepoint implement", "扫描代码点", "规划埋点", "埋点验收".
+  "codepoint plan", "codepoint test plan", "codepoint implement", "扫描代码点", "规划埋点",
+  "测试计划", "埋点验收".
 ---
 
 # Code Point V2 — Collection-Based Runtime Observability
@@ -35,6 +37,7 @@ See `references/data-model.md` for full specification.
 |---------|---------|
 | `/codepoint-scan` | Scan existing codebase, identify business flows, suggest probe locations |
 | `/codepoint-plan` | Plan code points for a new feature being developed |
+| `/codepoint-test-plan` | Generate structured test plans with probe snippets (D-01–D-10) for a flow |
 | `/codepoint-implement` | Execute probe insertion with TDD-style automated verification |
 
 ## Quick Start
@@ -43,13 +46,15 @@ See `references/data-model.md` for full specification.
 
 1. Run `/codepoint-scan` to analyze your codebase
 2. Review the generated collection/flow/point documents
-3. Run `/codepoint-implement` to insert probes and verify
+3. Run `/codepoint-test-plan` to create test plans for each flow
+4. Run `/codepoint-implement` to insert probes and verify
 
 ### For New Feature Development
 
 1. Run `/codepoint-plan` with your feature spec or design document
 2. Review the proposed code points
-3. After feature implementation, run `/codepoint-implement` to insert and verify
+3. Run `/codepoint-test-plan` to generate test plans before implementation
+4. After feature implementation, run `/codepoint-implement` to insert and verify
 
 ## Toggle Mechanism
 
@@ -74,6 +79,8 @@ File-based toggle (same as V1):
 ├── points/
 │   ├── cp-auth-check.md
 │   └── cp-login-entry.md
+├── test-plans/
+│   └── user-login-test-plan.md
 └── verification/
     └── user-login-verify.md
 ```

@@ -1,10 +1,163 @@
 {
   "version": "2.0",
-  "project": "{{PROJECT_NAME}}",
-  "language": "{{LANGUAGE}}",
-  "created": "{{DATE}}",
-  "updated": "{{DATE}}",
-  "collections": [],
-  "flows": [],
-  "points": []
+  "project": "example-api",
+  "language": "go",
+  "created": "2026-04-20",
+  "updated": "2026-04-20",
+  "collections": [
+    {
+      "id": "col-user-management",
+      "name": "User Management",
+      "description": "All flows related to user authentication, registration, and session lifecycle.",
+      "created": "2026-04-20"
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow-user-login",
+      "name": "User Login",
+      "collection_id": "col-user-management",
+      "trigger": "POST /api/login",
+      "sequence": [
+        "cp-login-entry",
+        "cp-auth-check",
+        "cp-session-create",
+        "cp-login-complete"
+      ],
+      "test_cases": {
+        "normal": [
+          "Valid email and password credentials"
+        ],
+        "boundary": [
+          "Empty password field",
+          "Maximum-length email input (254 chars)"
+        ],
+        "failure": [
+          "Wrong password",
+          "Expired authentication token",
+          "Account locked out"
+        ]
+      },
+      "status": "active"
+    },
+    {
+      "id": "flow-user-register",
+      "name": "User Registration",
+      "collection_id": "col-user-management",
+      "trigger": "POST /api/register",
+      "sequence": [
+        "cp-register-entry",
+        "cp-input-validate",
+        "cp-user-create",
+        "cp-register-complete"
+      ],
+      "test_cases": {
+        "normal": [
+          "Valid registration with email, password, and username"
+        ],
+        "boundary": [
+          "Duplicate email address",
+          "Password at minimum allowed length"
+        ],
+        "failure": [
+          "Invalid email format",
+          "Missing required fields",
+          "Database connection error"
+        ]
+      },
+      "status": "active"
+    }
+  ],
+  "points": [
+    {
+      "id": "cp-login-entry",
+      "name": "Login Handler Entry",
+      "type": "entry",
+      "location": "src/auth/handler.go:15",
+      "language": "go",
+      "description": "Entry point of the login HTTP handler; receives and parses the login request body.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-login"]
+    },
+    {
+      "id": "cp-auth-check",
+      "name": "Authentication Check",
+      "type": "boundary",
+      "location": "src/auth/service.go:42",
+      "language": "go",
+      "description": "Cross-module boundary between the handler and the authentication service; validates credentials against the user store.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-login"]
+    },
+    {
+      "id": "cp-session-create",
+      "name": "Session Creation",
+      "type": "state-change",
+      "location": "src/auth/session.go:88",
+      "language": "go",
+      "description": "State mutation where a new session token is generated and persisted after successful authentication.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-login"]
+    },
+    {
+      "id": "cp-login-complete",
+      "name": "Login Flow Complete",
+      "type": "entry",
+      "location": "src/auth/handler.go:67",
+      "language": "go",
+      "description": "Final response step of the login flow; returns session token to the client or writes the error response.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-login"]
+    },
+    {
+      "id": "cp-register-entry",
+      "name": "Register Handler Entry",
+      "type": "entry",
+      "location": "src/auth/handler.go:120",
+      "language": "go",
+      "description": "Entry point of the registration HTTP handler; receives and parses the registration request body.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-register"]
+    },
+    {
+      "id": "cp-input-validate",
+      "name": "Input Validation",
+      "type": "boundary",
+      "location": "src/auth/validator.go:30",
+      "language": "go",
+      "description": "Cross-module boundary to the validator; checks email format, password strength, and required fields.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-register"]
+    },
+    {
+      "id": "cp-user-create",
+      "name": "User Record Creation",
+      "type": "state-change",
+      "location": "src/auth/repository.go:55",
+      "language": "go",
+      "description": "State mutation where the new user record is inserted into the database.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-register"]
+    },
+    {
+      "id": "cp-register-complete",
+      "name": "Registration Flow Complete",
+      "type": "entry",
+      "location": "src/auth/handler.go:175",
+      "language": "go",
+      "description": "Final response step of the registration flow; returns success confirmation or validation error details.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-register"]
+    },
+    {
+      "id": "cp-auth-error",
+      "name": "Authentication Error Handler",
+      "type": "error",
+      "location": "src/auth/handler.go:200",
+      "language": "go",
+      "description": "Centralized error handler for authentication failures; logs the error and returns the appropriate HTTP status code.",
+      "enabled": true,
+      "used_in_flows": ["flow-user-login", "flow-user-register"]
+    }
+  ]
 }

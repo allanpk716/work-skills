@@ -1,7 +1,6 @@
 ---
 name: claude-notify
 description: 当 Claude Code 任务完成或等待输入时发送 Pushover 推送通知和 Windows Toast 通知。通过环境变量 PUSHOVER_TOKEN 和 PUSHOVER_USER 配置。支持斜杠命令控制通知通道。包含环境检查命令 `/check-notify-env` 用于快速诊断配置问题。
-version: 2.0.0
 ---
 
 # Claude Notify 技能

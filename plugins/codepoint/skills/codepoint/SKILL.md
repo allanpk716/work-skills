@@ -10,7 +10,10 @@ description: >
   "instrumentation first", "instrument plan", "扫描代码点", "规划埋点",
   "测试计划", "埋点验收",
   "codepoint verify", "verify codepoint", "verify probe", "probe verification",
-  "codepoint verification", "验证代码点", "验证埋点".
+  "codepoint verification", "验证代码点", "验证埋点",
+  "codepoint run", "codepoint-run", "full codepoint", "codepoint workflow",
+  "codepoint pipeline", "run full codepoint", "complete codepoint",
+  "codepoint end to end", "代码点全流程", "埋点全流程".
 ---
 
 # Code Point V2 — Collection-Based Runtime Observability
@@ -44,8 +47,13 @@ See `references/data-model.md` for full specification.
 | `/codepoint-implement` | Execute probe insertion with TDD-style automated verification |
 | `/codepoint-instrument` | Generate instrumentation plans from existing code points (probe placement, metadata contracts, test scenario mapping) |
 | `/codepoint-verify` | Validate probe output against instrumentation plans, test plans, and index.json; generate verification reports |
+| `/codepoint-run` | Orchestrate the full workflow: auto-detect entry point, chain all sub-skills, resume from artifacts, track progress |
 
 ## Quick Start
+
+### One-Command Workflow
+
+Run `/codepoint-run` to execute the full pipeline automatically — it detects your entry point, resumes from artifacts if interrupted, and chains all stages with progress tracking.
 
 ### For Existing Codebase
 

@@ -15,12 +15,12 @@
 - [x] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (shipped 2026-04-04)
 - [x] **v1.8 - Worktree 区分** - Phase 31 (shipped 2026-04-09)
 - [x] **v1.9.1 - Codepoint V2 E2E 测试** - Phases 32-37 (shipped 2026-04-19)
-- [ ] **v1.9.2 - Codepoint 测试归档与调研文档整理** - Phases 38-40
+- [x] **v1.9.2 - Codepoint 测试归档与调研文档整理** - Phases 38-40
 
 ## Phases
 
 <details>
-<summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — IN PROGRESS</summary>
+<summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — COMPLETE</summary>
 
 - [x] Phase 38: E2E 测试项目迁移 (2/2 plans) — completed 2026-04-19
   - [x] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
@@ -28,8 +28,8 @@
 - [x] Phase 39: 调研文档归档与整理 (2/2 plans) — completed 2026-04-19
   - [x] 39-01-PLAN.md -- 创建目录结构并归档主调研文档和配图
   - [x] 39-02-PLAN.md -- 归档 workspace 和后续分享，更新项目文档
-- [ ] Phase 40: Codepoint 设计反省与改进评估 (1 plan)
-  - [ ] 40-01-PLAN.md -- 方法论对照审查与设计反省文档
+- [x] Phase 40: Codepoint 设计反省与改进评估 (1/1 plans) — completed 2026-04-20
+  - [x] 40-01-PLAN.md -- 方法论对照审查与设计反省文档
 
 </details>
 
@@ -134,7 +134,8 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 38. E2E 测试项目迁移 | v1.9.2 | 2/2 | Complete | 2026-04-19 |
+| 39. 调研文档归档与整理 | v1.9.2 | 2/2 | Complete | 2026-04-19 |
+| 40. Codepoint 设计反省与改进评估 | v1.9.2 | 1/1 | Complete | 2026-04-20 |
 | 32. Go 单语言计算器验证 | v1.9.1 | 5/5 | Complete | 2026-04-18 |
 | 33. Python 单语言计算器验证 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
 | 34. 单语言问题修复 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
@@ -144,4 +145,4 @@
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-19 — Phase 40 planned*
+*Last updated: 2026-04-20 — Phase 40 complete, v1.9.2 milestone delivered*

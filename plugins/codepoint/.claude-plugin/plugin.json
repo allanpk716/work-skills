@@ -1,9 +1,0 @@
-{
-  "name": "codepoint",
-  "description": "Collection-based runtime observability: scan codebases, plan probe locations, implement with TDD verification. Supports Go, Python, and TypeScript.",
-  "version": "2.0.0",
-  "author": {
-    "name": "allanpk716",
-    "email": "allanpk716@gmail.com"
-  }
-}

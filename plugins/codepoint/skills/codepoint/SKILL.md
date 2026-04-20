@@ -6,7 +6,8 @@ description: >
   plan code points for new features, generate structured test plans, and implement probes
   with TDD-style automated verification.
   Triggers on: "code point", "代码点", "埋点", "codepoint", "runtime probe", "codepoint scan",
-  "codepoint plan", "codepoint test plan", "codepoint implement", "扫描代码点", "规划埋点",
+  "codepoint plan", "codepoint test plan", "codepoint implement", "codepoint instrument",
+  "instrumentation first", "instrument plan", "扫描代码点", "规划埋点",
   "测试计划", "埋点验收".
 ---
 
@@ -39,6 +40,7 @@ See `references/data-model.md` for full specification.
 | `/codepoint-plan` | Plan code points for a new feature being developed |
 | `/codepoint-test-plan` | Generate structured test plans with probe snippets (D-01–D-10) for a flow |
 | `/codepoint-implement` | Execute probe insertion with TDD-style automated verification |
+| `/codepoint-instrument` | Generate instrumentation plans from existing code points (probe placement, metadata contracts, test scenario mapping) |
 
 ## Quick Start
 
@@ -46,8 +48,9 @@ See `references/data-model.md` for full specification.
 
 1. Run `/codepoint-scan` to analyze your codebase
 2. Review the generated collection/flow/point documents
-3. Run `/codepoint-test-plan` to create test plans for each flow
-4. Run `/codepoint-implement` to insert probes and verify
+3. Run `/codepoint-instrument` to generate instrumentation plans with probe priorities and metadata contracts
+4. Run `/codepoint-test-plan` to create test plans for each flow
+5. Run `/codepoint-implement` to insert probes and verify
 
 ### For New Feature Development
 
@@ -81,6 +84,8 @@ File-based toggle (same as V1):
 │   └── cp-login-entry.md
 ├── test-plans/
 │   └── user-login-test-plan.md
+├── instrumentation/
+│   └── {flow-id}-instrumentation.md
 └── verification/
     └── user-login-verify.md
 ```

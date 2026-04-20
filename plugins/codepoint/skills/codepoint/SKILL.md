@@ -11,6 +11,8 @@ description: >
   "测试计划", "埋点验收",
   "codepoint verify", "verify codepoint", "verify probe", "probe verification",
   "codepoint verification", "验证代码点", "验证埋点",
+  "codepoint validate", "validate codepoint", "artifact validation", "code consistency",
+  "验证一致性", "代码点校验",
   "codepoint run", "codepoint-run", "full codepoint", "codepoint workflow",
   "codepoint pipeline", "run full codepoint", "complete codepoint",
   "codepoint end to end", "代码点全流程", "埋点全流程".
@@ -47,6 +49,7 @@ See `references/data-model.md` for full specification.
 | `/codepoint-implement` | Execute probe insertion with TDD-style automated verification |
 | `/codepoint-instrument` | Generate instrumentation plans from existing code points (probe placement, metadata contracts, test scenario mapping) |
 | `/codepoint-verify` | Validate probe output against instrumentation plans, test plans, and index.json; generate verification reports |
+| `/codepoint-validate` | Progressive artifact consistency validation across all pipeline stages |
 | `/codepoint-run` | Orchestrate the full workflow: auto-detect entry point, chain all sub-skills, resume from artifacts, track progress |
 
 ## Quick Start
@@ -60,17 +63,21 @@ Run `/codepoint-run` to execute the full pipeline automatically — it detects y
 1. Run `/codepoint-scan` to analyze your codebase
 2. Review the generated collection/flow/point documents
 3. Run `/codepoint-instrument` to generate instrumentation plans with probe priorities and metadata contracts
-4. Run `/codepoint-test-plan` to create test plans for each flow
-5. Run `/codepoint-implement` to insert probes and verify
-6. Run `/codepoint-verify` to validate probe output against plans
+4. Run `/codepoint-validate` to verify artifact consistency before proceeding
+5. Run `/codepoint-test-plan` to create test plans for each flow
+6. Run `/codepoint-implement` to insert probes and verify
+7. Run `/codepoint-validate` to check implementation completeness
+8. Run `/codepoint-verify` to validate probe output against plans
 
 ### For New Feature Development
 
 1. Run `/codepoint-plan` with your feature spec or design document
 2. Review the proposed code points
 3. Run `/codepoint-test-plan` to generate test plans before implementation
-4. After feature implementation, run `/codepoint-implement` to insert and verify
-5. Run `/codepoint-verify` to confirm probes are working correctly
+4. Run `/codepoint-validate` to verify artifact consistency before implementation
+5. After feature implementation, run `/codepoint-implement` to insert and verify
+6. Run `/codepoint-validate` to check implementation completeness
+7. Run `/codepoint-verify` to confirm probes are working correctly
 
 ## Toggle Mechanism
 

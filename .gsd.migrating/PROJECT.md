@@ -1,0 +1,215 @@
+# Work Skills - Claude Code 个人技能集
+
+## What This Is
+
+Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测和完整卸载功能,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。用户可通过 `--uninstall` 一键卸载所有已安装组件。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
+
+## Core Value
+
+**为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务。**
+
+## Requirements
+
+### Validated
+
+**v1.0 - Claude Notify 插件 (shipped 2026-02-24):**
+- ✓ 将 cc-pushover-hook 重构为全局技能
+- ✓ 支持从 CLAUDE_PROJECT_DIR 提取项目名称
+- ✓ Pushover 推送通知
+- ✓ Windows 系统通知
+- ✓ AI 生成任务摘要
+- ✓ 环境变量管理 API 密钥
+- ✓ 多实例并发运行(PID 隔离)
+- ✓ 完整的安装和配置文档
+
+**v1.1 - Git Security Scanning (shipped 2026-02-27):**
+- ✓ 敏感信息检测(密钥、密码、私钥、PGP、PEM) - Phase 6, 11
+- ✓ 缓存文件检测(Python、Node.js、编译产物、临时文件) - Phase 6
+- ✓ 配置文件泄露检测(.env、credentials 等) - Phase 6
+- ✓ 内部信息检测(IP、域名、邮箱) - Phase 8
+- ✓ 在 git commit 前自动扫描暂存区 - Phase 7
+- ✓ 发现敏感信息时阻止提交并显示详细提示 - Phase 7
+- ✓ 彩色表格格式的问题报告(按严重性分级) - Phase 7, 10
+- ✓ 双语支持(中英文提示) - Phase 10
+- ✓ 基于 .gitignore 的自定义规则和白名单 - Phase 7, 8
+- ✓ Windows 性能优化(16.77ms 扫描时间,比要求快 116 倍) - Phase 9
+- ✓ 紧急跳过扫描选项(带明确风险警告) - Phase 9, 12
+
+**v1.2 - Installer (shipped 2026-03-28):**
+- ✓ NPX 安装器 — `npx @allanpk716/work-skills-setup` 一键安装
+- ✓ Windows 系统检测与错误提示 - Phase 14
+- ✓ 双语支持 (中英文, 自动检测系统语言) - Phase 14
+- ✓ 欢迎横幅和功能介绍 (boxen 美化) - Phase 14
+- ✓ CLI 选项 (--help, --version, --lang, --no-color, --verify) - Phase 14, 19
+- ✓ 环境依赖检测 (Python, Git, TortoiseGit/PuTTY, pip packages) - Phase 15
+- ✓ 交互式 Python 依赖安装 (pip --user, 错误检测) - Phase 16
+- ✓ Pushover 凭证配置 (API 验证, setx 持久化) - Phase 17
+- ✓ Git SSH 和用户配置引导 - Phase 17
+- ✓ Claude Code 技能市场集成 (注册, 发现, 安装插件) - Phase 18
+- ✓ 安装后自动验证 (--verify 独立重验) - Phase 19
+- ✓ 通知渠道切换命令 (/notify-enable, /notify-disable) - Phase 13
+
+**v1.3 - 智能配置检测 (shipped 2026-03-29):**
+- ✓ Pushover 凭证双源检测 — process.env + Windows 注册表回退 - Phase 20
+- ✓ Git 用户信息检测 — git config --global 读取 - Phase 20
+- ✓ Per-item Confirm 交互 — 4 种场景(双有/仅有 token/仅有 user/均无) - Phase 20
+- ✓ 统一安装流程 — 首次安装和重复运行自动适配,零检测开销 - Phase 21
+- ✓ 14 个集成测试覆盖全部 UFLOW 场景 - Phase 21
+
+**v1.4 - 修复插件安装检测 (shipped 2026-03-30):**
+- ✓ windows-git-commit 插件目录结构扁平化 - Phase 22
+- ✓ 安装器 isPluginInstalled() 检测与实际插件结构一致 - Phase 23
+- ✓ 重复运行安装器自动跳过已安装插件 - Phase 23
+
+**v1.5 - NPX 卸载功能 (shipped 2026-03-30):**
+- ✓ `--uninstall` CLI 入口和 i18n 路由 (18 个 uninstall.* 键) - Phase 24
+- ✓ 7 类组件检测 (插件/钩子脚本/钩子注册/命令/市场源/环境变量) - Phase 24
+- ✓ ASCII 彩色表格展示检测结果 - Phase 24
+- ✓ 双语 i18n 支持 (中英文) - Phase 24
+- ✓ 7 步容错卸载执行 (remover.js) - Phase 25
+- ✓ 彩色 ASCII 结果报告 (reporter.js) - Phase 25
+- ✓ enquirer Confirm 默认 No 安全确认 - Phase 25
+- ✓ 完整 detect→confirm→remove→report 编排 - Phase 25
+
+**v1.6 - 通知标志文件向上查找 + 全局控制 (shipped 2026-04-01):**
+- ✓ 向上遍历父目录查找 `.no-xxx` 文件 - Phase 26
+- ✓ `notify-attention.py` 同步支持向上查找 - Phase 26
+- ✓ `~/.claude/.no-xxx` 全局通知控制 - Phase 27
+- ✓ 项目级优先于全局级的查找优先级 - Phase 27
+- ✓ `notify-enable`/`notify-disable` 支持 `--global` 参数 - Phase 27
+- ✓ `notify-status` 显示全局标志状态 - Phase 27
+- ✓ 诊断模式显示查找结果和来源标注 - Phase 28
+- ✓ 72 个 Python 测试全部通过 - Phase 28
+
+**v1.7 - 通知项目名称智能识别 (shipped 2026-04-04):**
+- ✓ 向上查找项目根目录 — find_project_root() 以 `.git` 或 `CLAUDE.md` 为标记 - Phase 29
+- ✓ get_project_name() 用向上查找替代 os.getcwd() basename - Phase 29
+- ✓ notify.py 和 notify-attention.py 使用 flags.py 的 get_project_name() - Phase 30
+- ✓ 复用 flags.py 的向上遍历逻辑，保持 DRY - Phase 29
+- ✓ 38 个测试全部通过（9 test_notify + 29 test_flags）- Phase 30
+
+**v1.8 - Worktree 区分 (shipped 2026-04-09):**
+- ✓ 通知标题包含 git 分支名 — [project:branch] 格式，多 worktree 并行可区分来源 - Phase 31
+- ✓ get_git_branch() robust branch detection with timeout/error handling - Phase 31
+- ✓ build_notification_title() shared title formatting for DRY compliance - Phase 31
+- ✓ find_project_root() worktree fix (.exists() replaces .is_dir()) - Phase 31
+- ✓ Attention 通知包含 session_id 用于会话追溯 - Phase 31
+- ✓ 14 new tests (105 total, all passing) - Phase 31
+
+**v1.9.1 - Codepoint V2 E2E 测试 (shipped 2026-04-19):**
+- ✓ Go 单语言计算器 E2E — scan/plan/implement 全流程，多业务流堆栈差异验证
+- ✓ Python 单语言计算器 E2E — scan/plan/implement 全流程，探针模板双语言验证
+- ✓ Go+JS 全栈跨语言集成 — collector 联动验证，20 codepoints，3 flows，SPA fallback 修复
+- ✓ Python+TS 全栈跨语言集成 — FastAPI + React TS，Toggle 四组合独立验证
+- ✓ 单语言缺陷修复 — 4 个缺陷记录并修复，模板编译验证
+- ✓ 全栈缺陷修复 — 8 个缺陷记录并修复，golang.md/python.md 模板更新
+
+**v1.9.2 - Codepoint 测试归档与调研文档整理 (shipped 2026-04-20):**
+- ✓ E2E 测试项目迁移到 tests/e2e/codepoint-v2/ — 5 个项目结构完整，tmp/ 清空
+- ✓ 调研文档归档到 docs/research/codepoint/ — 主文档 + 6 配图 + 全局思维补充 + workspace 迭代记录
+- ✓ Codepoint V2 设计反省 — 5 条偏差 (CP-01~05) + 3 条合理偏离 (RD-01~03)
+- ✓ 改进优先级排序 — CP-01 (P0) > CP-05 (P0) > CP-02 (P1) > CP-04 (P1) > CP-03 (P2)
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Linux/macOS 支持 | 项目专注于 Windows 开发环境 |
+| 自动下载安装 Python/Git | 超出安装器职责范围,只提供检测和指导 |
+| GUI 安装界面 | CLI 交互已足够,GUI 增加复杂度 |
+| 自动配置 Pageant 密钥 | 需要用户手动操作,安全考虑 |
+| 静默安装模式 (--quiet) | 未来版本考虑 |
+| 配置文件导出/导入 | 未来版本考虑 |
+| 通知频道级别的细粒度全局配置 | 当前 `.no-xxx` 文件模式已足够 |
+| 交互式全局通知开关命令 | 未来版本考虑 |
+| Pushover 双向回复 | Pushover API 不支持用户文本回复 |
+| 非 git 项目的摘要 | git diff 是摘要的核心上下文来源 |
+
+## Current Milestone: v2.0 前端自动化测试体系
+
+**Goal:** 建立前端开发的测试规划+埋点体系，让每个新功能都有可验证的测试流程
+
+**Target features:**
+- 前端测试规划规范 — 埋点+测试流程的标准化模板，开发者按模板规划「点击→响应→验证」
+- Codepoint 源码埋点实践 — 开发新功能时从源头植入 codepoint，输出调试级信息存储
+- 前端测试专属技能 — Claude Code 技能，辅助执行前端测试规划和验证
+- 渐进式验证 — 先在现有全栈项目（Go+JS / Python+TS）验证，再推广为通用方案
+
+## Context
+
+**当前状态 (2026-04-20):**
+- 11 个里程碑已交付 (v1.0 - v1.9.2)
+- 87 个计划全部完成
+- 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
+- 测试覆盖: 105 个 Python 测试 + 5 个 E2E 验证项目
+- Codepoint V2 技能已通过 E2E 验证，设计反省完成，改进方向已明确
+- 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
+
+## Key Decisions
+
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| .exists() 替代 .is_dir() 检测 .git | git worktree 中 .git 是文件而非目录 | ✓ Validated (v1.8) |
+| build_notification_title() 共享标题构建 | 消除 notify.py 和 notify-attention.py DRY 违规 | ✓ Validated (v1.8) |
+| get_git_branch() timeout 1s + stderr suppress | Windows 编码和噪声输出处理 | ✓ Validated (v1.8) |
+| NPX 独立安装器 | 用户无需克隆仓库,一键安装 | ✓ Validated (v1.2) |
+| TDD 开发流程 (Wave 0 测试骨架) | 测试先行,减少 bug | ✓ Validated (Phase 16, 19) |
+| CJS 而非 ESM | chalk/boxen 兼容性 | ✓ Applied (Phase 14) |
+| enquirer 交互提示 | 简单 API,维护良好 | ✓ Validated (Phase 16-18) |
+| pip --user 标志 | 避免 Windows 权限问题 | ✓ Validated (Phase 16) |
+| Pushover API 验证后保存 | 确保凭证有效 | ✓ Validated (Phase 17) |
+| Git shallow clone (--depth 1) | 插件安装更快速 | ✓ Validated (Phase 18) |
+| 在 git commit 前扫描 | 能捕获已暂存的问题 | ✓ Validated (Phase 7) |
+| 阻止提交而非警告 | 强制用户处理安全问题 | ✓ Validated (Phase 7) |
+| ASCII 字符替代 Unicode | Windows GBK 编码兼容性 | ✓ Applied (Phase 7) |
+| 双语支持 | 提升用户体验 | ✓ Validated (Phase 10, 14) |
+| 并行检测 (Promise.all) | 提高环境检测速度 | ✓ Validated (Phase 15) |
+| 双源检测 (process.env + registry) | setx 持久化值不在当前 process.env 中 | ✓ Validated (Phase 20) |
+| Per-item Confirm 模式 | 每项独立处理,支持部分配置 | ✓ Validated (Phase 20) |
+| 统一流程 (无单独 update 命令) | 减少用户认知负担 | ✓ Validated (Phase 21) |
+| Detection-level 测试策略 | 避免交互式 prompt mock 复杂度 | ✓ Applied (Phase 21) |
+| enquirer Confirm initial: false | 卸载操作安全优先,默认 No | ✓ Validated (Phase 25) |
+| removeStep helper pattern | 每步 try/catch,永不抛出异常 | ✓ Validated (Phase 25) |
+| Status tri-state (removed/failed/skipped) | 每步独立报告结果,支持部分失败 | ✓ Validated (Phase 25) |
+| 模块化卸载 (remover/reporter 分离) | 独立测试,职责分离 | ✓ Validated (Phase 25) |
+| 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4) |
+| 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4) |
+| git mv 保留历史跟踪 | 目录重构时保留 Git 历史 | ✓ Applied (Phase 22) |
+| 共享 flags.py 模块 | 消除 notify.py 和 notify-attention.py 中的重复代码 | ✓ Validated (v1.6) |
+| Per-channel independence | 各通知频道独立查找,互不干扰 | ✓ Validated (v1.6) |
+| 项目级优先于全局级 | 项目级 .no-xxx 存在时跳过全局检查 | ✓ Validated (v1.6) |
+| 6-key 返回字典 | 分离项目级和全局级路径信息 | ✓ Validated (v1.6) |
+| --global 灵活参数解析 | 支持 --global 在任意位置 | ✓ Validated (v1.6) |
+| 诊断模式使用 check_notification_flags() | 统一数据源,显示来源标注 | ✓ Validated (v1.6) |
+| Dual marker detection (.git + CLAUDE.md) | 向上遍历时同时检测两种标记,覆盖无 Git 的项目 | ✓ Validated (v1.7) |
+| flags.py 作为项目名称 single source of truth | 消除通知脚本中的重复实现,DRY 原则 | ✓ Validated (v1.7) |
+| Test project methodology: progressive validate → fix cycle | SING → FIX1 → FULL → FIX2 交错模式更高效 | ✓ Validated (v1.9.1) |
+| Calculator 3+ business flows sharing core codepoints | 验证探针在不同流程下的堆栈差异 | ✓ Validated (v1.9.1) |
+| Enhanced collector with sync.Mutex + flow_id routing | 线程安全 + 每个流程独立文件 | ✓ Validated (v1.9.1) |
+| Frontend probes in event handlers only (not useEffect) | 避免 React strict mode double-invocation | ✓ Validated (v1.9.1) |
+| Dual-mode codepoint.ts (browser POST + Node.js file) | 浏览器和 Node.js 环境兼容 | ✓ Validated (v1.9.1) |
+| TDD RED→GREEN for find_project_root | 先定义测试契约,再实现功能 | ✓ Validated (v1.7) |
+| E2E 测试迁移到正式目录 (tests/e2e/) | tmp/ 临时性质不应保留持久性测试资产 | ✓ Validated (v1.9.2) |
+| 调研文档按类型归档 (主文档+配图+补充+workspace) | 集中管理方法论参考资料,便于后续查阅 | ✓ Validated (v1.9.2) |
+| 设计反省基于方法论对照审查 | 系统性识别偏差,而非主观判断 | ✓ Validated (v1.9.2) |
+| 改进建议分级 (P0/P1/P2) | 资源有限时优先处理高影响偏差 | ✓ Validated (v1.9.2) |
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-04-20 — v2.0 milestone started*

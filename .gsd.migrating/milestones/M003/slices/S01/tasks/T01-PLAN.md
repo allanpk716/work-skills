@@ -1,0 +1,28 @@
+# T01: 31-worktree 01
+
+**Slice:** S01 — **Milestone:** M003
+
+## Description
+
+为 flags.py 新增 git 分支检测函数 get_git_branch()、共享标题构建函数 build_notification_title(),并修复 find_project_root() 在 git worktree 场景下的兼容性问题。
+
+Purpose: WTREE-01 要求通知标题包含 git 分支名,需要可靠的分支检测函数和统一的标题构建逻辑。将标题构建集中在 flags.py 中 (而非分散在 notify.py 和 notify-attention.py 中) 消除 DRY 违反 (review concern HIGH)。同时修复 find_project_root() 的 pre-existing bug (worktree 中 .git 是文件导致检测失败),确保分支检测和项目名识别在 worktree 场景下都正确。
+
+Output: flags.py 新增 get_git_branch()、build_notification_title() 并修复 find_project_root(); test_flags.py 新增完整测试覆盖。
+
+## Must-Haves
+
+- [ ] "get_git_branch() 在 git 仓库中返回当前分支名"
+- [ ] "get_git_branch() 在非 git 目录返回 None"
+- [ ] "get_git_branch() 在 DETACHED HEAD 状态返回 None"
+- [ ] "get_git_branch() 在 git 不在 PATH 时返回 None (FileNotFoundError)"
+- [ ] "build_notification_title('proj', 'main') 返回 '[proj:main]'"
+- [ ] "build_notification_title('proj', None) 返回 '[proj]'"
+- [ ] "build_notification_title('proj', 'main', suffix='Attention Needed') 返回 '[proj:main] Attention Needed'"
+- [ ] "build_notification_title('proj', None, suffix='Attention Needed') 返回 '[proj] Attention Needed'"
+- [ ] "find_project_root() 在 git worktree 中正确识别项目根 (.git 是文件不是目录)"
+
+## Files
+
+- `plugins/claude-notify/hooks/scripts/flags.py`
+- `plugins/claude-notify/tests/test_flags.py`

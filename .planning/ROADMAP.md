@@ -153,7 +153,10 @@
   2. Developer can write test cases in a standardized format specifying: action, expected UI state change, and assertion on visible output
   3. Developer can copy pre-built probe code snippets for common frontend patterns (button click, form submit, API call, state change) into their codebase
   4. Template output aligns with existing .codepoints/ directory conventions (uses flow_id, point_id terminology)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 41-01-PLAN.md -- Create test-plan SKILL.md and test-probes.md reference
+- [ ] 41-02-PLAN.md -- Register test-plan skill in main SKILL.md command table
 
 ### Phase 42: Codepoint Data Integration
 **Goal**: The skill reads existing .codepoints/ instrumentation data and maps test cases to instrumented flows
@@ -211,7 +214,7 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44 -> 45 -> 46
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 41. Test Specification Foundation | 0/? | Not started | - |
+| 41. Test Specification Foundation | 0/2 | Planned | - |
 | 42. Codepoint Data Integration | 0/? | Not started | - |
 | 43. Instrumentation-First Planning | 0/? | Not started | - |
 | 44. Verification Automation | 0/? | Not started | - |
@@ -220,4 +223,4 @@ Phases execute in numeric order: 41 -> 42 -> 43 -> 44 -> 45 -> 46
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-20 -- v2.0 milestone roadmap created (Phases 41-46)*
+*Last updated: 2026-04-20 -- Phase 41 planned (2 plans in 2 waves)*

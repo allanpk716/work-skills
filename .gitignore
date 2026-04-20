@@ -24,3 +24,23 @@ Thumbs.db
 *.log
 tmp/
 *.pyc
+
+# ── GSD baseline (auto-generated) ──
+.gsd
+.gsd-id
+.bg-shell/
+*.code-workspace
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+dist/
+build/
+__pycache__/
+.venv/
+venv/
+target/
+vendor/
+coverage/
+.cache/

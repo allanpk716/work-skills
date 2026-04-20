@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp ~/.claude/skills/codepoint/SKILL.md plugins/codepoint/SKILL.md)",
+      "Bash(cp ~/.claude/skills/codepoint/references/golang.md plugins/codepoint/references/golang.md)",
+      "Bash(cp ~/.claude/skills/codepoint/references/python.md plugins/codepoint/references/python.md)",
+      "Bash(cp ~/.claude/skills/codepoint/references/frontend.md plugins/codepoint/references/frontend.md)"
+    ]
+  }
+}

@@ -8,7 +8,9 @@ description: >
   Triggers on: "code point", "代码点", "埋点", "codepoint", "runtime probe", "codepoint scan",
   "codepoint plan", "codepoint test plan", "codepoint implement", "codepoint instrument",
   "instrumentation first", "instrument plan", "扫描代码点", "规划埋点",
-  "测试计划", "埋点验收".
+  "测试计划", "埋点验收",
+  "codepoint verify", "verify codepoint", "verify probe", "probe verification",
+  "codepoint verification", "验证代码点", "验证埋点".
 ---
 
 # Code Point V2 — Collection-Based Runtime Observability
@@ -41,6 +43,7 @@ See `references/data-model.md` for full specification.
 | `/codepoint-test-plan` | Generate structured test plans with probe snippets (D-01–D-10) for a flow |
 | `/codepoint-implement` | Execute probe insertion with TDD-style automated verification |
 | `/codepoint-instrument` | Generate instrumentation plans from existing code points (probe placement, metadata contracts, test scenario mapping) |
+| `/codepoint-verify` | Validate probe output against instrumentation plans, test plans, and index.json; generate verification reports |
 
 ## Quick Start
 
@@ -51,6 +54,7 @@ See `references/data-model.md` for full specification.
 3. Run `/codepoint-instrument` to generate instrumentation plans with probe priorities and metadata contracts
 4. Run `/codepoint-test-plan` to create test plans for each flow
 5. Run `/codepoint-implement` to insert probes and verify
+6. Run `/codepoint-verify` to validate probe output against plans
 
 ### For New Feature Development
 
@@ -58,6 +62,7 @@ See `references/data-model.md` for full specification.
 2. Review the proposed code points
 3. Run `/codepoint-test-plan` to generate test plans before implementation
 4. After feature implementation, run `/codepoint-implement` to insert and verify
+5. Run `/codepoint-verify` to confirm probes are working correctly
 
 ## Toggle Mechanism
 

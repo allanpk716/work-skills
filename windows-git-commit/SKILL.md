@@ -27,12 +27,14 @@ The skill will:
 **Security Scanning (Automatic):**
 
 This skill automatically scans your staged files for security issues before commit:
-- ✓ Sensitive information (AWS keys, API tokens, SSH keys)
-- ✓ Cache and build files (node_modules, __pycache__, etc.)
-- ✓ Configuration files (.env, credentials.json, etc.)
-- ✓ Internal information (private IPs, internal domains, emails)
+- Sensitive information (AWS keys, API tokens, SSH keys)
+- Cache and build files (node_modules, __pycache__, etc.)
+- Configuration files (.env, credentials.json, etc.)
+- Internal information (private IPs, internal domains, emails)
 
 If issues are found, the commit is blocked with a detailed report.
+
+> See [references/security-scanner.md](references/security-scanner.md) for full scanner docs including language support, color output, severity levels, and emergency skip.
 
 **Whitelist comments:**
 ```python
@@ -41,41 +43,12 @@ server_ip = "10.0.0.1"  # gitcheck:ignore-line
 # gitcheck:ignore-rule:INTL-01  (ignore specific rule)
 ```
 
-**Disable scanning:**
-If needed, you can disable scanning in SKILL.md configuration.
-
-**Language and Color Options:**
-
-The scanner supports bilingual output (Chinese/English) and colored output:
-- **Default language:** Chinese (zh)
-- **Colors:** Auto-detected based on terminal support
-- Colors work in CMD, PowerShell, and Git Bash
-- Colors automatically disabled for file/pipe output
-
-For programmatic usage:
-```python
-from scanner.executor import run_pre_commit_scan
-
-# English output
-run_pre_commit_scan(lang='en')
-
-# Chinese output (default)
-run_pre_commit_scan(lang='zh')
-
-# Disable colors
-run_pre_commit_scan(use_colors=False)
-```
-
 **前提条件:**
 - Pageant 必须正在运行并加载了 PPK 密钥
 - TortoiseGit 必须已安装 (包含 TortoisePlink.exe)
 - 第一次运行时会自动检测并配置 git 使用 TortoisePlink
 
-**如果推送失败，请检查:**
-1. Pageant 是否运行: `tasklist | grep -i pageant`
-2. PPK 密钥是否已加载到 Pageant
-3. Git SSH 配置: `git config --global core.sshcommand`
-详见 `TROUBLESHOOTING.md`
+> 详见 [references/setup.md](references/setup.md) 一键配置指南和 [references/troubleshooting.md](references/troubleshooting.md) 常见问题排查。
 
 **With custom commit message:**
 
@@ -151,337 +124,6 @@ The skill automatically detects and configures:
 - **Path format conversion**: Converts Git Bash paths to Windows format with proper escaping
 </workflow>
 
-<security_scanning>
-## Automatic Security Scanning
-
-**What gets scanned:**
-- **Sensitive Information:**
-  - AWS credentials (Access Key, Secret Key, Session Token)
-  - Git service tokens (GitHub, GitLab, Bitbucket)
-  - Generic API keys and secrets
-  - SSH private keys
-  - PGP private keys
-  - PEM certificates
-
-- **Cache & Build Files:**
-  - Python cache (__pycache__, *.pyc)
-  - Node.js dependencies (node_modules/, package-lock.json)
-  - Build artifacts (dist/, build/, *.class)
-  - System files (*.log, *.tmp, .DS_Store)
-
-- **Configuration Files:**
-  - Environment files (.env, .env.local)
-  - Credentials files (credentials.json, secrets.yaml)
-  - Config files with sensitive fields
-
-- **Internal Information:**
-  - Private IP addresses (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
-  - Internal domains (*.internal, *.local, *.corp, *.intranet)
-  - Email addresses (with exclusion list for public emails)
-
-**Whitelist Comments:**
-Control false positives with special comments:
-
-```python
-# Skip specific line
-server_ip = "10.0.0.1"  # gitcheck:ignore-line
-
-# Skip entire file
-# gitcheck:ignore-file
-
-# Skip specific rule
-admin_email = "admin@company.com"  # gitcheck:ignore-rule:INTL-03
-
-# Skip all IP detections
-internal_host = "192.168.1.1"  # gitcheck:ignore-all-ips
-```
-
-**Configuration:**
-Security scanning is enabled by default. To disable:
-
-1. Open `plugins/windows-git-commit/SKILL.md`
-2. Add configuration:
-   ```yaml
-   security_scanner:
-     enabled: false
-   ```
-
-**Error Handling:**
-- Scanner errors do NOT block commits (shows warning only)
-- Detected issues MUST be resolved or whitelisted (blocks commit)
-
-</security_scanning>
-
-<language_support>
-## Language Support
-
-The scanner supports bilingual output in Chinese and English.
-
-**Default Language:** Chinese (zh)
-
-**Switch Language:**
-
-The scanner currently uses Chinese (zh) as the default language. To switch to English output, you can modify the scanner call in the pre-commit hook or use environment variables (future enhancement).
-
-**Example Output:**
-
-Chinese:
-```
-============================================================
-Git 安全扫描报告
-============================================================
-
-发现问题: 2 个:
-
-规则 ID     文件          行号  内容              建议
----------  -----------  ------  ----------------  -----------------------
-SENS-01    config.py        10  AKIA***EXAMPLE    移除 AWS Access Key...
-CACHE-01   __pycache__       0  <cache file>      添加到 .gitignore
-
-建议操作:
-  1. 从暂存文件中移除敏感数据
-  2. 如需要,将文件添加到 .gitignore: git reset HEAD <file>
-  3. 重新暂存更改: git add <file>
-  4. 重试提交
-```
-
-English:
-```
-============================================================
-Git Security Scan Report
-============================================================
-
-Found 2 issue(s):
-
-Rule ID    File          Line  Content           Suggestion
----------  -----------  -----  ----------------  -----------------------
-SENS-01    config.py       10  AKIA***EXAMPLE    Remove AWS Access Key...
-CACHE-01   __pycache__      0  <cache file>      Add to .gitignore
-
-Suggested actions:
-  1. Remove sensitive data from staged files
-  2. Add files to .gitignore if needed: git reset HEAD <file>
-  3. Re-stage changes: git add <file>
-  4. Retry commit
-```
-
-</language_support>
-
-<color_output>
-## Color Output
-
-The scanner uses colored output to improve readability.
-
-**Default:** Colors enabled (auto-detected)
-
-**Color Scheme:**
-
-- **CRITICAL** (red): Blocks commit, must be resolved
-- **HIGH** (light red): Blocks commit, important security issue
-- **MEDIUM** (yellow): Blocks commit, configuration issue
-- **WARNING** (light yellow): Shows warning (informational)
-
-**Terminal Support:**
-
-Colors work automatically on:
-- Windows CMD
-- Windows PowerShell
-- Git Bash
-- Other terminals with ANSI support
-
-**Graceful Degradation:**
-
-When output is redirected to a file or terminal doesn't support colors:
-- Colors are automatically disabled
-- Plain text output (no ANSI codes)
-
-**Manual Override:**
-
-Colors can be controlled via the `use_colors` parameter in programmatic usage:
-```python
-from scanner.executor import run_pre_commit_scan
-
-# Auto-detect (default)
-run_pre_commit_scan(use_colors=None)
-
-# Force enable
-run_pre_commit_scan(use_colors=True)
-
-# Disable colors
-run_pre_commit_scan(use_colors=False)
-```
-
-</color_output>
-
-<severity_levels>
-## Severity Levels
-
-Issues are classified by severity level:
-
-**CRITICAL (blocks commit):**
-- AWS credentials, API keys, tokens
-- SSH/PGP private keys
-- High-risk secrets
-
-**HIGH (blocks commit):**
-- Sensitive configuration fields
-- Internal information (private IPs, internal domains)
-- Email addresses
-
-**MEDIUM (blocks commit):**
-- Configuration files (.env, credentials.json)
-- Potentially sensitive files
-
-**WARNING (informational):**
-- Cache files (future: will not block commit)
-- Currently treated as medium severity
-
-**Behavior:**
-
-- All severity levels currently block commits
-- Future enhancement: WARNING level will allow commits with warning only
-- All issues must be resolved or whitelisted before commit
-
-**Output Format:**
-
-Colors indicate severity:
-- Red: CRITICAL issues
-- Light Red: HIGH issues
-- Yellow: MEDIUM issues
-- Light Yellow: WARNING issues
-
-</severity_levels>
-
-<emergency_skip>
-## Emergency Skip (USE WITH CAUTION)
-
-**If you absolutely must commit without scanning in an emergency:**
-
-```bash
-git commit --no-verify -m "emergency fix"
-```
-
-**WARNING: This bypasses ALL security checks!**
-
-**Risks:**
-- Sensitive information (AWS keys, API tokens) may be committed
-- Cache files (node_modules, __pycache__) may be included
-- Configuration files (.env, credentials.json) may leak
-- Internal information (private IPs, internal domains) may be exposed
-
-**Best practices when using --no-verify:**
-1. **Only use in genuine emergencies** (production down, critical bug fix)
-2. **Review the commit manually** before pushing: `git show HEAD`
-3. **Check for sensitive content**: `git diff HEAD~1`
-4. **Consider using whitelist comments** instead (see Security Scanning section)
-5. **Document why skip was necessary** in commit message
-
-**Alternative: Whitelist specific lines**
-
-Instead of bypassing all checks, use whitelist comments:
-
-```python
-# Skip specific line
-server_ip = "10.0.0.1"  # gitcheck:ignore-line
-
-# Skip entire file
-# gitcheck:ignore-file
-
-# Skip specific rule
-admin_email = "admin@company.com"  # gitcheck:ignore-rule:INTL-03
-```
-
-**How --no-verify works:**
-
-The `--no-verify` flag is a standard Git option that skips all pre-commit hooks, including the security scanner. This is a Git built-in feature, not specific to this skill.
-
-**Security implications:**
-
-When you use `--no-verify`:
-- The commit proceeds immediately without scanning
-- All security checks are bypassed
-- Sensitive data may be committed to your repository
-- Once pushed, sensitive data is in remote history (very hard to remove)
-
-**If you accidentally commit sensitive data:**
-
-1. **Do NOT push** if you haven't pushed yet
-2. **Amend the commit**: `git commit --amend` (remove sensitive content first)
-3. **If already pushed**: Contact repository admin immediately
-4. **Rotate compromised credentials**: Change passwords, regenerate API keys
-
-</emergency_skip>
-
-<one_time_setup>
-**推荐的一键配置(完全自动化):**
-
-为了实现完全无人工干预的 Git 操作,建议执行以下一次性配置:
-
-**步骤 1: 找到 TortoisePlink.exe 的完整路径**
-
-TortoiseGit 通常自带 TortoisePlink.exe，常见位置:
-```bash
-# 检查 64 位系统
-ls "C:\Program Files\TortoiseGit\bin\TortoisePlink.exe"
-
-# 或 32 位系统
-ls "C:\Program Files (x86)\TortoiseGit\bin\TortoisePlink.exe"
-```
-
-如果上述都不存在，可能需要单独安装 PuTTY。
-
-**步骤 2: 配置 git 使用 TortoisePlink**
-
-⚠️ **重要**: 路径必须使用 Windows 格式并正确转义!
-
-```bash
-# 64 位系统 (推荐)
-git config --global core.sshcommand "\"C:\\Program Files\\TortoiseGit\\bin\\TortoisePlink.exe\""
-
-# 32 位系统
-git config --global core.sshcommand "\"C:\\Program Files (x86)\\TortoiseGit\\bin\\TortoisePlink.exe\""
-
-# 如果使用单独安装的 PuTTY
-git config --global core.sshcommand "\"C:\\Program Files\\PuTTY\\plink.exe\""
-```
-
-**步骤 3: 验证配置**
-```bash
-# 检查 git 配置
-git config --global core.sshcommand
-# 应该显示完整路径，例如: "C:\Program Files\TortoiseGit\bin\TortoisePlink.exe"
-
-# 检查 Pageant 是否运行 (使用 grep 命令)
-tasklist | grep -i pageant
-# 应该显示 pageant.exe 进程
-```
-
-**步骤 4: 配置 Pageant 开机自动启动并加载 PPK**
-
-创建一个批处理文件 `start-pageant.bat`:
-```batch
-@echo off
-REM 使用 TortoiseGit 的 Pageant
-start "Pageant" "C:\Program Files\TortoiseGit\bin\pageant.exe" "%USERPROFILE%\.ssh\your_key.ppk"
-
-REM 或者使用 PuTTY 的 Pageant
-REM start "Pageant" "C:\Program Files\PuTTY\pageant.exe" "%USERPROFILE%\.ssh\your_key.ppk"
-```
-
-将此批处理文件的快捷方式放到启动文件夹:
-`%USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\`
-
-**完成!**
-现在所有 Git 操作都会:
-- 自动使用 PPK 密钥认证(无需手动输入密码)
-- 不会弹出任何对话框
-- 完全在后台使用命令行 git 运行
-- 无需手动干预
-
-**常见问题排查:**
-详见 `TROUBLESHOOTING.md` 文件。
-</one_time_setup>
-
 <bash_workflow>
 **Execute the following Git workflow using the Bash tool with run_in_background=true:**
 
@@ -493,7 +135,7 @@ First, detect and configure the SSH client properly:
 # Step 1: Check if Pageant is running (use grep for Git Bash compatibility)
 tasklist | grep -i pageant
 if [ $? -ne 0 ]; then
-  echo "⚠ WARNING: Pageant is not running. Push may fail."
+  echo "WARNING: Pageant is not running. Push may fail."
   echo "Please start Pageant and load your PPK key first."
 fi
 
@@ -523,7 +165,7 @@ if [ -n "$PLINK_PATH" ]; then
   echo "Found SSH client: $PLINK_PATH"
   git config --global core.sshcommand "\"$PLINK_PATH\""
 else
-  echo "❌ ERROR: Cannot find TortoisePlink.exe or plink.exe"
+  echo "ERROR: Cannot find TortoisePlink.exe or plink.exe"
   echo "Please ensure TortoiseGit or PuTTY is installed."
   echo "Falling back to default SSH client (may fail with PPK keys)..."
   git config --global --unset core.sshcommand
@@ -573,16 +215,15 @@ After environment setup, proceed with Git operations:
    - Use `git commit` and `git push` directly
 
 Return ONLY a concise summary in this format:
-✓ 操作结果 (成功/失败)
-📝 提交信息: [实际使用的提交信息]
-📁 文件变更: [简短描述]
-🔗 推送状态: [成功/失败]
-🔧 SSH 配置: [使用的 SSH 客户端路径]
+- 操作结果 (成功/失败)
+- 提交信息: [实际使用的提交信息]
+- 文件变更: [简短描述]
+- 推送状态: [成功/失败]
+- SSH 配置: [使用的 SSH 客户端路径]
 
 If any errors occur during environment setup, include them in the summary.
 DO NOT return full git command output. Just summarize the results in Chinese.
 </bash_workflow>
-</agent_configuration>
 
 <instructions>
 When this skill is invoked:
@@ -619,11 +260,11 @@ git diff --cached --name-status
 git diff --stat
 
 # Analyze patterns:
-- Added new feature files → "feat: add [feature name]"
-- Fixed bugs in files → "fix: resolve [issue description]"
-- Updated documentation → "docs: update [doc name]"
-- Changed configuration → "chore: update [config name]"
-- Refactored code → "refactor: [description of refactoring]"
+- Added new feature files -> "feat: add [feature name]"
+- Fixed bugs in files -> "fix: resolve [issue description]"
+- Updated documentation -> "docs: update [doc name]"
+- Changed configuration -> "chore: update [config name]"
+- Refactored code -> "refactor: [description of refactoring]"
 ```
 
 **Commit message format:**
@@ -641,55 +282,6 @@ git diff --stat
 - `docs: update API documentation with new endpoints`
 - `refactor: extract session validation to separate module`
 </commit_message_generation>
-
-<tortoisegit_commands>
-**Command reference for Git operations:**
-
-**推荐: 命令行 git (无 GUI，使用 plink + PPK)**
-
-Commit:
-```bash
-git commit -m "Your commit message"
-```
-
-Push:
-```bash
-git push
-# 推送到特定分支
-git push origin feature-branch
-```
-
-一次性配置 (使用 PPK 密钥):
-```bash
-git config --global core.sshcommand "plink"
-```
-
-**备选: TortoiseGitProc.exe (图形界面，不推荐用于自动化)**
-
-Commit:
-```bash
-TortoiseGitProc.exe /command:commit /path:"." /logmsg:"Message" /closeonend:2
-```
-
-Push:
-```bash
-TortoiseGitProc.exe /command:push /path:"." /closeonend:2
-```
-
-**Parameters (TortoiseGitProc):**
-- `/command:commit` - Execute commit operation
-- `/command:push` - Execute push operation
-- `/path:"."` - Repository directory ("." for current directory)
-- `/logmsg:"message"` - Commit message (must be quoted)
-- `/closeonend:2` - Always auto-close (recommended for automation)
-- `/silent` - Suppress all dialogs (may not always work)
-
-**为什么优先使用命令行 git?**
-- 速度更快 (无 GUI 开销)
-- 完全静默 (不会弹出任何窗口)
-- 更可靠 (不依赖图形界面)
-- 相同的认证方式 (plink + PPK)
-</tortoisegit_commands>
 
 <usage_patterns>
 **Pattern 1: Quick automatic commit**
@@ -732,57 +324,6 @@ Use windows-git-commit for changes in web/src/
 
 Only stages and commits files matching the pattern.
 </usage_patterns>
-
-<error_handling>
-**Common errors and solutions:**
-
-**Error: "Permission denied (publickey)"**
-Solution:
-- 确保 Pageant 正在运行: `tasklist | find /I "pageant.exe"`
-- 确保 PPK 密钥已加载到 Pageant
-- 验证 git 配置: `git config --global core.sshcommand` 应该显示 "plink"
-- 检查远程 URL: `git remote -v`
-
-**Error: "Nothing to commit"**
-Solution:
-- 检查是否有暂存的文件: `git status`
-- 暂存文件: `git add -A`
-- 确认确实有更改
-
-**Error: "Push rejected"**
-Solution:
-- 先拉取: `git pull --rebase`
-- 解决冲突 (如果有)
-- 再次尝试推送
-
-**Error: "Failed to push some refs"**
-Solution:
-- 检查网络连接
-- 验证远程仓库是否存在
-- 确保有推送权限
-- 检查分支是否受保护
-
-**Error: "plink not found" or "cannot spawn plink"**
-Solution:
-- 检查 TortoisePlink.exe 是否存在: `ls "C:\Program Files\TortoiseGit\bin\TortoisePlink.exe"`
-- 使用完整路径配置: `git config --global core.sshcommand "\"C:\\Program Files\\TortoiseGit\\bin\\TortoisePlink.exe\""`
-- 注意路径格式: 必须使用 Windows 格式 (C:\\Program Files\\...) 并转义引号
-- 详见 `TROUBLESHOOTING.md` 的"问题 1: plink.exe 不在系统 PATH 中"
-
-**Error: Pageant 未运行**
-Solution:
-- 启动 Pageant: 双击 Pageant.exe 或使用启动脚本
-- 加载 PPK 密钥: `pageant.exe "path\to\key.ppk"`
-- 验证 Pageant 运行: `tasklist | grep -i pageant` (注意使用 grep 不是 find)
-
-**Error: "C:/Program Files/...: line 1: C:/Program: No such file or directory"**
-Solution:
-- 路径格式错误，Git Bash 路径不被 Windows 程序识别
-- 使用正确的 Windows 路径格式: `C:\\Program Files\\...` (双反斜杠)
-- 必须用引号包裹并转义: `"\"C:\\Program Files\\...\""`
-- 详见 `TROUBLESHOOTING.md` 的"问题 2: 路径格式不兼容"
-
-</error_handling>
 
 <security_checklist>
 **Before committing, verify:**
@@ -830,9 +371,9 @@ When you receive a request to use this skill:
 
 5. Present user with a clean summary like:
    ```
-   ✓ Committed and pushed successfully
-   📝 Commit: feat: add user authentication
-   📁 Files: 3 changed, 120 insertions(+), 15 deletions(-)
+   - Committed and pushed successfully
+   - Commit: feat: add user authentication
+   - Files: 3 changed, 120 insertions(+), 15 deletions(-)
    ```
 
 **Important:** Do NOT return full git command output to the user. Only return a concise summary.
@@ -848,7 +389,7 @@ To enable automatic security scanning before each commit, install the pre-commit
 1. **Copy hook to Git directory:**
    ```bash
    # From project root
-   cp plugins/windows-git-commit/hooks/pre-commit .git/hooks/pre-commit
+   cp windows-git-commit/hooks/pre-commit .git/hooks/pre-commit
    ```
 
 2. **Make hook executable (Windows):**
@@ -862,7 +403,7 @@ To enable automatic security scanning before each commit, install the pre-commit
    # Test hook
    python .git/hooks/pre-commit
 
-   # Should see: "✓ Security scan passed. Proceeding with commit."
+   # Should see: "Security scan passed. Proceeding with commit."
    ```
 
 ### Automated Installation (Future)
@@ -889,3 +430,10 @@ To disable automatic scanning:
 rm .git/hooks/pre-commit
 ```
 </hook_installation>
+
+## 参考文档
+
+- [安全扫描器详情](references/security-scanner.md) — 扫描规则、语言支持、颜色输出、严重性级别、紧急跳过
+- [一键配置指南](references/setup.md) — TortoisePlink 检测、Git SSH 配置、Pageant 自动启动
+- [TortoiseGit 命令参考](references/tortoisegit.md) — 命令行 git 与 TortoiseGitProc 命令对照
+- [故障排除](references/troubleshooting.md) — 常见错误及解决方案、路径格式兼容性

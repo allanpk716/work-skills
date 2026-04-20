@@ -104,17 +104,13 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ 单语言缺陷修复 — 4 个缺陷记录并修复，模板编译验证
 - ✓ 全栈缺陷修复 — 8 个缺陷记录并修复，golang.md/python.md 模板更新
 
-## Current Milestone: v1.9.2 — Codepoint 测试归档与调研文档整理
+**v1.9.2 - Codepoint 测试归档与调研文档整理 (shipped 2026-04-20):**
+- ✓ E2E 测试项目迁移到 tests/e2e/codepoint-v2/ — 5 个项目结构完整，tmp/ 清空
+- ✓ 调研文档归档到 docs/research/codepoint/ — 主文档 + 6 配图 + 全局思维补充 + workspace 迭代记录
+- ✓ Codepoint V2 设计反省 — 5 条偏差 (CP-01~05) + 3 条合理偏离 (RD-01~03)
+- ✓ 改进优先级排序 — CP-01 (P0) > CP-05 (P0) > CP-02 (P1) > CP-04 (P1) > CP-03 (P2)
 
-**Status:** Phase 38-39 complete. Phase 40 (Codepoint 设计反省与改进评估) next.
-
-### Active
-
-- [x] R1: E2E 测试项目已从 `tmp/` 迁移到 `tests/e2e/codepoint-v2/` (Phase 38)
-- [x] R2: 调研文档归档到 `docs/research/codepoint/` (Phase 39)
-- [x] R3: 目录结构标准化 (Phase 38)
-
-### Out of Scope
+## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
@@ -131,14 +127,12 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 
 ## Context
 
-**当前状态 (v1.9.2 planning 2026-04-19):**
-- 10 个里程碑已交付 (v1.0 - v1.9.1), v1.9.2 规划中
-- 72 个计划全部完成
+**当前状态 (2026-04-20):**
+- 11 个里程碑已交付 (v1.0 - v1.9.2)
+- 87 个计划全部完成
 - 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
-- 测试覆盖: 105 个 Python 测试 + E2E 验证项目
-- Codepoint V2 技能已通过 E2E 验证（Go/Python 单语言 + Go+JS/Python+TS 全栈）
-- E2E 测试项目已迁移到 tests/e2e/codepoint-v2/（5 个项目：go-calculator, python-calculator, gojs-calculator, pyts-calculator, template-test）
-- 代码点方法论调研文档已归档到 docs/research/codepoint/（含主文档、配图、workspace 开发记录）
+- 测试覆盖: 105 个 Python 测试 + 5 个 E2E 验证项目
+- Codepoint V2 技能已通过 E2E 验证，设计反省完成，改进方向已明确
 - 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
 
 ## Key Decisions
@@ -185,6 +179,10 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | Frontend probes in event handlers only (not useEffect) | 避免 React strict mode double-invocation | ✓ Validated (v1.9.1) |
 | Dual-mode codepoint.ts (browser POST + Node.js file) | 浏览器和 Node.js 环境兼容 | ✓ Validated (v1.9.1) |
 | TDD RED→GREEN for find_project_root | 先定义测试契约,再实现功能 | ✓ Validated (v1.7) |
+| E2E 测试迁移到正式目录 (tests/e2e/) | tmp/ 临时性质不应保留持久性测试资产 | ✓ Validated (v1.9.2) |
+| 调研文档按类型归档 (主文档+配图+补充+workspace) | 集中管理方法论参考资料,便于后续查阅 | ✓ Validated (v1.9.2) |
+| 设计反省基于方法论对照审查 | 系统性识别偏差,而非主观判断 | ✓ Validated (v1.9.2) |
+| 改进建议分级 (P0/P1/P2) | 资源有限时优先处理高影响偏差 | ✓ Validated (v1.9.2) |
 
 ## Evolution
 
@@ -204,4 +202,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-19 — v1.9.2 planned*
+*Last updated: 2026-04-20 — v1.9.2 shipped*

@@ -2,6 +2,44 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v1.9.2 — Codepoint 测试归档与调研文档整理
+
+**Shipped:** 2026-04-20
+**Phases:** 3 | **Plans:** 5 | **Sessions:** 2
+
+### What Was Built
+- E2E 测试项目从 tmp/ 迁移到 tests/e2e/codepoint-v2/（5 个项目：go-calculator, python-calculator, gojs-calculator, pyts-calculator, template-test）
+- 代码点方法论调研文档归档到 docs/research/codepoint/（主文档 + 6 配图 + 全局思维补充 + workspace 迭代记录）
+- Codepoint V2 设计反省文档：5 条偏差 (CP-01~05) + 3 条合理偏离 (RD-01~03)，10 个决策点全覆盖
+- 改进优先级排序：CP-01 (P0) > CP-05 (P0) > CP-02 (P1) > CP-04 (P1) > CP-03 (P2)
+
+### What Worked
+- Phase 38-39 纯归档操作在一个 session 内高效完成（~15 min），无需设计决策
+- Phase 40 独立的设计反省基于已归档的方法论文档，审查基准清晰
+- Cross-AI review 机制为 Phase 40 提供了外部视角验证
+- 按类型分目录归档（主文档/配图/补充/workspace）结构清晰
+
+### What Was Inefficient
+- Phase 40 的 cross-AI review 往返 2 次才收敛，计划修订消耗额外时间
+- v1.9.1 和 v1.9.2 作为连续里程碑，归档整理本可在 v1.9.1 结束时同步完成
+
+### Patterns Established
+- 测试资产持久化：E2E 测试项目放在 tests/e2e/<version>/ 目录而非 tmp/
+- 调研文档归档模式：docs/research/<topic>/ 按日期和类型组织
+- 设计反省方法论：对照原始方法论逐条审查，用 E2E 数据交叉验证
+
+### Key Lessons
+1. 归档和整理类工作应与开发同步完成，而非延后到独立里程碑
+2. Cross-AI review 收敛需要计划阶段充分明确审查范围
+3. 方法论对照审查是技能质量保障的有效手段 — 5 条偏差都是通过系统性审查发现的
+
+### Cost Observations
+- Model mix: ~85% sonnet, ~15% opus
+- Sessions: 2
+- Notable: 归档类里程碑执行效率高（~30 min），设计反省需要更多思考时间
+
+---
+
 ## Milestone: v1.8 — Worktree 区分
 
 **Shipped:** 2026-04-09
@@ -251,6 +289,8 @@
 | v1.6 | 1 | 3 | Shared flags.py, global control, upward traversal infrastructure |
 | v1.7 | 1 | 2 | TDD project root detection, fastest execution (~5 min) |
 | v1.8 | 1 | 1 | Worktree 区分, git branch detection, shared title builder |
+| v1.9.1 | 3 | 6 | Codepoint V2 E2E 测试, 跨语言集成验证 |
+| v1.9.2 | 2 | 3 | 测试归档, 调研文档整理, 设计反省 |
 
 ### Cumulative Quality
 
@@ -263,6 +303,8 @@
 | v1.6 | 72 Python | Full | 0 new deps (shared flags.py) |
 | v1.7 | 85 Python | Full | 0 new deps (38 notification tests) |
 | v1.8 | 105 Python | Full | 0 new deps (14 worktree tests) |
+| v1.9.1 | 105 Python + 5 E2E | Full | 0 new deps (20 E2E test plans) |
+| v1.9.2 | 105 Python + 5 E2E | Full | 0 new deps (archive only) |
 
 ### Top Lessons (Verified Across Milestones)
 

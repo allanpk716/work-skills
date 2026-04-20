@@ -1,7 +1,7 @@
 # ROADMAP: Work Skills
 
 **Project:** Claude Code 个人技能集
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ## Milestones
 
@@ -15,12 +15,12 @@
 - [x] **v1.7 - 通知项目名称智能识别** - Phases 29-30 (shipped 2026-04-04)
 - [x] **v1.8 - Worktree 区分** - Phase 31 (shipped 2026-04-09)
 - [x] **v1.9.1 - Codepoint V2 E2E 测试** - Phases 32-37 (shipped 2026-04-19)
-- [x] **v1.9.2 - Codepoint 测试归档与调研文档整理** - Phases 38-40
+- [x] **v1.9.2 - Codepoint 测试归档与调研文档整理** - Phases 38-40 (shipped 2026-04-20)
 
 ## Phases
 
 <details>
-<summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — COMPLETE</summary>
+<summary>v1.9.2 - Codepoint 测试归档与调研文档整理 (Phases 38-40) — SHIPPED 2026-04-20</summary>
 
 - [x] Phase 38: E2E 测试项目迁移 (2/2 plans) — completed 2026-04-19
   - [x] 38-01-PLAN.md -- 迁移 5 个测试项目到 tests/e2e/codepoint-v2/
@@ -132,17 +132,8 @@
 
 ## Progress
 
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 39. 调研文档归档与整理 | v1.9.2 | 2/2 | Complete | 2026-04-19 |
-| 40. Codepoint 设计反省与改进评估 | v1.9.2 | 1/1 | Complete | 2026-04-20 |
-| 32. Go 单语言计算器验证 | v1.9.1 | 5/5 | Complete | 2026-04-18 |
-| 33. Python 单语言计算器验证 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
-| 34. 单语言问题修复 | v1.9.1 | 3/3 | Complete | 2026-04-18 |
-| 35. Go+JS 全栈跨语言集成 | v1.9.1 | 4/4 | Complete | 2026-04-19 |
-| 36. Python+TS 全栈跨语言集成 | v1.9.1 | 2/2 | Complete | 2026-04-19 |
-| 37. 全栈问题修复 | v1.9.1 | 3/3 | Complete | 2026-04-19 |
+All milestones shipped. No active phases.
 
 ---
 *Roadmap initialized: 2026-02-24*
-*Last updated: 2026-04-20 — Phase 40 complete, v1.9.2 milestone delivered*
+*Last updated: 2026-04-20 — v1.9.2 milestone shipped*

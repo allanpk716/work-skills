@@ -1,5 +1,19 @@
 # Milestones
 
+## v1.9.2 Codepoint 测试归档与调研文档整理 (Shipped: 2026-04-20)
+
+**Phases completed:** 3 phases, 5 plans
+**Known deferred items at close:** 7 (see STATE.md Deferred Items)
+
+**Key accomplishments:**
+
+- E2E 测试项目从 tmp/ 迁移到 tests/e2e/codepoint-v2/，5 个项目 (go/python/gojs/pyts/template) 结构完整，tmp/ 清空
+- 代码点方法论调研文档归档到 docs/research/codepoint/（主文档 + 6 配图 + 全局思维补充 + workspace 迭代记录）
+- Codepoint V2 设计反省：5 条偏差 (CP-01~05) + 3 条合理偏离 (RD-01~03)，10 个决策点全覆盖
+- 改进优先级排序：CP-01 (P0) > CP-05 (P0) > CP-02 (P1) > CP-04 (P1) > CP-03 (P2)
+
+---
+
 ## v1.9.1 Codepoint V2 E2E Tests (Shipped: 2026-04-19)
 
 **Phases completed:** 6 phases, 20 plans

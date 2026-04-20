@@ -107,6 +107,69 @@ Each probe outputs structured JSON:
 4. Code point density matters — validate with overlap analysis (target 20%-60%)
 5. The collection is a living document — update when architecture changes
 
+## index.json Schema
+
+All codepoint data is indexed in `.codepoints/index.json`. Downstream skills (`/codepoint-scan`, `/codepoint-plan`, `/codepoint-test-plan`, `/codepoint-implement`) read and write this file. The canonical example lives at `templates/index.json`.
+
+### Top-Level Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `version` | string | Schema version, e.g. `"2.0"` |
+| `project` | string | Project identifier |
+| `language` | string | Primary language: `go`, `python`, `typescript` |
+| `created` | string | ISO date the index was created |
+| `updated` | string | ISO date the index was last modified |
+| `collections` | array | Collection objects (see below) |
+| `flows` | array | Flow objects (see below) |
+| `points` | array | Code point objects (see below) |
+
+### Collection
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier, format `col-{slug}` |
+| `name` | string | Human-readable name |
+| `description` | string | What this collection covers |
+| `created` | string | ISO creation date |
+
+Template placeholders: `{{COLLECTION_ID}}`, `{{COLLECTION_NAME}}`, `{{COLLECTION_DESCRIPTION}}`
+
+### Flow
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier, format `flow-{slug}` |
+| `name` | string | Human-readable name |
+| `collection_id` | string | Foreign key → `collections[].id` |
+| `trigger` | string | What initiates this flow (e.g. `POST /api/login`) |
+| `sequence` | array[string] | Ordered list of `points[].id` values |
+| `test_cases` | object | `{ normal: [...], boundary: [...], failure: [...] }` |
+| `status` | string | Implementation state: `active`, `implemented`, `verified` |
+
+Template placeholders: `{{FLOW_ID}}`, `{{FLOW_NAME}}`, `{{FLOW_TRIGGER}}`, `{{COLLECTION_ID}}`, `{{CP_ID}}`, `{{CP_TYPE}}`, `{{CP_LOCATION}}`
+
+### Point
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier, format `cp-{slug}` |
+| `name` | string | Human-readable name |
+| `type` | string | One of: `entry`, `boundary`, `state-change`, `concurrency`, `error` |
+| `location` | string | File path and line, e.g. `src/auth/handler.go:42` |
+| `language` | string | Probe language: `go`, `python`, `typescript` |
+| `description` | string | What this probe observes |
+| `enabled` | boolean | Whether the probe is active (required by `/codepoint-implement`) |
+| `used_in_flows` | array[string] | Foreign keys → `flows[].id` |
+
+Template placeholders: `{{POINT_ID}}`, `{{POINT_TYPE}}`, `{{LANGUAGE}}`, `{{FILE_PATH}}`, `{{LINE_NUMBER}}`, `{{POINT_DESCRIPTION}}`, `{{FLOW_ID}}`, `{{STEP_NUMBER}}`
+
+### Cross-Reference Integrity
+
+- Every `flow.collection_id` must exist in `collections[].id`
+- Every entry in `flow.sequence` must exist in `points[].id`
+- Every entry in `point.used_in_flows` must exist in `flows[].id`
+
 ## Language Support
 
 See language-specific reference files:

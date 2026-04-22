@@ -23,7 +23,7 @@ Automated Git commit and push on Windows using command-line git with plink + PPK
 ## Install
 
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills/windows-git-commit
 ```
 
 ## Security Scanner

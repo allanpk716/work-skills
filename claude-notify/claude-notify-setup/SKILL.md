@@ -67,7 +67,7 @@ For detailed Pushover setup instructions, see → [references/setup.md](referenc
 The recommended way is to run the npx installer, which handles everything automatically:
 
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills/claude-notify
 ```
 
 This will:
@@ -164,7 +164,7 @@ python skills/claude-notify/hooks/scripts/notify.py --diagnose
 2. If they need credentials, guide them through Step 1 (account creation, app creation, environment variables)
 3. Check if environment variables are already set — if not, provide the setx/export commands
 4. Ask whether they want automatic installation (npx) or manual hook registration
-5. For automatic: run `npx github:allanpk716/work-skills#main` and report the result
+5. For automatic: run `npx skills add allanpk716/work-skills/claude-notify` and report the result
 6. For manual: open `~/.claude/settings.json`, show the required JSON structure, and merge carefully
 7. Run verification checks from Step 3 to confirm everything is working
 8. If any check fails, provide specific troubleshooting guidance

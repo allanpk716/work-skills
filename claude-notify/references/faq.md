@@ -86,7 +86,7 @@
    如果通知功能异常，请重新运行安装命令来更新全局 hooks：
 
    ```bash
-   npx github:allanpk716/work-skills#main
+   npx skills add allanpk716/work-skills/claude-notify
    ```
 
    安装命令会自动：

@@ -28,14 +28,14 @@ python -m pip install requests
 ## Install
 
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills/claude-notify
 ```
 
 This command will:
 
 - Register global notification hooks in `~/.claude/settings.json`
 - Copy notification scripts to `~/.claude/hooks/`
-- Register the marketplace plugin source (skills + slash commands)
+- Install the claude-notify skill via the skills standard
 
 ## Configure
 

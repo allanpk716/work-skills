@@ -71,18 +71,13 @@ python -m pip install requests
 
 使用 npx 安装命令（推荐）:
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills/claude-notify
 ```
 
 此命令将:
 - 自动注册全局通知 hooks 到 `~/.claude/settings.json`
 - 复制通知脚本到 `~/.claude/hooks/`
-- 注册 marketplace 插件源（用于 skills 和 slash commands）
-
-**或者从插件市场手动安装:**
-```
-/plugin install claude-notify@work-skills
-```
+- 安装 claude-notify 技能
 
 > **注意:** 从 v2.0.0 开始，通知 hooks 注册在全局 `~/.claude/settings.json` 中，不再依赖 marketplace 插件的 hooks 加载机制。
 

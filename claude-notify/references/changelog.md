@@ -19,7 +19,7 @@
 
 **变更:**
 - 通知脚本不再通过 marketplace 插件加载,改为全局 hooks
-- 安装/更新统一通过 `npx github:allanpk716/work-skills#main` 完成
+- 安装/更新统一通过 `npx skills add allanpk716/work-skills/claude-notify` 完成
 - 新增 `installer/src/hooks/` 模块处理 hooks 注册
 - 删除 `hooks/hooks.json`、`notify-wait.py`、`notify.py.backup`、`.no-pushover`
 - 更新验证脚本检查全局 hooks 而非 marketplace hooks

@@ -165,6 +165,7 @@ git push
 8. Run all four verification checks from Step 4
 9. If any check fails, provide specific troubleshooting guidance
 10. Confirm to the user that setup is complete and Git push will work without prompts
+11. Optionally run the Post-Installation Environment Check section to verify everything independently
 </process>
 
 <rules>
@@ -189,3 +190,154 @@ git push
 
 For detailed troubleshooting, see → [references/troubleshooting.md](../references/troubleshooting.md)
 For the full one-time setup guide, see → [references/setup.md](../references/setup.md)
+
+## Post-Installation Environment Check
+
+Run these standalone PowerShell checks after completing the guided setup (or after
+`npx skills add`) to confirm the environment is correctly configured. Each check
+includes the command, expected output, and specific fix guidance on failure.
+
+### Check 1: TortoisePlink.exe Path
+
+Verify that a plink-compatible SSH client is available.
+
+```powershell
+$paths = @(
+  "${env:ProgramFiles}\TortoiseGit\bin\TortoisePlink.exe",
+  "${env:ProgramFiles(x86)}\TortoiseGit\bin\TortoisePlink.exe",
+  "${env:ProgramFiles}\PuTTY\plink.exe",
+  "${env:ProgramFiles(x86)}\PuTTY\plink.exe"
+)
+$found = $paths | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($found) {
+  Write-Host "OK: Found plink at $found" -ForegroundColor Green
+} else {
+  $cmd = Get-Command TortoisePlink.exe -ErrorAction SilentlyContinue
+  if ($cmd) {
+    Write-Host "OK: Found TortoisePlink via PATH at $($cmd.Source)" -ForegroundColor Green
+  } else {
+    Write-Host "FAIL: TortoisePlink.exe not found" -ForegroundColor Red
+    Write-Host "FIX:  Install TortoiseGit from https://tortoisegit.org/ and re-run this check."
+  }
+}
+```
+
+**Expected output:**
+```
+OK: Found plink at C:\Program Files\TortoiseGit\bin\TortoisePlink.exe
+```
+
+**On failure:** Install [TortoiseGit](https://tortoisegit.org/) (recommended) or standalone
+PuTTY, then re-run this check.
+
+### Check 2: Git core.sshcommand
+
+Verify that git is configured to use the plink SSH client.
+
+```powershell
+$sshCmd = git config --global core.sshcommand
+if ($sshCmd -match 'plink|TortoisePlink') {
+  Write-Host "OK: core.sshcommand = $sshCmd" -ForegroundColor Green
+} elseif ($sshCmd) {
+  Write-Host "WARN: core.sshcommand is set but does not point to a plink executable:" -ForegroundColor Yellow
+  Write-Host "      $sshCmd"
+  Write-Host "FIX:  Re-run guided setup Step 2 to configure TortoisePlink."
+} else {
+  Write-Host "FAIL: core.sshcommand is not set" -ForegroundColor Red
+  Write-Host "FIX:  Re-run guided setup Step 2 to configure TortoisePlink."
+}
+```
+
+**Expected output:**
+```
+OK: core.sshcommand = "C:\Program Files\TortoiseGit\bin\TortoisePlink.exe"
+```
+
+**On failure:** Re-run the guided setup Step 2 (`git config --global core.sshcommand`)
+with the correct TortoisePlink path.
+
+### Check 3: Pageant Process
+
+Verify that Pageant is running and holding keys.
+
+```powershell
+$proc = Get-Process -Name pageant -ErrorAction SilentlyContinue
+if ($proc) {
+  Write-Host "OK: Pageant is running (PID $($proc.Id))" -ForegroundColor Green
+} else {
+  Write-Host "FAIL: Pageant is not running" -ForegroundColor Red
+  Write-Host "FIX:  Start Pageant manually or set up auto-start per Step 3."
+  Write-Host '      Example: & "C:\Program Files\TortoiseGit\bin\pageant.exe" "$env:USERPROFILE\.ssh\id_rsa.ppk"'
+}
+```
+
+**Expected output:**
+```
+OK: Pageant is running (PID 12345)
+```
+
+**On failure:** Start Pageant manually with your PPK key, or follow Step 3 to configure
+auto-start on login.
+
+### Check 4: SSH Connectivity
+
+Verify end-to-end SSH authentication to GitHub.
+
+```powershell
+$output = ssh -T git@github.com 2>&1
+if ($output -match 'successfully authenticated') {
+  Write-Host "OK: SSH authentication to GitHub succeeded" -ForegroundColor Green
+  Write-Host "      $output"
+} else {
+  Write-Host "FAIL: SSH authentication failed" -ForegroundColor Red
+  Write-Host "      $output"
+  Write-Host "FIX:  Ensure Pageant is running (Check 3) and your PPK key is loaded."
+}
+```
+
+**Expected output:**
+```
+OK: SSH authentication to GitHub succeeded
+      Hi <username>! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+**On failure:** Ensure Pageant is running (Check 3) with the correct PPK key loaded. If
+Pageant is running but SSH still fails, verify the PPK key matches a key registered on
+your GitHub account.
+
+### Quick All-in-One Check
+
+Run all four checks in sequence:
+
+```powershell
+Write-Host "`n=== Post-Installation Environment Check ===" -ForegroundColor Cyan
+
+# Check 1: TortoisePlink path
+Write-Host "`n[1/4] TortoisePlink.exe Path" -ForegroundColor Cyan
+$paths = @(
+  "${env:ProgramFiles}\TortoiseGit\bin\TortoisePlink.exe",
+  "${env:ProgramFiles(x86)}\TortoiseGit\bin\TortoisePlink.exe",
+  "${env:ProgramFiles}\PuTTY\plink.exe",
+  "${env:ProgramFiles(x86)}\PuTTY\plink.exe"
+)
+$found = $paths | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $found) { $found = (Get-Command TortoisePlink.exe -ErrorAction SilentlyContinue).Source }
+if ($found) { Write-Host "  OK: $found" -ForegroundColor Green } else { Write-Host "  FAIL: TortoisePlink.exe not found" -ForegroundColor Red }
+
+# Check 2: git core.sshcommand
+Write-Host "`n[2/4] Git core.sshcommand" -ForegroundColor Cyan
+$sshCmd = git config --global core.sshcommand
+if ($sshCmd -match 'plink|TortoisePlink') { Write-Host "  OK: $sshCmd" -ForegroundColor Green } else { Write-Host "  FAIL: not configured or not pointing to plink" -ForegroundColor Red }
+
+# Check 3: Pageant process
+Write-Host "`n[3/4] Pageant Process" -ForegroundColor Cyan
+$proc = Get-Process -Name pageant -ErrorAction SilentlyContinue
+if ($proc) { Write-Host "  OK: running (PID $($proc.Id))" -ForegroundColor Green } else { Write-Host "  FAIL: Pageant not running" -ForegroundColor Red }
+
+# Check 4: SSH connectivity
+Write-Host "`n[4/4] SSH Connectivity" -ForegroundColor Cyan
+$output = ssh -T git@github.com 2>&1
+if ($output -match 'successfully authenticated') { Write-Host "  OK: authenticated" -ForegroundColor Green } else { Write-Host "  FAIL: authentication failed" -ForegroundColor Red }
+
+Write-Host "`n=== Check Complete ===" -ForegroundColor Cyan
+```

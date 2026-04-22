@@ -7,10 +7,8 @@ Personal skills collection for improving daily work efficiency with Claude Code.
 ## 🚀 Quick Start
 
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills --all
 ```
-
-Or the shorthand: `npx allanpk716/work-skills`
 
 ## Skills
 
@@ -27,7 +25,6 @@ work-skills/
 ├── claude-notify/         # Notification skill
 ├── windows-git-commit/    # Git workflow skill
 ├── codepoint/             # Code observability skill
-├── installer/             # NPX installer
 └── README.md
 ```
 

@@ -7,10 +7,8 @@
 ## 🚀 快速开始
 
 ```bash
-npx github:allanpk716/work-skills#main
+npx skills add allanpk716/work-skills --all
 ```
-
-简写形式：`npx allanpk716/work-skills`
 
 ## 技能列表
 
@@ -27,7 +25,6 @@ work-skills/
 ├── claude-notify/         # 通知技能
 ├── windows-git-commit/    # Git 工作流技能
 ├── codepoint/             # 代码可观测性技能
-├── installer/             # NPX 安装器
 └── README.md
 ```
 
@@ -38,3 +35,4 @@ MIT
 ## 致谢
 
 项目结构和组织方式受到 [baoyu-skills](https://github.com/allanpk716/work-skills)（作者 Jim Liu）的启发。
+��发。

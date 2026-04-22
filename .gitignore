@@ -45,5 +45,8 @@ vendor/
 coverage/
 .cache/
 
+# Exclude playwright-cli from skill discovery
+.claude/skills/playwright-cli/
+
 # ── GSD baseline (auto-generated) ──
 .mcp.json

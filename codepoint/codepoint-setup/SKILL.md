@@ -171,6 +171,7 @@ See the main [SKILL.md](../SKILL.md) for the complete commands table.
 7. Run the verification checks from Step 4
 8. If any check fails, provide specific guidance to resolve the issue
 9. Point the user to the Quick Start table for next steps
+10. Optionally run the Post-Installation Skill Integrity Check section to verify the skill installation is complete
 </process>
 
 <rules>
@@ -180,6 +181,91 @@ See the main [SKILL.md](../SKILL.md) for the complete commands table.
 - If the user's project uses multiple languages, set the toggle for the primary/backend language and note that cross-language probes can reference a different language per point
 - The .codepoints/ directory is project-local; the toggle file is user-global (~/.codepoint/)
 </rules>
+
+## Post-Installation Skill Integrity Check
+
+Run this section after installing or updating the codepoint skill to verify all
+required files are present. These checks verify the **skill installation**, not the
+`.codepoints/` working directory (that is covered by Step 4 above).
+
+All commands use PowerShell. Run them from the **skill root directory** (the folder
+containing `codepoint/SKILL.md`).
+
+### 1. Main Skill & Sub-skill SKILL.md Files
+
+Check that all 10 SKILL.md files exist:
+
+```powershell
+$skillRoot = "codepoint"
+$skills = @(
+  "$skillRoot/SKILL.md",
+  "$skillRoot/codepoint-implement/SKILL.md",
+  "$skillRoot/codepoint-instrument/SKILL.md",
+  "$skillRoot/codepoint-plan/SKILL.md",
+  "$skillRoot/codepoint-run/SKILL.md",
+  "$skillRoot/codepoint-scan/SKILL.md",
+  "$skillRoot/codepoint-setup/SKILL.md",
+  "$skillRoot/codepoint-test-plan/SKILL.md",
+  "$skillRoot/codepoint-validate/SKILL.md",
+  "$skillRoot/codepoint-verify/SKILL.md"
+)
+$missing = @()
+foreach ($s in $skills) {
+  if (-not (Test-Path $s)) { $missing += $s }
+}
+if ($missing.Count -eq 0) {
+  Write-Host "SKILL.md files: $($skills.Count)/$($skills.Count) OK"
+} else {
+  Write-Host "SKILL.md files: $($skills.Count - $missing.Count)/$($skills.Count) OK - MISSING:"
+  $missing | ForEach-Object { Write-Host "  $_" }
+  Write-Host "Re-run: npx skills add allanpk716/work-skills/codepoint --all"
+}
+```
+
+### 2. templates/ Directory
+
+Check that all 5 template files exist:
+
+```powershell
+$tplDir = "codepoint/templates"
+$templates = @("collection.md", "flow.md", "index.json", "point.md", "verification.md")
+$missing = @()
+foreach ($t in $templates) {
+  if (-not (Test-Path "$tplDir/$t")) { $missing += $t }
+}
+if ($missing.Count -eq 0) {
+  Write-Host "templates/: $($templates.Count)/$($templates.Count) OK"
+} else {
+  Write-Host "templates/: $($templates.Count - $missing.Count)/$($templates.Count) OK - MISSING: $($missing -join ', ')"
+}
+```
+
+### 3. references/ Directory
+
+Check that all 5 reference files exist:
+
+```powershell
+$refDir = "codepoint/references"
+$references = @("data-model.md", "frontend.md", "golang.md", "python.md", "test-probes.md")
+$missing = @()
+foreach ($r in $references) {
+  if (-not (Test-Path "$refDir/$r")) { $missing += $r }
+}
+if ($missing.Count -eq 0) {
+  Write-Host "references/: $($references.Count)/$($references.Count) OK"
+} else {
+  Write-Host "references/: $($references.Count - $missing.Count)/$($references.Count) OK - MISSING: $($missing -join ', ')"
+}
+```
+
+### Summary
+
+If all three groups report full counts, the codepoint skill installation is complete.
+If any files are missing, re-install with:
+
+```powershell
+npx skills add allanpk716/work-skills/codepoint --all
+```
 
 ## Troubleshooting
 

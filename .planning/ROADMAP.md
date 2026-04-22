@@ -82,7 +82,7 @@
 - [x] **Phase 45: s05** — S05
 - [x] **Phase 46: s06** — S06
 
-## M013-g7bbz6: M013-g7bbz6
+## M013-g7bbz6: ✅ Agent Skills 标准迁移 (Phases 47-48) — SHIPPED 2026-04-20
 
 - [x] **Phase 47: s01** — S01
 - [x] **Phase 48: s02** — S02

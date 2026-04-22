@@ -1,5 +1,20 @@
 # Milestones
 
+## v2.0.1 Agent Skills 标准迁移 (Shipped: 2026-04-20)
+
+**Phases completed:** 2 phases, 6 plans
+**Known deferred items at close:** 7 (see STATE.md Deferred Items)
+
+**Key accomplishments:**
+
+- 11 个技能目录迁移至仓库根级，plugins/ 已移除，23 项结构检查全部通过
+- claude-notify SKILL.md 拆分: 1284 → 234 行 + 5 个 references/ 文件
+- windows-git-commit SKILL.md 拆分: 891 → 439 行 + 4 个 references/ 文件
+- pytest.ini 路径更新 + import-mode=importlib + benchmark 优雅降级
+- 114 个 Python 测试通过 + 3 个跳过 (exit 0)
+
+---
+
 ## v2.0 前端自动化测试体系 (Shipped: 2026-04-20)
 
 **Phases completed:** 6 phases, 12 plans

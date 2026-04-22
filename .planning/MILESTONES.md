@@ -1,5 +1,20 @@
 # Milestones
 
+## v2.1 Project Cleanup: Final Form (Shipped: 2026-04-20)
+
+**Phases completed:** 4 phases, 10 plans
+**Known deferred items at close:** 7 (see STATE.md Deferred Items)
+
+**Key accomplishments:**
+
+- 删除 7 个过时文件/目录，8 个 codepoint 子技能用 git mv 嵌套到 codepoint/（保留历史）
+- 14 个 SKILL.md 全部通过 skills-ref validate（含 3 个 setup 子技能）
+- docs/ 重组为 4 个技能分类子目录 + README.md 索引
+- 每个技能独立 README.md，根 README 精简为 40 行导航入口
+- 3 个配置引导子技能 (claude-notify-setup, windows-git-commit-setup, codepoint-setup)
+
+---
+
 ## v2.0.1 Agent Skills 标准迁移 (Shipped: 2026-04-20)
 
 **Phases completed:** 2 phases, 6 plans

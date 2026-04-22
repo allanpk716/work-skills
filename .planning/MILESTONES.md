@@ -1,5 +1,21 @@
 # Milestones
 
+## v2.0 前端自动化测试体系 (Shipped: 2026-04-20)
+
+**Phases completed:** 6 phases, 12 plans
+**Known deferred items at close:** 7 (see STATE.md Deferred Items)
+
+**Key accomplishments:**
+
+- /codepoint-test-plan 技能 — 6 步测试规划工作流 + 10 个探针代码片段 (D-01~D-10)
+- index.json 数据契约 — 1 collection / 2 flows / 9 codepoints，33 项结构校验
+- /codepoint-instrument 技能 — 6 步埋点规划，5 级优先级 (P1-P5)，按类型元数据契约
+- /codepoint-verify 技能 — 7 步验证工作流，4 轮校验 (序列/完整/元数据/覆盖)
+- /codepoint-run 编排技能 — 双入口模式 (现有代码库/新功能)，6 子技能链，制品恢复
+- /codepoint-validate 技能 — 5 轮渐进式静态制品一致性验证
+
+---
+
 ## v1.9.2 Codepoint 测试归档与调研文档整理 (Shipped: 2026-04-20)
 
 **Phases completed:** 3 phases, 5 plans

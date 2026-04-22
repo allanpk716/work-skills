@@ -4,13 +4,14 @@
 
 See: .planning/PROJECT.md
 
-**Current focus:** Phase 52 (complete)
+**Core value:** 为 Windows 开发者提供即开即用的 Claude Code 技能
+**Current focus:** All milestones complete (v1.0–v2.1), planning next milestone
 
 ## Current Position
 
 Phase: 52 of 52 (complete)
-Status: All phases complete
-Last activity: 2026-04-22 — Migrated from GSD-2
+Status: All milestones archived (v2.0, v2.0.1, v2.1)
+Last activity: 2026-04-22 — Milestone archival completed
 
 Progress: [██████████] 100%
 
@@ -41,5 +42,5 @@ Items acknowledged and deferred at milestone close on 2026-04-22:
 ## Session Continuity
 
 Last session: 2026-04-22
-Stopped at: Migration from GSD-2 completed
+Stopped at: Milestone archival completed (v2.0, v2.0.1, v2.1)
 Resume file: None

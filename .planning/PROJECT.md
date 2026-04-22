@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-notify)、Git 安全扫描(windows-git-commit)和独立 NPX 安装器。安装器支持智能配置检测和完整卸载功能,能自动识别已有环境配置并适配首次安装或重复运行场景。已安装插件在重复运行时自动跳过,无需用户手动干预。用户可通过 `--uninstall` 一键卸载所有已安装组件。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
+Work Skills 是一个 Claude Code 技能集合项目,采用 Agent Skills 开放标准分发。包含通知技能(claude-notify)、Git 提交技能(windows-git-commit)和 Codepoint 运行时可观测性技能链(codepoint 含 8 个子技能)。用户可通过 `npx skills add allanpk716/work-skills` 一键安装所有技能。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
 
 ## Core Value
 
@@ -110,6 +110,31 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 - ✓ Codepoint V2 设计反省 — 5 条偏差 (CP-01~05) + 3 条合理偏离 (RD-01~03)
 - ✓ 改进优先级排序 — CP-01 (P0) > CP-05 (P0) > CP-02 (P1) > CP-04 (P1) > CP-03 (P2)
 
+**v2.0 - 前端自动化测试体系 (shipped 2026-04-20):**
+- ✓ /codepoint-test-plan 技能 — 6 步测试规划工作流 + 10 个探针代码片段 (D-01~D-10) — M012 S01
+- ✓ index.json 数据契约 — 1 collection / 2 flows / 9 codepoints，33 项结构校验 — M012 S02
+- ✓ /codepoint-instrument 技能 — 6 步埋点规划，5 级优先级 (P1-P5)，按类型元数据契约 — M012 S03
+- ✓ /codepoint-verify 技能 — 7 步验证工作流，4 轮校验 (序列/完整/元数据/覆盖) — M012 S04
+- ✓ /codepoint-run 编排技能 — 双入口模式 (现有代码库/新功能)，6 子技能链，制品恢复 — M012 S05
+- ✓ /codepoint-validate 技能 — 5 轮渐进式静态制品一致性验证 — M012 S06
+- ✓ 83 项结构验证检查全部通过 (S02:33 + S03:12 + S04:13 + S05:12 + S06:13)
+
+**v2.0.1 - Agent Skills 标准迁移 M1 (shipped 2026-04-20):**
+- ✓ 11 个技能目录迁移至仓库根级，plugins/ 已移除 — M013 S01
+- ✓ skills-ref validate 11/11 全部通过 — M013 S01
+- ✓ claude-notify SKILL.md 拆分: 1284 → 234 行 + 5 个 references/ 文件 — M013 S02
+- ✓ windows-git-commit SKILL.md 拆分: 891 → 439 行 + 4 个 references/ 文件 — M013 S02
+- ✓ pytest.ini 路径更新 + import-mode=importlib + benchmark 优雅降级 — M013 S02
+- ✓ 114 个 Python 测试通过 + 3 个跳过 (exit 0) — M013 S02
+
+**v2.1 - Project Cleanup: Final Form (shipped 2026-04-20):**
+- ✓ 删除 7 个过时文件/目录 (.claude-plugin/marketplace.json, scripts/, pytest.ini, tests/, INSTALLATION*.md, QUICK-START.md) — M014/S01
+- ✓ 8 个 codepoint-* 子技能用 git mv 嵌套到 codepoint/ 下（保留历史） — M014/S01
+- ✓ 14 个 SKILL.md 全部通过 skills-ref validate（含 3 个 setup 子技能） — M014/S01+S04
+- ✓ docs/ 重组为 4 个技能分类子目录 + README.md 索引 — M014/S02
+- ✓ 每个技能独立 README.md（安装/配置/使用），根 README 精简为 40 行导航入口 — M014/S03
+- ✓ 3 个配置引导子技能：claude-notify-setup（hook 注册）、windows-git-commit-setup（TortoisePlink）、codepoint-setup（.codepoints/ 初始化） — M014/S04
+
 ## Out of Scope
 
 | Feature | Reason |
@@ -125,25 +150,17 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | Pushover 双向回复 | Pushover API 不支持用户文本回复 |
 | 非 git 项目的摘要 | git diff 是摘要的核心上下文来源 |
 
-## Current Milestone: v2.0 前端自动化测试体系
-
-**Goal:** 建立前端开发的测试规划+埋点体系，让每个新功能都有可验证的测试流程
-
-**Target features:**
-- 前端测试规划规范 — 埋点+测试流程的标准化模板，开发者按模板规划「点击→响应→验证」
-- Codepoint 源码埋点实践 — 开发新功能时从源头植入 codepoint，输出调试级信息存储
-- 前端测试专属技能 — Claude Code 技能，辅助执行前端测试规划和验证
-- 渐进式验证 — 先在现有全栈项目（Go+JS / Python+TS）验证，再推广为通用方案
-
 ## Context
 
 **当前状态 (2026-04-20):**
-- 11 个里程碑已交付 (v1.0 - v1.9.2)
-- 87 个计划全部完成
+- 15 个里程碑已交付 (v1.0 - v2.1)
+- 仓库结构符合 agentskills.io 最终形态：根目录 3 个技能入口 (claude-notify, windows-git-commit, codepoint)
+- codepoint/ 下嵌套 8 个子技能 (implement, instrument, plan, run, scan, test-plan, validate, verify)
+- 每个技能内有配置引导子技能 (claude-notify-setup, windows-git-commit-setup, codepoint-setup)
+- 12 项需求已验证 (TSPEC-01~03, CPT-02, R001~R008)
+- Codepoint V2 技能链完整: scan → plan → instrument → test-plan → implement → verify → run → validate
 - 技术栈: Python 3.6+, Bash, Node.js/CJS, Go
-- 测试覆盖: 105 个 Python 测试 + 5 个 E2E 验证项目
-- Codepoint V2 技能已通过 E2E 验证，设计反省完成，改进方向已明确
-- 已知技术债: 7 个旧 debug session, `-race` flag 在 Windows CGO 不可用
+- 已知限制: npx skills add --list 远程发现未验证（需推送到 GitHub 后测试）
 
 ## Key Decisions
 
@@ -175,7 +192,7 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 插件根目录布局 (SKILL.md at root) | 匹配 isPluginInstalled() 期望路径 | ✓ Validated (v1.4) |
 | 修复结构而非修改安装器 | 最小修改原则,安装器逻辑本身正确 | ✓ Validated (v1.4) |
 | git mv 保留历史跟踪 | 目录重构时保留 Git 历史 | ✓ Applied (Phase 22) |
-| 共享 flags.py 模块 | 消除 notify.py 和 notify-attention.py 中的重复代码 | ✓ Validated (v1.6) |
+| 共享 flags.py 模块 | 消除通知脚本中的重复代码 | ✓ Validated (v1.6) |
 | Per-channel independence | 各通知频道独立查找,互不干扰 | ✓ Validated (v1.6) |
 | 项目级优先于全局级 | 项目级 .no-xxx 存在时跳过全局检查 | ✓ Validated (v1.6) |
 | 6-key 返回字典 | 分离项目级和全局级路径信息 | ✓ Validated (v1.6) |
@@ -193,6 +210,21 @@ Work Skills 是一个 Claude Code 技能集合项目,包含通知插件(claude-n
 | 调研文档按类型归档 (主文档+配图+补充+workspace) | 集中管理方法论参考资料,便于后续查阅 | ✓ Validated (v1.9.2) |
 | 设计反省基于方法论对照审查 | 系统性识别偏差,而非主观判断 | ✓ Validated (v1.9.2) |
 | 改进建议分级 (P0/P1/P2) | 资源有限时优先处理高影响偏差 | ✓ Validated (v1.9.2) |
+| Probe snippets use pointWithMeta() V2 pattern | 与现有 frontend.md 引用约定保持一致 | ✓ Validated (v2.0) |
+| Windows PowerShell 验证脚本 (.ps1) | 开发环境 Windows 无 grep，batch ERRORLEVEL 不可靠 | ✓ Validated (v2.0) |
+| Static-only validate + dynamic verify 分工 | 两种验证服务不同目的，互补而非替代 | ✓ Validated (v2.0) |
+| 缺失下游制品视为信息性缺口 | 允许验证在任意管线阶段运行 | ✓ Validated (v2.0) |
+| 5 级探针优先级 (P1 entry → P5 error) | 反映自然测试工作流：先测正常路径再测边界 | ✓ Validated (v2.0) |
+| 5 轮渐进式验证模型 | 逐步加深验证深度，早期快速失败 | ✓ Validated (v2.0) |
+| 制品恢复的编排技能设计 | Claude Code 会话可能中断，需支持断点续传 | ✓ Validated (v2.0) |
+| Root-level skill directories for skills.sh discovery | skills-ref expects skill dirs at repo root with SKILL.md name matching dir name | ✓ Validated (v2.0.1) |
+| Shared resources in parent skill (codepoint/) not plugins/ | skills.sh standard requires flat root structure; sub-skills reference ../codepoint/ | ✓ Validated (v2.0.1) |
+| Nested sub-skills under codepoint/ with git mv | 8 codepoint-* dirs moved into codepoint/ preserving git history; relative paths fixed | ✓ Validated (M014/S01) |
+| git mv for directory migration (history preservation) | Restructuring preserves blame/log trail; had to clear stale .git/index.lock | ✓ Applied (v2.0.1, M014/S01) |
+| addopts = --import-mode=importlib (not import_mode key) | pytest 9.0.2 only accepts import_mode as CLI flag, not ini key | ✓ Validated (v2.0.1) |
+| No-op benchmark fixture for graceful degradation | pytest-benchmark may not be installed; 3 benchmark tests should skip not fail | ✓ Validated (v2.0.1) |
+| references/ subdirectory for SKILL.md content splitting | Extract detailed content into topic-specific .md files, keep core SKILL.md under 500 lines | ✓ Validated (v2.0.1) |
+| Setup sub-skills with <objective>/<process> tagged configuration guidance | Each root skill has a xxx-setup sub-skill for environment configuration; consistent pattern across all 3 | ✓ Validated (M014/S04) |
 
 ## Evolution
 
@@ -212,4 +244,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-20 — v2.0 milestone started*
+*Last updated: 2026-04-22 — Milestones v2.0, v2.0.1, v2.1 archived*

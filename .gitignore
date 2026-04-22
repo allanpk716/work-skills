@@ -44,3 +44,6 @@ target/
 vendor/
 coverage/
 .cache/
+
+# ── GSD baseline (auto-generated) ──
+.mcp.json

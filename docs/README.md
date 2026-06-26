@@ -18,6 +18,5 @@
 - [添加新技能](./project/how-to-add-new-skill.md)
 - [项目结构](./project/structure.md)
 - [修复记录](./project/fixes/)
-- [验证记录](./project/verification/)
 - [Bug 记录](./project/bugs/)
 - [计划模板](./project/plans/)

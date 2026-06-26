@@ -93,3 +93,57 @@
 - [x] **Phase 50: s02** — S02
 - [x] **Phase 51: s03** — S03
 - [x] **Phase 52: s04** — S04
+
+## M015: 🚧 v3.0 聚焦 claude-notify 重构 (Phases 53-55) — IN PROGRESS
+
+**Milestone Goal:** 将多技能集合瘦身回归单一技能项目，只保留 claude-notify；移除 windows-git-commit 与 codepoint 两个技能及其文档；将 NPX 安装器裁剪为仅服务于 claude-notify；更新根项目元数据并升级版本至 v3.0.0。这是破坏性删除/裁剪里程碑，不引入新功能，claude-notify 自身代码不动（仅作为回归验证对象）。
+
+**Phase Numbering:** 本里程碑延续全局阶段编号（前一里程碑 v2.1 结束于 Phase 52，本里程碑从 Phase 53 起）。
+
+- [ ] **Phase 53: remove-deprecated-skills** - 移除 windows-git-commit 与 codepoint 技能目录及其文档，清理仓库内残留引用
+- [ ] **Phase 54: trim-installer-notify-only** - 裁剪 NPX 安装器，剥离 git/marketplace/uninstall 耦合代码，仅服务 claude-notify
+- [ ] **Phase 55: release-v3-metadata-regression** - 更新根 README/CHANGELOG/package.json 为单一技能项目，升版 v3.0.0，回归验证 claude-notify
+
+## Phase Details (M015)
+
+### Phase 53: remove-deprecated-skills
+**Goal**: 仓库物理上不再包含 windows-git-commit 与 codepoint 两个技能，相关文档与调研工作区一并清除，且仓库内不存在指向这两个技能的残留引用
+**Depends on**: Nothing (本里程碑首阶段，前一里程碑 v2.1 已 SHIPPED)
+**Requirements**: REM-01, REM-02, REM-03, REM-04
+**Success Criteria** (what must be TRUE):
+  1. `windows-git-commit/` 目录（含 scanner/、hooks/、references/、README、plugin.json）在仓库中不再存在
+  2. `codepoint/` 目录（含 8 个子技能、templates/、references/、README、plugin.json）在仓库中不再存在
+  3. `docs/codepoint` 文档与调研工作区（research/workspace、specs、plans、images）已删除，而 `docs/claude-notify` 保留完好
+  4. 仓库内（README、README.zh、CHANGELOG、CLAUDE.md、package.json、installer 的 i18n/路径）grep 检索 `windows-git-commit` 与 `codepoint` 无残留指向引用（历史 CHANGELOG 记录除外）
+**Plans**: TBD
+
+### Phase 54: trim-installer-notify-only
+**Goal**: NPX 安装器仅服务于 claude-notify 单一技能，剥离 git/marketplace/uninstall 耦合代码，其剩余测试全部通过
+**Depends on**: Phase 53
+**Requirements**: INS-01, INS-02, INS-03, INS-04, INS-05
+**Success Criteria** (what must be TRUE):
+  1. 安装器不再检测/配置 git-ssh、git-user、TortoiseGit、PuTTY（`detectors/git.js`、`detectors/ssh-tools.js`、`configurators/git-ssh.js`、`configurators/git-user.js` 已移除），同时保留 `detectors/python.js`、`detectors/pip-package.js`、`configurators/pushover.js`
+  2. 安装器不再运行多技能 marketplace 集成（`marketplace/` 目录已移除），claude-notify 的安装与 hook 注册仅由现有 `hooks/` 模块（`runHooksInstallation`）承担
+  3. 安装器卸载流程已裁剪——与已删技能耦合的 `uninstall/` 模块已移除或裁剪为仅清理 claude-notify 通知组件，且 `--uninstall` CLI 入口相应移除或调整
+  4. 安装器 i18n（en.json / zh.json）与 welcome 横幅文案已更新为单一技能（claude-notify）范围，无 git/marketplace/多技能相关文案
+  5. 已移除模块（git/ssh 检测、git 配置、marketplace、uninstall）的测试文件已删除，剩余 installer 测试全部通过
+**Plans**: TBD
+
+### Phase 55: release-v3-metadata-regression
+**Goal**: 根项目元数据完整反映单一技能（claude-notify）形态，版本升至 v3.0.0 并与 git tag 一致，且 claude-notify 回归测试通过证明瘦身未破坏其功能
+**Depends on**: Phase 54
+**Requirements**: REL-01, REL-02, REL-03, REL-04
+**Success Criteria** (what must be TRUE):
+  1. 根 `README.md` / `README.zh.md` 已更新为单一技能（claude-notify）项目（技能表格、项目结构、Quick Start 命令均不再提及 windows-git-commit / codepoint）
+  2. `CHANGELOG.md` 新增 v3.0.0 条目，记录移除的技能与安装器裁剪范围
+  3. 根 `package.json` 与 `installer/package.json` 版本同步为 3.0.0，且与新建 git tag `v3.0` 一致（遵循项目发布规范）
+  4. 重构后 claude-notify 的全部 Python 测试通过（回归验证，确认移除/裁剪未破坏 claude-notify）
+**Plans**: TBD
+
+## Progress (M015)
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 53. remove-deprecated-skills | 0/TBD | Not started | - |
+| 54. trim-installer-notify-only | 0/TBD | Not started | - |
+| 55. release-v3-metadata-regression | 0/TBD | Not started | - |

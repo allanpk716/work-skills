@@ -54,25 +54,25 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REM-01 | (待 roadmap 填写) | Pending |
-| REM-02 | (待 roadmap 填写) | Pending |
-| REM-03 | (待 roadmap 填写) | Pending |
-| REM-04 | (待 roadmap 填写) | Pending |
-| INS-01 | (待 roadmap 填写) | Pending |
-| INS-02 | (待 roadmap 填写) | Pending |
-| INS-03 | (待 roadmap 填写) | Pending |
-| INS-04 | (待 roadmap 填写) | Pending |
-| INS-05 | (待 roadmap 填写) | Pending |
-| REL-01 | (待 roadmap 填写) | Pending |
-| REL-02 | (待 roadmap 填写) | Pending |
-| REL-03 | (待 roadmap 填写) | Pending |
-| REL-04 | (待 roadmap 填写) | Pending |
+| REM-01 | Phase 53 | Pending |
+| REM-02 | Phase 53 | Pending |
+| REM-03 | Phase 53 | Pending |
+| REM-04 | Phase 53 | Pending |
+| INS-01 | Phase 54 | Pending |
+| INS-02 | Phase 54 | Pending |
+| INS-03 | Phase 54 | Pending |
+| INS-04 | Phase 54 | Pending |
+| INS-05 | Phase 54 | Pending |
+| REL-01 | Phase 55 | Pending |
+| REL-02 | Phase 55 | Pending |
+| REL-03 | Phase 55 | Pending |
+| REL-04 | Phase 55 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0 (待 roadmap)
-- Unmapped: 13 ⚠️ (roadmap 创建后归零)
+- Mapped to phases: 13 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after milestone v3.0 requirements definition*
+*Last updated: 2026-06-26 — Traceability filled after M015 v3.0 roadmap creation (Phase 53-55)*

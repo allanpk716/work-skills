@@ -22,9 +22,7 @@ function showWelcome(options = {}) {
   const version = color.green(`${t('welcome.version')}: v${packageJson.version}`);
 
   const features = [
-    color.yellow('* ') + t('welcome.feature1'),
-    color.yellow('* ') + t('welcome.feature2'),
-    color.yellow('* ') + t('welcome.feature3')
+    color.yellow('* ') + t('welcome.feature1')
   ].join('\n  ');
 
   const content = `${title}

@@ -5,7 +5,7 @@ const { isHooksInstalled, isHooksRegistered, isCommandsInstalled, getHooksDir, g
 const { readClaudeConfig, getConfigPath } = require('../marketplace/config-manager.js');
 const { detectPushoverFull } = require('../configurators/pushover.js');
 
-const PLUGIN_NAMES = ['claude-notify', 'windows-git-commit', 'codepoint'];
+const PLUGIN_NAMES = ['claude-notify'];
 
 /**
  * Detect all installed work-skills components.

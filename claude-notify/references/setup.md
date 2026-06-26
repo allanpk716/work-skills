@@ -2,6 +2,25 @@
 
 > 返回 [SKILL.md](../SKILL.md) 主文档
 
+## 引导式安装 (推荐新用户)
+
+若您不想手动配置 Pushover 凭据与环境,可使用 NPX 引导式安装器一步完成:
+
+```bash
+npx @allanpk716/work-skills-setup
+```
+
+安装器会自动完成:
+
+- **环境检测**:Windows 系统、Python 3.8+、`requests` 库 (缺失时提示安装)
+- **Pushover 凭据配置**:交互式收集 API Token 与 User Key,验证有效性后保存
+- **通知 hooks 注册**:将 Stop/Notification hooks 写入全局 `~/.claude/settings.json`
+- **安装验证**:自动运行 `--verify` 检查所有组件就绪
+
+卸载时同样可用:`npx @allanpk716/work-skills-setup --uninstall`。
+
+> 若您偏好手动配置,继续阅读下方"Pushover 详细配置"。
+
 ## Pushover 详细配置
 
 ### 1. 创建 Pushover 账号

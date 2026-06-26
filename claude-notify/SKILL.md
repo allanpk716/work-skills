@@ -79,8 +79,6 @@ npx skills add allanpk716/work-skills/claude-notify
 - 复制通知脚本到 `~/.claude/hooks/`
 - 安装 claude-notify 技能
 
-> **注意:** 从 v2.0.0 开始，通知 hooks 注册在全局 `~/.claude/settings.json` 中，不再依赖 marketplace 插件的 hooks 加载机制。
-
 ### 步骤 2: 配置环境变量
 
 设置 Pushover 凭据(移动通知必需):

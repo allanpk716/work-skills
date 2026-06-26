@@ -79,6 +79,18 @@ npx skills add allanpk716/work-skills/claude-notify
 - 复制通知脚本到 `~/.claude/hooks/`
 - 安装 claude-notify 技能
 
+#### 备选:引导式安装器
+
+若您希望安装器引导完成 Pushover 配置与环境检测,可改用 NPX 安装器:
+
+```bash
+npx @allanpk716/work-skills-setup
+```
+
+安装器会:检测 Windows/Python/`requests` 依赖、交互式收集并验证 Pushover 凭据、注册通知 hooks、运行安装验证 (`--verify`)。适合不熟悉手动 `setx` 配置的新用户。
+
+> 手动 `setx` 配置 Pushover 的详细步骤见 → [配置指南](references/setup.md) 的"引导式安装"节。
+
 ### 步骤 2: 配置环境变量
 
 设置 Pushover 凭据(移动通知必需):

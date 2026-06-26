@@ -156,7 +156,10 @@
   3. 根 `package.json` 与 `installer/package.json` 版本同步为 3.0.0，且与新建 git tag `v3.0` 一致（遵循项目发布规范）
   4. 重构后 claude-notify 的全部 Python 测试通过（回归验证，确认移除/裁剪未破坏 claude-notify）
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 55-01-PLAN.md — v3.0 发版元数据收尾（README 单技能化 + CHANGELOG v3.0.0 条目 + 双 package.json 升 3.0.0 + git tag v3.0 + claude-notify 回归测试）
 
 ## Progress (M015)
 
@@ -164,4 +167,4 @@
 |-------|----------------|--------|-----------|
 | 53. remove-deprecated-skills | 1/1 | Complete    | 2026-06-26 |
 | 54. trim-installer-notify-only | 2/2 | Complete    | 2026-06-26 |
-| 55. release-v3-metadata-regression | 0/TBD | Not started | - |
+| 55. release-v3-metadata-regression | 0/1 | Not started | - |

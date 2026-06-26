@@ -1,5 +1,24 @@
 # Milestones
 
+## v3.0 聚焦 claude-notify 重构 (Shipped: 2026-06-26)
+
+**Phases completed:** 3 phases, 4 plans, 11 tasks
+**Known deferred items at close:** 7 (pre-existing debug sessions, carried from v2.1; see STATE.md Deferred Items)
+**Closeout type:** override_closeout (pre-existing debug items deferred, not v3.0-introduced)
+**Convergence:** Phase 54 经 3 轮 codex+opencode 跨 AI 复核,0 HIGH remaining
+
+**Key accomplishments:**
+
+- 移除 windows-git-commit + codepoint 两个技能目录及其文档 (Phase 53),仓库物理回归单一技能项目
+- 裁剪 NPX 安装器为仅服务 claude-notify:删 marketplace/、git/ssh detectors+configurators,迁移 paths.js helper,裁剪 uninstall 模块,收窄 i18n/welcome (Phase 54)
+- installer 测试裁剪:post-trim 4 failed/19 passed,4 个失败全为 v3.0 前预存负债 (零新增失败,INS-05 验收门重定为"不引入新失败")
+- 发版收尾:README/CHANGELOG 反映单技能形态,版本 1.9.0 → 3.0.0 (双 package.json 同步),git tag v3.0,claude-notify 回归 105 测试全绿 (Phase 55)
+- 清理 docs/project/ 开发者文档残留引用 + 死链 (REM-04 闭环)
+
+**Stats:** 44 commits, 183 files changed (+4712 / −24007 — 净删除为主,符合瘦身里程碑)
+
+---
+
 ## v2.1 Project Cleanup: Final Form (Shipped: 2026-04-20)
 
 **Phases completed:** 4 phases, 10 plans

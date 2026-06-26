@@ -54,13 +54,11 @@ const { t } = require('../../src/i18n/index.js');
 function makeAllInstalledResults() {
   return {
     plugins: [
-      { name: 'claude-notify', installed: true, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' },
-      { name: 'windows-git-commit', installed: true, path: 'C:/Users/test/.claude/skills/windows-git-commit/SKILL.md' }
+      { name: 'claude-notify', installed: true, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' }
     ],
     hooksScripts: { installed: true, path: 'C:/Users/test/.claude/hooks' },
     hooksRegistered: { installed: true, path: '~/.claude/settings.json' },
     commandsInstalled: { installed: true, path: 'C:/Users/test/.claude/commands' },
-    marketplaceSource: { installed: true, path: 'C:/Users/test/.claude/config.json' },
     envVars: {
       token: { name: 'PUSHOVER_TOKEN', installed: true },
       user: { name: 'PUSHOVER_USER', installed: true }
@@ -72,13 +70,11 @@ function makeAllInstalledResults() {
 function makeNothingInstalledResults() {
   return {
     plugins: [
-      { name: 'claude-notify', installed: false, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' },
-      { name: 'windows-git-commit', installed: false, path: 'C:/Users/test/.claude/skills/windows-git-commit/SKILL.md' }
+      { name: 'claude-notify', installed: false, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' }
     ],
     hooksScripts: { installed: false, path: 'C:/Users/test/.claude/hooks' },
     hooksRegistered: { installed: false, path: '~/.claude/settings.json' },
     commandsInstalled: { installed: false, path: 'C:/Users/test/.claude/commands' },
-    marketplaceSource: { installed: false, path: 'C:/Users/test/.claude/config.json' },
     envVars: {
       token: { name: 'PUSHOVER_TOKEN', installed: false },
       user: { name: 'PUSHOVER_USER', installed: false }
@@ -142,8 +138,8 @@ describe('Uninstall Index - runUninstallDetection', () => {
 
     await runUninstallDetection();
 
-    // All 8 items installed (2 plugins + 1 hooks + 1 hookReg + 1 commands + 1 marketplace + 2 envVars)
-    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 8, total: 8 });
+    // 6 items installed (1 plugin + 1 hooks + 1 hookReg + 1 commands + 2 envVars)
+    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 6, total: 6 });
   });
 
   test('handles nothing installed without error', async () => {
@@ -154,19 +150,17 @@ describe('Uninstall Index - runUninstallDetection', () => {
     const returned = await runUninstallDetection();
 
     expect(returned).toBe(results);
-    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 0, total: 8 });
+    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 0, total: 6 });
   });
 
   test('counts partial installation correctly', async () => {
     const results = {
       plugins: [
-        { name: 'claude-notify', installed: true, path: 'path1' },
-        { name: 'windows-git-commit', installed: false, path: 'path2' }
+        { name: 'claude-notify', installed: true, path: 'path1' }
       ],
       hooksScripts: { installed: true, path: 'hooks' },
       hooksRegistered: { installed: false, path: 'settings' },
       commandsInstalled: { installed: false, path: 'commands' },
-      marketplaceSource: { installed: false, path: 'config' },
       envVars: {
         token: { name: 'PUSHOVER_TOKEN', installed: true },
         user: { name: 'PUSHOVER_USER', installed: false }
@@ -180,7 +174,7 @@ describe('Uninstall Index - runUninstallDetection', () => {
     await runUninstallDetection();
 
     // 1 plugin + 1 hooksScripts + 1 envVar.token = 3
-    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 3, total: 8 });
+    expect(t).toHaveBeenCalledWith('uninstall.summary', { found: 3, total: 6 });
   });
 });
 
@@ -298,8 +292,7 @@ describe('Uninstall Index - runUninstall', () => {
   test('returns correct result for successful uninstall', async () => {
     const results = makeAllInstalledResults();
     const removalResults = [
-      { category: 'Plugins', name: 'claude-notify', status: 'removed', detail: '' },
-      { category: 'Plugins', name: 'windows-git-commit', status: 'removed', detail: '' }
+      { category: 'Plugins', name: 'claude-notify', status: 'removed', detail: '' }
     ];
     detectAllInstalled.mockResolvedValue(results);
     formatDetectionTable.mockReturnValue('table');

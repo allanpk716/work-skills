@@ -1,7 +1,7 @@
 'use strict';
 
-// Mock all external dependencies
-jest.mock('../../src/marketplace/plugin-installer.js', () => ({
+// Mock all external dependencies (Phase 54: paths.js provides plugin detection helpers)
+jest.mock('../../src/uninstall/paths.js', () => ({
   isPluginInstalled: jest.fn(),
   getSkillsDir: jest.fn()
 }));
@@ -14,19 +14,13 @@ jest.mock('../../src/hooks/hooks-installer.js', () => ({
   getCommandsDir: jest.fn()
 }));
 
-jest.mock('../../src/marketplace/config-manager.js', () => ({
-  readClaudeConfig: jest.fn(),
-  getConfigPath: jest.fn()
-}));
-
 jest.mock('../../src/configurators/pushover.js', () => ({
   detectPushoverFull: jest.fn()
 }));
 
 const { detectAllInstalled } = require('../../src/uninstall/detector.js');
-const { isPluginInstalled, getSkillsDir } = require('../../src/marketplace/plugin-installer.js');
+const { isPluginInstalled, getSkillsDir } = require('../../src/uninstall/paths.js');
 const { isHooksInstalled, isHooksRegistered, isCommandsInstalled, getHooksDir, getCommandsDir } = require('../../src/hooks/hooks-installer.js');
-const { readClaudeConfig, getConfigPath } = require('../../src/marketplace/config-manager.js');
 const { detectPushoverFull } = require('../../src/configurators/pushover.js');
 
 describe('Uninstall Detector', () => {
@@ -41,8 +35,6 @@ describe('Uninstall Detector', () => {
     isCommandsInstalled.mockReturnValue(false);
     getHooksDir.mockReturnValue('C:/Users/test/.claude/hooks');
     getCommandsDir.mockReturnValue('C:/Users/test/.claude/commands');
-    readClaudeConfig.mockReturnValue({});
-    getConfigPath.mockReturnValue('C:/Users/test/.claude/config.json');
     detectPushoverFull.mockResolvedValue({ token: null, user: null });
   });
 
@@ -53,21 +45,17 @@ describe('Uninstall Detector', () => {
     expect(result).toHaveProperty('hooksScripts');
     expect(result).toHaveProperty('hooksRegistered');
     expect(result).toHaveProperty('commandsInstalled');
-    expect(result).toHaveProperty('marketplaceSource');
     expect(result).toHaveProperty('envVars');
     expect(result).toHaveProperty('hasAnyInstalled');
   });
 
-  test('plugins array has 2 entries with correct shape', async () => {
+  test('plugins array has 1 entry (claude-notify only)', async () => {
     const result = await detectAllInstalled();
 
-    expect(result.plugins).toHaveLength(2);
+    expect(result.plugins).toHaveLength(1);
     expect(result.plugins[0]).toHaveProperty('name', 'claude-notify');
-    expect(result.plugins[1]).toHaveProperty('name', 'windows-git-commit');
     expect(result.plugins[0]).toHaveProperty('installed');
     expect(result.plugins[0]).toHaveProperty('path');
-    expect(result.plugins[1]).toHaveProperty('installed');
-    expect(result.plugins[1]).toHaveProperty('path');
   });
 
   test('detects installed plugins', async () => {
@@ -77,8 +65,6 @@ describe('Uninstall Detector', () => {
 
     expect(result.plugins[0].installed).toBe(true);
     expect(result.plugins[0].name).toBe('claude-notify');
-    expect(result.plugins[1].installed).toBe(false);
-    expect(result.plugins[1].name).toBe('windows-git-commit');
     expect(result.plugins[0].path).toContain('claude-notify');
   });
 
@@ -131,35 +117,6 @@ describe('Uninstall Detector', () => {
     const result = await detectAllInstalled();
 
     expect(result.commandsInstalled.installed).toBe(false);
-  });
-
-  test('detects marketplace source installed', async () => {
-    readClaudeConfig.mockReturnValue({
-      marketplaceSources: {
-        'work-skills': { type: 'github', url: 'https://github.com/allanpk716/work-skills' }
-      }
-    });
-
-    const result = await detectAllInstalled();
-
-    expect(result.marketplaceSource.installed).toBe(true);
-    expect(result.marketplaceSource).toHaveProperty('path');
-  });
-
-  test('detects marketplace source not installed', async () => {
-    readClaudeConfig.mockReturnValue({});
-
-    const result = await detectAllInstalled();
-
-    expect(result.marketplaceSource.installed).toBe(false);
-  });
-
-  test('detects marketplace source missing when marketplaceSources key absent', async () => {
-    readClaudeConfig.mockReturnValue({ someOtherKey: true });
-
-    const result = await detectAllInstalled();
-
-    expect(result.marketplaceSource.installed).toBe(false);
   });
 
   test('detects pushover env vars installed', async () => {
@@ -218,11 +175,9 @@ describe('Uninstall Detector', () => {
     await detectAllInstalled();
 
     expect(isPluginInstalled).toHaveBeenCalledWith('claude-notify');
-    expect(isPluginInstalled).toHaveBeenCalledWith('windows-git-commit');
     expect(isHooksInstalled).toHaveBeenCalled();
     expect(isHooksRegistered).toHaveBeenCalled();
     expect(isCommandsInstalled).toHaveBeenCalled();
-    expect(readClaudeConfig).toHaveBeenCalled();
     expect(detectPushoverFull).toHaveBeenCalled();
   });
 });

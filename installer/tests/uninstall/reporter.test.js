@@ -42,7 +42,7 @@ describe('Reporter - formatRemovalReport', () => {
     const results = [
       { category: 'Hook Scripts', name: 'Hook scripts', status: 'removed', detail: '' },
       { category: 'Plugins', name: 'claude-notify', status: 'removed', detail: '' },
-      { category: 'Plugins', name: 'windows-git-commit', status: 'removed', detail: '' }
+      { category: 'Plugins', name: 'extra-plugin', status: 'removed', detail: '' }
     ];
 
     const output = formatRemovalReport(results);
@@ -89,7 +89,7 @@ describe('Reporter - formatRemovalReport', () => {
       { category: 'Hook Scripts', name: 'Hook scripts', status: 'removed', detail: '' },
       { category: 'Plugins', name: 'claude-notify', status: 'removed', detail: '' },
       { category: 'Environment Variables', name: 'PUSHOVER_TOKEN', status: 'failed', detail: 'Error' },
-      { category: 'Plugins', name: 'windows-git-commit', status: 'skipped', detail: '' }
+      { category: 'Plugins', name: 'extra-plugin', status: 'skipped', detail: '' }
     ];
 
     formatRemovalReport(results);

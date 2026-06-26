@@ -16,7 +16,6 @@ jest.mock('../../src/i18n/index.js', () => ({
       'uninstall.category.hooks': 'Hook Scripts',
       'uninstall.category.hookRegistration': 'Hook Registration',
       'uninstall.category.commands': 'Slash Commands',
-      'uninstall.category.marketplace': 'Marketplace Source',
       'uninstall.category.environment': 'Environment Variables',
       'uninstall.status.installed': 'Installed',
       'uninstall.status.notInstalled': 'Not Installed',
@@ -26,7 +25,6 @@ jest.mock('../../src/i18n/index.js', () => ({
       'uninstall.item.hookScript': 'Notification Scripts',
       'uninstall.item.hookReg': 'Hook Registration',
       'uninstall.item.command': 'Slash Commands',
-      'uninstall.item.marketplaceSource': 'Marketplace Source',
       'uninstall.item.envVar': '{name}'
     };
     let result = translations[key] || key;
@@ -45,13 +43,11 @@ const { t } = require('../../src/i18n/index.js');
 function makeAllNotInstalledResults() {
   return {
     plugins: [
-      { name: 'claude-notify', installed: false, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' },
-      { name: 'windows-git-commit', installed: false, path: 'C:/Users/test/.claude/skills/windows-git-commit/SKILL.md' }
+      { name: 'claude-notify', installed: false, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' }
     ],
     hooksScripts: { installed: false, path: 'C:/Users/test/.claude/hooks' },
     hooksRegistered: { installed: false, path: '~/.claude/settings.json' },
     commandsInstalled: { installed: false, path: 'C:/Users/test/.claude/commands' },
-    marketplaceSource: { installed: false, path: 'C:/Users/test/.claude/config.json' },
     envVars: {
       token: { name: 'PUSHOVER_TOKEN', installed: false },
       user: { name: 'PUSHOVER_USER', installed: false }
@@ -63,13 +59,11 @@ function makeAllNotInstalledResults() {
 function makeSomeInstalledResults() {
   return {
     plugins: [
-      { name: 'claude-notify', installed: true, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' },
-      { name: 'windows-git-commit', installed: false, path: 'C:/Users/test/.claude/skills/windows-git-commit/SKILL.md' }
+      { name: 'claude-notify', installed: true, path: 'C:/Users/test/.claude/skills/claude-notify/SKILL.md' }
     ],
     hooksScripts: { installed: true, path: 'C:/Users/test/.claude/hooks' },
     hooksRegistered: { installed: false, path: '~/.claude/settings.json' },
     commandsInstalled: { installed: true, path: 'C:/Users/test/.claude/commands' },
-    marketplaceSource: { installed: false, path: 'C:/Users/test/.claude/config.json' },
     envVars: {
       token: { name: 'PUSHOVER_TOKEN', installed: true },
       user: { name: 'PUSHOVER_USER', installed: false }
@@ -117,7 +111,6 @@ describe('Uninstall Formatter', () => {
     expect(t).toHaveBeenCalledWith('uninstall.category.hooks');
     expect(t).toHaveBeenCalledWith('uninstall.category.hookRegistration');
     expect(t).toHaveBeenCalledWith('uninstall.category.commands');
-    expect(t).toHaveBeenCalledWith('uninstall.category.marketplace');
     expect(t).toHaveBeenCalledWith('uninstall.category.environment');
   });
 

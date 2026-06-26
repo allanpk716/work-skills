@@ -18,7 +18,6 @@ function countInstalled(results) {
   if (results.hooksScripts.installed) count++;
   if (results.hooksRegistered.installed) count++;
   if (results.commandsInstalled.installed) count++;
-  if (results.marketplaceSource.installed) count++;
   if (results.envVars.token.installed) count++;
   if (results.envVars.user.installed) count++;
   return count;
@@ -30,9 +29,9 @@ function countInstalled(results) {
  * @returns {number}
  */
 function countTotal(results) {
-  // 2 plugins + 1 hooksScripts + 1 hooksRegistered + 1 commandsInstalled
-  // + 1 marketplaceSource + 2 envVars (token + user) = 8
-  return results.plugins.length + 6;
+  // 1 plugin (claude-notify) + 1 hooksScripts + 1 hooksRegistered
+  // + 1 commandsInstalled + 2 envVars (token + user) = 6
+  return results.plugins.length + 5;
 }
 
 /**

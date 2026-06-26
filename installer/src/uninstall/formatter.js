@@ -54,14 +54,6 @@ function formatDetectionTable(results) {
     results.commandsInstalled.installed ? results.commandsInstalled.path : ''
   ));
 
-  // Category: Marketplace Source
-  lines.push(formatCategoryHeader(t('uninstall.category.marketplace')));
-  lines.push(formatRow(
-    t('uninstall.item.marketplaceSource'),
-    results.marketplaceSource.installed,
-    results.marketplaceSource.installed ? results.marketplaceSource.path : ''
-  ));
-
   // Category: Environment Variables
   lines.push(formatCategoryHeader(t('uninstall.category.environment')));
   lines.push(formatRow(

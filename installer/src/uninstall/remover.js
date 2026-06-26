@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const execa = require('execa');
 
 const {
@@ -14,13 +13,8 @@ const {
 } = require('../hooks/hooks-installer.js');
 
 const {
-  readClaudeConfig,
-  writeClaudeConfig
-} = require('../marketplace/config-manager.js');
-
-const {
   getSkillsDir
-} = require('../marketplace/plugin-installer.js');
+} = require('./paths.js');
 
 /**
  * Execute a single removal step with fault tolerance.
@@ -45,15 +39,13 @@ async function removeStep(category, name, fn, shouldRun) {
 }
 
 /**
- * Remove all installed work-skills components based on detection results.
- * Executes 7 removal steps in order with per-step fault tolerance:
+ * Remove all installed claude-notify components based on detection results.
+ * Executes 5 removal steps in order with per-step fault tolerance:
  *   1. Hook Scripts (notify-stop.py, notify-attention.py)
  *   2. Hook Registration (settings.json entries)
  *   3. Slash Commands (.md files)
  *   4. Plugin Directories (claude-notify)
- *   5. Marketplace Cache (cache + marketplaces directories)
- *   6. Marketplace Source (config.json entry)
- *   7. Environment Variables (PUSHOVER_TOKEN, PUSHOVER_USER via registry)
+ *   5. Environment Variables (PUSHOVER_TOKEN, PUSHOVER_USER via registry)
  *
  * @param {Object} detectionResults - Output from detectAllInstalled()
  * @returns {Promise<Array<{category: string, name: string, status: string, detail: string}>>}
@@ -92,29 +84,7 @@ async function removeAllComponents(detectionResults) {
     }, plugin.installed));
   }
 
-  // Step 5 - Marketplace Cache: delete cache/work-skills and marketplaces/work-skills
-  results.push(await removeStep('Marketplace Cache', 'Marketplace cache', async () => {
-    const cacheDir = path.join(os.homedir(), '.claude', 'plugins', 'cache', 'work-skills');
-    const marketplacesDir = path.join(os.homedir(), '.claude', 'plugins', 'marketplaces', 'work-skills');
-
-    if (fs.existsSync(cacheDir)) {
-      fs.rmSync(cacheDir, { recursive: true, force: true });
-    }
-    if (fs.existsSync(marketplacesDir)) {
-      fs.rmSync(marketplacesDir, { recursive: true, force: true });
-    }
-  }, detectionResults.marketplaceSource.installed));
-
-  // Step 6 - Marketplace Source: remove from config.json
-  results.push(await removeStep('Marketplace Source', 'Marketplace source', async () => {
-    const config = readClaudeConfig();
-    if (config.marketplaceSources && config.marketplaceSources['work-skills']) {
-      delete config.marketplaceSources['work-skills'];
-    }
-    writeClaudeConfig(config);
-  }, detectionResults.marketplaceSource.installed));
-
-  // Step 7 - Environment Variables: delete via Windows registry
+  // Step 5 - Environment Variables: delete via Windows registry
   for (const key of ['token', 'user']) {
     const envVar = detectionResults.envVars[key];
     results.push(await removeStep('Environment Variables', envVar.name, async () => {

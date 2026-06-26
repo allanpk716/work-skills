@@ -163,5 +163,5 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 53. remove-deprecated-skills | 1/1 | Complete    | 2026-06-26 |
-| 54. trim-installer-notify-only | 2/2 | Complete | 2026-06-26 |
+| 54. trim-installer-notify-only | 2/2 | Complete    | 2026-06-26 |
 | 55. release-v3-metadata-regression | 0/TBD | Not started | - |

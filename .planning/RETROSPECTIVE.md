@@ -276,6 +276,44 @@
 
 ---
 
+## Milestone: v3.0 — 聚焦 claude-notify 重构
+
+**Shipped:** 2026-06-26
+**Phases:** 3 | **Plans:** 4 | **Tasks:** 11 | **Commits:** 44 | **Diff:** +4712/−24007 (净删除为主)
+
+### What Was Built
+- 移除 windows-git-commit + codepoint 技能目录及文档,仓库回归单一 claude-notify 技能项目 (Phase 53)
+- installer 裁剪为仅服务 claude-notify:删 marketplace/、git/ssh detectors+configurators,迁移 paths.js helper,裁剪 uninstall,收窄 i18n/welcome (Phase 54)
+- 发版收尾:README/CHANGELOG 单技能化,版本 1.9.0→3.0.0,git tag v3.0,claude-notify 回归 105 测试全绿 (Phase 55)
+
+### What Worked
+- **基础设施/删除阶段走轻量 smart-discuss + 本地规划**:Phase 53/55 (纯删除/元数据) 跳过 grey-area 讨论,直接出高质量计划,节省大量 token 与时间
+- **convergence 复核用在该用的地方**:Phase 54 (唯一有真实代码改动的阶段) 经 3 轮 codex+opencode 复核,捕获了内部 checker 易漏的真问题
+- **独立 spot-check 执行器声明**:每个 phase 后用 grep/test/node/pytest 独立验证声明,而非盲信 SUMMARY
+- **范围围栏显式编码**:installer 深度裁剪→P54、版本号→P55、CHANGELOG 历史保留、claude-notify 代码不动 — 全部在计划中硬约束,无范围蔓延
+
+### What Was Inefficient
+- **codex reviewer 限流 (429)**:Phase 54 convergence cycle 2-3 codex 因 custom provider glm-5.2 限流失败,只 opencode 成功。convergence 依赖单一 reviewer 降低了交叉验证强度
+- **REM-04 残留分两次发现**:Phase 53 SC4 把枚举面限定为"根元数据+installer/src",漏了 docs/README.md 和 docs/project/。集成检查才发现,事后补丁式修复。教训:删除里程碑的"引用清理"验收应显式覆盖 docs/ 全树
+- **paths.js 迁移经 2 个 convergence cycle 才收敛到根因**:cycle 1 只修 detector.js,cycle 2 才发现 remover.js 同型问题并根因化 (paths.js 仅导出实际使用的 helper)
+
+### Patterns Established
+- **删除里程碑的验收门**:用"不引入新失败 / 子集判定"代替"全部通过",显式白名单预存失败 — 避免被预存负债阻塞
+- **convergence reviewer 选择**:复杂代码改动阶段用跨 AI 复核;机械删除/元数据阶段用本地规划,按风险匹配复核强度
+- **paths.js minimal exports**:迁移 helper 时仅迁移实际有消费者的,不迁移"以防万一"的死代码
+
+### Key Lessons
+- **跨 AI 复核对"计划与现实的冲突"最有效**:codex+opencode 实跑了 jest 基线,发现"全部通过"gate 不可达 — 这是静态 plan-checker 看不出的
+- **"仅做删除"里程碑仍需引用清理覆盖 docs/**:删目录容易,清引用易漏;验收应 grep 整个 docs/ 树
+- **里程碑接近完成时的 audit→complete 流程值得**:集成检查在收尾时捕获了 docs/project/ 死链,避免带病发版
+
+### Cost Observations
+- Model mix: 主要 sonnet (执行器/验证器/检查器),opus (orchestrator + Phase 54 planner)
+- Phase 54 convergence 占用了显著 wall-clock (3 轮 × 外部 CLI 调用)
+- Notable: 删除里程碑整体高效 — 3 阶段 44 commits,核心代码改动集中在 Phase 54
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution

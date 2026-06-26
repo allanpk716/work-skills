@@ -6,7 +6,6 @@ const { showWelcome } = require('./welcome.js');
 const { runAllDetectors } = require('./detectors/index.js');
 const { runInstaller } = require('./installers/index.js');
 const { runAllConfigurators } = require('./configurators/index.js');
-const { runMarketplaceIntegration } = require('./marketplace/index.js');
 const { runHooksInstallation } = require('./hooks/index.js');
 const { runVerification } = require('./verification/index.js');
 const { runUninstall } = require('./uninstall/index.js');
@@ -41,10 +40,7 @@ async function main() {
 
   // Step 5: Offer to install missing dependencies
   if (!allPassed) {
-    const pipResults = results.filter(r =>
-      r.name && r.name !== 'Python' && r.name !== 'Git' &&
-      !r.name.includes('TortoiseGit') && !r.name.includes('PuTTY') && !r.name.includes('SSH')
-    );
+    const pipResults = results.filter(r => r.name && r.name !== 'Python');
 
     if (pipResults.some(r => !r.installed)) {
       await runInstaller(results);
@@ -54,10 +50,7 @@ async function main() {
   // Step 6: Interactive configuration (Phase 17)
   await runAllConfigurators();
 
-  // Step 7: Marketplace integration (Phase 18)
-  await runMarketplaceIntegration();
-
-  // Step 7.5: Register global hooks for notification plugins
+  // Step 7: Register global hooks for notification plugins
   await runHooksInstallation();
 
   // Step 8: Installation verification (Phase 19)

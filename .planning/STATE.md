@@ -4,17 +4,17 @@ milestone: v3.0
 milestone_name: 聚焦 claude-notify 重构
 current_phase: 53
 current_phase_name: remove-deprecated-skills
-status: executing
-stopped_at: Roadmap 创建完成 — M015 v3.0 (Phases 53-55) 已写入 ROADMAP.md，STATE.md / REQUIREMENTS.md 已同步
-last_updated: "2026-06-26T04:14:24.274Z"
+status: phase_complete
+stopped_at: Phase 53 (remove-deprecated-skills) 完成 — 2 个已弃用技能目录 + docs 已删除, 根元数据 + installer/src 引用已收窄, SC1-SC4 全绿; 下一步 Phase 54 (installer 深度裁剪)
+last_updated: "2026-06-26T05:30:00.000Z"
 last_activity: 2026-06-26
-last_activity_desc: Phase 53 execution started
+last_activity_desc: Phase 53 plan 01 执行完成 (4 commits, SC1-SC4 通过)
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 1
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 33
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 53 (remove-deprecated-skills) — EXECUTING
-Plan: 1 of 1
-Status: Executing Phase 53
-Last activity: 2026-06-26 — Phase 53 execution started
+Phase: 53 (remove-deprecated-skills) — COMPLETE
+Plan: 1 of 1 (done)
+Status: Phase 53 complete, ready for Phase 54
+Last activity: 2026-06-26 — Phase 53 plan 01 executed (4 commits, SC1-SC4 passed)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Accumulated Context
 
@@ -45,6 +45,8 @@ Recent decisions affecting current work:
 - M015 roadmap: 3 阶段结构（删除 → 裁剪 installer → 发版+回归），延续全局阶段编号 53-55
 - v3.0 为破坏性变更（2/3 技能下线），主版本号 v2.x → v3.0
 - claude-notify 自身代码本里程碑不动，仅作为回归测试对象
+- Phase 53 决策: remover.js JSDoc 中 windows-git-commit 文档引用收窄为 claude-notify (Rule 3 偏离)，以让 SC4 通过而不越界 Phase 54 的 uninstall 模块裁剪范围
+- Phase 53 决策: git rm -r 后用 rm -rf 清理未跟踪的 __pycache__/.pytest_cache 残留，确保目录物理消失
 
 ### Blockers/Concerns
 
@@ -67,5 +69,5 @@ Items acknowledged and deferred at previous milestone close (2026-04-22):
 ## Session Continuity
 
 Last session: 2026-06-26
-Stopped at: Roadmap 创建完成 — M015 v3.0 (Phases 53-55) 已写入 ROADMAP.md，STATE.md / REQUIREMENTS.md 已同步
+Stopped at: Phase 53 (remove-deprecated-skills) 完成 — 4 commits (4b00454, 7cd7a88, 27d9b43, 58131a9), SC1-SC4 全绿; 下一步 Phase 54 (trim-installer-notify-only)
 Resume file: None

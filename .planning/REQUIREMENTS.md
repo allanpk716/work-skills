@@ -11,10 +11,10 @@
 
 ### Removal — 移除已弃用技能
 
-- [ ] **REM-01**: windows-git-commit 技能目录及其全部内容 (scanner/、hooks/、references/、README、plugin.json) 从仓库删除
-- [ ] **REM-02**: codepoint 技能目录及其全部内容 (8 个子技能 + templates/ + references/ + README + plugin.json) 从仓库删除
-- [ ] **REM-03**: docs/codepoint 文档与调研工作区 (含 research/workspace、specs、plans、images) 删除;docs/claude-notify 保留
-- [ ] **REM-04**: 仓库内不再存在指向 windows-git-commit 或 codepoint 的残留引用 (README、README.zh、CHANGELOG、CLAUDE.md、package.json、installer 内的 i18n/路径)
+- [x] **REM-01**: windows-git-commit 技能目录及其全部内容 (scanner/、hooks/、references/、README、plugin.json) 从仓库删除
+- [x] **REM-02**: codepoint 技能目录及其全部内容 (8 个子技能 + templates/ + references/ + README + plugin.json) 从仓库删除
+- [x] **REM-03**: docs/codepoint 文档与调研工作区 (含 research/workspace、specs、plans、images) 删除;docs/claude-notify 保留
+- [x] **REM-04**: 仓库内不再存在指向 windows-git-commit 或 codepoint 的残留引用 (README、README.zh、CHANGELOG、CLAUDE.md、package.json、installer 内的 i18n/路径)
 
 ### Installer — 裁剪安装器仅服务 claude-notify
 
@@ -54,10 +54,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REM-01 | Phase 53 | Pending |
-| REM-02 | Phase 53 | Pending |
-| REM-03 | Phase 53 | Pending |
-| REM-04 | Phase 53 | Pending |
+| REM-01 | Phase 53 | Complete |
+| REM-02 | Phase 53 | Complete |
+| REM-03 | Phase 53 | Complete |
+| REM-04 | Phase 53 | Complete |
 | INS-01 | Phase 54 | Pending |
 | INS-02 | Phase 54 | Pending |
 | INS-03 | Phase 54 | Pending |

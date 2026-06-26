@@ -1,0 +1,34 @@
+Phase 54 Plan 02 — Baseline (pre-trim, RED state captured in 54-REVIEWS.md cycle 1/2/3)
+
+This baseline reflects the installer test state BEFORE Phase 54 test trim.
+It is the v3.0-pre-existing RED baseline against which post-trim results are
+compared. Source: 54-REVIEWS.md cycle 1实跑确认 (stable across cycles 1/2/3;
+cycle-3 not re-run, prior cycles triple-confirmed).
+
+Test Suites: 10 failed, 20 passed, 30 total
+Tests:       8 failed, 155 passed, 163 total
+
+Baseline failing suites (10):
+  1. tests/bin.test.js                                    (PRE-EXISTING whitelist: CRLF shebang)
+  2. tests/verification/runner.test.js                    (PRE-EXISTING whitelist: python path)
+  3. tests/marketplace/config-manager.test.js             (Phase 54 Task 1 DELETED)
+  4. tests/marketplace/plugin-discovery.test.js           (Phase 54 Task 1 DELETED)
+  5. tests/marketplace/plugin-installer.test.js           (Phase 54 Task 1 DELETED)
+  6. tests/configurators/git-user.test.js                 (Phase 54 Task 1 DELETED)
+  7. tests/configurators/git-ssh.test.js                  (Phase 54 Task 1 DELETED)
+  8. tests/uninstall/detector.test.js                     (Phase 54 Task 3 FIXED -> green)
+  9. tests/configurators/pushover.test.js                 (PRE-EXISTING whitelist: process.exit IIFE)
+ 10. tests/configurators/unified-flow.test.js             (PRE-EXISTING whitelist: process.exit IIFE)
+
+Pre-existing whitelist (4 suites, OUT OF SCOPE per REQUIREMENTS.md):
+  - tests/bin.test.js                  (CRLF line endings break shebang match)
+  - tests/verification/runner.test.js  (python script path env issue)
+  - tests/configurators/pushover.test.js    (top-level process.exit IIFE, Jest 30 intercept)
+  - tests/configurators/unified-flow.test.js (top-level process.exit IIFE, Jest 30 intercept)
+
+NOTE: Wave 1 (54-01) source trim expanded the failing set temporarily (tests
+referencing deleted marketplace/git modules could not load), peaking at 17
+failed suites. Task 1-3 of this plan (54-02) restore the failing set to a
+SUBSET of this baseline by deleting the deleted-module test files and fixing
+the uninstall/detectors/index tests. The gate (SC5 RESCOPED) requires:
+post-trim failing suites ⊆ baseline failing suites (zero NEW failures).

@@ -1,0 +1,1003 @@
+
+> @allanpk716/work-skills-setup@1.9.0 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js
+
+FAIL tests/bin.test.js
+  ● Bin Entry Point › File starts with "#!/usr/bin/env node"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "#!/usr/bin/env node"
+    Received: "#!/usr/bin/env node    "
+
+    [0m [90m 14 |[39m   test([32m'File starts with "#!/usr/bin/env node"'[39m[33m,[39m () [33m=>[39m {
+     [90m 15 |[39m     [36mconst[39m firstLine [33m=[39m fileContent[33m.[39msplit([32m'\n'[39m)[[35m0[39m][33m;[39m
+    [31m[1m>[22m[39m[90m 16 |[39m     expect(firstLine)[33m.[39mtoBe([32m'#!/usr/bin/env node'[39m)[33m;[39m
+     [90m    |[39m                       [31m[1m^[22m[39m
+     [90m 17 |[39m   })[33m;[39m
+     [90m 18 |[39m
+     [90m 19 |[39m   test([32m'File requires ../src/index.js'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/bin.test.js:16:23)
+
+  console.error
+
+
+    [0m [90m 20 |[39m [36mfunction[39m checkPlatform() {
+     [90m 21 |[39m   [36mif[39m ([33m![39misWindows()) {
+    [31m[1m>[22m[39m[90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m[0m
+
+      at error (src/platform.js:22:13)
+      at Object.checkPlatform (tests/platform.test.js:32:5)
+
+  console.error
+    This installer is designed for Windows only.
+
+    [0m [90m 21 |[39m   [36mif[39m ([33m![39misWindows()) {
+     [90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m[0m
+
+      at error (src/platform.js:23:13)
+      at Object.checkPlatform (tests/platform.test.js:32:5)
+
+  console.error
+    Current platform: darwin
+
+    [0m [90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+    [31m[1m>[22m[39m[90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m
+     [90m 27 |[39m   }[0m
+
+      at error (src/platform.js:24:13)
+      at Object.checkPlatform (tests/platform.test.js:32:5)
+
+  console.error
+
+
+    [0m [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+    [31m[1m>[22m[39m[90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m
+     [90m 27 |[39m   }
+     [90m 28 |[39m   [36mreturn[39m [36mtrue[39m[33m;[39m[0m
+
+      at error (src/platform.js:25:13)
+      at Object.checkPlatform (tests/platform.test.js:32:5)
+
+FAIL tests/verification/runner.test.js
+  ● verification/runner › runPythonVerification › should return success with stdout when script exits 0
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 17 |[39m       [36mconst[39m result [33m=[39m [36mawait[39m runPythonVerification()[33m;[39m
+     [90m 18 |[39m
+    [31m[1m>[22m[39m[90m 19 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 20 |[39m       expect(result[33m.[39mstdout)[33m.[39mtoBe(mockStdout)[33m;[39m
+     [90m 21 |[39m       expect(result[33m.[39mexitCode)[33m.[39mtoBe([35m0[39m)[33m;[39m
+     [90m 22 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/verification/runner.test.js:19:30)
+
+  ● verification/runner › runPythonVerification › should handle timeout and return error
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "timeout"
+    Received: "script_not_found"
+
+    [0m [90m 30 |[39m
+     [90m 31 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 32 |[39m       expect(result[33m.[39merror)[33m.[39mtoBe([32m'timeout'[39m)[33m;[39m
+     [90m    |[39m                            [31m[1m^[22m[39m
+     [90m 33 |[39m     })[33m;[39m
+     [90m 34 |[39m
+     [90m 35 |[39m     it([32m'should handle Python not found (ENOENT)'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/verification/runner.test.js:32:28)
+
+  ● verification/runner › runPythonVerification › should handle Python not found (ENOENT)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "python_not_found"
+    Received: "script_not_found"
+
+    [0m [90m 41 |[39m
+     [90m 42 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 43 |[39m       expect(result[33m.[39merror)[33m.[39mtoBe([32m'python_not_found'[39m)[33m;[39m
+     [90m    |[39m                            [31m[1m^[22m[39m
+     [90m 44 |[39m     })[33m;[39m
+     [90m 45 |[39m
+     [90m 46 |[39m     it([32m'should return success with stdout when script exits 1 (some checks failed)'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/verification/runner.test.js:43:28)
+
+  ● verification/runner › runPythonVerification › should return success with stdout when script exits 1 (some checks failed)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 56 |[39m
+     [90m 57 |[39m       [90m// Exit code 1 means some checks failed, not an execution error[39m
+    [31m[1m>[22m[39m[90m 58 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 59 |[39m       expect(result[33m.[39mstdout)[33m.[39mtoBe(mockStdout)[33m;[39m
+     [90m 60 |[39m       expect(result[33m.[39mexitCode)[33m.[39mtoBe([35m1[39m)[33m;[39m
+     [90m 61 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/verification/runner.test.js:58:30)
+
+  console.log
+    
+    === Installation Verification ===
+
+      at log (src/verification/index.js:15:11)
+
+  console.log
+    table output
+
+      at log (src/verification/index.js:51:11)
+
+  console.log
+    
+    Summary: 1/1 checks passed
+
+      at log (src/verification/index.js:55:11)
+
+  console.log
+    
+    To re-run verification: npx github:allanpk716/work-skills#main --verify
+
+      at log (src/verification/index.js:63:11)
+
+  console.log
+    
+    === Next Steps ===
+
+      at log (src/verification/index.js:66:11)
+
+  console.log
+    1. If this is your first time: Close and reopen your terminal
+
+      at log (src/verification/index.js:67:11)
+
+  console.log
+    2. Start Claude Code in any project directory
+
+      at log (src/verification/index.js:68:11)
+
+  console.log
+    3. Available skill: /notify-test
+
+      at log (src/verification/index.js:69:11)
+
+  console.log
+    4. Or just say: 'Notify me when my task is done'
+
+      at log (src/verification/index.js:70:11)
+
+  console.log
+    
+    === Installation Verification ===
+
+      at log (src/verification/index.js:15:11)
+
+  console.log
+    table
+
+      at log (src/verification/index.js:51:11)
+
+  console.log
+    
+    Summary: 0/1 checks passed
+
+      at log (src/verification/index.js:55:11)
+
+  console.log
+    
+    To re-run verification: npx github:allanpk716/work-skills#main --verify
+
+      at log (src/verification/index.js:63:11)
+
+  console.log
+    
+    === Next Steps ===
+
+      at log (src/verification/index.js:66:11)
+
+  console.log
+    1. If this is your first time: Close and reopen your terminal
+
+      at log (src/verification/index.js:67:11)
+
+  console.log
+    2. Start Claude Code in any project directory
+
+      at log (src/verification/index.js:68:11)
+
+  console.log
+    3. Available skill: /notify-test
+
+      at log (src/verification/index.js:69:11)
+
+  console.log
+    4. Or just say: 'Notify me when my task is done'
+
+      at log (src/verification/index.js:70:11)
+
+  console.log
+    
+    === Pushover Configurator Tests ===
+
+      at Object.log (tests/configurators/pushover.test.js:47:9)
+
+  console.log
+    
+    Found 1 missing Python package(s):
+
+      at log (src/installers/index.js:21:11)
+
+  console.log
+      - requests
+
+      at log (src/installers/index.js:22:36)
+          at Array.forEach (<anonymous>)
+
+  console.log
+    Installing requests...
+
+      at log (src/installers/index.js:38:15)
+
+  console.log
+    [OK] undefined
+
+      at log (src/installers/index.js:42:17)
+
+  console.log
+    
+    Found 1 missing Python package(s):
+
+      at log (src/installers/index.js:21:11)
+
+  console.log
+      - requests
+
+      at log (src/installers/index.js:22:36)
+          at Array.forEach (<anonymous>)
+
+  console.log
+    Installing requests...
+
+      at log (src/installers/index.js:38:15)
+
+  console.log
+    [OK] OK
+
+      at log (src/installers/index.js:42:17)
+
+  console.log
+    
+    Found 1 missing Python package(s):
+
+      at log (src/installers/index.js:21:11)
+
+  console.log
+      - requests
+
+      at log (src/installers/index.js:22:36)
+          at Array.forEach (<anonymous>)
+
+  console.log
+    Installing requests...
+
+      at log (src/installers/index.js:38:15)
+
+  console.log
+    [FAIL] undefined
+
+      at log (src/installers/index.js:45:17)
+
+  console.log
+        -> Manual install: pip install {package}
+
+      at log (src/installers/index.js:46:17)
+
+  console.log
+    
+    Found 1 missing Python package(s):
+
+      at log (src/installers/index.js:21:11)
+
+  console.log
+      - requests
+
+      at log (src/installers/index.js:22:36)
+          at Array.forEach (<anonymous>)
+
+  console.log
+    
+    Installation Summary:
+
+      at log (src/installers/index.js:81:11)
+
+  console.log
+      Installed: 0
+
+      at log (src/installers/index.js:82:11)
+
+  console.log
+      Failed to install {package}: 0
+
+      at log (src/installers/index.js:83:11)
+
+  console.log
+      Skipped: 0
+
+      at log (src/installers/index.js:84:11)
+
+  console.error
+
+
+    [0m [90m 20 |[39m [36mfunction[39m checkPlatform() {
+     [90m 21 |[39m   [36mif[39m ([33m![39misWindows()) {
+    [31m[1m>[22m[39m[90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m[0m
+
+      at error (src/platform.js:22:13)
+      at checkPlatform (src/index.js:18:3)
+      at Object.main (tests/index.test.js:63:5)
+
+  console.error
+    This installer is designed for Windows only.
+
+    [0m [90m 21 |[39m   [36mif[39m ([33m![39misWindows()) {
+     [90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m[0m
+
+      at error (src/platform.js:23:13)
+      at checkPlatform (src/index.js:18:3)
+      at Object.main (tests/index.test.js:63:5)
+
+  console.error
+    Current platform: darwin
+
+    [0m [90m 22 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+    [31m[1m>[22m[39m[90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m
+     [90m 27 |[39m   }[0m
+
+      at error (src/platform.js:24:13)
+      at checkPlatform (src/index.js:18:3)
+      at Object.main (tests/index.test.js:63:5)
+
+  console.error
+
+
+    [0m [90m 23 |[39m     console[33m.[39merror(t([32m'error.windowsOnly'[39m))[33m;[39m
+     [90m 24 |[39m     console[33m.[39merror(t([32m'error.currentPlatform'[39m) [33m+[39m [32m': '[39m [33m+[39m process[33m.[39mplatform)[33m;[39m
+    [31m[1m>[22m[39m[90m 25 |[39m     console[33m.[39merror([32m''[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 26 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m
+     [90m 27 |[39m   }
+     [90m 28 |[39m   [36mreturn[39m [36mtrue[39m[33m;[39m[0m
+
+      at error (src/platform.js:25:13)
+      at checkPlatform (src/index.js:18:3)
+      at Object.main (tests/index.test.js:63:5)
+
+  console.log
+    
+    === Installation Complete ===
+
+      at log (src/index.js:58:11)
+
+  console.log
+    Running verification to check your setup...
+
+      at log (src/index.js:59:11)
+
+  console.log
+    
+    === Installation Complete ===
+
+      at log (src/index.js:58:11)
+
+  console.log
+    Running verification to check your setup...
+
+      at log (src/index.js:59:11)
+
+  console.log
+    
+    === Installation Complete ===
+
+      at log (src/index.js:58:11)
+
+  console.log
+    Running verification to check your setup...
+
+      at log (src/index.js:59:11)
+
+  console.log
+    
+    === Unified Flow Integration Tests ===
+
+      at Object.log (tests/configurators/unified-flow.test.js:66:9)
+
+  console.log
+    [OK] Test 1: detectPushoverEnv returns null values when env vars not set
+
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 0)
+
+  console.log
+    [OK] Test 2: detectPushoverEnv returns values when env vars are set
+
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 1)
+
+  console.log
+    [OK] Test 9: detectPushoverFull picks up process.env values
+
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 8)
+
+FAIL tests/configurators/pushover.test.js
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1048:18)
+      at node_modules/@jest/core/build/index.js:1118:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 6: readRegistryEnvVar returns null for non-existent env var".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 5)
+      at tests/configurators/pushover.test.js:174:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 4: validatePushoverCredentials returns valid for valid credentials".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 3)
+      at tests/configurators/pushover.test.js:174:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 5: validatePushoverCredentials returns invalid for invalid credentials".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 4)
+      at tests/configurators/pushover.test.js:174:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 7: readRegistryEnvVar returns value for existing variable (TEMP)".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 6)
+      at tests/configurators/pushover.test.js:174:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 8: detectPushoverFull returns nulls when nothing configured".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 7)
+      at tests/configurators/pushover.test.js:174:3
+
+  console.log
+    
+    Configuration Summary
+
+      at log (src/configurators/index.js:12:11)
+
+  console.log
+    ────────────────────────────────────────────────────────────
+
+      at log (src/configurators/index.js:13:11)
+
+  console.log
+    ✓ Pushover             Configured  (validated and saved)
+
+      at log (src/configurators/index.js:38:13)
+          at Array.forEach (<anonymous>)
+
+  console.log
+    ────────────────────────────────────────────────────────────
+
+      at log (src/configurators/index.js:41:11)
+
+  console.log
+    [OK] Test 5: displayConfigSummary renders configured/skipped/failed results without errors
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 4)
+
+  console.log
+    [OK] Test 6: UFLOW-01/UFLOW-02: runAllConfigurators and displayConfigSummary are exported async functions
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 5)
+
+  console.log
+    [OK] Test 7: UFLOW-01: Case D mapping - null detection values map to fresh install path
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 6)
+
+  console.log
+    [OK] Test 8: UFLOW-02: Case A mapping - full detection values map to keep prompt path
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 7)
+
+  console.log
+    [OK] Test 9: UFLOW-02: Case B mapping - token only maps to partial config path
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 8)
+
+  console.log
+    [OK] Test 10: UFLOW-02: Case C mapping - user only maps to partial config path
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 9)
+
+  console.log
+    [OK] Test 2: UFLOW-02: Re-run full config - detectPushoverFull returns both values from env
+
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 1)
+
+FAIL tests/configurators/unified-flow.test.js
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1048:18)
+      at node_modules/@jest/core/build/index.js:1118:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 3: UFLOW-02: Partial config Case B - detectPushoverFull returns token only".
+
+    [0m [90m 15 |[39m     [36mif[39m (result [33m&&[39m [36mtypeof[39m result[33m.[39mthen [33m===[39m [32m'function'[39m) {
+     [90m 16 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 17 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 18 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 19 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 20 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 2)
+      at tests/configurators/unified-flow.test.js:305:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 4: UFLOW-02: Partial config Case C - detectPushoverFull returns user only".
+
+    [0m [90m 15 |[39m     [36mif[39m (result [33m&&[39m [36mtypeof[39m result[33m.[39mthen [33m===[39m [32m'function'[39m) {
+     [90m 16 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 17 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 18 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 19 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 20 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 3)
+      at tests/configurators/unified-flow.test.js:305:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 1: UFLOW-01: Fresh install - detectPushoverFull returns valid {token, user} structure".
+
+    [0m [90m 15 |[39m     [36mif[39m (result [33m&&[39m [36mtypeof[39m result[33m.[39mthen [33m===[39m [32m'function'[39m) {
+     [90m 16 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 17 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 18 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 19 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 20 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:17:17)
+          at async Promise.all (index 0)
+      at tests/configurators/unified-flow.test.js:305:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "
+    === Test Summary ===".
+
+    [0m [90m 305 |[39m   [36mawait[39m [33mPromise[39m[33m.[39mall(pendingPromises)[33m;[39m
+     [90m 306 |[39m
+    [31m[1m>[22m[39m[90m 307 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 308 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m 309 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m 310 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:307:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Total: 10".
+
+    [0m [90m 306 |[39m
+     [90m 307 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 308 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 309 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m 310 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m 311 |[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:308:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Passed: 10".
+
+    [0m [90m 307 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+     [90m 308 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 309 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 310 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m 311 |[39m
+     [90m 312 |[39m   [36mif[39m (passCount [33m===[39m testCount) {[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:309:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Failed: 0".
+
+    [0m [90m 308 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m 309 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 310 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 311 |[39m
+     [90m 312 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+     [90m 313 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:310:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "
+    All tests passed!".
+
+    [0m [90m 311 |[39m
+     [90m 312 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+    [31m[1m>[22m[39m[90m 313 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 314 |[39m     process[33m.[39mexit([35m0[39m)[33m;[39m
+     [90m 315 |[39m   } [36melse[39m {
+     [90m 316 |[39m     console[33m.[39mlog([32m'\nSome tests failed.'[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/unified-flow.test.js:313:13)
+
+  ●  process.exit called with "0"
+
+    [0m [90m 312 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+     [90m 313 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 314 |[39m     process[33m.[39mexit([35m0[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 315 |[39m   } [36melse[39m {
+     [90m 316 |[39m     console[33m.[39mlog([32m'\nSome tests failed.'[39m)[33m;[39m
+     [90m 317 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m[0m
+
+      at exit (tests/configurators/unified-flow.test.js:314:13)
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "[OK] Test 3: setEnvVariable returns success on valid setx call".
+
+    [0m [90m 17 |[39m       [90m// Async test - collect promise for later awaiting[39m
+     [90m 18 |[39m       [36mconst[39m p [33m=[39m result[33m.[39mthen(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m         console[33m.[39mlog([32m`[OK] Test ${num}: ${name}`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 20 |[39m         passCount[33m++[39m[33m;[39m
+     [90m 21 |[39m       })[33m.[39m[36mcatch[39m(error [33m=>[39m {
+     [90m 22 |[39m         console[33m.[39merror([32m`[FAIL] Test ${num}: ${name}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:19:17)
+          at async Promise.all (index 2)
+      at tests/configurators/pushover.test.js:174:3
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "
+    === Test Summary ===".
+
+    [0m [90m 174 |[39m   [36mawait[39m [33mPromise[39m[33m.[39mall(pendingPromises)[33m;[39m
+     [90m 175 |[39m
+    [31m[1m>[22m[39m[90m 176 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 177 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m 178 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m 179 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:176:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Total: 9".
+
+    [0m [90m 175 |[39m
+     [90m 176 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 177 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 178 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m 179 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m 180 |[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:177:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Passed: 9".
+
+    [0m [90m 176 |[39m   console[33m.[39mlog([32m'\n=== Test Summary ==='[39m)[33m;[39m
+     [90m 177 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 178 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 179 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m 180 |[39m
+     [90m 181 |[39m   [36mif[39m (passCount [33m===[39m testCount) {[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:178:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "Failed: 0".
+
+    [0m [90m 177 |[39m   console[33m.[39mlog([32m`Total: ${testCount}`[39m)[33m;[39m
+     [90m 178 |[39m   console[33m.[39mlog([32m`Passed: ${passCount}`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 179 |[39m   console[33m.[39mlog([32m`Failed: ${testCount - passCount}`[39m)[33m;[39m
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 180 |[39m
+     [90m 181 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+     [90m 182 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:179:11)
+
+
+  ●  Cannot log after tests are done. Did you forget to wait for something async in your test?
+    Attempted to log "
+    All tests passed!".
+
+    [0m [90m 180 |[39m
+     [90m 181 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+    [31m[1m>[22m[39m[90m 182 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 183 |[39m     process[33m.[39mexit([35m0[39m)[33m;[39m
+     [90m 184 |[39m   } [36melse[39m {
+     [90m 185 |[39m     console[33m.[39mlog([32m'\nSome tests failed.'[39m)[33m;[39m[0m
+
+      at console.log (node_modules/@jest/console/build/index.js:311:10)
+      at log (tests/configurators/pushover.test.js:182:13)
+
+  ●  process.exit called with "0"
+
+    [0m [90m 181 |[39m   [36mif[39m (passCount [33m===[39m testCount) {
+     [90m 182 |[39m     console[33m.[39mlog([32m'\nAll tests passed!'[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 183 |[39m     process[33m.[39mexit([35m0[39m)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 184 |[39m   } [36melse[39m {
+     [90m 185 |[39m     console[33m.[39mlog([32m'\nSome tests failed.'[39m)[33m;[39m
+     [90m 186 |[39m     process[33m.[39mexit([35m1[39m)[33m;[39m[0m
+
+      at exit (tests/configurators/pushover.test.js:183:13)
+Summary of all failing tests
+FAIL tests/bin.test.js
+  ● Bin Entry Point › File starts with "#!/usr/bin/env node"
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "#!/usr/bin/env node"
+    Received: "#!/usr/bin/env node    "
+
+    [0m [90m 14 |[39m   test([32m'File starts with "#!/usr/bin/env node"'[39m[33m,[39m () [33m=>[39m {
+     [90m 15 |[39m     [36mconst[39m firstLine [33m=[39m fileContent[33m.[39msplit([32m'\n'[39m)[[35m0[39m][33m;[39m
+    [31m[1m>[22m[39m[90m 16 |[39m     expect(firstLine)[33m.[39mtoBe([32m'#!/usr/bin/env node'[39m)[33m;[39m
+     [90m    |[39m                       [31m[1m^[22m[39m
+     [90m 17 |[39m   })[33m;[39m
+     [90m 18 |[39m
+     [90m 19 |[39m   test([32m'File requires ../src/index.js'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/bin.test.js:16:23)
+
+FAIL tests/verification/runner.test.js
+  ● verification/runner › runPythonVerification › should return success with stdout when script exits 0
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 17 |[39m       [36mconst[39m result [33m=[39m [36mawait[39m runPythonVerification()[33m;[39m
+     [90m 18 |[39m
+    [31m[1m>[22m[39m[90m 19 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 20 |[39m       expect(result[33m.[39mstdout)[33m.[39mtoBe(mockStdout)[33m;[39m
+     [90m 21 |[39m       expect(result[33m.[39mexitCode)[33m.[39mtoBe([35m0[39m)[33m;[39m
+     [90m 22 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/verification/runner.test.js:19:30)
+
+  ● verification/runner › runPythonVerification › should handle timeout and return error
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "timeout"
+    Received: "script_not_found"
+
+    [0m [90m 30 |[39m
+     [90m 31 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 32 |[39m       expect(result[33m.[39merror)[33m.[39mtoBe([32m'timeout'[39m)[33m;[39m
+     [90m    |[39m                            [31m[1m^[22m[39m
+     [90m 33 |[39m     })[33m;[39m
+     [90m 34 |[39m
+     [90m 35 |[39m     it([32m'should handle Python not found (ENOENT)'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/verification/runner.test.js:32:28)
+
+  ● verification/runner › runPythonVerification › should handle Python not found (ENOENT)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "python_not_found"
+    Received: "script_not_found"
+
+    [0m [90m 41 |[39m
+     [90m 42 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 43 |[39m       expect(result[33m.[39merror)[33m.[39mtoBe([32m'python_not_found'[39m)[33m;[39m
+     [90m    |[39m                            [31m[1m^[22m[39m
+     [90m 44 |[39m     })[33m;[39m
+     [90m 45 |[39m
+     [90m 46 |[39m     it([32m'should return success with stdout when script exits 1 (some checks failed)'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toBe (tests/verification/runner.test.js:43:28)
+
+  ● verification/runner › runPythonVerification › should return success with stdout when script exits 1 (some checks failed)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    [0m [90m 56 |[39m
+     [90m 57 |[39m       [90m// Exit code 1 means some checks failed, not an execution error[39m
+    [31m[1m>[22m[39m[90m 58 |[39m       expect(result[33m.[39msuccess)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 59 |[39m       expect(result[33m.[39mstdout)[33m.[39mtoBe(mockStdout)[33m;[39m
+     [90m 60 |[39m       expect(result[33m.[39mexitCode)[33m.[39mtoBe([35m1[39m)[33m;[39m
+     [90m 61 |[39m     })[33m;[39m[0m
+
+      at Object.toBe (tests/verification/runner.test.js:58:30)
+
+FAIL tests/configurators/pushover.test.js
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1048:18)
+      at node_modules/@jest/core/build/index.js:1118:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+FAIL tests/configurators/unified-flow.test.js
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1048:18)
+      at node_modules/@jest/core/build/index.js:1118:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+
+Test Suites: 4 failed, 19 passed, 23 total
+Tests:       5 failed, 139 passed, 144 total
+Snapshots:   0 total
+Time:        7.089 s
+Ran all test suites.

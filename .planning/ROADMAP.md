@@ -138,7 +138,7 @@
 **Plans**: 2 plans (源码裁剪 + 测试裁剪/回归；源码侧 4 INS 集中耦合于 installer/src/，测试侧独立为 Wave 2)
 **Wave 1**
 
-- [ ] 54-01-PLAN.md — 裁剪 installer 源码: 删 git/ssh detector+configurator、删 marketplace 目录、迁移路径 helper 到 uninstall/paths.js 并裁剪 uninstall 模块、裁剪主 index.js、收窄 i18n/welcome
+- [x] 54-01-PLAN.md — 裁剪 installer 源码: 删 git/ssh detector+configurator、删 marketplace 目录、迁移路径 helper 到 uninstall/paths.js 并裁剪 uninstall 模块、裁剪主 index.js、收窄 i18n/welcome
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -163,5 +163,5 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 53. remove-deprecated-skills | 1/1 | Complete    | 2026-06-26 |
-| 54. trim-installer-notify-only | 0/2 | Not started | - |
+| 54. trim-installer-notify-only | 1/2 | In progress | - |
 | 55. release-v3-metadata-regression | 0/TBD | Not started | - |

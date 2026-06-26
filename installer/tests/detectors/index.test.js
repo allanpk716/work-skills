@@ -2,17 +2,9 @@
 
 const { runAllDetectors, printResult } = require('../../src/detectors/index.js');
 
-// Mock all detector modules
+// Mock all detector modules (Phase 54 trim: only Python + requests remain)
 jest.mock('../../src/detectors/python.js', () => ({
   detectPython: jest.fn()
-}));
-
-jest.mock('../../src/detectors/git.js', () => ({
-  detectGit: jest.fn()
-}));
-
-jest.mock('../../src/detectors/ssh-tools.js', () => ({
-  detectSSHTools: jest.fn()
 }));
 
 jest.mock('../../src/detectors/pip-package.js', () => ({
@@ -31,8 +23,6 @@ jest.mock('../../src/i18n/index.js', () => ({
       'detection.checking': 'Checking environment dependencies...',
       'detection.summary': 'Detection complete: {passed}/{total} passed',
       'guidance.installPython': 'Please install Python 3.8 or later',
-      'guidance.installGit': 'Please install Git',
-      'guidance.installSSHTools': 'Please install TortoiseGit or PuTTY',
       'guidance.installRequests': 'Please install requests package'
     };
     return translations[key] || key;
@@ -40,8 +30,6 @@ jest.mock('../../src/i18n/index.js', () => ({
 }));
 
 const { detectPython } = require('../../src/detectors/python.js');
-const { detectGit } = require('../../src/detectors/git.js');
-const { detectSSHTools } = require('../../src/detectors/ssh-tools.js');
 const { detectPipPackage } = require('../../src/detectors/pip-package.js');
 
 describe('Detectors Index', () => {
@@ -57,30 +45,13 @@ describe('Detectors Index', () => {
 
   describe('runAllDetectors', () => {
     test('runAllDetectors returns array of results', async () => {
-      // Setup mocks for passing results
+      // Setup mocks for passing results (2 detectors: Python + requests)
       detectPython.mockResolvedValue({
         name: 'Python',
         installed: true,
         version: '3.11.0',
         meetsMinimum: true,
         guidance: 'guidance.installPython'
-      });
-
-      detectGit.mockResolvedValue({
-        name: 'Git',
-        installed: true,
-        version: '2.43.0',
-        meetsMinimum: true,
-        guidance: 'guidance.installGit'
-      });
-
-      detectSSHTools.mockResolvedValue({
-        name: 'SSH Tools',
-        installed: true,
-        version: null,
-        meetsMinimum: true,
-        message: 'TortoiseGit installed',
-        guidance: null
       });
 
       detectPipPackage.mockResolvedValue({
@@ -94,7 +65,7 @@ describe('Detectors Index', () => {
       const result = await runAllDetectors();
 
       expect(Array.isArray(result.results)).toBe(true);
-      expect(result.results).toHaveLength(4);
+      expect(result.results).toHaveLength(2);
       expect(result.allPassed).toBe(true);
     });
 
@@ -105,22 +76,6 @@ describe('Detectors Index', () => {
         version: '3.11.0',
         meetsMinimum: true,
         guidance: 'guidance.installPython'
-      });
-
-      detectGit.mockResolvedValue({
-        name: 'Git',
-        installed: true,
-        version: '2.43.0',
-        meetsMinimum: true,
-        guidance: 'guidance.installGit'
-      });
-
-      detectSSHTools.mockResolvedValue({
-        name: 'SSH Tools',
-        installed: true,
-        version: null,
-        meetsMinimum: true,
-        guidance: null
       });
 
       detectPipPackage.mockResolvedValue({
@@ -143,22 +98,6 @@ describe('Detectors Index', () => {
         version: null,
         meetsMinimum: false,
         guidance: 'guidance.installPython'
-      });
-
-      detectGit.mockResolvedValue({
-        name: 'Git',
-        installed: true,
-        version: '2.43.0',
-        meetsMinimum: true,
-        guidance: 'guidance.installGit'
-      });
-
-      detectSSHTools.mockResolvedValue({
-        name: 'SSH Tools',
-        installed: true,
-        version: null,
-        meetsMinimum: true,
-        guidance: null
       });
 
       detectPipPackage.mockResolvedValue({

@@ -26,10 +26,6 @@ jest.mock('../src/configurators/index.js', () => ({
   runAllConfigurators: jest.fn().mockResolvedValue(undefined)
 }));
 
-jest.mock('../src/marketplace/index.js', () => ({
-  runMarketplaceIntegration: jest.fn().mockResolvedValue(undefined)
-}));
-
 jest.mock('../src/hooks/index.js', () => ({
   runHooksInstallation: jest.fn().mockResolvedValue(undefined)
 }));

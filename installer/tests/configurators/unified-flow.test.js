@@ -50,22 +50,12 @@ function clearPushoverCache() {
   delete require.cache[require.resolve('../../src/configurators/pushover.js')];
 }
 
-function clearGitUserCache() {
-  delete require.cache[require.resolve('../../src/configurators/git-user.js')];
-}
-
-function clearGitSSHCache() {
-  delete require.cache[require.resolve('../../src/configurators/git-ssh.js')];
-}
-
 function clearIndexCache() {
   delete require.cache[require.resolve('../../src/configurators/index.js')];
 }
 
 function clearAllConfiguratorCaches() {
   clearPushoverCache();
-  clearGitUserCache();
-  clearGitSSHCache();
   clearIndexCache();
 }
 
@@ -106,39 +96,12 @@ test('UFLOW-01: Fresh install - detectPushoverFull returns valid {token, user} s
 });
 
 // ---------------------------------------------------------------
-// Test 2: UFLOW-01 - detectGitUser returns correct structure
-// Validates detectGitUser() return format for determining git-user cases
+// Test 2: REMOVED in Phase 54 (git-user configurator deleted)
 // ---------------------------------------------------------------
-test('UFLOW-01: Fresh install - detectGitUser returns valid {name, email} structure', async () => {
-  clearGitUserCache();
-  const { detectGitUser } = require('../../src/configurators/git-user.js');
-
-  const result = await detectGitUser();
-  assert.ok(result !== null && typeof result === 'object', 'Should return object');
-  assert.ok('name' in result, 'Should have name property');
-  assert.ok('email' in result, 'Should have email property');
-  assert.ok(result.name === null || typeof result.name === 'string',
-    'name should be null or string');
-  assert.ok(result.email === null || typeof result.email === 'string',
-    'email should be null or string');
-});
 
 // ---------------------------------------------------------------
-// Test 3: UFLOW-01 - detectGitSSH returns correct structure
-// Validates detectGitSSH() return format for determining git-ssh state
+// Test 3: REMOVED in Phase 54 (git-ssh configurator deleted)
 // ---------------------------------------------------------------
-test('UFLOW-01: Fresh install - detectGitSSH returns valid {configured, command} structure', async () => {
-  clearGitSSHCache();
-  const { detectGitSSH } = require('../../src/configurators/git-ssh.js');
-
-  const result = await detectGitSSH();
-  assert.ok(result !== null && typeof result === 'object', 'Should return object');
-  assert.ok('configured' in result, 'Should have configured property');
-  assert.ok('command' in result, 'Should have command property');
-  assert.strictEqual(typeof result.configured, 'boolean', 'configured should be boolean');
-  assert.ok(result.command === null || typeof result.command === 'string',
-    'command should be null or string');
-});
 
 // ===================================================================
 // GROUP 2: Re-run detection tests (UFLOW-02: existing config scenarios)
@@ -222,10 +185,7 @@ test('displayConfigSummary renders configured/skipped/failed results without err
   const { displayConfigSummary } = require('../../src/configurators/index.js');
 
   const sampleResults = [
-    { name: 'Pushover', status: 'configured', details: 'validated and saved' },
-    { name: 'Git SSH', status: 'skipped', details: 'user skipped' },
-    { name: 'Git user.name', status: 'configured', details: 'Test User' },
-    { name: 'Git user.email', status: 'configured', details: 'test@example.com' }
+    { name: 'Pushover', status: 'configured', details: 'validated and saved' }
   ];
 
   assert.doesNotThrow(() => {
@@ -333,63 +293,12 @@ test('UFLOW-02: Case C mapping - user only maps to partial config path', async (
 });
 
 // ---------------------------------------------------------------
-// Test 13: git-user Case A/B/C/D mapping matches pushover pattern
-// Verifies git-user.js uses the same 4-case pattern as pushover.js
+// Test 13: REMOVED in Phase 54 (git-user configurator deleted)
 // ---------------------------------------------------------------
-test('UFLOW-01/UFLOW-02: git-user uses same 4-case detection pattern', async () => {
-  // Case A: both name and email
-  let caseType;
-  caseType = 'D';
-  if ('Alice' && 'alice@test.com') caseType = 'A';
-  assert.strictEqual(caseType, 'A', 'Both present -> Case A');
-
-  // Case B: only name
-  caseType = 'D';
-  const d1 = { name: 'Alice', email: null };
-  if (d1.name && d1.email) caseType = 'A';
-  else if (d1.name && !d1.email) caseType = 'B';
-  else if (!d1.name && d1.email) caseType = 'C';
-  assert.strictEqual(caseType, 'B', 'Name only -> Case B');
-
-  // Case C: only email
-  caseType = 'D';
-  const d2 = { name: null, email: 'alice@test.com' };
-  if (d2.name && d2.email) caseType = 'A';
-  else if (d2.name && !d2.email) caseType = 'B';
-  else if (!d2.name && d2.email) caseType = 'C';
-  assert.strictEqual(caseType, 'C', 'Email only -> Case C');
-
-  // Case D: neither
-  caseType = 'D';
-  const d3 = { name: null, email: null };
-  if (d3.name && d3.email) caseType = 'A';
-  else if (d3.name && !d3.email) caseType = 'B';
-  else if (!d3.name && d3.email) caseType = 'C';
-  assert.strictEqual(caseType, 'D', 'Neither -> Case D');
-});
 
 // ---------------------------------------------------------------
-// Test 14: git-ssh configured detection short-circuits to return immediately
-// Verifies that detectGitSSH().configured === true means no prompts needed
+// Test 14: REMOVED in Phase 54 (git-ssh configurator deleted)
 // ---------------------------------------------------------------
-test('UFLOW-02: git-ssh configured=true short-circuits without prompts', async () => {
-  clearGitSSHCache();
-  const { detectGitSSH } = require('../../src/configurators/git-ssh.js');
-
-  const result = await detectGitSSH();
-
-  if (result.configured) {
-    // When SSH is configured, configureGitSSH() returns {status: 'configured'}
-    // immediately without any Confirm/Input prompts
-    assert.strictEqual(typeof result.command, 'string',
-      'Configured SSH should have a command string');
-    assert.ok(result.command.length > 0, 'Command should not be empty');
-  } else {
-    // When SSH is not configured, configureGitSSH() shows guidance
-    // and asks one Confirm("Skip SSH setup?")
-    assert.strictEqual(result.command, null, 'Unconfigured SSH should have null command');
-  }
-});
 
 // Summary
 (async () => {

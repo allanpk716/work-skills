@@ -7,7 +7,7 @@
 ## 🚀 快速开始
 
 ```bash
-npx skills add allanpk716/work-skills --all
+npx skills add allanpk716/work-skills/claude-notify
 ```
 
 ## 技能列表

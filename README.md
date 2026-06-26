@@ -7,7 +7,7 @@ Personal skill for Claude Code — task-completion notifications (Pushover mobil
 ## 🚀 Quick Start
 
 ```bash
-npx skills add allanpk716/work-skills --all
+npx skills add allanpk716/work-skills/claude-notify
 ```
 
 ## Skills

@@ -1,83 +1,90 @@
 # Work-Skills 项目结构说明
 
-本文档详细说明 work-skills 项目的结构设计和组织方式,参考了 [baoyu-skills](https://github.com/JimLiu/baoyu-skills) 的实现。
+本文档详细说明 work-skills 项目在 v3.0 之后的结构设计和组织方式。
+v3.0 是一次破坏性变更:下线了若干 deprecated 旧技能,项目回归为**仅 claude-notify 一个技能**的形态。
 
 ## 项目概览
 
-**work-skills** 是一个个人技能库项目,用于组织和分享 Claude Code 技能。
+**work-skills** 是一个个人技能库项目,目前只包含一个 Claude Code 技能 `claude-notify`(任务完成通知:Pushover 移动推送 + Windows 桌面 Toast)。
 
 - **GitHub 仓库**: https://github.com/allanpk716/work-skills
-- **本地路径**: C:\WorkSpace\work-skills
-- **灵感来源**: baoyu-skills by Jim Liu
+- **本地路径**: C:\WorkSpace\agent\work-skills
+- **当前版本**: 3.0.0(单技能形态)
+- **分发方式**: Agent Skills 标准,通过 `npx skills add` 安装(**不再使用** `marketplace.json` 插件市场机制)
 
-## 目录结构
+## 目录结构(v3.0 实际布局)
 
 ```
 work-skills/
-├── .claude-plugin/              # Claude Code 插件配置
-│   └── marketplace.json         # 插件市场配置文件
-├── .claude/                     # Claude Code 特定文件
-│   └── commands/                # 斜杠命令 (可选)
-│       └── wgc.md              # /wgc 命令 (windows-git-commit 简写)
-├── docs/                        # 项目文档
-│   └── HOW_TO_ADD_NEW_SKILL.md # 添加新技能的指南
-├── skills/                      # 技能实现
-│   └── windows-git-commit/     # Windows Git 提交自动化技能
-│       └── SKILL.md            # 技能实现文件
-├── .gitignore                  # Git 忽略文件
-├── CHANGELOG.md                # 版本变更记录
-├── LICENSE                     # MIT 许可证
-├── README.md                   # 英文说明文档
-└── README.zh.md                # 中文说明文档
+├── claude-notify/                  # 唯一的技能目录(根级别扁平结构)
+│   ├── SKILL.md                    # 技能主入口(必需)
+│   ├── README.md                   # 技能说明文档
+│   ├── test.bat                    # Windows 测试入口脚本
+│   ├── claude-notify-setup/        # 安装/配置子技能
+│   │   └── SKILL.md
+│   ├── hooks/                      # Claude Code Hook 注册
+│   │   ├── hooks.json
+│   │   └── scripts/                # Hook 触发的 Python 脚本
+│   ├── scripts/                    # 斜杠命令对应的 Python 脚本
+│   │   ├── notify-disable.py
+│   │   ├── notify-enable.py
+│   │   ├── notify-status.py
+│   │   └── verify-installation.py
+│   ├── references/                 # 渐进式披露的参考文档
+│   │   ├── changelog.md
+│   │   ├── commands.md
+│   │   ├── faq.md
+│   │   ├── setup.md
+│   │   └── technical.md
+│   └── tests/                      # 技能自测(Pytest)
+│       └── test_*.py
+├── installer/                      # NPX 安装器(@allanpk716/work-skills-setup)
+│   ├── bin/                        # CLI 入口
+│   ├── src/                        # 安装器实现(仅服务 claude-notify)
+│   ├── tests/                      # 安装器自测(Jest)
+│   ├── package.json
+│   └── jest.config.js
+├── docs/                           # 项目文档
+│   ├── README.md                   # 文档索引
+│   ├── claude-notify/              # claude-notify 专属文档(计划等)
+│   └── project/                    # 跨技能的项目级开发文档
+│       ├── structure.md            # 本文件
+│       ├── how-to-add-new-skill.md
+│       ├── plugin-development-best-practices.md
+│       ├── plugin-quick-reference.md
+│       ├── plugin-version-management.md
+│       ├── bugs/
+│       ├── fixes/
+│       ├── plans/
+│       └── verification/
+├── .gitignore
+├── CHANGELOG.md                    # 版本变更记录
+├── CLAUDE.md                       # 项目级 Claude Code 指南
+├── LICENSE                         # MIT 许可证
+├── README.md                       # 英文说明
+├── README.zh.md                    # 中文说明
+└── package.json                    # npm 包元数据(指向 installer)
 ```
+
+> **注意:** 项目根目录**没有** `.claude-plugin/marketplace.json`。
+> v3.0 起安装走 Agent Skills 标准(`npx skills add`),不再走插件市场配置。
 
 ## 核心组件详解
 
-### 1. `.claude-plugin/marketplace.json`
+### 1. `claude-notify/SKILL.md`(技能主入口)
 
-**作用**: 定义插件市场配置,告诉 Claude Code 如何识别和加载技能库。
+**作用**: 技能的核心实现文件,定义技能的行为、工作流程和使用说明。Claude Code 通过 Agent Skills 标准发现根级别目录下的 `SKILL.md`。
 
-**结构**:
-```json
-{
-  "name": "work-skills",           // 技能库名称
-  "owner": {
-    "name": "allanpk716",          // 作者信息
-    "email": "allanpk716@gmail.com"
-  },
-  "metadata": {
-    "description": "Personal skills collection...",
-    "version": "0.1.0"             // 版本号
-  },
-  "plugins": [                     // 插件列表
-    {
-      "name": "git-skills",        // 插件分类名称
-      "description": "Git workflow automation...",
-      "source": "./",              // 技能相对路径
-      "strict": false,             // 是否严格模式
-      "skills": [                  // 该插件包含的技能
-        "./skills/windows-git-commit"
-      ]
-    }
-  ]
-}
-```
-
-**插件分类设计**:
-- `git-skills`: Git 相关的自动化技能
-- 未来可以添加: `code-skills`, `docs-skills`, `test-skills` 等
-
-### 2. `skills/<skill-name>/SKILL.md`
-
-**作用**: 技能的核心实现文件,定义技能的行为、工作流程和使用说明。
-
-**文件结构**:
+**Frontmatter(必填字段)**:
 ```markdown
 ---
-name: skill-name                  # 技能名称 (必填)
-description: Brief description   # 简短描述 (必填)
+name: claude-notify                  # 技能名称(与目录名一致)
+description: 简短描述(触发与功能说明)
 ---
+```
 
+**正文结构建议**:
+```markdown
 # Skill Title
 
 ## Objective
@@ -95,9 +102,6 @@ description: Brief description   # 简短描述 (必填)
 ## One-time Setup
 一次性配置说明
 
-## Agent Configuration
-子代理配置 (如果使用)
-
 ## Instructions
 执行指令
 
@@ -110,169 +114,170 @@ description: Brief description   # 简短描述 (必填)
 
 **设计原则**:
 1. **Frontmatter**: 必须包含 `name` 和 `description`
-2. **渐进式披露**: 从简单到复杂,逐步展开信息
+2. **渐进式披露**: 从简单到复杂,逐步展开信息;细节放进 `references/` 子目录
 3. **明确的前置条件**: 列出所有必需的配置和依赖
 4. **详细的工作流程**: 步骤化的执行说明
-5. **故障排除**: 常见问题和解决方案
+5. **故障排除**: 常见问题和解决方案(可放 `references/faq.md`)
 
-### 3. `.claude/commands/<command>.md`
+### 2. `claude-notify/scripts/`(斜杠命令脚本)
 
-**作用**: 创建简短的斜杠命令,方便快速调用技能。
+**作用**: 存放斜杠命令背后执行的 Python 脚本。每个脚本对应一个用户可调用的斜杠命令。
 
-**文件结构**:
-```markdown
----
-description: Command description   # 命令描述
-argument-hint: [optional args]    # 参数提示
-allowed-tools: Skill(skill-name)  # 允许使用的工具
----
+**claude-notify 实际提供的斜杠命令**:
+- `/check-notify-env` — 检查通知环境配置(Pushover token / Windows Toast)
+- `/notify-enable` — 启用某个通知通道(pushover 或 windows)
+- `/notify-disable` — 禁用某个通知通道
+- `/notify-status` — 查看所有通知通道的当前状态
 
-Use the skill-name skill to do something: $ARGUMENTS
+这些命令通过 `claude-notify/` 下的命令定义(详见 `references/commands.md`)与 `scripts/` 中的 `.py` 文件绑定。
+
+### 3. `claude-notify/hooks/`(Hook 注册)
+
+**作用**: 注册 Claude Code 生命周期 Hook(例如任务完成时触发通知)。
+
+**结构**:
+```
+hooks/
+├── hooks.json          # Hook 配置(事件 → 脚本映射)
+└── scripts/            # Hook 实际执行的脚本
 ```
 
-**命名建议**:
-- 使用简短的缩写 (例如: `wgc` → `windows-git-commit`)
-- 2-4 个字符最佳
-- 容易记忆和输入
+`hooks.json` 中通过 `${CLAUDE_PLUGIN_ROOT}` 引用本技能根路径,保证安装到任意位置都能正确解析。
 
-**示例**:
-- `/wgc` → 调用 windows-git-commit 技能
-- `/gc` → git commit (未来可能添加)
-- `/pr` → pull request (未来可能添加)
+### 4. `claude-notify/references/`(渐进式披露参考)
 
-### 4. `README.md` / `README.zh.md`
+**作用**: 把详细文档从主 `SKILL.md` 拆出来,降低主入口的认知负担,Claude 按需读取。
 
-**作用**: 项目的主要文档,提供安装和使用说明。
+**典型文件**:
+- `setup.md` — 一次性配置详解
+- `commands.md` — 斜杠命令完整说明
+- `technical.md` — 技术实现细节
+- `faq.md` — 常见问题
+- `changelog.md` — 技能内部变更
+
+### 5. `claude-notify/tests/`(技能自测)
+
+**作用**: 为技能脚本提供自动化测试,确保通知逻辑、环境检测、通道开关等行为正确。
+
+claude-notify 使用 **Pytest**,根级 `test.bat` 是 Windows 下的测试入口。
+
+### 6. `installer/`(NPX 安装器)
+
+**作用**: 提供 `npx @allanpk716/work-skills-setup` 一键安装体验。v3.0 起 installer 已**收窄为仅服务 claude-notify**(移除了旧版 git/ssh 检测器、marketplace 集成、多技能配置)。
+
+**结构**:
+```
+installer/
+├── bin/               # CLI 入口(work-skills-setup)
+├── src/               # 安装/卸载/检测逻辑
+└── tests/             # Jest 测试
+```
+
+### 7. `README.md` / `README.zh.md`
+
+**作用**: 项目的主要文档,提供安装和使用说明。v3.0 版本仅宣传 claude-notify 一个技能。
 
 **包含内容**:
 1. 项目简介
-2. 前提条件
-3. 安装方法 (3种方式)
-4. 可用插件和技能列表
-5. 使用示例
-6. 项目结构
-7. 更新说明
+2. 一键安装(`npx skills add allanpk716/work-skills/claude-notify`)
+3. 技能列表(仅 claude-notify)
+4. 项目结构
+5. License / Credits
 
-**设计风格**:
-- 清晰的章节划分
-- 代码示例使用代码块
-- 使用表格展示选项和配置
-- 中英文双语
+### 8. `CHANGELOG.md`
 
-### 5. `CHANGELOG.md`
-
-**作用**: 记录项目的版本变更历史。
-
-**格式**: 基于 [Keep a Changelog](https://keepachangelog.com/)
+**作用**: 记录项目的版本变更历史。格式基于 [Keep a Changelog](https://keepachangelog.com/)。
 
 ```markdown
-## [0.1.0] - 2026-02-08
+## [3.0.0] - 2026-06-26
 
-### Added
-- 新增功能
-- 新增技能
-
-### Fixed
-- 修复的问题
+### Removed
+- 移除多个 deprecated 旧技能(详见根 CHANGELOG.md)
 
 ### Changed
-- 改变的功能
+- 项目回归单一通知技能形态
+- installer 收窄为仅服务 claude-notify
 ```
 
 ## 技能开发工作流
 
-### 添加新技能的步骤
+### 添加新技能的步骤(参考,当前项目仅 claude-notify)
 
-1. **创建技能目录**
+1. **创建技能目录**(根级别扁平结构)
    ```bash
-   mkdir skills/your-new-skill
+   mkdir your-new-skill
    ```
 
-2. **编写 SKILL.md**
+2. **编写 `your-new-skill/SKILL.md`**
+   - 参考 [how-to-add-new-skill.md](./how-to-add-new-skill.md) 中的模板
+
+3. **(可选)组织子目录**
+   - `scripts/` — 命令脚本
+   - `hooks/` — Hook 注册
+   - `references/` — 详细文档
+   - `tests/` — 自测
+
+4. **更新文档**
+   - 根 `README.md` / `README.zh.md`(技能列表)
+   - `CHANGELOG.md`(版本记录)
+
+5. **测试**
+   - 本地测试技能触发与命令行为
+   - 运行 `tests/` 中的自动化测试
+
+6. **提交和推送**
    ```bash
-   # 参考 docs/HOW_TO_ADD_NEW_SKILL.md 中的模板
-   ```
-
-3. **更新 marketplace.json**
-   ```json
-   "skills": [
-     "./skills/your-new-skill"
-   ]
-   ```
-
-4. **(可选) 创建斜杠命令**
-   ```bash
-   # 在 .claude/commands/ 创建命令文件
-   ```
-
-5. **更新文档**
-   - README.md / README.zh.md
-   - CHANGELOG.md
-
-6. **测试**
-   - 本地测试
-   - 功能验证
-
-7. **提交和推送**
-   ```bash
-   git add .
+   git add your-new-skill
    git commit -m "feat: add your-new-skill"
    git push
    ```
 
 ## 安装和使用
 
-### 用户安装步骤
+### 用户安装(v3.0 推荐:Agent Skills 标准)
 
-1. **添加插件市场**
-   ```
-   /plugin marketplace add allanpk716/work-skills
-   ```
+```bash
+npx skills add allanpk716/work-skills/claude-notify
+```
 
-2. **浏览可用插件**
-   ```
-   /plugin
-   # 切换到 Marketplaces 标签
-   # 选择 work-skills
-   ```
+该命令基于 Agent Skills 标准,直接把 `claude-notify/` 目录安装到本地 Claude Code skills 目录。**不涉及** `marketplace.json` 或 `/plugin install`。
 
-3. **安装技能**
-   ```
-   /plugin install git-skills@work-skills
-   ```
+### 通过 NPX 安装器
 
-4. **使用技能**
-   ```
-   /windows-git-commit
-   # 或使用斜杠命令
-   /wgc
-   ```
+```bash
+npx @allanpk716/work-skills-setup
+```
 
-## 与 baoyu-skills 的对比
+installer 会引导完成 claude-notify 的安装与配置(Pushover 凭据、Windows Toast 等)。
 
-### 相似之处
+### 使用技能
 
-1. **目录结构**: 使用相同的 `.claude-plugin/` 和 `skills/` 结构
-2. **marketplace.json**: 配置格式完全兼容
-3. **SKILL.md 格式**: 技能文件结构一致
-4. **文档组织**: README 中英文双语,CHANGELOG 格式相同
+安装后,Claude Code 会根据 `description` 自动触发 claude-notify,也可显式调用斜杠命令:
 
-### 不同之处
+```
+/check-notify-env
+/notify-status
+/notify-enable pushover
+/notify-disable windows
+```
 
-1. **规模**: work-skills 是个人技能库,baoyu-skills 是大型共享库
-2. **插件分类**: work-skills 按功能分类,baoyu-skills 按使用场景分类
-3. **斜杠命令**: work-skills 提供了简短命令别名
-4. **文档**: work-skills 添加了详细的开发指南
+## 历史演进
+
+| 版本 | 形态 | 说明 |
+| --- | --- | --- |
+| 0.x – 1.x | 多技能 + marketplace.json | 曾经包含多个技能,通过 `.claude-plugin/marketplace.json` 插件市场分发 |
+| **3.0.0** | **单技能(claude-notify)** | **破坏性变更:下线全部 deprecated 旧技能,回归单技能形态;安装改为 Agent Skills 标准(`npx skills add`),移除 marketplace.json** |
+
+> v3.0 之前的多技能 / marketplace.json / `/plugin install` 流程**已不再适用**,仅保留在历史记录中作为背景说明。具体下线了哪些技能,请查阅根目录的 `CHANGELOG.md`。
 
 ## 参考资源
 
 ### 官方文档
 - [Claude Code 官方文档](https://code.claude.com/docs)
-- [Claude Skills 完全指南](https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf)
+- [Claude Skills 完全指南](https://resources.anthrop.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf)
 
 ### 社区资源
 - [baoyu-skills](https://github.com/JimLiu/baoyu-skills) - 主要参考项目
-- [Claude Code Skills Guide](https://vertu.com/lifestyle/claude-code-skills-the-complete-guide-to-automating-your-development-workflow/)
 
 ### 技术文章
 - [Claude Code Skills Structure and Usage Guide](https://gist.github.com/mellanon/50816550ecb5f3b239aa77eef7b8ed8d)
@@ -284,63 +289,43 @@ Use the skill-name skill to do something: $ARGUMENTS
 - 使用小写字母
 - 多个单词用连字符分隔
 - 名称要描述性强
-- 保持简短 (2-4 个单词)
+- 保持简短(2-4 个单词)
 
-### 2. 插件分类
-- 按功能域分类 (git, code, docs, test)
-- 每个插件包含 3-10 个相关技能
-- 避免单个插件过大
+### 2. 目录结构
+- 每个技能在根目录拥有独立目录(扁平结构)
+- **单一加载源**: 技能只从一个位置加载,避免重复
+- **生命周期分离**: 开发阶段和发布阶段使用不同的加载方式
+- **定期清理**: 插件结构变化时清理缓存
 
 ### 3. 文档质量
+- 主 `SKILL.md` 保持精简,细节放 `references/`
 - 提供清晰的使用示例
 - 包含故障排除指南
 - 说明所有前提条件
-- 保持中英文同步
 
 ### 4. 版本管理
 - 遵循语义化版本
-- 每次更新都记录在 CHANGELOG
-- 重大变更要标注
+- 每次更新都记录在 `CHANGELOG.md`
+- 重大变更(如 v3.0 下线技能)要升级主版本号并清晰标注
 
 ### 5. 测试
-- 在真实项目中测试
-- 验证所有功能点
+- 为每个技能脚本提供自动化测试
+- 在真实项目中验证
 - 检查错误处理
-
-## 未来规划
-
-### 短期目标
-- [ ] 添加更多 Git 相关技能
-- [ ] 优化现有技能的错误处理
-- [ ] 添加技能测试框架
-
-### 中期目标
-- [ ] 添加代码生成技能
-- [ ] 添加文档编写技能
-- [ ] 建立技能模板库
-
-### 长期目标
-- [ ] 建立技能生态系统
-- [ ] 提供技能开发工具
-- [ ] 社区贡献机制
 
 ## 维护指南
 
 ### 定期维护
-- 每月检查技能是否正常工作
+- 检查技能是否在最新版 Claude Code 下正常工作
 - 及时修复 bug
 - 更新依赖和配置
 
 ### 版本发布
 - 遵循语义化版本
-- 更新 CHANGELOG
+- 更新 `CHANGELOG.md`
+- 同步 `package.json` 与 `installer/package.json` 的版本号
 - 创建 Git tag
 - 发布 release notes
-
-### 社区互动
-- 回复 issues
-- 审查 PRs
-- 更新文档
 
 ## 联系方式
 
@@ -353,5 +338,5 @@ Use the skill-name skill to do something: $ARGUMENTS
 
 ---
 
-**最后更新**: 2026-02-08
-**项目版本**: 0.1.0
+**最后更新**: 2026-06-26
+**项目版本**: 3.0.0

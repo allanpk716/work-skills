@@ -108,5 +108,5 @@ rm -rf ~/.claude/plugins/marketplaces/<project>
 ## 📚 详细文档
 
 - [技能开发最佳实践](./plugin-development-best-practices.md)
-- [问题排查案例](../.planning/debug/slash-command-conflict.md)
-- [修复记录](./fixes/windows-git-commit-duplicate-commands-fix.md)
+- [项目结构](./structure.md)
+- [添加新技能](./how-to-add-new-skill.md)

@@ -75,7 +75,7 @@
 
 **症状**:
 - 输入 `/` 看到多个相同或相似的命令
-- 例如: `/windows-git-commit`, `/windows-git-commit:wgc`, `/wgc`
+- 例如: `/notify-status`, `/notify-status:status`, `/status`(命令别名重复)
 
 **根本原因**:
 技能从多个位置被加载:
@@ -356,4 +356,5 @@ ls .claude/commands/
 
 - [Claude Code 官方文档](https://claude.ai/code)
 - [插件开发指南](https://github.com/anthropics/claude-code)
-- [问题排查案例](../.planning/debug/slash-command-conflict.md)
+- [项目结构](./structure.md)
+- [快速参考卡片](./plugin-quick-reference.md)

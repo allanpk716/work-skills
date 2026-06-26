@@ -21,6 +21,8 @@ npx skills add allanpk716/work-skills/claude-notify
 ```
 work-skills/
 ├── claude-notify/         # Notification skill
+├── installer/             # NPX guided installer (@allanpk716/work-skills-setup)
+├── docs/                  # Project documentation
 └── README.md
 ```
 

@@ -8,20 +8,6 @@
 
 - [计划文档](./claude-notify/plans/)
 
-## windows-git-commit
-
-Windows 环境 Git 提交自动化技能。
-
-- [修复记录](./windows-git-commit/fixes/)
-
-## codepoint
-
-代码密度埋点技能。
-
-- [计划文档](./codepoint/plans/)
-- [设计规格](./codepoint/specs/)
-- [研究资料](./codepoint/research/)
-
 ## 项目通用
 
 跨技能的项目级文档。

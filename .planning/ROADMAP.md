@@ -101,7 +101,7 @@
 **Phase Numbering:** 本里程碑延续全局阶段编号（前一里程碑 v2.1 结束于 Phase 52，本里程碑从 Phase 53 起）。
 
 - [x] **Phase 53: remove-deprecated-skills** - 移除 windows-git-commit 与 codepoint 技能目录及其文档，清理仓库内残留引用
-- [ ] **Phase 54: trim-installer-notify-only** - 裁剪 NPX 安装器，剥离 git/marketplace/uninstall 耦合代码，仅服务 claude-notify
+- [x] **Phase 54: trim-installer-notify-only** - 裁剪 NPX 安装器，剥离 git/marketplace/uninstall 耦合代码，仅服务 claude-notify
 - [ ] **Phase 55: release-v3-metadata-regression** - 更新根 README/CHANGELOG/package.json 为单一技能项目，升版 v3.0.0，回归验证 claude-notify
 
 ## Phase Details (M015)
@@ -142,7 +142,7 @@
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 54-02-PLAN.md — 裁剪 installer 测试: 删已删模块测试、更新 detectors/index+main+unified-flow+uninstall 套件、全量 jest 回归
+- [x] 54-02-PLAN.md — 裁剪 installer 测试: 删已删模块测试、更新 detectors/index+main+unified-flow+uninstall 套件、全量 jest 回归
 
 ### Phase 55: release-v3-metadata-regression
 
@@ -163,5 +163,5 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 53. remove-deprecated-skills | 1/1 | Complete    | 2026-06-26 |
-| 54. trim-installer-notify-only | 1/2 | In progress | - |
+| 54. trim-installer-notify-only | 2/2 | Complete | 2026-06-26 |
 | 55. release-v3-metadata-regression | 0/TBD | Not started | - |

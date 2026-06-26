@@ -22,7 +22,7 @@
 - [x] **INS-02**: installer 不再运行多技能 marketplace 集成 (移除 marketplace/ 目录),claude-notify 的安装/hook 注册仅由现有 hooks/ 模块 (`runHooksInstallation`) 承担
 - [x] **INS-03**: installer 卸载流程裁剪 — 移除与已删技能耦合的 uninstall/ 模块 (或裁剪为仅清理 claude-notify 通知组件),并相应移除/调整 `--uninstall` CLI 入口
 - [x] **INS-04**: installer 的 i18n (en.json / zh.json) 与 welcome 横幅更新为单一技能 (claude-notify) 范围,移除 git/marketplace/多技能相关文案
-- [ ] **INS-05**: installer 测试更新 — 删除已移除模块 (git/ssh 检测、git 配置、marketplace、uninstall) 的测试文件,更新剩余测试以匹配裁剪后契约;**验收门为"不引入新失败"**(相对 v3.0 前既有红色基线:10 failed suites / 8 failed tests,均为预存负债,out of scope,见 Out of Scope 表)。即 Phase 54 执行后,失败套件数 ≤ 基线中未被本阶段删除的套件数,且不出现裁剪引入的新失败
+- [x] **INS-05**: installer 测试更新 — 删除已移除模块 (git/ssh 检测、git 配置、marketplace、uninstall) 的测试文件,更新剩余测试以匹配裁剪后契约;**验收门为"不引入新失败"**(相对 v3.0 前既有红色基线:10 failed suites / 8 failed tests,均为预存负债,out of scope,见 Out of Scope 表)。即 Phase 54 执行后,失败套件数 ≤ 基线中未被本阶段删除的套件数,且不出现裁剪引入的新失败
 
 ### Release — 元数据更新与发版
 
@@ -63,7 +63,7 @@
 | INS-02 | Phase 54 | Complete |
 | INS-03 | Phase 54 | Complete |
 | INS-04 | Phase 54 | Complete |
-| INS-05 | Phase 54 | Pending |
+| INS-05 | Phase 54 | Complete |
 | REL-01 | Phase 55 | Pending |
 | REL-02 | Phase 55 | Pending |
 | REL-03 | Phase 55 | Pending |

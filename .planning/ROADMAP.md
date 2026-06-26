@@ -102,7 +102,7 @@
 
 - [x] **Phase 53: remove-deprecated-skills** - 移除 windows-git-commit 与 codepoint 技能目录及其文档，清理仓库内残留引用
 - [x] **Phase 54: trim-installer-notify-only** - 裁剪 NPX 安装器，剥离 git/marketplace/uninstall 耦合代码，仅服务 claude-notify
-- [ ] **Phase 55: release-v3-metadata-regression** - 更新根 README/CHANGELOG/package.json 为单一技能项目，升版 v3.0.0，回归验证 claude-notify
+- [x] **Phase 55: release-v3-metadata-regression** - 更新根 README/CHANGELOG/package.json 为单一技能项目，升版 v3.0.0，回归验证 claude-notify (completed 2026-06-26)
 
 ## Phase Details (M015)
 
@@ -156,10 +156,11 @@
   3. 根 `package.json` 与 `installer/package.json` 版本同步为 3.0.0，且与新建 git tag `v3.0` 一致（遵循项目发布规范）
   4. 重构后 claude-notify 的全部 Python 测试通过（回归验证，确认移除/裁剪未破坏 claude-notify）
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
-- [ ] 55-01-PLAN.md — v3.0 发版元数据收尾（README 单技能化 + CHANGELOG v3.0.0 条目 + 双 package.json 升 3.0.0 + git tag v3.0 + claude-notify 回归测试）
+
+- [x] 55-01-PLAN.md — v3.0 发版元数据收尾（README 单技能化 + CHANGELOG v3.0.0 条目 + 双 package.json 升 3.0.0 + git tag v3.0 + claude-notify 回归测试）
 
 ## Progress (M015)
 
@@ -167,4 +168,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 53. remove-deprecated-skills | 1/1 | Complete    | 2026-06-26 |
 | 54. trim-installer-notify-only | 2/2 | Complete    | 2026-06-26 |
-| 55. release-v3-metadata-regression | 0/1 | Not started | - |
+| 55. release-v3-metadata-regression | 1/1 | Complete    | 2026-06-26 |

@@ -26,10 +26,10 @@
 
 ### Release — 元数据更新与发版
 
-- [ ] **REL-01**: 根 README.md / README.zh.md 更新为单一技能 (claude-notify) 项目 (技能表格、项目结构、Quick Start 命令)
-- [ ] **REL-02**: CHANGELOG.md 增加 v3.0.0 条目,记录移除的技能与安装器裁剪范围
-- [ ] **REL-03**: 根 package.json 与 installer/package.json 版本同步升至 3.0.0,且与新建 git tag `v3.0` 保持一致 (遵循项目发布规范)
-- [ ] **REL-04**: 重构后 claude-notify 的全部 Python 测试通过 (回归验证,确认移除未破坏 claude-notify)
+- [x] **REL-01**: 根 README.md / README.zh.md 更新为单一技能 (claude-notify) 项目 (技能表格、项目结构、Quick Start 命令)
+- [x] **REL-02**: CHANGELOG.md 增加 v3.0.0 条目,记录移除的技能与安装器裁剪范围
+- [x] **REL-03**: 根 package.json 与 installer/package.json 版本同步升至 3.0.0,且与新建 git tag `v3.0` 保持一致 (遵循项目发布规范)
+- [x] **REL-04**: 重构后 claude-notify 的全部 Python 测试通过 (回归验证,确认移除未破坏 claude-notify)
 
 ## v2 Requirements
 
@@ -64,12 +64,13 @@
 | INS-03 | Phase 54 | Complete |
 | INS-04 | Phase 54 | Complete |
 | INS-05 | Phase 54 | Complete |
-| REL-01 | Phase 55 | Pending |
-| REL-02 | Phase 55 | Pending |
-| REL-03 | Phase 55 | Pending |
-| REL-04 | Phase 55 | Pending |
+| REL-01 | Phase 55 | Complete |
+| REL-02 | Phase 55 | Complete |
+| REL-03 | Phase 55 | Complete |
+| REL-04 | Phase 55 | Complete |
 
 **Coverage:**
+
 - v1 requirements: 13 total
 - Mapped to phases: 13 ✓
 - Unmapped: 0 ✓

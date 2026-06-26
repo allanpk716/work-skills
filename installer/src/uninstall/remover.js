@@ -50,7 +50,7 @@ async function removeStep(category, name, fn, shouldRun) {
  *   1. Hook Scripts (notify-stop.py, notify-attention.py)
  *   2. Hook Registration (settings.json entries)
  *   3. Slash Commands (.md files)
- *   4. Plugin Directories (claude-notify, windows-git-commit)
+ *   4. Plugin Directories (claude-notify)
  *   5. Marketplace Cache (cache + marketplaces directories)
  *   6. Marketplace Source (config.json entry)
  *   7. Environment Variables (PUSHOVER_TOKEN, PUSHOVER_USER via registry)

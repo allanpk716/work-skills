@@ -171,7 +171,7 @@ python skills/claude-notify/scripts/verify-installation.py
 
 安装后 Hook 会自动激活。在 Claude Code 中完成任何任务,您应该会收到通知。
 
-> **注意:** 从 v2.0.0 开始,通知 hooks 通过全局 `~/.claude/settings.json` 注册,而非 marketplace 插件机制。这样确保在所有项目中都能正常工作。
+> **注意:** 通知 hooks 注册在全局 `~/.claude/settings.json`,确保在所有项目中都能正常工作。
 
 **预期行为:**
 - 任务完成时,您会在手机上收到 Pushover 推送通知(如果已配置)

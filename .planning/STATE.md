@@ -1,3 +1,18 @@
+---
+gsd_state_version: 1.0
+milestone: v3.0
+milestone_name: 聚焦 claude-notify 重构
+status: planning
+last_updated: "2026-06-26T03:31:45.358Z"
+last_activity: 2026-06-26
+progress:
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
+---
+
 # Project State
 
 ## Project Reference
@@ -9,11 +24,10 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 52 of 52 (complete)
-Status: All milestones archived (v2.0, v2.0.1, v2.1)
-Last activity: 2026-04-22 — Milestone archival completed
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-06-26 — Milestone v3.0 started
 
 ## Accumulated Context
 

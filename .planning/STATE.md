@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: 聚焦 claude-notify 重构
-current_phase: 53
-current_phase_name: remove-deprecated-skills
-status: phase_complete
-stopped_at: Phase 53 (remove-deprecated-skills) 完成 — 2 个已弃用技能目录 + docs 已删除, 根元数据 + installer/src 引用已收窄, SC1-SC4 全绿; 下一步 Phase 54 (installer 深度裁剪)
-last_updated: "2026-06-26T05:30:00.000Z"
+current_phase: 54
+current_phase_name: trim-installer-notify-only
+status: completed
+stopped_at: Phase 53 (remove-deprecated-skills) 完成 — 4 commits (4b00454, 7cd7a88, 27d9b43, 58131a9), SC1-SC4 全绿; 下一步 Phase 54 (trim-installer-notify-only)
+last_updated: "2026-06-26T04:28:00.711Z"
 last_activity: 2026-06-26
-last_activity_desc: Phase 53 plan 01 执行完成 (4 commits, SC1-SC4 通过)
+last_activity_desc: Phase 53 complete, transitioned to Phase 54
 progress:
   total_phases: 3
   completed_phases: 1
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md
 
 ## Current Position
 
-Phase: 53 (remove-deprecated-skills) — COMPLETE
-Plan: 1 of 1 (done)
+Phase: 54 — trim-installer-notify-only
+Plan: Not started
 Status: Phase 53 complete, ready for Phase 54
-Last activity: 2026-06-26 — Phase 53 plan 01 executed (4 commits, SC1-SC4 passed)
+Last activity: 2026-06-26 — Phase 53 complete, transitioned to Phase 54
 
 Progress: [███░░░░░░░] 33%
 

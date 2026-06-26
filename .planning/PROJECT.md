@@ -2,11 +2,13 @@
 
 ## What This Is
 
-Work Skills 是一个 Claude Code 技能集合项目,采用 Agent Skills 开放标准分发。包含通知技能(claude-notify)、Git 提交技能(windows-git-commit)和 Codepoint 运行时可观测性技能链(codepoint 含 8 个子技能)。用户可通过 `npx skills add allanpk716/work-skills` 一键安装所有技能。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
+Work Skills 是一个聚焦于 Claude Code 任务完成通知的单一技能项目,采用 Agent Skills 开放标准分发。核心技能 claude-notify 在 Claude Code 任务完成或等待输入时发送 Pushover 移动推送与 Windows Toast 桌面通知。用户通过 `npx skills add allanpk716/work-skills/claude-notify` 安装。通知标志文件支持向上查找和 `~/.claude/` 全局控制。
+
+> v3.0 重构:本项目已从多技能集合 (claude-notify + windows-git-commit + codepoint) 瘦身回归为单一通知技能项目。windows-git-commit 与 codepoint 已于 Phase 53 移除,安装器正在 Phase 54 裁剪为仅服务 claude-notify。
 
 ## Core Value
 
-**为 Windows 开发者提供即开即用的 Claude Code 技能,自动化重复性工作,让开发者专注于创造性任务。**
+**为 Windows 开发者提供即开即用的 Claude Code 任务完成通知,让开发者不必盯着终端也能即时获知任务状态。**
 
 ## Current Milestone: v3.0 聚焦 claude-notify 重构
 

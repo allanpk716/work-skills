@@ -3,8 +3,6 @@
 const chalk = require('chalk');
 const { t } = require('../i18n/index.js');
 const { configurePushover } = require('./pushover.js');
-const { configureGitSSH } = require('./git-ssh.js');
-const { configureGitUser } = require('./git-user.js');
 
 /**
  * Display configuration summary table
@@ -54,19 +52,6 @@ async function runAllConfigurators() {
   console.log(chalk.bold('\n' + t('config.section.pushover')));
   const pushoverResult = await configurePushover();
   results.push({ name: 'Pushover', status: pushoverResult.status, details: pushoverResult.details });
-
-  // 2. Git SSH (optional)
-  console.log(chalk.bold('\n' + t('config.section.gitSSH')));
-  const sshResult = await configureGitSSH();
-  results.push({ name: 'Git SSH', status: sshResult.status, details: sshResult.details });
-
-  // 3. Git user.info (required)
-  console.log(chalk.bold('\n' + t('config.section.gitUser')));
-  const userResult = await configureGitUser();
-  results.push(
-    { name: 'Git user.name', status: userResult.status, details: userResult.name },
-    { name: 'Git user.email', status: userResult.status, details: userResult.email }
-  );
 
   // Display summary
   displayConfigSummary(results);

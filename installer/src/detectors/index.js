@@ -3,8 +3,6 @@
 const chalk = require('chalk');
 const { t } = require('../i18n/index.js');
 const { detectPython } = require('./python.js');
-const { detectGit } = require('./git.js');
-const { detectSSHTools } = require('./ssh-tools.js');
 const { detectPipPackage } = require('./pip-package.js');
 
 /**
@@ -32,8 +30,6 @@ async function runAllDetectors() {
 
   const results = await Promise.all([
     detectPython(),
-    detectGit(),
-    detectSSHTools(),
     detectPipPackage('requests')
   ]);
 

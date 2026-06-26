@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-06-26
+
+### Removed
+- **windows-git-commit 技能** — 移除 deprecated 的 Windows Git 工作流技能（scanner/hooks/references/tests/README/plugin.json 全部删除）
+- **codepoint 技能链** — 移除 deprecated 的代码可观测性技能（根 SKILL.md + 8 个子技能 + templates/references）
+- **docs/codepoint 与 docs/windows-git-commit 文档工作区** — 删除已弃用技能的调研/修复文档
+- **installer git/ssh 检测器与配置器** — 移除 detectors/git.js、detectors/ssh-tools.js、configurators/git-ssh.js、configurators/git-user.js（仅服务已删技能）
+- **installer marketplace 集成** — 移除整个 marketplace/ 目录（4 文件：index/config-manager/plugin-discovery/plugin-installer）
+- **uninstall 中 marketplace 组件** — 卸载流程裁剪为仅清理 claude-notify 通知组件（5 类 / 5 步），移除 marketplace source 检测与移除类别
+
+### Changed
+- **installer 收窄为仅服务 claude-notify** — 单技能安装器形态，主流程去掉 marketplace 步骤与 git/ssh 配置步骤
+- **i18n / welcome 横幅收窄** — en.json / zh.json 删除约 50 个 git/marketplace/多技能键，welcome 仅展示 claude-notify 通知特性
+- **项目回归单一通知技能形态** — 根 README / package.json 元数据仅宣传 claude-notify
+- **版本号 1.9.0 → 3.0.0** — v3.0 为破坏性变更（2/3 技能下线），主版本号升级
+
 ## [1.6.0] - 2026-04-01
 
 ### Added
@@ -95,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Auto-detection and configuration of TortoisePlink.exe
   - Comprehensive troubleshooting documentation
 
+[3.0.0]: https://github.com/allanpk716/work-skills/releases/tag/v3.0
 [1.6.0]: https://github.com/allanpk716/work-skills/releases/tag/v1.6
 [1.5.0]: https://github.com/allanpk716/work-skills/releases/tag/v1.5
 [1.4.0]: https://github.com/allanpk716/work-skills/releases/tag/v1.4

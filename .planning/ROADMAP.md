@@ -115,7 +115,8 @@
   2. `codepoint/` 目录（含 8 个子技能、templates/、references/、README、plugin.json）在仓库中不再存在
   3. `docs/codepoint` 文档与调研工作区（research/workspace、specs、plans、images）已删除，而 `docs/claude-notify` 保留完好
   4. 仓库内（README、README.zh、CHANGELOG、CLAUDE.md、package.json、installer 的 i18n/路径）grep 检索 `windows-git-commit` 与 `codepoint` 无残留指向引用（历史 CHANGELOG 记录除外）
-**Plans**: TBD
+**Plans**: 1 plan (Phase 53 为纯删除/引用清理, 单一关注点, 单计划三任务足够)
+- [x] 53-01-PLAN.md — 删除 windows-git-commit/codepoint/docs/codepoint/docs/windows-git-commit 四目录, 收窄 README/package.json/installer 最小引用
 
 ### Phase 54: trim-installer-notify-only
 **Goal**: NPX 安装器仅服务于 claude-notify 单一技能，剥离 git/marketplace/uninstall 耦合代码，其剩余测试全部通过

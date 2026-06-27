@@ -1,6 +1,6 @@
 {
   "name": "@allanpk716/work-skills-setup",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Personal skill for Claude Code — task-completion notifications (Pushover + Windows Toast)",
   "main": "installer/src/index.js",
   "bin": {
